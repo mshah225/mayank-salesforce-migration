@@ -25,6 +25,7 @@
                         label={q.question}
                         onchange={changeAnswer}
                         value={q.answer}
+                        max-length={q.maxLength}
                         required
                         data-testid="body"
                     ></lightning-textarea>
@@ -36,6 +37,7 @@
                         onchange={changeAnswer}
                         value={q.answer}
                         data-testid="body"
+                        max-length={q.maxLength}
                     ></lightning-textarea>
                 </template>
             </template>
@@ -99,6 +101,7 @@
                         label={q.question}
                         onchange={changeAnswer}
                         value={q.answer}
+                        max-length={q.maxLength}
                         required
                         data-testid="body"
                     ></lightning-input
@@ -111,6 +114,7 @@
                         onchange={changeAnswer}
                         value={q.answer}
                         data-testid="body"
+                        max-length={q.maxLength}
                     ></lightning-input
                 ></template>
             </template>

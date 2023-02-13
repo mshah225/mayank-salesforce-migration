@@ -1,8 +1,8 @@
-public with sharing class StudentProfileCallout {
-    public StudentProfileCallout() {
+global with sharing class StudentProfileCallout {
+    global StudentProfileCallout() {
     }
 
-    public static List<ServiceIndicatorWrapper.ServiceIndicator> getServiceIndicators(String emplid) {
+    global static List<ServiceIndicatorWrapper.ServiceIndicator> getServiceIndicators(String emplid) {
         ServiceIndicatorWrapper dataWrapper;
         List<ServiceIndicatorWrapper.ServiceIndicator> serviceIndicatorsForStudent = new List<ServiceIndicatorWrapper.ServiceIndicator>();
 
@@ -31,7 +31,7 @@ public with sharing class StudentProfileCallout {
         return serviceIndicatorsForStudent;
     }
 
-    public static List<FinancialAidChecklistWrapper.FinancialAidChecklist> getFinancialAidChecklists(String emplid) {
+    global static List<FinancialAidChecklistWrapper.FinancialAidChecklist> getFinancialAidChecklists(String emplid) {
         FinancialAidChecklistWrapper checklistWrapper;
         List<FinancialAidChecklistWrapper.FinancialAidChecklist> checklists = new List<FinancialAidChecklistWrapper.FinancialAidChecklist>();
 
@@ -57,7 +57,7 @@ public with sharing class StudentProfileCallout {
         return checklists;
     }
 
-    public static FinancialAidAwardWrapper getAwards(String emplid) {
+    global static FinancialAidAwardWrapper getAwards(String emplid) {
         FinancialAidAwardWrapper awardsForStudent;
 
         HttpRequest req = new HttpRequest();
@@ -74,7 +74,7 @@ public with sharing class StudentProfileCallout {
         return awardsForStudent;
     }
 
-    public static FinancialEditMessageWrapper getEditMessages(String emplid) {
+    global static FinancialEditMessageWrapper getEditMessages(String emplid) {
         FinancialEditMessageWrapper messagesForStudent;
 
         HttpRequest req = new HttpRequest();
@@ -89,5 +89,56 @@ public with sharing class StudentProfileCallout {
         }
 
         return messagesForStudent;
+    }
+
+    global static FinancialAidChargeHistoryWrapper getChargeHistory(String emplid) {
+        FinancialAidChargeHistoryWrapper chargeHistoryForStudent;
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Student_Finances/students/' + emplid + '/account/charges');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            chargeHistoryForStudent = FinancialAidChargeHistoryWrapper.parse(responseBody);
+        }
+
+        return chargeHistoryForStudent;
+    }
+
+    global static FinancialAidBalanceWrapper getAccountBalance(String emplid) {
+        FinancialAidBalanceWrapper accountBalanceForStudent;
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Student_Finances/students/' + emplid + '/account/balance');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            accountBalanceForStudent = FinancialAidBalanceWrapper.parse(responseBody);
+        }
+
+        return accountBalanceForStudent;
+    }
+
+    global static FinancialAidRefundWrapper getRefunds(String emplid) {
+        FinancialAidRefundWrapper refundsForStudent;
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Student_Finances/students/' + emplid + '/account/refunds');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            refundsForStudent = FinancialAidRefundWrapper.parse(responseBody);
+        }
+
+        return refundsForStudent;
     }
 }

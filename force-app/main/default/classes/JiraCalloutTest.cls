@@ -79,13 +79,15 @@ private class JiraCalloutTest {
     }
 
     @isTest
-    private static void throwErrorForInvalidData() {
+    private static void throwsErrorWhenReturnsNon200() {
         Boolean threwError = false;
 
         try {
-            Test.setMock(HttpCalloutMock.class, new JiraCalloutMock());
+            JiraCalloutMock mock = new JiraCalloutMock();
+            mock.setThrowError(true);
+            Test.setMock(HttpCalloutMock.class, mock);
             Test.startTest();
-            String key1 = JiraCallout.createNewIssue('Summary', '•\tInvalid\\n•\tJSON\\n', 'addUsers', 'Bug');
+            String key1 = JiraCallout.createNewIssue('Summary', 'description', 'addUsers', 'Bug');
             Test.stopTest();
         } catch (Exception ex) {
             threwError = true;

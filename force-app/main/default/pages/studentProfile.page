@@ -605,7 +605,9 @@
                             <div class="page-header-smaller" style="margin: 0 0 -5px 0; border: none">
                                 <h4 style="display: inline-block; margin-top: 5px">
                                     <i class="fa fa-caret-right"></i>
-                                    &nbsp;Service Indicators ({!serviceIndicatorsForStudent.size})
+                                    <a id="serviceIndicatorHeader">
+                                        &nbsp;Service Indicators
+                                    </a>
                                 </h4>
 
                                 <div class="pull-right">
@@ -622,35 +624,8 @@
 
                             <div class="hide">
                                 <apex:form >
-                                    <apex:dataTable id="serviceIndicatorTable"
-                                        rendered="{!serviceIndicatorsForStudent.size != 0}"
-                                        value="{!serviceIndicatorsForStudent}"
-                                        var="serviceIndicator"
-                                        styleClass="table table-striped table-bordered"
-                                    >
-                                        <apex:column >
-                                            <apex:facet name="header">Start Date</apex:facet>
-                                            {!serviceIndicator.ServiceIndicatorActiveDate}
-                                        </apex:column>
-                                        <apex:column >
-                                            <apex:facet name="header">Code</apex:facet>
-                                            {!serviceIndicator.ServiceIndicatorCode}
-                                        </apex:column>
-                                        <apex:column >
-                                            <apex:facet name="header">Description</apex:facet>
-                                            {!serviceIndicator.ServiceIndicatorCodeDescr}
-                                        </apex:column>
-                                        <apex:column >
-                                            <apex:facet name="header">Reason</apex:facet>
-                                            {!serviceIndicator.ServiceIndReasonCodeDescr}
-                                        </apex:column>
-                                        <apex:column >
-                                            <apex:facet name="header">Positive Indicator</apex:facet>
-                                            {!serviceIndicator.PositiveServiceIndicator}
-                                        </apex:column>
-                                    </apex:dataTable>
-                                    <div style="{!IF(serviceIndicatorsForStudent.size != 0, 'display: none;', '')}">
-                                        There are no service indicators available for this student.
+                                    <div id="serviceIndicatorTable">
+                                        <i class="fa fa-spinner fa-pulse"></i>
                                     </div>
                                 </apex:form>
                             </div>
@@ -1257,47 +1232,38 @@
                                 </div>
 
                                 <div style="overflow: auto; max-height: 400px">
-                                    <div id="psAccountBalanceErrors"></div>
-                                    <div id="ps_account_balance">
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <table class="table table-striped">
-                                                    <tr>
-                                                        <th>Past Due Balance</th>
-                                                        <td id="account_balance_past_due_tip">
-                                                            {!IF(ISBLANK(studentAccount.Past_Due_Tip__c),'--','')}
-                                                            <apex:outputText value="{0, number, currency}">
-                                                                <apex:param value="{!studentAccount.Past_Due_Tip__c}" />
-                                                            </apex:outputText>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Outstanding Account Balance</th>
-                                                        <td id="account_balance_outstanding">
-                                                            {!IF(ISBLANK(studentAccount.Account_Balance__c),'--','')}
-                                                            <apex:outputText value="{0, number, currency}">
-                                                                <apex:param value="{!studentAccount.Account_Balance__c}"
-                                                                />
-                                                            </apex:outputText>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Total Account Balance</th>
-                                                        <td id="account_balance_total">
-                                                            {!IF(ISBLANK(studentAccount.Account_Balance__c +
-                                                            studentAccount.Future_Balance__c),'--','')}
-                                                            <apex:outputText value="{0, number, currency}">
-                                                                <apex:param value="{!studentAccount.Account_Balance__c + studentAccount.Future_Balance__c}"
-                                                                />
-                                                            </apex:outputText>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                                <b>Note:</b>&nbsp;Account balances are a day old and may not be up to
-                                                date. Please check MyASU for accurate balances.
-                                            </div>
-                                        </div>
+                                    <div id="accountBalanceTable">
+                                        <i class="fa fa-spinner fa-pulse"></i>
                                     </div>
+                                </div>
+
+                                <div class="page-header-smaller">
+                                    <h4>
+                                        <i class="fa fa-caret-down"></i>
+                                        &nbsp;Refunds (Past 14 Days)
+                                    </h4>
+                                </div>
+
+                                <div style="overflow: auto; max-height: 400px">
+                                    <div id="refundTable">
+                                        <i class="fa fa-spinner fa-pulse"></i>
+                                    </div>
+                                </div>
+
+                                <div class="page-header-smaller">
+                                    <h4>
+                                        <i class="fa fa-caret-down"></i>
+                                        &nbsp;Charge History
+                                    </h4>
+                                </div>
+
+                                <div style="overflow: auto; max-height: 400px">
+                                    <apex:form >
+                                        <div id="selectListForChargeHistory">
+                                            <i class="fa fa-spinner fa-pulse"></i>
+                                        </div>
+                                        <div id="chargeHistoryTable"></div>
+                                    </apex:form>
                                 </div>
 
                                 <div class="page-header-smaller">
@@ -1311,69 +1277,10 @@
                                     <div id="awardErrors"></div>
                                     <div id="award_list">
                                         <apex:form >
-                                            <div style = "margin-bottom: 15px">
-                                                <apex:selectList value="{!selectedAidYearForAward}" size="1" style="{!IF(aidYearForAwards.size != 0, '', 'display: none;')}">
-                                                    <apex:selectOptions value="{!aidYearForAwards}"/>
-                                                    <apex:actionSupport event="onchange" reRender="awardTables"/>
-                                                </apex:selectList>
+                                            <div style = "margin-bottom: 15px" id="selectListForAwards">
+                                                <i class="fa fa-spinner fa-pulse"></i>
                                             </div>
-                                            <div id="awardErrors" style="{!IF(aidYearForAwards.size == 0, '', 'display: none;')}">
-                                                There is currently no Financial Aid / Scholarship Award information available for this student
-                                            </div>
-                                            <apex:pageBlock id="awardTables">                                            
-                                                <apex:repeat var="awardsByTerm"  value="{!awardsForSelectedTerm}">
-                                                    <table class="table table-striped table-bordered">
-                                                        <tr>
-                                                            <th> {!awardsByTerm.term_description}</th>
-                                                            <th> Category</th>
-                                                            <th> Current Offer</th>
-                                                            <th> Accepted Amount</th>
-                                                            <th> Disbursed Amount</th>
-                                                            <th> Status</th>
-                                                        </tr>
-                                                        <apex:repeat var="specificAwardForTerm" value="{!awardsByTerm.award_details}">
-                                                            <tr>
-                                                                <td>{!specificAwardForTerm.award_name}</td>
-                                                                <td>{!specificAwardForTerm.category_description}</td>                                                            
-                                                                <td>
-                                                                    <apex:outputText value="{0, number, Currency}">
-                                                                        <apex:param value="{!specificAwardForTerm.current_offer}"/>
-                                                                    </apex:outputText>
-                                                                </td>
-                                                                <td>
-                                                                    <apex:outputText value="{0, number, Currency}">
-                                                                        <apex:param value="{!specificAwardForTerm.accept_balance}"/>
-                                                                    </apex:outputText>
-                                                                </td>
-                                                                <td>
-                                                                    <apex:outputText value="{0, number, Currency}">
-                                                                        <apex:param value="{!specificAwardForTerm.disbursed_balance}"/>
-                                                                    </apex:outputText>
-                                                                </td>
-                                                                <td>{!specificAwardForTerm.disbursement_status}</td>
-                                                            </tr>
-                                                        </apex:repeat>
-                                                        <tr>
-                                                            <th colspan="2">Total</th>
-                                                            <th>
-                                                                <apex:outputText value="{0, number, Currency}">
-                                                                    <apex:param value="{!awardsByTerm.total_current_amount}"/>
-                                                                </apex:outputText>
-                                                            </th>
-                                                            <th>
-                                                                <apex:outputText value="{0, number, Currency}">
-                                                                    <apex:param value="{!awardsByTerm.total_accepted_amount}"/>
-                                                                </apex:outputText>
-                                                            </th>
-                                                            <th>
-                                                                <apex:outputText value="{0, number, Currency}">
-                                                                    <apex:param value="{!awardsByTerm.total_disbursed_amount}"/>
-                                                                </apex:outputText>
-                                                            </th>
-                                                        </tr>
-                                                    </table>
-                                                </apex:repeat>   
-                                            </apex:pageBlock>
+                                            <div id="awardTable"></div>                                            
                                         </apex:form>
                                     </div>
                                 </div>
@@ -1388,55 +1295,13 @@
                                 <div style="overflow: auto; max-height: 250px">
                                     <div id="ps_financial_aid_checklist">
                                         <apex:form >
-                                            <div
-                                                id="ps_financial_aid_checklist_note"
-                                                style="{!IF(financialAidChecklists.size != 0, '', 'display: none;')}"
-                                            >
+                                            <div id="ps_financial_aid_checklist_note">
                                                 NOTE: This section shows Financial Aid Checklist Items in real time -
                                                 this data may differ from the Checklist Items that display on the
                                                 Salesforce Contact Record
                                             </div>
-                                            <apex:dataTable id="financial-aid-checklist-table"
-                                                rendered="{!financialAidChecklists.size != 0}"
-                                                value="{!financialAidChecklists}"
-                                                var="checklist"
-                                                styleClass="table table-striped table-bordered"
-                                            >
-                                                <apex:column >
-                                                    <apex:facet name="header">Aid Year</apex:facet>
-                                                    {!checklist.aid_year}
-                                                </apex:column>
-                                                <apex:column >
-                                                    <apex:facet name="header">Term</apex:facet>
-                                                    {!checklist.term}
-                                                </apex:column>
-                                                <apex:column >
-                                                    <apex:facet name="header">Item Description</apex:facet>
-                                                    {!checklist.description}
-                                                </apex:column>
-                                                <apex:column >
-                                                    <apex:facet name="header">Checklist Code</apex:facet>
-                                                    {!checklist.checklist_cd}
-                                                </apex:column>
-                                                <apex:column >
-                                                    <apex:facet name="header">Checklist Status</apex:facet>
-                                                    {!checklist.status}
-                                                </apex:column>
-                                                <apex:column >
-                                                    <apex:facet name="header">Checklist Item Code</apex:facet>
-                                                    {!checklist.checklistitemcd}
-                                                </apex:column>
-                                                <apex:column >
-                                                    <apex:facet name="header">Checklist Item Status</apex:facet>
-                                                    {!checklist.item_status}
-                                                </apex:column>
-                                                <apex:column >
-                                                    <apex:facet name="header">Checklist Item Status Date</apex:facet>
-                                                    {!checklist.status_dt}
-                                                </apex:column>
-                                            </apex:dataTable>
-                                            <div style="{!IF(financialAidChecklists.size == 0, '', 'display: none;')}">
-                                                There are no financial aid checklist items for this student.
+                                            <div id="financialAidChecklistTable">
+                                                <i class="fa fa-spinner fa-pulse"></i>
                                             </div>
                                         </apex:form>
                                     </div>
@@ -1471,35 +1336,10 @@
                                 <div style="overflow: auto; max-height: 400px">
                                     <div id="edit_message_list">
                                         <apex:form >
-                                            <div style = "margin-bottom: 15px">
-                                                <apex:selectList value="{!selectedAidYearForEditMessage}" size="1" style="{!IF(aidYearForEditMessages.size != 0, '', 'display: none;')}">
-                                                    <apex:selectOptions value="{!aidYearForEditMessages}"/>
-                                                    <apex:actionSupport event="onchange" reRender="editMessageTable"/>
-                                                </apex:selectList>
+                                            <div id="selectListForEditMessages">
+                                                <i class="fa fa-spinner fa-pulse"></i>
                                             </div>
-                                            <div id="editMessageErrors" style="{!IF(aidYearForEditMessages.size == 0, '', 'display: none;')}">
-                                                No FA Edit Msgs found
-                                            </div>
-                                            <apex:pageBlock id="editMessageTable">
-                                                <table class="table table-striped table-bordered" style="{!IF(aidYearForEditMessages.size != 0, '', 'display: none;')}">
-                                                    <tr>
-                                                        <th> Academic Year</th>
-                                                        <th> Aid Year</th>
-                                                        <th> Term</th>
-                                                        <th> Action Description</th>
-                                                        <th> Description</th>
-                                                    </tr>
-                                                    <apex:repeat var="editMessageEntry" value="{!editMessagesForSelectedTerm}">
-                                                        <tr>
-                                                            <td>{!editMessageEntry.academic_year}</td>
-                                                            <td>{!editMessageEntry.aid_year}</td>                                                            
-                                                            <td>{!editMessageEntry.term}</td>
-                                                            <td>{!editMessageEntry.action_description}</td>
-                                                            <td>{!editMessageEntry.description}</td>
-                                                        </tr>
-                                                    </apex:repeat>
-                                                </table>  
-                                            </apex:pageBlock>
+                                            <div id="editMessageTable"></div>
                                         </apex:form>
                                     </div>
                                 </div>
@@ -2263,47 +2103,16 @@
                                                             </apex:repeat>
                                                         </td>
                                                     </tr>
-                                                    <tr
-                                                        style="{!IF(financialAidUnresolvedChecklists.size != 0, 'display:table-row', 'display:none')}"
-                                                    >
+                                                    <tr id="finAidUnresolvedItemSection">
                                                         <th colspan="2">
                                                             Financial Aid Unresolved Items
                                                             <br />
                                                             <div style="overflow: auto; max-height: 225px">
                                                                 <div id="ps_financial_aid_checklist_unresolved">
                                                                     <apex:form >
-                                                                        <apex:dataTable id="financial-aid-checklist-unresolved-table"
-                                                                            rendered="{!financialAidUnresolvedChecklists.size != 0}"
-                                                                            value="{!financialAidUnresolvedChecklists}"
-                                                                            var="checklist"
-                                                                            styleClass="table table-striped table-bordered"
-                                                                        >
-                                                                            <apex:column >
-                                                                                <apex:facet name="header"
-                                                                                    >Checklist Code</apex:facet>
-                                                                                {!checklist.checklist_cd}
-                                                                            </apex:column>
-                                                                            <apex:column >
-                                                                                <apex:facet name="header"
-                                                                                    >Checklist Item Code</apex:facet>
-                                                                                {!checklist.checklistitemcd}
-                                                                            </apex:column>
-                                                                            <apex:column >
-                                                                                <apex:facet name="header"
-                                                                                    >Description</apex:facet>
-                                                                                {!checklist.description}
-                                                                            </apex:column>
-                                                                            <apex:column >
-                                                                                <apex:facet name="header"
-                                                                                    >Status Date</apex:facet>
-                                                                                {!checklist.status_dt}
-                                                                            </apex:column>
-                                                                            <apex:column >
-                                                                                <apex:facet name="header"
-                                                                                    >Status</apex:facet>
-                                                                                {!checklist.item_status}
-                                                                            </apex:column>
-                                                                        </apex:dataTable>
+                                                                        <div id="unresolvedChecklistTable">
+                                                                            <i class="fa fa-spinner fa-pulse"></i>
+                                                                        </div>
                                                                     </apex:form>
                                                                 </div>
                                                             </div>
@@ -3402,11 +3211,23 @@
             maskPhoneNumbers();
 
             loadRemoteSunCardPhoto();
+            loadFinancialAidIndicators();
             loadCommentsTab();
             loadUGIndicatorTab();
             loadClassesTab();
         });
 
+        function loadFinancialAidIndicators() {
+            loadServiceIndicators();
+            loadFinancialAidChecklist();
+            loadFinancialAidEditMessages();
+            loadFinancialAidAwards();
+            loadFinancialAidChargeHistory();
+            loadAccountBalance();
+            loadRefunds();
+        }
+
+        
         function loadRemoteSunCardPhoto() {
             Visualforce.remoting.Manager.invokeAction(
                 '{!$RemoteAction.StudentProfileController.getSunCardPhotoRA}',
@@ -5153,6 +4974,617 @@
                     $j(this).mask('(000) 000-0000');
                 }
             });
+        }
+
+        function loadServiceIndicators() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getServiceIndicatorsForStudent}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    if (result.length > 0) {
+                        document.getElementById('serviceIndicatorTable').style.display = 'initial';
+
+                        var html =
+                            '' +
+                            "<div class='table-responsive'>" +
+                            "<table class='table table-striped table-bordered'> " +
+                            '<thead>' +
+                            '<tr>' +
+                            '<th>Start Date</th>' +
+                            '<th>Code</th>' +
+                            '<th>Description</th>' +
+                            '<th>Reason</th>' +
+                            '<th>Positive Indicator</th>' +
+                            '</tr>' +
+                            '</thead>' +
+                            '<tbody>';
+
+                        for (var i = 0; i < result.length; i++) {
+                            html +=
+                                '' +
+                                '<tr>' +
+                                '<td>' +
+                                    result[i].ServiceIndicatorActiveDate +
+                                '</td>' +
+                                '<td>' +
+                                    result[i].ServiceIndicatorCode +
+                                '</td>' +
+                                '<td>' +
+                                    result[i].ServiceIndicatorCodeDescr +
+                                '</td>' +
+                                '<td>' +
+                                    result[i].ServiceIndReasonCodeDescr +
+                                '</td>' +
+                                '<td>' +
+                                    result[i].PositiveServiceIndicator +
+                                '</td>' +
+                                '</tr>';
+                        }
+
+                        html += '</tbody></table></div>';
+
+                        document.getElementById('serviceIndicatorTable').innerHTML = html;
+                        document.getElementById('serviceIndicatorHeader').innerHTML = '&nbsp;Service Indicators (' + result.length + ')';
+                    } else {
+                        document.getElementById('serviceIndicatorTable').innerHTML =
+                            'There are no service indicators available for this student.';
+                        document.getElementById('serviceIndicatorHeader').innerHTML = '&nbsp;Service Indicators (0)';
+                    }
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+
+        function loadFinancialAidChecklist() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getFinancialAidChecklist}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    if (result.length > 0) {
+                        document.getElementById('financialAidChecklistTable').style.display = 'initial';
+
+                        var html =
+                            '' +
+                            "<div class='table-responsive'>" +
+                            "<table class='table table-striped table-bordered'> " +
+                            '<thead>' +
+                            '<tr>' +
+                            '<th>Aid Year</th>' +
+                            '<th>Term</th>' +
+                            '<th>Item Description</th>' +
+                            '<th>Checklist Code</th>' +
+                            '<th>Checklist Status</th>' +
+                            '<th>Checklist Item Code</th>' +
+                            '<th>Checklist Item Status</th>' +
+                            '<th>Checklist Item Status Date</th>' +
+                            '</tr>' +
+                            '</thead>' +
+                            '<tbody>';
+
+                        for (var i = 0; i < result.length; i++) {
+                            if (result[i].term == null) {
+                                result[i].term = '--';
+                            }
+                            html +=
+                                '' +
+                                '<tr>' +
+                                '<td>' +
+                                    result[i].aid_year +
+                                '</td>' +
+                                '<td>' +
+                                    result[i].term +
+                                '</td>' +
+                                '<td>' +
+                                    result[i].description +
+                                '</td>' +
+                                '<td>' +
+                                    result[i].checklist_cd +
+                                '</td>' +
+                                '<td>' +
+                                    result[i].status +
+                                '</td>' +
+                                '<td>' +
+                                    result[i].checklistitemcd +
+                                '</td>' +
+                                '<td>' +
+                                    result[i].item_status +
+                                '</td>' +
+                                '<td>' +
+                                    result[i].status_dt +
+                                '</td>' +
+                                '</tr>';
+                        }
+
+                        html += '</tbody></table></div>';
+
+                        document.getElementById('financialAidChecklistTable').innerHTML = html;
+                        loadUnresolvedFinancialAidChecklist(result);
+                    } else {
+                        document.getElementById('financialAidChecklistTable').innerHTML =
+                            'There are no financial aid checklist items for this student.';
+                        document.getElementById('finAidUnresolvedItemSection').style.display = 'none';
+                    }
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+
+        function loadUnresolvedFinancialAidChecklist(checklists) {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getUnresolvedFinancialAidChecklist}',
+                checklists,
+                function (result, event) {
+                    if (result.length > 0) {
+                        document.getElementById('unresolvedChecklistTable').style.display = 'initial';
+
+                        var html =
+                            '' +
+                            "<div class='table-responsive'>" +
+                            "<table class='table table-striped table-bordered'> " +
+                            '<thead>' +
+                            '<tr>' +
+                            '<th>Checklist Code</th>' +                            
+                            '<th>Checklist Item Code</th>' +
+                            '<th>Description</th>' +
+                            '<th>Status Date</th>' +
+                            '<th>Status</th>' +
+                            '</tr>' +
+                            '</thead>' +
+                            '<tbody>';
+
+                        for (var i = 0; i < result.length; i++) {
+                            if (result[i].term == null) {
+                                result[i].term = '--';
+                            }
+                            html +=
+                                '' +
+                                '<tr>' +
+                                '<td>' +
+                                    result[i].checklist_cd +
+                                '</td>' +
+                                '<td>' +
+                                    result[i].checklistitemcd +
+                                '</td>' +
+                                '<td>' +
+                                    result[i].description +
+                                '</td>' +
+                                '<td>' +
+                                    result[i].status_dt +
+                                '</td>' +
+                                '<td>' +
+                                    result[i].item_status +
+                                '</td>' +
+                                '</tr>';
+                        }
+
+                        html += '</tbody></table></div>';
+
+                        document.getElementById('unresolvedChecklistTable').innerHTML = html;
+                    } else {
+                        document.getElementById('finAidUnresolvedItemSection').style.display = 'none';
+                    }
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+
+        var editMessagesMap = new Map();
+
+        function loadFinancialAidEditMessages() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getEditMessages}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    var keySet = Object.keys(result);
+                    var valueSet = Object.values(result);
+
+                    if (keySet.length == null || keySet.length == 0) {
+                    	document.getElementById('selectListForEditMessages').innerHTML = 'No FA Edit Msgs found';
+                        return;
+                    }
+                    
+                    for (var i = 0; i < keySet.length; i++) {
+                        editMessagesMap.set(keySet[i], valueSet[i]);
+                    }
+                    var selectHtml =
+                    "<label for='editMessageSelectOptions'>Academic Year:&nbsp;</label><select id='editMessageSelectOptions' onchange='buildEditMessageTable()'>";
+                    for (var i = 0; i < keySet.length; i++) {
+                        selectHtml += '<option ';
+                        selectHtml +=
+                            " value='" +
+                            keySet[i] +
+                            "'>" +
+                            keySet[i] +
+                            '</option>';
+                    }
+                    selectHtml += '</select>&nbsp;&nbsp;';
+                    document.getElementById('selectListForEditMessages').innerHTML = selectHtml;
+                    var test = document.getElementById('editMessageSelectOptions');
+                    
+                    buildEditMessageTable()
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+    
+    	function buildEditMessageTable() {
+            var selectedTerm = document.getElementById('editMessageSelectOptions').value;
+            var messagesForSelectedTerm = editMessagesMap.get(selectedTerm);
+            
+            var html =
+                '' +
+                "<div class='table-responsive'>" +
+                "<table class='table table-striped table-bordered'> " +
+                '<thead>' +
+                '<tr>' +
+                '<th>Academic Year</th>' +                            
+                '<th>Aid Year</th>' +
+                '<th>Term</th>' +
+                '<th>Action Description</th>' +
+                '<th>Description</th>' +
+                '</tr>' +
+                '</thead>' +
+                '<tbody>';
+            
+            for (var i = 0; i < messagesForSelectedTerm.length; i++) {
+                html +=
+                    '' +
+                    '<tr>' +
+                    '<td>' +
+                    messagesForSelectedTerm[i].academic_year +
+                    '</td>' +
+                    '<td>' +
+                    messagesForSelectedTerm[i].aid_year +
+                    '</td>' +
+                    '<td>' +
+                    messagesForSelectedTerm[i].term +
+                    '</td>' +
+                    '<td>' +
+                    messagesForSelectedTerm[i].action_description +
+                    '</td>' +
+                    '<td>' +
+                    messagesForSelectedTerm[i].description +
+                    '</td>' +
+                    '</tr>';
+            }
+            
+            html += '</tbody></table></div>';
+            
+            document.getElementById('editMessageTable').innerHTML = html;
+        }
+
+        //New Line
+        var awardMap = new Map();
+        
+        function loadFinancialAidAwards() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getAwardStatusMap}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    var keySet = Object.keys(result);
+                    var valueSet = Object.values(result);
+
+                    if (keySet.length == null || keySet.length == 0) {
+                    	document.getElementById('selectListForAwards').innerHTML = 'There is currently no Financial Aid / Scholarship Award information available for this student';
+                        return;
+                    }
+
+                    for (var i = 0; i < keySet.length; i++) {
+                        awardMap.set(keySet[i], valueSet[i]);
+                    }
+                    var selectHtml =
+                    "<label for='awardSelectOptions'>Academic Year:&nbsp;</label><select id='awardSelectOptions' onchange='buildAwardTable()'>";
+                    for (var i = 0; i < keySet.length; i++) {
+                        selectHtml += '<option ';
+                        selectHtml +=
+                            " value='" +
+                            keySet[i] +
+                            "'>" +
+                            keySet[i] +
+                            '</option>';
+                    }
+                    selectHtml += '</select>&nbsp;&nbsp;';
+                    document.getElementById('selectListForAwards').innerHTML = selectHtml;
+
+                    buildAwardTable()
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+    
+    	function buildAwardTable() {
+            var selectedYear = document.getElementById('awardSelectOptions').value;
+            var awardsForSelectedYear = awardMap.get(selectedYear);
+            
+            var html = '';
+            var formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+            });
+
+            for (var i = 0; i < awardsForSelectedYear.length; i++) {
+                html +=
+                    '' +
+                    "<div class='table-responsive'>" +
+                    "<table class='table table-striped table-bordered'> " +
+                    '<thead>' +
+                    '<tr>' +
+                    '<th>' + awardsForSelectedYear[i].term_description + '</th>' +                            
+                    '<th>Category</th>' +
+                    '<th>Current Offer</th>' +
+                    '<th>Accepted Amount</th>' +
+                    '<th>Disbursed Amount</th>' +
+                    '<th>Status</th>' +
+                    '</tr>' +
+                    '</thead>' +
+                    '<tbody>';
+                
+                var awardDetails = awardsForSelectedYear[i].award_details;
+
+                for (var j = 0; j < awardDetails.length; j++) {
+                    html +=
+                        '<tr>' +
+                        '<td>' +
+                        awardDetails[j].award_name +
+                        '</td>' +
+                        '<td>' +
+                        awardDetails[j].category_description +
+                        '</td>' +
+                        '<td>' +
+                        formatter.format(awardDetails[j].current_offer) +
+                        '</td>' +
+                        '<td>' +
+                        formatter.format(awardDetails[j].accept_balance) +
+                        '</td>' +
+                        '<td>' +
+                        formatter.format(awardDetails[j].disbursed_balance) +
+                        '</td>' +
+                        '<td>' +
+                        awardDetails[j].disbursement_status +
+                        '</td>' +
+                        '</tr>';
+                }
+
+                html +=
+                    '<tr>' +
+                    '<th colspan="2">Total</th>' +
+                    '<th>' +
+                    formatter.format(awardsForSelectedYear[i].total_current_amount) +
+                    '</th>' +
+                    '<th>' +
+                    formatter.format(awardsForSelectedYear[i].total_accepted_amount) +
+                    '</th>' +
+                    '<th>' +
+                    formatter.format(awardsForSelectedYear[i].total_disbursed_amount) +
+                    '</th>' +
+                    '</tr>';
+                
+                html += '</tbody></table></div>';
+            }
+
+            document.getElementById('awardTable').innerHTML = html;
+        }
+
+        //Charge History
+        var chargeHistoryMap = new Map();
+        
+        function loadFinancialAidChargeHistory() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getChargeHistoryMap}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    var keySet = Object.keys(result);
+                    var valueSet = Object.values(result);
+
+                    if (keySet.length == null || keySet.length == 0) {
+                    	document.getElementById('selectListForChargeHistory').innerHTML = 'There is currently no Charge History information available for this student';
+                        return;
+                    }
+
+                    for (var i = 0; i < keySet.length; i++) {
+                        awardMap.set(keySet[i], valueSet[i]);
+                    }
+                    var selectHtml =
+                    "<label for='chargeHistorySelectOptions'>Academic Year:&nbsp;</label><select id='chargeHistorySelectOptions' onchange='buildChargeHistoryTable()'>";
+                    for (var i = 0; i < keySet.length; i++) {
+                        selectHtml += '<option ';
+                        selectHtml +=
+                            " value='" +
+                            keySet[i] +
+                            "'>" +
+                            keySet[i] +
+                            '</option>';
+                    }
+                    selectHtml += '</select>&nbsp;&nbsp;';
+                    document.getElementById('selectListForChargeHistory').innerHTML = selectHtml;
+
+                    buildChargeHistoryTable()
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+    
+    	function buildChargeHistoryTable() {
+            var selectedTerm = document.getElementById('chargeHistorySelectOptions').value;
+            var chargeHistoryForSelectedTerm = awardMap.get(selectedTerm);
+            
+            var html = '';
+            var formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+            });
+
+            html +=
+                '' +
+                "<div class='table-responsive'>" +
+                "<table class='table table-striped table-bordered'> " +
+                '<thead>' +
+                '<tr>' +                        
+                '<th>Term</th>' +
+                '<th>Description</th>' +
+                '<th>Charge</th>' +
+                '<th>Payments / Financial Aid</th>' +
+                '<th>Balance</th>' +
+                '</tr>' +
+                '</thead>' +
+                '<tbody>';
+            
+            var chargeHistoryDetails = chargeHistoryForSelectedTerm.charge_details;
+
+            for (var j = 0; j < chargeHistoryDetails.length; j++) {
+                html +=
+                    '<tr>' +
+                    '<td>' +
+                    chargeHistoryForSelectedTerm.term_name +
+                    '</td>' +
+                    '<td>' +
+                    chargeHistoryDetails[j].description +
+                    '</td>' +
+                    '<td>' +
+                    formatter.format(chargeHistoryDetails[j].charge) +
+                    '</td>' +
+                    '<td>' +
+                    formatter.format(chargeHistoryDetails[j].payment) +
+                    '</td>' +
+                    '<td>' +
+                    formatter.format(chargeHistoryDetails[j].balance) +
+                    '</td>' +
+                    '</tr>';
+            }
+
+            html +=
+                    '<tr>' +
+                    '<th colspan="2">Total</th>' +
+                    '<th>' +
+                    formatter.format(chargeHistoryForSelectedTerm.total_charges) +
+                    '</th>' +
+                    '<th>' +
+                    formatter.format(chargeHistoryForSelectedTerm.total_payment) +
+                    '</th>' +
+                    '<th>' +
+                    formatter.format(chargeHistoryForSelectedTerm.total_balance) +
+                    '</th>' +
+                    '</tr>';
+            
+            html += '</tbody></table></div>';
+            
+
+            document.getElementById('chargeHistoryTable').innerHTML = html;
+        }
+
+        //Account Balance
+        function loadAccountBalance() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getFinancialAidAccountBalance}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    var html = '';
+                    if (Object.keys(result).length != 0) {
+                        var formatter = new Intl.NumberFormat('en-US', {
+                            style: 'currency',
+                            currency: 'USD',
+                        });
+                        html +=
+                            '' +
+                            "<div class='table-responsive'>" +
+                            "<table class='table table-striped table-bordered'> " +
+                            "<tr>" +
+                            "<th> Current Amount Due </th>" +
+                            "<td>" + formatter.format(result.balances.due_amount) + "</td> </tr>" +
+                            "<tr>" +
+                            "<th> Future Amount Due </th>" +
+                            "<td>" + formatter.format(result.balances.balance_amount) + "</td> </tr>" +
+                            "<tr>" +
+                            "<th> Total Account Balance </th>" +
+                            "<td>" + formatter.format(result.balances.total_amount) + "</td> </tr>";
+
+                        html += '</table></div>';
+
+                        document.getElementById('accountBalanceTable').innerHTML = html;
+                    } else {
+                        html +=
+                            '' +
+                            "<div class='table-responsive'>" +
+                            "<table class='table table-striped table-bordered'> " +
+                            "<tr>" +
+                            "<th> Past Due Balance </th>" +
+                            "<td>" + "--" + "</td> </tr>" +
+                            "<tr>" +
+                            "<th> Outstanding Account Balance </th>" +
+                            "<td>" + "--" + "</td> </tr>" +
+                            "<tr>" +
+                            "<th> Total Account Balance </th>" +
+                            "<td>" + "--" + "</td> </tr>";
+
+                        html += '</table></div>';
+
+                        document.getElementById('accountBalanceTable').innerHTML = html;
+                    }
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+
+        //Refunds
+        function loadRefunds() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getFinancialAidRefunds}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    if (Object.keys(result).length != 0) {
+
+                        var html =
+                            '' +
+                            "<div style='font-weight:bold;'> Posted Refunds </div>" +
+                            "<div class='table-responsive'>" +
+                            "<table class='table table-striped table-bordered'> " +
+                            '<thead>' +
+                            '<tr>' +
+                            '<th>Date Paid</th>' +
+                            '<th>Refund Type</th>' +
+                            '<th>Paid Amount</th>' +
+                            '</tr>' +
+                            '</thead>' +
+                            '<tbody>';
+
+                        for (var i = 0; i < result.refunds.length; i++) {
+                            var formatter = new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: 'USD',
+                            });
+                            html +=
+                                '' +
+                                '<tr>' +
+                                '<td>' +
+                                    result.refunds[i].refund_date +
+                                '</td>' +
+                                '<td>' +
+                                    result.refunds[i].refund_type +
+                                '</td>' +
+                                '<td>' +
+                                    formatter.format(result.refunds[i].applied_amount) +
+                                '</td>' +
+                                '</tr>';
+                        }
+
+                        html +=
+                            '<tr>' +
+                            '<th colspan="2">Total Posted</th>' +
+                            '<th>' +
+                            formatter.format(result.total_refunds) +
+                            '</th>' +
+                            '</tr>';
+
+                        html += '</tbody></table></div>';
+
+                        document.getElementById('refundTable').innerHTML = html;
+                    } else {
+                        document.getElementById('refundTable').innerHTML =
+                            'There is no Refund data available for this student.';
+                    }
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
         }
     </script>
 </apex:page>

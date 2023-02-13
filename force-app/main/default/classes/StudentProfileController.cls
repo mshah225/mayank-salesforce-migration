@@ -93,144 +93,6 @@ global with sharing class StudentProfileController {
         set;
     }
 
-    public List<ServiceIndicatorWrapper.ServiceIndicator> serviceIndicatorsForStudent {
-        get {
-            if (serviceIndicatorsForStudent == null) {
-                serviceIndicatorsForStudent = StudentProfileCallout.getServiceIndicators(theContact.EmplId__c);
-            }
-            return serviceIndicatorsForStudent;
-        }
-        set;
-    }
-
-    public Map<String, List<FinancialAidAwardWrapper.cls_term_awards>> aidYearToAward { 
-        get {
-            if (aidYearToAward == null) {
-                setupAwardStatusMap();
-            }
-
-            return aidYearToAward;
-        }
-
-        set; 
-    }
-
-    public List<SelectOption> aidYearForAwards {
-        get {
-            if (aidYearForAwards == null) {
-                List<String> aidYearStringForAward = new List<String>(aidYearToAward.keyset());
-                if (aidYearStringForAward == null) {
-                    return null;
-                }
-                
-                aidYearStringForAward.sort();
-                aidYearForAwards = new List<SelectOption>();
-                for (Integer i = aidYearStringForAward.size() - 1; i >= 0; i--) {
-                    aidYearForAwards.add(new SelectOption(aidYearStringForAward[i], aidYearStringForAward[i]));
-                }
-            }
-            return aidYearForAwards;
-        }
-        set;
-    }
-
-    public List<FinancialAidAwardWrapper.cls_term_awards> awardsForSelectedTerm {
-        get {
-            awardsForSelectedTerm = aidYearToAward.get(selectedAidYearForAward);
-           
-            return awardsForSelectedTerm;
-        }
-
-        set;
-    }
-
-    public String selectedAidYearForAward { 
-        get {
-            if (selectedAidYearForAward == null) {
-                if (aidYearForAwards != null && aidYearForAwards.size() > 0) {
-                	return aidYearForAwards[0].getValue();
-                }
-            }
-            return selectedAidYearForAward;
-        }
-        
-        set; 
-    }
-
-    public Map<String, List<StudentProfileController.EditMessageWrapper>> aidYearToEditMessage {
-        get {
-            if (aidYearToEditMessage == null) {
-                setupEditMessageMap();
-            }
-
-            return aidYearToEditMessage;
-        }
-
-        set; 
-    }
-
-    public List<SelectOption> aidYearForEditMessages {
-        get {
-            if (aidYearForEditMessages == null) {
-                List<String> aidYearStringsForMessage = new List<String>(aidYearToEditMessage.keyset());
-                if (aidYearStringsForMessage == null) {
-                    return null;
-                }
-                
-                aidYearStringsForMessage.sort();
-                aidYearForEditMessages = new List<SelectOption>();
-                for (Integer i = aidYearStringsForMessage.size() - 1; i >= 0; i--) {
-                    aidYearForEditMessages.add(new SelectOption(aidYearStringsForMessage[i], aidYearStringsForMessage[i]));
-                }
-            }
-            return aidYearForEditMessages;
-        }
-        set;
-    }
-
-    public List<StudentProfileController.EditMessageWrapper> editMessagesForSelectedTerm {
-        get {
-            editMessagesForSelectedTerm = aidYearToEditMessage.get(selectedAidYearForEditMessage);
-           
-            return editMessagesForSelectedTerm;
-        }
-
-        set;
-    }
-
-    public String selectedAidYearForEditMessage { 
-        get {
-            if (selectedAidYearForEditMessage == null) {
-                if (aidYearForEditMessages != null && aidYearForEditMessages.size() > 0) {
-                	return aidYearForEditMessages[0].getValue();
-                }
-            }
-            return selectedAidYearForEditMessage;
-        }
-        
-        set; 
-    }
-
-    public List<FinancialAidChecklistWrapper.FinancialAidChecklist> financialAidChecklists {
-        get {
-            if (financialAidChecklists == null) {
-                financialAidChecklists = StudentProfileCallout.getFinancialAidChecklists(theContact.EmplId__c);
-            }
-            return financialAidChecklists;
-        }
-        set;
-    }
-
-    public List<FinancialAidChecklistWrapper.FinancialAidChecklist> financialAidUnresolvedChecklists {
-        get {
-            if (financialAidUnresolvedChecklists == null && financialAidChecklists != null) {
-                financialAidUnresolvedChecklists = filterFinancialAidUnresolvedItems(financialAidChecklists);
-            }
-            return financialAidUnresolvedChecklists;
-        }
-        set;
-    }
-
     public StudentProfileController() {
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
@@ -1055,7 +917,7 @@ global with sharing class StudentProfileController {
         eAdvisorStatus = 'No Status';
     }
 
-    private List<FinancialAidChecklistWrapper.FinancialAidChecklist> filterFinancialAidUnresolvedItems(
+    private static List<FinancialAidChecklistWrapper.FinancialAidChecklist> filterFinancialAidUnresolvedItems(
         List<FinancialAidChecklistWrapper.FinancialAidChecklist> financialAidChecklists
     ) {
         List<FinancialAidChecklistWrapper.FinancialAidChecklist> unresolvedChecklists = new List<FinancialAidChecklistWrapper.FinancialAidChecklist>();
@@ -1065,51 +927,6 @@ global with sharing class StudentProfileController {
             }
         }
         return unresolvedChecklists;
-    }
-
-    private void setupAwardStatusMap() {
-        FinancialAidAwardWrapper awardWrapper = StudentProfileCallout.getAwards(theContact.EmplId__c);
-        
-        aidYearToAward = new Map<String, List<FinancialAidAwardWrapper.cls_term_awards>>();
-
-        if (awardWrapper == null) {
-            return;
-        }
-
-        for (FinancialAidAwardWrapper.cls_aid_years yearsWithAwards : awardWrapper.aid_years) {
-            yearsWithAwards.term_awards.sort();
-            aidYearToAward.put(yearsWithAwards.financial_year, yearsWithAwards.term_awards);
-            for (FinancialAidAwardWrapper.cls_term_awards specificTerm : yearsWithAwards.term_awards) {
-                specificTerm.award_details.sort();
-            }
-        }
-
-    }
-
-    private void setupEditMessageMap() {
-        FinancialEditMessageWrapper editMessageWrapperDetails = StudentProfileCallout.getEditMessages(theContact.EmplId__c);
-        
-        aidYearToEditMessage = new Map<String, List<StudentProfileController.EditMessageWrapper>>();
-
-        if (editMessageWrapperDetails == null) {
-            return;
-        }
-
-        for (FinancialEditMessageWrapper.cls_edit_messages messages : editMessageWrapperDetails.edit_messages) {
-            List<StudentProfileController.EditMessageWrapper> messagesForTerm = new List<StudentProfileController.EditMessageWrapper>();
-            messages.message_details.sort();
-            for (FinancialEditMessageWrapper.cls_message_details messageDetails : messages.message_details) {
-                StudentProfileController.EditMessageWrapper emw = new StudentProfileController.EditMessageWrapper();
-                emw.academic_year = messages.academic_year;
-                emw.aid_year = messages.aid_year;
-                emw.term = messageDetails.term;	
-                emw.action_description = messageDetails.action_description;
-                emw.description = messageDetails.description;
-                emw.item_type = messageDetails.item_type;
-                messagesForTerm.add(emw);                
-            }
-            aidYearToEditMessage.put(messages.academic_year, messagesForTerm);    
-        }
     }
 
     @RemoteAction
@@ -1312,6 +1129,114 @@ global with sharing class StudentProfileController {
         }
         return null;
     }
+
+    @RemoteAction
+    global static List<ServiceIndicatorWrapper.ServiceIndicator> getServiceIndicatorsForStudent(String contactEmplid) {
+        return StudentProfileCallout.getServiceIndicators(contactEmplid);
+    }
+
+    @RemoteAction
+    global static List<FinancialAidChecklistWrapper.FinancialAidChecklist> getFinancialAidChecklist(String contactEmplid) {
+        return StudentProfileCallout.getFinancialAidChecklists(contactEmplid);
+    }
+
+    @RemoteAction
+    global static List<FinancialAidChecklistWrapper.FinancialAidChecklist> getUnresolvedFinancialAidChecklist(List<FinancialAidChecklistWrapper.FinancialAidChecklist> finAidChecklists) {
+        return filterFinancialAidUnresolvedItems(finAidChecklists);
+    }
+
+    @RemoteAction
+    global static Map<String, List<StudentProfileController.EditMessageWrapper>> getEditMessages(String contactEmplid) {
+        FinancialEditMessageWrapper editMessageWrapperDetails = StudentProfileCallout.getEditMessages(contactEmplid);
+        
+        Map<String, List<StudentProfileController.EditMessageWrapper>> aidYearToEditMessage = new Map<String, List<StudentProfileController.EditMessageWrapper>>();
+
+        if (editMessageWrapperDetails == null) {
+            return null;
+        }
+
+        editMessageWrapperDetails.edit_messages.sort();
+
+        for (FinancialEditMessageWrapper.cls_edit_messages messages : editMessageWrapperDetails.edit_messages) {
+            List<StudentProfileController.EditMessageWrapper> messagesForTerm = new List<StudentProfileController.EditMessageWrapper>();
+            messages.message_details.sort();
+            for (FinancialEditMessageWrapper.cls_message_details messageDetails : messages.message_details) {
+                StudentProfileController.EditMessageWrapper emw = new StudentProfileController.EditMessageWrapper();
+                emw.academic_year = messages.academic_year;
+                emw.aid_year = messages.aid_year;
+                emw.term = messageDetails.term;	
+                emw.action_description = messageDetails.action_description;
+                emw.description = messageDetails.description;
+                emw.item_type = messageDetails.item_type;
+                messagesForTerm.add(emw);                
+            }
+            aidYearToEditMessage.put(messages.academic_year, messagesForTerm);    
+        }
+
+        return aidYearToEditMessage;
+    }
+
+    @RemoteAction
+    global static Map<String, List<FinancialAidAwardWrapper.cls_term_awards>> getAwardStatusMap(String contactEmplid) {
+        FinancialAidAwardWrapper awardWrapper = StudentProfileCallout.getAwards(contactEmplid);
+
+        awardWrapper.aid_years.sort();
+        
+        Map<String, List<FinancialAidAwardWrapper.cls_term_awards>> aidYearToAward = new Map<String, List<FinancialAidAwardWrapper.cls_term_awards>>();
+
+        if (awardWrapper == null) {
+            return null;
+        }
+
+        for (FinancialAidAwardWrapper.cls_aid_years yearsWithAwards : awardWrapper.aid_years) {
+            yearsWithAwards.term_awards.sort();
+            aidYearToAward.put(yearsWithAwards.financial_year, yearsWithAwards.term_awards);
+            for (FinancialAidAwardWrapper.cls_term_awards specificTerm : yearsWithAwards.term_awards) {
+                specificTerm.award_details.sort();
+            }
+        }
+
+        return aidYearToAward;
+
+    }
+
+    @RemoteAction
+    global static Map<String, FinancialAidChargeHistoryWrapper.cls_charges> getChargeHistoryMap(String contactEmplid) {
+        FinancialAidChargeHistoryWrapper chargeHistoryWrapper = StudentProfileCallout.getChargeHistory(contactEmplid);
+
+        Map<String, FinancialAidChargeHistoryWrapper.cls_charges> termToChargeHistory = new Map<String, FinancialAidChargeHistoryWrapper.cls_charges>();
+
+        if (chargeHistoryWrapper == null) {
+            return null;
+        }
+
+        chargeHistoryWrapper.charges.sort();
+
+        for (FinancialAidChargeHistoryWrapper.cls_charges charges : chargeHistoryWrapper.charges) {
+            charges.charge_details.sort();
+
+            termToChargeHistory.put(charges.term_name, charges);
+        }
+
+        return termToChargeHistory;
+    }
+
+    @RemoteAction
+    global static FinancialAidBalanceWrapper getFinancialAidAccountBalance(String contactEmplid) {
+        return StudentProfileCallout.getAccountBalance(contactEmplid);
+    }
+
+    @RemoteAction
+    global static FinancialAidRefundWrapper getFinancialAidRefunds(String contactEmplid) {
+        FinancialAidRefundWrapper refundWrapper = StudentProfileCallout.getRefunds(contactEmplid);
+
+        if (refundWrapper != null && refundWrapper.refunds != null) {   
+            refundWrapper.refunds.sort();
+        }
+
+        return refundWrapper;
+    }
+    
 
     global class FinancialAidWrapper {
         public Set<String> aidYears { get; set; }

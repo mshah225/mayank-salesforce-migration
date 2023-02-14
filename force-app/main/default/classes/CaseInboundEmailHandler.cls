@@ -68,6 +68,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 caseId = extractIdRefNew(email.subject);
             }
 
+            if (caseId == null && email.Headers != null) {
+                caseId = Cases.getCaseIdFromEmailHeaders(email.Headers);
+            }
+
             if (caseId != null) {
                 Case caseSearch = (Case) ObjectService.queryAllFields('Case', caseId);
 

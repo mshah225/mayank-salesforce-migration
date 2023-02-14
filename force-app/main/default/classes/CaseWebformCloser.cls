@@ -31,11 +31,11 @@ public class CaseWebformCloser {
     }
 
     private Boolean isPreviouslyClosedWebformCaseUpdatedByDrupal() {
-        return previousCaseState.IsClosed &&
+        return UserInfo.getName() == 'API ASU DRUPAL' &&
+            previousCaseState.IsClosed &&
             previousCaseState.Deep_Links__c != null &&
             previousCaseState.Deep_Links__c.split('Click Here').size() ==
-            (Integer.valueof(currentCase.Number_of_Files__c) + 1) &&
-            UserInfo.getName() == 'API ASU DRUPAL';
+            (Integer.valueof(currentCase.Number_of_Files__c) + 1);
     }
 
     private void revertWebformCaseToPreviousState() {

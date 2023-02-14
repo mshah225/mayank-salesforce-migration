@@ -4292,7 +4292,7 @@
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Dates\')">Dates</th>' +
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Location\')">Location</th>' +
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Grade\')">Grade</th>' +
-                                                '<th scope="col">Conf. Of Participation</th>' +
+                                                '<th scope="col">Conf. Of Participation <i class="fa fa-question-circle" title="Explains what this means"></i></th>' +
                                                 '<th scope="col">ASR</th>' +
                                                 '</tr>' +
                                                 '</thead>' +
@@ -4352,7 +4352,6 @@
                                                     '</td>' +
                                                     '<td data-header="Participation">' +
                                                     result.enrolledClasses[i].CONFIRMATION_OF_PARTICIPATION__c +
-                                                    '</td>' +
                                                     "<td style='display:none'>" +
                                                     result.enrolledClasses[i].EARN_CREDIT__c +
                                                     '' +

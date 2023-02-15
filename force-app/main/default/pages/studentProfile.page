@@ -4354,6 +4354,7 @@
                                                     '</td>' +
                                                     '<td data-header="Participation">' +
                                                     result.enrolledClasses[i].CONFIRMATION_OF_PARTICIPATION__c +
+                                                    '</td>'
                                                     "<td style='display:none'>" +
                                                     result.enrolledClasses[i].EARN_CREDIT__c +
                                                     '' +

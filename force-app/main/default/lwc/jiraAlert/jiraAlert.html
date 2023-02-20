@@ -1,0 +1,10 @@
+<template>
+    <template if:true={message}>
+        <div class="alert-wrapper">
+            {message} <br />
+            <template if:true={url}>
+                <a target="_blank" href={url}>{url}</a>
+            </template>
+        </div>
+    </template>
+</template>

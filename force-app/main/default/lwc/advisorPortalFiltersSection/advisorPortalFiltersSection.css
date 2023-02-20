@@ -13,3 +13,22 @@
     top: -24px;
     left: calc(100% - 48px);
 }
+
+:host .tooltip {
+    border: var(--lwc-borderWidthThin, 1px) solid var(--lwc-colorBorderInput,rgb(201, 201, 201));
+    border: 1px solid var(--lwc-colorTextLabel,rgb(116, 116, 116));
+    background: var(--lwc-colorBackgroundInputActive,white);
+    color: var(--lwc-colorTextLabel,rgb(116, 116, 116));
+    font-weight: bold;
+    padding: 0.5rem;
+    z-index: 40;
+    display: none;
+    border-radius: var(--lwc-borderRadiusMedium,0.25rem);
+}
+
+:host .tooltip-enabled-field:focus-within + .tooltip:not(.tooltip-escaped), /* Initial open when focus the related field */
+:host .tooltip-enabled-field:hover + .tooltip:not(.tooltip-escaped), /* Initial open when hover over the related field */
+:host .tooltip:hover:not(.tooltip-escaped) /* Stay open when hovering above note */
+{ 
+    display: block;
+}

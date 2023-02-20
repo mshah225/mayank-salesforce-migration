@@ -1,20 +1,21 @@
 import {LightningElement, api} from 'lwc';
-import createBugReport from '@salesforce/apex/JiraReportIssueController.createBugReport';
-import createNewDevelopmentRequest from '@salesforce/apex/JiraReportIssueController.createNewDevelopmentRequest';
+import createDataImport from '@salesforce/apex/JiraReportIssueController.createDataImport';
 
-export default class JiraReportIssueForm extends LightningElement {
+export default class JiraProdDataImports extends LightningElement {
     @api title;
-    @api type;
     @api questionListJSON;
-
-    configurableQuestions = [];
-    disabledButton = false;
 
     alert;
     alertHref;
 
+    configurableQuestions = [];
+    disabledButton = false;
+
+    /**
+     * Parse the JSON string and convert it to an object (with empty string answers)
+     */
     connectedCallback() {
-        if (this.questionListJSON != null && this.questionListJSON != '') {
+        if (this.questionListJSON != null && this.questionListJSON !== '') {
             this.configurableQuestions = JSON.parse(this.questionListJSON);
         }
 
@@ -22,16 +23,17 @@ export default class JiraReportIssueForm extends LightningElement {
             const question = this.configurableQuestions[i];
             question.key = 'key-' + i;
             question.answer = '';
-            // Setup label for request form (this is a temporary holdever from before we supported setting jiraLabel - can be removed in a future update to page config)
-            if (question.action === 'requestForm') {
-                if (question.jiraLabel == null) question.jiraLabel = 'Request Form';
-                question.action = null;
-            }
             // Set the label to the question if it is unspecified
             if (question.jiraLabel == null) question.jiraLabel = question.question;
         }
     }
 
+    /**
+     * Whenever a change event is detected
+     * record the answer for the question in the configurableQuestion map
+     *
+     * @param {ChangeEvent} e
+     */
     changeAnswers(e) {
         const newAnswer = e.detail;
         let questionKey = newAnswer.key;
@@ -46,6 +48,10 @@ export default class JiraReportIssueForm extends LightningElement {
         }
     }
 
+    /**
+     * Reports validity - marking invalid answers (missing required or invalid length)
+     * @returns true if the question-answers-section is valid
+     */
     isValid() {
         const allQuestionSections = this.template.querySelectorAll('c-lightning-question-answer-section');
         let valid = true;
@@ -55,6 +61,10 @@ export default class JiraReportIssueForm extends LightningElement {
         return valid;
     }
 
+    /**
+     * Attempts to submit the form.  If it is valid, this should result in the creation of a JIRA ticket
+     * if it isn't valid, just report what is invalid
+     */
     submit() {
         if (this.isValid()) {
             let title = null;
@@ -63,7 +73,6 @@ export default class JiraReportIssueForm extends LightningElement {
 
             for (let i = 0; i < this.configurableQuestions.length; i++) {
                 const q = this.configurableQuestions[i];
-
                 const thisQA = '*' + q.jiraLabel + '*\n' + q.answer;
                 if (q.type === 'label') continue; // don't add labels to the body
                 if (q.action != null) {
@@ -79,13 +88,9 @@ export default class JiraReportIssueForm extends LightningElement {
 
             let description = qaList.join('\n\n'); // combine to make mega string
 
-            let type = this.type;
-
             this.disabledButton = true;
 
-            let createIssue = type === 'New Devlopment Request' ? createNewDevelopmentRequest : createBugReport; // determine which function to call
-
-            createIssue({
+            createDataImport({
                 title,
                 description,
                 watchers,
@@ -111,10 +116,18 @@ export default class JiraReportIssueForm extends LightningElement {
         }
     }
 
+    /**
+     * Clear all inputs to empty
+     */
     clearInputs() {
         const allQuestionSections = this.template.querySelectorAll('c-lightning-question-answer-section');
         for (let i = 0; i < allQuestionSections.length; i++) {
             allQuestionSections[i].clearAll();
         }
+    }
+
+    // @api to expose fields for testing purposes - really should only use this for tests
+    @api test__getField(fieldName) {
+        return this[fieldName];
     }
 }

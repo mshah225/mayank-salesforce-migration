@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>56.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <property label="Component Header" name="lwcComponentName" type="String"
+                default="Case Classification" />
+            <property label="Component Header Icon" name="lwcComponentIconName" type="String"
+                default="standard:decision" />
+            <property label="Toast Success Title" name="lwcToastSuccessTitle" type="String"
+                default="Success!" />
+            <property label="Toast Success Message" name="lwcToastSuccessMessage" type="String"
+                default="Case classification has been updated." />
+            <property label="Save Button Label" name="lwcRecordSubmitButtonLabel" type="String"
+                default="Update" />
+            <property label="Submit Button Variant" name="lwcRecordSubmitButtonVariant"
+                type="String" datasource="brand,default,neutral,success" default="brand" />
+            <objects>
+                <object>Case</object>
+            </objects>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

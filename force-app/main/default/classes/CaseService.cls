@@ -236,7 +236,7 @@ public class CaseService {
     public static void processCaseAssociations(List<Case> newList) {
         Map<ID, Contact> relatedContactMap = new Map<ID, Contact>();
         Map<Id, Campaign> sourceMap = new Map<Id, Campaign>();
-        Id recruitmentCaseRecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services');
+        Id recruitmentCaseRecordTypeId = RecordIDHelper.getRecordTypeId('Case', 'ASU_Admission_Services');
 
         Set<Id> caseContactIdSet = new Set<ID>();
         Set<Id> campaignIdSet = new Set<Id>();
@@ -296,6 +296,20 @@ public class CaseService {
             );
         }
 
+        List<Case_Assignment_Rule__c> defaultCarList = [
+            SELECT
+                Id,
+                Queue_ID__c,
+                Origin__c,
+                CC_Category__c,
+                CC_Sub_Category__c,
+                CC_Functional_Group__c,
+                Type_of_Additional_Assignment_Needed__c
+            FROM Case_Assignment_Rule__c
+            WHERE Email_Address__c = 'admissions@asu.edu'
+        ];
+        Case_Assignment_Rule__c defaultCar = defaultCarList.isEmpty() ? null : defaultCarList[0];
+
         for (Case newCase : newList) {
             if (newCase.Status == 'Processing') {
                 List<String> subjectSplit = newCase.Subject.split('%');
@@ -340,170 +354,45 @@ public class CaseService {
 
             if (recruitmentCaseRecordTypeId != null && newCase.RecordTypeId == recruitmentCaseRecordTypeId) {
                 Contact con = relatedContactMap.get(newCase.ContactId);
-                List<Opportunity> opList = new List<Opportunity>();
-                Case_Assignment_Rule__c defaultCAR;
-                boolean ownerSet = false;
+                Opportunity firstOpp = null;
+                CaseAssignmentDeterminer assignmentDet = null;
 
                 if (con != null) {
-                    opList = con.Opportunities__r;
+                    List<Opportunity> opList = con.Opportunities__r;
+                    firstOpp = opList == null || opList.isEmpty() ? null : opList[0];
                 }
 
-                if (newCase.Associate_Case_to_Active_Opportunity__c == true && opList != null && opList.size() > 0) {
-                    newCase.Opportunity__c = opList[0].Id;
+                if (newCase.Associate_Case_to_Active_Opportunity__c == true && firstOpp != null) {
+                    newCase.Opportunity__c = firstOpp.Id;
                 }
 
                 if (!UserInfo.getFirstName().equals('API') || UserInfo.getLastName().equals('ASU EMAIL SERVICE')) {
-                    if (opList != null && opList.size() > 0) {
-                        if (
-                            newCase.Type_of_Additional_Assignment_Needed__c == 'Territory Manager' &&
-                            newCase.Associate_Case_to_Active_Opportunity__c == true
-                        ) {
-                            if (
-                                opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' &&
-                                opList[0].Owner.IsActive == true &&
-                                opList[0].IsClosed == false
-                            ) {
-                                newCase.OwnerId = opList[0].OwnerId;
-                                ownerSet = true;
-                            }
-                        } else if (
-                            newCase.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach' &&
-                            newCase.Associate_Case_to_Active_Opportunity__c == true
-                        ) {
-                            if (
-                                opList[0].Enrollment_Coach__c != null &&
-                                opList[0].Enrollment_Coach__r.IsActive == true &&
-                                opList[0].IsClosed == false
-                            ) {
-                                newCase.OwnerId = opList[0].Enrollment_Coach__c;
-                                ownerSet = true;
-                            }
-                        }
-                    }
+                    // If in a non API user context or are running as the email service
+                    // then we should perform assignment by looking at fields on the case
+                    assignmentDet = new CaseAssignmentDeterminer(firstOpp, newCase);
                 } else {
+                    // In API user context we should use the CAR of the case to determine
+                    // how to perform assignment
                     if (sourceMap.containsKey(newCase.Case_Source__c)) {
                         Campaign source = sourceMap.get(newCase.Case_Source__c);
                         if (source.Case_Assignment_Rule__c != null) {
-                            if (opList != null && opList.size() > 0) {
-                                if (
-                                    source.Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c ==
-                                    'Territory Manager'
-                                ) {
-                                    if (
-                                        opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' &&
-                                        opList[0].Owner.IsActive == true &&
-                                        opList[0].IsClosed == false
-                                    ) {
-                                        newCase.OwnerId = opList[0].OwnerId;
-                                        newCase.Type_of_Additional_Assignment_Needed__c = 'Territory Manager';
-                                        ownerSet = true;
-                                    }
-                                } else if (
-                                    source.Case_Assignment_Rule__r.Type_of_Additional_Assignment_Needed__c ==
-                                    'Enrollment Coach'
-                                ) {
-                                    if (
-                                        opList[0].Enrollment_Coach__c != null &&
-                                        opList[0].Enrollment_Coach__r.IsActive == true &&
-                                        opList[0].IsClosed == false
-                                    ) {
-                                        newCase.OwnerId = opList[0].Enrollment_Coach__c;
-                                        newCase.Type_of_Additional_Assignment_Needed__c = 'Enrollment Coach';
-                                        ownerSet = true;
-                                    }
-                                }
-                            }
-
-                            if (!ownerSet && source.Case_Assignment_Rule__r.Queue_ID__c != null) {
-                                newCase.OwnerId = ID.valueOf(source.Case_Assignment_Rule__r.Queue_ID__c);
-                            }
-                            if (source.Case_Assignment_Rule__r.Origin__c != null) {
-                                newCase.Origin__c = source.Case_Assignment_Rule__r.Origin__c;
-                            }
-                            if (source.Case_Assignment_Rule__r.CC_Category__c != null) {
-                                newCase.CC_Category__c = source.Case_Assignment_Rule__r.CC_Category__c;
-                            }
-                            if (source.Case_Assignment_Rule__r.CC_Sub_Category__c != null) {
-                                newCase.CC_Sub_Category__c = source.Case_Assignment_Rule__r.CC_Sub_Category__c;
-                            }
-                            if (source.Case_Assignment_Rule__r.CC_Functional_Group__c != null) {
-                                newCase.CC_Functional_Group__c = source.Case_Assignment_Rule__r.CC_Functional_Group__c;
-                            }
+                            // If the case's source has a CAR, use that
+                            assignmentDet = new CaseAssignmentDeterminer(firstOpp, source.Case_Assignment_Rule__r);
+                        } else if (
+                            firstOpp != null &&
+                            firstOpp.Territory_Assignment_Last_Rule_Type__c != 'Default User' &&
+                            firstOpp.Owner.IsActive == true
+                        ) {
+                            // Is the case's source has no CAR but the Opporunity has enough detail, use that
+                            assignmentDet = new CaseAssignmentDeterminer(firstOpp);
                         } else {
-                            if (
-                                opList != null &&
-                                opList.size() > 0 &&
-                                opList[0].Territory_Assignment_Last_Rule_Type__c != 'Default User' &&
-                                opList[0].Owner.IsActive == true
-                            ) {
-                                newCase.OwnerId = opList[0].OwnerId;
-                            } else {
-                                if (defaultCAR == null) {
-                                    LogSuite.log('query', 'Calling default CAR query');
-                                    defaultCar = [
-                                        SELECT
-                                            Id,
-                                            Queue_ID__c,
-                                            Origin__c,
-                                            CC_Category__c,
-                                            CC_Sub_Category__c,
-                                            CC_Functional_Group__c,
-                                            Type_of_Additional_Assignment_Needed__c
-                                        FROM Case_Assignment_Rule__c
-                                        WHERE Email_Address__c = 'admissions@asu.edu'
-                                    ];
-                                    if (!(defaultCAR == null)) {
-                                        if (opList != null && opList.size() > 0) {
-                                            if (
-                                                defaultCar.Type_of_Additional_Assignment_Needed__c ==
-                                                'Territory Manager'
-                                            ) {
-                                                if (
-                                                    opList[0].Territory_Assignment_Last_Rule_Type__c !=
-                                                    'Default User' &&
-                                                    opList[0].Owner.IsActive == true &&
-                                                    opList[0].IsClosed == false
-                                                ) {
-                                                    newCase.OwnerId = opList[0].OwnerId;
-                                                    newCase.Type_of_Additional_Assignment_Needed__c = 'Territory Manager';
-                                                    ownerSet = true;
-                                                }
-                                            } else if (
-                                                defaultCar.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach'
-                                            ) {
-                                                if (
-                                                    opList[0].Enrollment_Coach__c != null &&
-                                                    opList[0].Enrollment_Coach__r.IsActive == true &&
-                                                    opList[0].IsClosed == false
-                                                ) {
-                                                    newCase.OwnerId = opList[0].Enrollment_Coach__c;
-                                                    newCase.Type_of_Additional_Assignment_Needed__c = 'Enrollment Coach';
-                                                    ownerSet = true;
-                                                }
-                                            }
-                                        }
-                                        if (!ownerSet && defaultCar.Queue_ID__c != null) {
-                                            newCase.OwnerId = ID.valueOf(defaultCar.Queue_ID__c);
-
-                                            if (defaultCAR.Origin__c != null) {
-                                                newCase.Origin__c = defaultCAR.Origin__c;
-                                            }
-                                            if (defaultCAR.CC_Category__c != null) {
-                                                newCase.CC_Category__c = defaultCAR.CC_Category__c;
-                                            }
-                                            if (defaultCAR.CC_Sub_Category__c != null) {
-                                                newCase.CC_Sub_Category__c = defaultCAR.CC_Sub_Category__c;
-                                            }
-                                            if (defaultCAR.CC_Functional_Group__c != null) {
-                                                newCase.CC_Functional_Group__c = defaultCAR.CC_Functional_Group__c;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                            // Lastly, fallback on using the default CAR
+                            assignmentDet = new CaseAssignmentDeterminer(firstOpp, defaultCAR);
                         }
                     }
                 }
+                if (assignmentDet != null)
+                    assignmentDet.setCaseFields(newCase);
             }
         }
     }
@@ -621,11 +510,11 @@ public class CaseService {
     private static void assignRecordType(Case caseRecord, Map<Id, String> mapCCIdToName) {
         if (mapCCIdToName.containsKey(caseRecord.CC_Functional_Group__c)) {
             if (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Advisor Outreach')) {
-                caseRecord.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+                caseRecord.RecordTypeId = RecordIDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
             } else if (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Coach Outreach')) {
-                caseRecord.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach');
+                caseRecord.RecordTypeId = RecordIDHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach');
             } else if (
-                (caseRecord.RecordTypeId == IDHelper.getRecordTypeId('Case', 'ASU_Service') &&
+                (caseRecord.RecordTypeId == RecordIDHelper.getRecordTypeId('Case', 'ASU_Service') &&
                 !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Salesforce Support')) &&
                 (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Admission Services') ||
                 (mapCCIdToName.containsKey(caseRecord.CC_Category__c) &&
@@ -633,9 +522,9 @@ public class CaseService {
                 (mapCCIdToName.containsKey(caseRecord.CC_Sub_Category__c) &&
                 mapCCIdToName.get(caseRecord.CC_Sub_Category__c).containsIgnoreCase('Recruitment')))
             ) {
-                caseRecord.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services');
+                caseRecord.RecordTypeId = RecordIDHelper.getRecordTypeId('Case', 'ASU_Admission_Services');
             } else if (
-                caseRecord.RecordTypeId == IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services') &&
+                caseRecord.RecordTypeId == RecordIDHelper.getRecordTypeId('Case', 'ASU_Admission_Services') &&
                 !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Admission Services') &&
                 !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('External Unit') &&
                 (caseRecord.CC_Category__c == null ||
@@ -645,14 +534,112 @@ public class CaseService {
                 (mapCCIdToName.containsKey(caseRecord.CC_Sub_Category__c) &&
                 !mapCCIdToName.get(caseRecord.CC_Sub_Category__c).containsIgnoreCase('Recruitment')))
             ) {
-                caseRecord.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Service');
+                caseRecord.RecordTypeId = RecordIDHelper.getRecordTypeId('Case', 'ASU_Service');
             } else if (
                 mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Financial Aid') &&
                 mapCCIdToName.containsKey(caseRecord.CC_Category__c) &&
                 mapCCIdToName.get(caseRecord.CC_Category__c).equalsIgnoreCase('Outreach')
             ) {
-                caseRecord.RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Student_Outreach');
+                caseRecord.RecordTypeId = RecordIDHelper.getRecordTypeId('Case', 'ASU_Student_Outreach');
             }
         }
+    }
+
+    public class CaseAssignmentDeterminer {
+        /**
+         * Determine how to assign the case using details from opportunity
+         */
+        public CaseAssignmentDeterminer(Opportunity opp) {
+            if (opp == null)
+                return;
+
+            ownerId = opp.OwnerId;
+        }
+
+        /**
+         * Determine how to assign the case using details from the case and an opportunity
+         */
+        public CaseAssignmentDeterminer(Opportunity opp, Case newCase) {
+            if (opp == null || newCase == null)
+                return;
+
+            if (
+                newCase.Type_of_Additional_Assignment_Needed__c == 'Territory Manager' &&
+                newCase.Associate_Case_to_Active_Opportunity__c == true
+            ) {
+                if (useOppForTerritoryManager(opp)) {
+                    ownerId = opp.OwnerId;
+                }
+            } else if (
+                newCase.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach' &&
+                newCase.Associate_Case_to_Active_Opportunity__c == true
+            ) {
+                if (useOppForEnrollmentCoach(opp)) {
+                    ownerId = opp.Enrollment_Coach__c;
+                }
+            }
+        }
+
+        /**
+         * Determine how to assign the case using details from the case assignment rule and an opportunity
+         */
+        public CaseAssignmentDeterminer(Opportunity opp, Case_Assignment_Rule__c car) {
+            if (opp == null || car == null)
+                return;
+
+            if (car.Type_of_Additional_Assignment_Needed__c == 'Territory Manager') {
+                if (useOppForTerritoryManager(opp)) {
+                    ownerId = opp.OwnerId;
+                    typeOfAdditionalAssignment = 'Territory Manager';
+                }
+            } else if (car.Type_of_Additional_Assignment_Needed__c == 'Enrollment Coach') {
+                if (useOppForEnrollmentCoach(opp)) {
+                    ownerId = opp.Enrollment_Coach__c;
+                    typeOfAdditionalAssignment = 'Enrollment Coach';
+                }
+            }
+
+            setFieldsFromCar(car);
+        }
+
+        public void setCaseFields(Case newCase) {
+            newCase.OwnerId = ownerId == null ? newCase.OwnerId : ownerId;
+            newCase.Origin__c = origin == null ? newCase.Origin__c : origin;
+            newCase.CC_Functional_Group__c = functionalGroup == null ? newCase.CC_Functional_Group__c : functionalGroup;
+            newCase.CC_Category__c = category == null ? newCase.CC_Category__c : category;
+            newCase.CC_Sub_Category__c = subCategory == null ? newCase.CC_Sub_Category__c : subCategory;
+            newCase.Type_of_Additional_Assignment_Needed__c = typeOfAdditionalAssignment == null
+                ? newCase.Type_of_Additional_Assignment_Needed__c
+                : typeOfAdditionalAssignment;
+        }
+
+        private void setFieldsFromCar(Case_Assignment_Rule__c car) {
+            if (ownerId == null && car.Queue_ID__c != null)
+                ownerId = ID.valueOf(car.Queue_ID__c);
+            if (car.Origin__c != null)
+                origin = car.Origin__c;
+            if (car.CC_Category__c != null)
+                category = car.CC_Category__c;
+            if (car.CC_Sub_Category__c != null)
+                subCategory = car.CC_Sub_Category__c;
+            if (car.CC_Functional_Group__c != null)
+                functionalGroup = car.CC_Functional_Group__c;
+        }
+
+        private Boolean useOppForTerritoryManager(Opportunity opp) {
+            return opp.Territory_Assignment_Last_Rule_Type__c != 'Default User' &&
+                opp.Owner.IsActive == true &&
+                opp.IsClosed == false;
+        }
+        private Boolean useOppForEnrollmentCoach(Opportunity opp) {
+            return opp.Enrollment_Coach__c != null && opp.Enrollment_Coach__r.IsActive == true && opp.IsClosed == false;
+        }
+
+        public String ownerId = null;
+        public String origin = null;
+        public String functionalGroup = null;
+        public String category = null;
+        public String subCategory = null;
+        public String typeOfAdditionalAssignment = null;
     }
 }

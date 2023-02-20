@@ -15,6 +15,8 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
             return getFinancialAidAccountBalance();
         } else if (req.getEndPoint().contains('/account/refunds')) {
             return getFinancialAidRefunds();
+        } else if (req.getEndPoint().contains('/account/deposit-status')) {
+            return getDepositStatus();
         }
         return null;
     }
@@ -268,6 +270,37 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
 		'        }'+
 		'    ],'+
 		'    "total_refunds": 2164'+
+		'}';
+        res.setHeader('Content-Type', 'application/json');
+        res.setBody(json);
+        res.setStatusCode(200);
+        return res;
+    }
+
+    private HTTPResponse getDepositStatus() {
+        HttpResponse res = new HttpResponse();
+        String json=		'{'+
+		'    "emplid": "1206104779",'+
+		'    "deposits": ['+
+		'        {'+
+		'            "last_update_date": "2021-06-26",'+
+		'            "pre_notification_code": "C",'+
+		'            "pre_notification_date": "2021-06-26",'+
+		'            "campus_id": "995888422",'+
+		'            "pre_notification_status": "Completed",'+
+		'            "deposit_status": "Active",'+
+		'            "days_since_prenote_date": 584'+
+		'        },'+
+		'        {'+
+		'            "last_update_date": "2021-06-26",'+
+		'            "pre_notification_code": "C",'+
+		'            "pre_notification_date": "2021-06-26",'+
+		'            "campus_id": "995888422",'+
+		'            "pre_notification_status": "Completed",'+
+		'            "deposit_status": "Active",'+
+		'            "days_since_prenote_date": 584'+
+		'        }'+
+		'    ]'+
 		'}';
         res.setHeader('Content-Type', 'application/json');
         res.setBody(json);

@@ -4,6 +4,7 @@
  * Description:
  *   A Lightning Design styled combobox.  Has multiple flags to enable/disable functionality.
  *
+ *  @param name A name for this field
  *  @param label What label to use for the dropdown
  *  @param placeholder What to show in the dropdown when no options are selected
  *  @param required Is this dropdown a required field for whatever form it is on?
@@ -20,6 +21,8 @@ import {LightningElement, api} from 'lwc';
 import {cloneObj} from 'c/helperFunctions';
 
 export default class LightningComboBox extends LightningElement {
+    @api name;
+
     @api label;
     @api placeholder = 'Select an Option';
 

@@ -141,4 +141,21 @@ global with sharing class StudentProfileCallout {
 
         return refundsForStudent;
     }
+
+    global static DepositStatusWrapper getDepositStatus(String emplid) {
+        DepositStatusWrapper depositsForStudent;
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Student_Finances/students/' + emplid + '/account/deposit-status');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            depositsForStudent = DepositStatusWrapper.parse(responseBody);
+        }
+
+        return depositsForStudent;
+    }
 }

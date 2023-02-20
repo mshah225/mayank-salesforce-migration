@@ -1,0 +1,11 @@
+.slds-spinner_container {
+    content: 'Please wait.....!';
+    text-align: center;
+    z-index: 10000;
+}
+.toastzindex {
+    z-index: 1;
+}
+.toastnominwidth {
+    min-width: 0;
+}

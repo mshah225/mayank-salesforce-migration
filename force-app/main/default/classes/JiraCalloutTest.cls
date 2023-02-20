@@ -2,41 +2,86 @@
 private class JiraCalloutTest {
     @isTest
     private static void createNewIssue() {
-        Test.setMock(HttpCalloutMock.class, new JiraCalloutMock());
+        JiraCalloutMock mockCallout = new JiraCalloutMock();
+        Test.setMock(HttpCalloutMock.class, mockCallout);
+
         Test.startTest();
-        String key1 = JiraCallout.createNewIssue('Summary', 'description', 'addUsers', 'Bug');
-        String key2 = JiraCallout.createNewIssue('Summary', 'description', 'addUsers', 'New Development Request');
+        String key1 = JiraCallout.createTicket('Summary', 'description', 'Bug', 'TEST-COMPONENT');
         Test.stopTest();
-        System.assertEquals('TEST', key1);
-        System.assertEquals('TEST', key2);
+
+        System.assertEquals('SFE-49392', key1);
+        System.assertEquals(mockCallout.mockIssue.key, key1);
+        System.assertEquals('17074', mockCallout.mockIssue.projectId);
+        System.assertEquals('Summary', mockCallout.mockIssue.summary);
+        System.assertEquals('description', mockCallout.mockIssue.description);
+        System.assertEquals('Bug', mockCallout.mockIssue.issueType);
+        System.assertEquals(1, mockCallout.mockIssue.components.size());
+        System.assertEquals('TEST-COMPONENT', mockCallout.mockIssue.components[0]);
     }
 
     @isTest
     private static void addWatchers() {
-        Test.setMock(HttpCalloutMock.class, new JiraCalloutMock());
+        JiraCalloutMock mockCallout = new JiraCalloutMock();
+        Test.setMock(HttpCalloutMock.class, mockCallout);
+
         Test.startTest();
-        JiraCallout.addWatchers('TEST', 'testWatcher');
+        JiraCallout.addWatchers('SFE-49392', 'testWatcher');
         Test.stopTest();
+
+        System.assertEquals('SFE-49392', mockCallout.mockIssue.key);
+        System.assertEquals(1, mockCallout.mockIssue.watchers.size());
+        System.assertEquals(JiraCallout.getJiraAccountId('testWatcher'), mockCallout.mockIssue.watchers[0]);
+
         List<Case> allCases = [SELECT Id FROM Case];
         System.assert(allCases.isEmpty());
     }
 
     @isTest
     private static void addComment() {
-        Test.setMock(HttpCalloutMock.class, new JiraCalloutMock());
+        JiraCalloutMock mockCallout = new JiraCalloutMock();
+        Test.setMock(HttpCalloutMock.class, mockCallout);
+
         Test.startTest();
-        JiraCallout.addComment('TEST', 'comment');
+        JiraCallout.addComment('SFE-49392', 'comment');
         Test.stopTest();
+
+        System.assertEquals('SFE-49392', mockCallout.mockIssue.key);
+        System.assertEquals(1, mockCallout.mockIssue.comments.size());
+        System.assertEquals('comment', mockCallout.mockIssue.comments[0]);
+
+        List<Case> allCases = [SELECT Id FROM Case];
+        System.assert(allCases.isEmpty());
+    }
+
+    @isTest
+    private static void addComponent() {
+        JiraCalloutMock mockCallout = new JiraCalloutMock();
+        Test.setMock(HttpCalloutMock.class, mockCallout);
+
+        Test.startTest();
+        JiraCallout.addComponent('SFE-49392', 'TEST-COMPONENT');
+        Test.stopTest();
+
+        System.assertEquals('SFE-49392', mockCallout.mockIssue.key);
+        System.assertEquals(1, mockCallout.mockIssue.components.size());
+        System.assertEquals('TEST-COMPONENT', mockCallout.mockIssue.components[0]);
+
         List<Case> allCases = [SELECT Id FROM Case];
         System.assert(allCases.isEmpty());
     }
 
     @isTest
     private static void updateStatus() {
-        Test.setMock(HttpCalloutMock.class, new JiraCalloutMock());
+        JiraCalloutMock mockCallout = new JiraCalloutMock();
+        Test.setMock(HttpCalloutMock.class, mockCallout);
+
         Test.startTest();
-        JiraCallout.updateStatus('TEST', 'Ready for QA Testing');
+        JiraCallout.updateStatus('SFE-49392', 'Ready for QA Testing');
         Test.stopTest();
+
+        System.assertEquals('SFE-49392', mockCallout.mockIssue.key);
+        System.assertEquals(JiraCallout.getStatusKey('Ready for QA Testing'), mockCallout.mockIssue.status);
+
         List<Case> allCases = [SELECT Id FROM Case];
         System.assert(allCases.isEmpty());
     }
@@ -87,7 +132,7 @@ private class JiraCalloutTest {
             mock.setThrowError(true);
             Test.setMock(HttpCalloutMock.class, mock);
             Test.startTest();
-            String key1 = JiraCallout.createNewIssue('Summary', 'description', 'addUsers', 'Bug');
+            String key1 = JiraCallout.createTicket('Summary', 'description', 'addUsers', '');
             Test.stopTest();
         } catch (Exception ex) {
             threwError = true;

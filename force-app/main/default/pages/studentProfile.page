@@ -1240,6 +1240,19 @@
                                 <div class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
+                                        &nbsp;Direct Deposit Status
+                                    </h4>
+                                </div>
+
+                                <div style="overflow: auto; max-height: 400px">
+                                    <div id="depositTable">
+                                        <i class="fa fa-spinner fa-pulse"></i>
+                                    </div>
+                                </div>
+
+                                <div class="page-header-smaller">
+                                    <h4>
+                                        <i class="fa fa-caret-down"></i>
                                         &nbsp;Refunds (Past 14 Days)
                                     </h4>
                                 </div>
@@ -3225,6 +3238,7 @@
             loadFinancialAidChargeHistory();
             loadAccountBalance();
             loadRefunds();
+            loadDepositStatus();
         }
 
         
@@ -4107,7 +4121,7 @@
                 'DisplayUrl, EARN_CREDIT__c, EMPLID__c, ENRL_STATUS_REASON__c, ExternalId, ' +
                 'FT_FULL_NAME__c, Id, SCH_DAILY_TIME__c, SCH_HTML_DAY1__c, SESSION_CODE__c, ' +
                 'SSR_CLSTOPIC_DESCR__c, SSR_MTG_LOC_LONG__c, STDNT_ENRL_STATUS__c, STRM__c,  ' +
-                'SUBJECT__c, TERM_DESCR30__c, UNT_TAKEN__c, VALID_ATTEMPT__c   ' +
+                'SUBJECT__c, TERM_DESCR30__c, UNT_TAKEN__c, VALID_ATTEMPT__c, CONFIRMATION_OF_PARTICIPATION__c   ' +
                 'FROM PS_ASU_SP_CLASS_V__x  ' +
                 "WHERE EMPLID__c = '{!theContact.EMPLID__c}'  " +
                 'ORDER BY STRM__c DESC, CLASS_NBR__c ASC';
@@ -4292,6 +4306,7 @@
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Dates\')">Dates</th>' +
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Location\')">Location</th>' +
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Grade\')">Grade</th>' +
+                                                '<th scope="col">Conf. Of Participation</th>' +
                                                 '<th scope="col">ASR</th>' +
                                                 '</tr>' +
                                                 '</thead>' +
@@ -4346,8 +4361,11 @@
                                                     '<td data-header="Location">' +
                                                     result.enrolledClasses[i].SSR_MTG_LOC_LONG__c +
                                                     '</td>' +
-                                                    '<td data-header="Grade">' +
+                                                    '<td data-header="Grade">' + 
                                                     result.enrolledClasses[i].CRSE_GRADE_OFF__c +
+                                                    '</td>' +
+                                                    '<td data-header="Participation">' +
+                                                    result.enrolledClasses[i].CONFIRMATION_OF_PARTICIPATION__c +
                                                     '</td>' +
                                                     "<td style='display:none'>" +
                                                     result.enrolledClasses[i].EARN_CREDIT__c +
@@ -5586,5 +5604,58 @@
                 {buffer: false, escape: true, timeout: 120000}
             );
         }
+
+        function loadDepositStatus() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getDepositStatus}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    if (Object.keys(result).length != 0) {
+
+                        var html =
+                            '' +
+                            "<div class='table-responsive'>" +
+                            "<table class='table table-striped table-bordered'> " +
+                            '<thead>' +
+                            '<tr>' +
+                            '<th>MyASU Status</th>' +
+                            '<th>Last Updated Date</th>' +
+                            '<th>Prenotification Status</th>' +
+                            '<th>Prenotification Date</th>' +
+                            '</tr>' +
+                            '</thead>' +
+                            '<tbody>';
+
+                        for (var i = 0; i < result.deposits.length; i++) {
+                            html +=
+                                '' +
+                                '<tr>' +
+                                '<td>' +
+                                    result.deposits[i].deposit_status +
+                                '</td>' +
+                                '<td>' +
+                                    result.deposits[i].last_update_date +
+                                '</td>' +
+                                '<td>' +
+                                    result.deposits[i].pre_notification_status +
+                                '</td>' +
+                                '<td>' +
+                                    result.deposits[i].pre_notification_date +
+                                '</td>' +
+                                '</tr>';
+                        }
+
+                        html += '</tbody></table></div>';
+
+                        document.getElementById('depositTable').innerHTML = html;
+                    } else {
+                        document.getElementById('depositTable').innerHTML =
+                            'There is no Deposit Status data available for this student.';
+                    }
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+
     </script>
 </apex:page>

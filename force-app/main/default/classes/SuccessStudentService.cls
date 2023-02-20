@@ -61,6 +61,11 @@ public class SuccessStudentService {
     }
 
     private void createOutreachCases() {
+        String usersName = UserInfo.getFirstName();
+        if (usersName == 'API') {
+            return ;
+        }
+        
         for (Success_Student__c successStudent : studentsRequiringOutreach) {
             Case newCase = new Case(
                 CC_Functional_Group__c = asuCoachOutreachGroup,

@@ -157,6 +157,33 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
     }
 
     /**
+     * This should be attached on keydown to any field that has a tooltip.
+     * It will detect <ESCAPE> presses and add a class to the tooltip to force it to close
+     *
+     * @param {KeyboardEvent} e keydown event
+     */
+    closeTooltipOnEscape(e) {
+        if (e.key === 'Escape') {
+            const target = e.currentTarget;
+            const targetParent = target.parentElement;
+            const tooltip = targetParent.querySelector('.tooltip');
+            tooltip.classList.add('tooltip-escaped');
+        }
+    }
+    /**
+     * This should be attached onblur to any field that has a tooltip.
+     * It will detect blur and remove the forcefully closed class (re-enabling the tooltip if <ESCAPE> was pressed)
+     *
+     * @param {BlurEvent} e onblur event
+     */
+    resetTooltipState(e) {
+        const target = e.currentTarget;
+        const targetParent = target.parentElement;
+        const tooltip = targetParent.querySelector('.tooltip');
+        tooltip.classList.remove('tooltip-escaped');
+    }
+
+    /**
      * Clear all filters
      */
     clearFilters() {

@@ -1,0 +1,8 @@
+{
+    "status": 500,
+    "body": {"message": "You do not have access to the Apex class named 'JiraReportIssueController'."},
+    "headers": {},
+    "ok": false,
+    "statusText": "Server Error",
+    "errorType": "fetchResponse"
+}

@@ -1,0 +1,27 @@
+name: Pull Request LWC Test Runs
+
+on:
+    pull_request:
+        types: [opened, ready_for_review, reopened, edited]
+        branches:
+            - 'dev'
+            - 'qa'
+            - 'uat'
+            - 'migration-**'
+            - '**Migration**'
+            - 'main'
+
+jobs:
+    auto-lwc-tests:
+        name: LWC Tests
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  fetch-depth: 0
+            - name: Install npm
+              run: |
+                  npm install
+            - name: Run LWC tests
+              run: |
+                  npm run test:unit

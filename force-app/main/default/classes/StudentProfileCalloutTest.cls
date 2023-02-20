@@ -67,4 +67,14 @@ public class StudentProfileCalloutTest {
 
         System.assertEquals(refunds.emplid, '1206104779');
     }
+
+    @isTest
+    public static void testDepositStatus() {
+        Test.setMock(HttpCalloutMock.class, new StudentProfileCalloutMock());
+        DepositStatusWrapper deposits = StudentProfileCallout.getDepositStatus(
+            '1206104779'
+        );
+
+        System.assertEquals(deposits.emplid, '1206104779');
+    }
 }

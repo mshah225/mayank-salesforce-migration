@@ -1,0 +1,91 @@
+<template>
+    <lightning-card>
+        <!-- Card Title-->
+        <h3 slot="title">
+            <lightning-icon icon-name={componentIconName} size="small"></lightning-icon>
+            &nbsp;&nbsp;{componentName}
+        </h3>
+        <!-- /Card Title-->
+
+        <!-- Card Body -->
+        <p class="slds-p-horizontal_small">
+            <!-- Loading Indicator -->
+            <template lwc:if={loading}>
+                <br />
+                <br />
+                <div class="slds-spinner_container">
+                    <div class="slds-spinner_brand slds-spinner slds-spinner_large slds-is-relative" role="alert">
+                        <span class="slds-assistive-text">Loading...</span>
+                        <div class="slds-spinner__dot-a"></div>
+                        <div class="slds-spinner__dot-b"></div>
+                        <br />
+                        <br />
+                    </div>
+                </div>
+                <br />
+                <br />
+            </template>
+            <!-- / Loading Indicator -->
+
+            <!-- Edit Form -->
+            <template lwc:else>
+                <lightning-record-edit-form
+                    record-id={recordId}
+                    object-api-name="Case"
+                    onsubmit={handleOnEditFormSubmit}
+                    onload={handleOnEditFormLoad}
+                    onerror={handleOnEditFormError}
+                    onsuccess={handleOnEditFormSuccess}
+                >
+                    <!-- Validation Error -->
+                    <template lwc:if={hasValidationError}>
+                        <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                            <span class="slds-assistive-text">error</span>
+                            <h2>
+                                {validationError.message}<template lwc:if={validationError.detail}
+                                    ><br />{validationError.detail}</template
+                                >
+                            </h2>
+                        </div>
+                    </template>
+                    <!-- /Validation Error -->
+                    <!-- Category-->
+                    <lightning-combobox
+                        name="CC_Category__c"
+                        label="Category"
+                        value={selectedCategory}
+                        placeholder="Select a Category"
+                        options={categoryOptions}
+                        onchange={handleCategoryChange}
+                        disabled={categoryDisabled}
+                    ></lightning-combobox>
+                    <!-- /Category-->
+                    <!--Sub Category-->
+                    <lightning-combobox
+                        name="CC_Sub_Category__c"
+                        label="Sub Category"
+                        value={selectedSubCategory}
+                        placeholder="Select a Sub Category"
+                        options={subCategoryOptions}
+                        onchange={handleSubCategoryChange}
+                        disabled={subCategoryDisabled}
+                    ></lightning-combobox>
+                    <!-- /Sub Category-->
+
+                    <!-- Action Buttons -->
+                    <div class="slds-align_absolute-center">
+                        <br /><br /><br />
+                        <lightning-button
+                            label={lwcRecordSubmitButtonLabel}
+                            type="submit"
+                            variant={lwcRecordSubmitButtonVariant}
+                        ></lightning-button>
+                    </div>
+                    <!-- /Action Buttons -->
+                </lightning-record-edit-form>
+            </template>
+            <!-- /Edit Form -->
+        </p>
+        <!-- /Card Body -->
+    </lightning-card>
+</template>

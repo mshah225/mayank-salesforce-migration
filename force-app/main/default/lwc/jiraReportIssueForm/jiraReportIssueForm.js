@@ -83,7 +83,7 @@ export default class JiraReportIssueForm extends LightningElement {
 
             this.disabledButton = true;
 
-            let createIssue = type === 'New Devlopment Request' ? createNewDevelopmentRequest : createBugReport; // determine which function to call
+            let createIssue = type.toLowerCase().includes('new') ? createNewDevelopmentRequest : createBugReport; // determine which function to call
 
             createIssue({
                 title,

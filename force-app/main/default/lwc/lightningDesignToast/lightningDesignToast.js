@@ -1,6 +1,9 @@
 import {LightningElement, api} from 'lwc';
 
 export default class LightningDesignToast extends LightningElement {
+    /**
+     * @param {"info"|"success"|"warning"|"error"|"loading"} val The type of message this is
+     */
     @api set variant(val) {
         this._variant = val;
         this._icon = 'utility:' + val;
@@ -14,18 +17,30 @@ export default class LightningDesignToast extends LightningElement {
     get variant() {
         return this._variant;
     }
+
+    /**
+     * @param {String} val Title for the toast
+     */
     @api set title(val) {
         this._title = val;
     }
     get title() {
         return this._title;
     }
+
+    /**
+     * @param {String} val Body of the toast
+     */
     @api set body(val) {
         this._body = val;
     }
     get body() {
         return this._body;
     }
+
+    /**
+     * @param {Integer} val How long to keep the toast open before auto-closing
+     */
     @api set duration(val) {
         this._duration = val;
     }
@@ -41,11 +56,14 @@ export default class LightningDesignToast extends LightningElement {
     _icon = 'utility:info';
     _classList = 'yes-clicks slds-notify slds-notify_toast slds-theme_info';
     _hide = true;
-    _timeoutToClose = null;
-    _timeoutToDisplayNone = null;
+    _timeoutToClose = null; // timeout until auto-close toast (until start to fade-out)
+    _timeoutToDisplayNone = null; // timeout until settings the display:none style (only once closed and not fading)
     _wrapperClassListStr =
         'slds-notify_container slds-hide fadeOutTransition slds-is-fixed slds-align_absolute-center no-clicks';
 
+    /**
+     * Open the toast
+     */
     @api fire() {
         this.openToast();
 
@@ -64,6 +82,13 @@ export default class LightningDesignToast extends LightningElement {
             }, this._duration);
         }
     }
+    /**
+     *
+     * @param {String} title Title for the toast
+     * @param {String} body Bdoy for the toast
+     * @param {"info"|"success"|"warning"|"error"|"loading"} variant The type of message this is
+     * @param {Integer} duration How long to keep the toast open
+     */
     @api fireParams(title, body, variant, duration) {
         this.title = title;
         this.body = body;
@@ -72,6 +97,7 @@ export default class LightningDesignToast extends LightningElement {
         this.fire();
     }
 
+    // Adds needed classes to fade the toast in and give it focus
     openToast() {
         this._hide = false;
 
@@ -83,6 +109,7 @@ export default class LightningDesignToast extends LightningElement {
 
         this.template.querySelector('.slds-notify_container').focus();
     }
+    // Adds the needed classes to fade the toast out
     closeToast() {
         this._hide = true;
 
@@ -113,5 +140,10 @@ export default class LightningDesignToast extends LightningElement {
         if (indx === -1) {
             arr.push(val);
         }
+    }
+
+    // @api to expose fields for testing purposes - really should only use this for tests
+    @api test__getField(fieldName) {
+        return this[fieldName];
     }
 }

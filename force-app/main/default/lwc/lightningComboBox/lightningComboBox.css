@@ -61,8 +61,8 @@
 
 /* For fixed-location dropdown that expands outside of modals */
 .dynamic-dropdown {
-    width: var(--dynamicDropdownWidth);
-    position:fixed;
-    top: var(--dynamicDropdownOffsetTop);
-    z-index: 9102;
+    width: var(--dynamicDropdownWidth) !important;
+    position: fixed !important;
+    top: var(--dynamicDropdownOffsetTop) !important;
+    z-index: 9102 !important;
 }

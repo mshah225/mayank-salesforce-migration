@@ -1,4 +1,5 @@
-<apex:page id="studentProfile"
+<apex:page
+    id="studentProfile"
     controller="StudentProfileController"
     cache="true"
     showHeader="false"
@@ -22,7 +23,8 @@
             crossorigin="anonymous"
         />
         <link href="https://fonts.googleapis.com/css?family=Roboto:normal,medium" rel="stylesheet" type="text/css" />
-        <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
+        <apex:stylesheet
+            value="{!URLFOR($Resource.MyASUHeader4_3,
                 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"
         />
         <c:StudentProfileStyles />
@@ -299,7 +301,8 @@
                                 {!theContact.ASURite_ID__c}
                             </h4>
 
-                            <apex:outputPanel rendered="{!IF(studentProgram.Status__c == 'Active in Program', true, false)}"
+                            <apex:outputPanel
+                                rendered="{!IF(studentProgram.Status__c == 'Active in Program', true, false)}"
                             >
                                 <h4 class="intro" style="color: #6e7d83 !important">{!studentProgram.Career__c}</h4>
 
@@ -559,7 +562,8 @@
                             </div>
 
                             <div class="hide" style="margin-top: 5px; padding-top: 10px; border-top: 2px solid #9f2b50">
-                                <apex:dataTable rendered="{!openCases.size > 0}"
+                                <apex:dataTable
+                                    rendered="{!openCases.size > 0}"
                                     styleClass="table"
                                     value="{!openCases}"
                                     var="oc"
@@ -576,13 +580,15 @@
                                     <apex:column headerValue="Subject">
                                         <!--a href="/{!oc.Id}" target="_blank"-->
                                         <a href="#" onclick="openNewSubtab('/{!oc.Id}','null');return false">
-                                            <apex:outputText rendered="{!IF(LEN(oc.Subject) > 100
+                                            <apex:outputText
+                                                rendered="{!IF(LEN(oc.Subject) > 100
                                                 , true, false)}"
                                             >
                                                 {!LEFT(oc.Subject, 100)}
                                             </apex:outputText>
 
-                                            <apex:outputText rendered="{!IF(LEN(oc.Subject) < 100
+                                            <apex:outputText
+                                                rendered="{!IF(LEN(oc.Subject) < 100
                                                 , true, false)}"
                                             >
                                                 {!oc.Subject}
@@ -605,9 +611,7 @@
                             <div class="page-header-smaller" style="margin: 0 0 -5px 0; border: none">
                                 <h4 style="display: inline-block; margin-top: 5px">
                                     <i class="fa fa-caret-right"></i>
-                                    <a id="serviceIndicatorHeader">
-                                        &nbsp;Service Indicators
-                                    </a>
+                                    <a id="serviceIndicatorHeader"> &nbsp;Service Indicators </a>
                                 </h4>
 
                                 <div class="pull-right">
@@ -623,7 +627,7 @@
                             </div>
 
                             <div class="hide">
-                                <apex:form >
+                                <apex:form>
                                     <div id="serviceIndicatorTable">
                                         <i class="fa fa-spinner fa-pulse"></i>
                                     </div>
@@ -667,7 +671,8 @@
                             </div>
 
                             <div class="hide" style="margin-top: 5px; padding-top: 10px; border-top: 2px solid #9f2b50">
-                                <apex:dataTable rendered="{!sGroupList.size > 0}"
+                                <apex:dataTable
+                                    rendered="{!sGroupList.size > 0}"
                                     styleClass="table"
                                     value="{!sGroupList}"
                                     var="sg"
@@ -682,7 +687,8 @@
                                     </apex:column>
                                     <apex:column headerValue="Code" value="{!sg.SG_PeopleSoft_Code__c}" />
                                     <apex:column headerValue="Description">
-                                        <apex:outputText value="{!LEFT(sg.SG_Description__c, 100)}
+                                        <apex:outputText
+                                            value="{!LEFT(sg.SG_Description__c, 100)}
                                     ..."
                                         />
                                     </apex:column>
@@ -1142,7 +1148,8 @@
                                                         <td>
                                                             {!IF(ISBLANK(studentProgram.Appt_Dt_Pending__c), '--', '')}
                                                             <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                <apex:param value="{!studentProgram.Appt_Dt_Pending__c}"
+                                                                <apex:param
+                                                                    value="{!studentProgram.Appt_Dt_Pending__c}"
                                                                 />
                                                             </apex:outputText>
                                                         </td>
@@ -1271,7 +1278,7 @@
                                 </div>
 
                                 <div style="overflow: auto; max-height: 400px">
-                                    <apex:form >
+                                    <apex:form>
                                         <div id="selectListForChargeHistory">
                                             <i class="fa fa-spinner fa-pulse"></i>
                                         </div>
@@ -1289,11 +1296,11 @@
                                 <div style="overflow: auto; max-height: 400px">
                                     <div id="awardErrors"></div>
                                     <div id="award_list">
-                                        <apex:form >
-                                            <div style = "margin-bottom: 15px" id="selectListForAwards">
+                                        <apex:form>
+                                            <div style="margin-bottom: 15px" id="selectListForAwards">
                                                 <i class="fa fa-spinner fa-pulse"></i>
                                             </div>
-                                            <div id="awardTable"></div>                                            
+                                            <div id="awardTable"></div>
                                         </apex:form>
                                     </div>
                                 </div>
@@ -1307,7 +1314,7 @@
 
                                 <div style="overflow: auto; max-height: 250px">
                                     <div id="ps_financial_aid_checklist">
-                                        <apex:form >
+                                        <apex:form>
                                             <div id="ps_financial_aid_checklist_note">
                                                 NOTE: This section shows Financial Aid Checklist Items in real time -
                                                 this data may differ from the Checklist Items that display on the
@@ -1348,7 +1355,7 @@
 
                                 <div style="overflow: auto; max-height: 400px">
                                     <div id="edit_message_list">
-                                        <apex:form >
+                                        <apex:form>
                                             <div id="selectListForEditMessages">
                                                 <i class="fa fa-spinner fa-pulse"></i>
                                             </div>
@@ -1447,13 +1454,15 @@
                                         &nbsp;me3@ASU Results
                                     </h4>
                                 </div>
-                                <apex:outputPanel layout="block"
+                                <apex:outputPanel
+                                    layout="block"
                                     rendered="{!ISNULL(me3Results.Test_Completed_Date__c)}"
                                 >
                                     No me3 results found.
                                 </apex:outputPanel>
                                 <div id="Me3Results" style="width: 100%">
-                                    <apex:outputPanel layout="block"
+                                    <apex:outputPanel
+                                        layout="block"
                                         rendered="{!NOT(ISNULL(me3Results.Test_Completed_Date__c))}"
                                     >
                                         <div class="row">
@@ -1463,7 +1472,8 @@
                                                         <th>Test Completion Date</th>
                                                         <td id="me3_completion_date">
                                                             <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                <apex:param value="{!me3Results.Test_Completed_Date__c}"
+                                                                <apex:param
+                                                                    value="{!me3Results.Test_Completed_Date__c}"
                                                                 />
                                                             </apex:outputText>
                                                         </td>
@@ -1549,13 +1559,15 @@
                                             <div class="table-responsive">
                                                 <table id="career_dev_table" class="table table-striped table-bordered">
                                                     <tbody>
-                                                        <apex:repeat value="{!me3Results.me3_Careers__r}"
+                                                        <apex:repeat
+                                                            value="{!me3Results.me3_Careers__r}"
                                                             var="me3Career"
                                                         >
                                                             <tr style="font-weight: normal">
                                                                 <td style="min-width: 75px">
                                                                     <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                        <apex:param value="{!me3Career.Updated_Date__c}"
+                                                                        <apex:param
+                                                                            value="{!me3Career.Updated_Date__c}"
                                                                         />
                                                                     </apex:outputText>
                                                                 </td>
@@ -1593,13 +1605,15 @@
                                         &nbsp;me3 High School Results
                                     </h4>
                                 </div>
-                                <apex:outputPanel layout="block"
+                                <apex:outputPanel
+                                    layout="block"
                                     rendered="{!ISNULL(me3HighSchoolResults.Test_Completed_Date__c)}"
                                 >
                                     No me3 high school results found.
                                 </apex:outputPanel>
                                 <div id="Me3HighSschoolResults" style="width: 100%">
-                                    <apex:outputPanel layout="block"
+                                    <apex:outputPanel
+                                        layout="block"
                                         rendered="{!NOT(ISNULL(me3HighSchoolResults.Test_Completed_Date__c))}"
                                     >
                                         <div class="row">
@@ -1609,7 +1623,8 @@
                                                         <th>Test Completion Date</th>
                                                         <td id="me3_hs_completion_date">
                                                             <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                <apex:param value="{!me3HighSchoolResults.Test_Completed_Date__c}"
+                                                                <apex:param
+                                                                    value="{!me3HighSchoolResults.Test_Completed_Date__c}"
                                                                 />
                                                             </apex:outputText>
                                                         </td>
@@ -1630,7 +1645,8 @@
                                                         <th>Realistic (R) Score</th>
                                                         <td id="me3_hs_r_score">
                                                             <apex:outputText value="{0,number,###}">
-                                                                <apex:param value="{!me3HighSchoolResults.R_Score__c}"
+                                                                <apex:param
+                                                                    value="{!me3HighSchoolResults.R_Score__c}"
                                                                 />
                                                             </apex:outputText>
                                                             / 100
@@ -1640,7 +1656,8 @@
                                                         <th>Investigative (I) Score</th>
                                                         <td id="me3_hs_i_score">
                                                             <apex:outputText value="{0,number,###}">
-                                                                <apex:param value="{!me3HighSchoolResults.I_Score__c}"
+                                                                <apex:param
+                                                                    value="{!me3HighSchoolResults.I_Score__c}"
                                                                 />
                                                             </apex:outputText>
                                                             / 100
@@ -1654,7 +1671,8 @@
                                                         <th>Artistic (A) Score</th>
                                                         <td id="me3_hs_a_score">
                                                             <apex:outputText value="{0,number,###}">
-                                                                <apex:param value="{!me3HighSchoolResults.A_Score__c}"
+                                                                <apex:param
+                                                                    value="{!me3HighSchoolResults.A_Score__c}"
                                                                 />
                                                             </apex:outputText>
                                                             / 100
@@ -1664,7 +1682,8 @@
                                                         <th>Social (S) Score</th>
                                                         <td id="me3_hs_s_score">
                                                             <apex:outputText value="{0,number,###}">
-                                                                <apex:param value="{!me3HighSchoolResults.S_Score__c}"
+                                                                <apex:param
+                                                                    value="{!me3HighSchoolResults.S_Score__c}"
                                                                 />
                                                             </apex:outputText>
                                                             / 100
@@ -1678,7 +1697,8 @@
                                                         <th>Enterprising (E) Score</th>
                                                         <td id="me3_hs_e_score">
                                                             <apex:outputText value="{0,number,###}">
-                                                                <apex:param value="{!me3HighSchoolResults.E_Score__c}"
+                                                                <apex:param
+                                                                    value="{!me3HighSchoolResults.E_Score__c}"
                                                                 />
                                                             </apex:outputText>
                                                             / 100
@@ -1688,7 +1708,8 @@
                                                         <th>Conventional (C) Score</th>
                                                         <td id="me3_hs_c_score">
                                                             <apex:outputText value="{0,number,###}">
-                                                                <apex:param value="{!me3HighSchoolResults.C_Score__c}"
+                                                                <apex:param
+                                                                    value="{!me3HighSchoolResults.C_Score__c}"
                                                                 />
                                                             </apex:outputText>
                                                             / 100
@@ -1701,13 +1722,15 @@
                                             <div class="table-responsive">
                                                 <table id="career_dev_table" class="table table-striped table-bordered">
                                                     <tbody>
-                                                        <apex:repeat value="{!me3HighSchoolResults.me3_Careers__r}"
+                                                        <apex:repeat
+                                                            value="{!me3HighSchoolResults.me3_Careers__r}"
                                                             var="me3Career"
                                                         >
                                                             <tr style="font-weight: normal">
                                                                 <td style="min-width: 75px">
                                                                     <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                        <apex:param value="{!me3Career.Updated_Date__c}"
+                                                                        <apex:param
+                                                                            value="{!me3Career.Updated_Date__c}"
                                                                         />
                                                                     </apex:outputText>
                                                                 </td>
@@ -1756,7 +1779,8 @@
                                     </div>
 
                                     <div class="table-responsive">
-                                        <apex:dataTable styleClass="table table-striped table-bordered"
+                                        <apex:dataTable
+                                            styleClass="table table-striped table-bordered"
                                             value="{!ugProgramPlans}"
                                             var="app"
                                             rendered="{!IF(ugProgramPlans.size > 0,true,false)}"
@@ -1769,10 +1793,12 @@
                                                 </apex:outputLink>
                                             </apex:column>
                                             <apex:column headerValue="Sub-Plan">
-                                                <apex:outputText rendered="{!IF(subPlanString==null,false,true)}"
+                                                <apex:outputText
+                                                    rendered="{!IF(subPlanString==null,false,true)}"
                                                     value="{!subPlanString}"
                                                 />
-                                                <apex:outputText rendered="{!IF(subPlanString==null,true,false)}"
+                                                <apex:outputText
+                                                    rendered="{!IF(subPlanString==null,true,false)}"
                                                     value="--"
                                                 />
                                             </apex:column>
@@ -1784,7 +1810,8 @@
                                         </apex:dataTable>
                                     </div>
 
-                                    <apex:outputText rendered="{!IF(ugProgramPlans.size > 0, false, true)}"
+                                    <apex:outputText
+                                        rendered="{!IF(ugProgramPlans.size > 0, false, true)}"
                                         value="No undergraduate programs/plans found."
                                     />
 
@@ -1821,7 +1848,8 @@
                                                         <td id="ugap_cumulative_hours">
                                                             {!IF(ISBLANK(ugStudentProgram.Tot_Cumulative__c), '--', '')}
                                                             <apex:outputText value="{0,number,####}">
-                                                                <apex:param value="{!ugStudentProgram.Tot_Cumulative__c}"
+                                                                <apex:param
+                                                                    value="{!ugStudentProgram.Tot_Cumulative__c}"
                                                                 />
                                                             </apex:outputText>
                                                         </td>
@@ -1841,7 +1869,8 @@
                                                         <th>Advisors</th>
                                                         <td id="ugap_advisors">
                                                             {!IF(ugStudentProgramAdvisors.size > 0, '', '--')}
-                                                            <apex:repeat value="{!ugStudentProgramAdvisors}"
+                                                            <apex:repeat
+                                                                value="{!ugStudentProgramAdvisors}"
                                                                 var="advisors"
                                                             >
                                                                 <a href="mailto:{!advisors.Advisor_Email__c}">
@@ -1883,7 +1912,8 @@
                                                             <td>{!testScore.Test_Component__c}</td>
                                                             <td>
                                                                 <apex:outputText value="{0,number,##.##}">
-                                                                    <apex:param value="{!testScore.Test_Component_Score__c}"
+                                                                    <apex:param
+                                                                        value="{!testScore.Test_Component_Score__c}"
                                                                     />
                                                                 </apex:outputText>
                                                             </td>
@@ -1894,7 +1924,8 @@
                                                             </td>
                                                         </tr>
                                                     </apex:repeat>
-                                                    <apex:outputPanel rendered="{!IF(testUndergradScoreList.size > 0, false, true)}"
+                                                    <apex:outputPanel
+                                                        rendered="{!IF(testUndergradScoreList.size > 0, false, true)}"
                                                     >
                                                         <div>No undergraduate test scores found.</div>
                                                     </apex:outputPanel>
@@ -1933,9 +1964,11 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <apex:outputPanel rendered="{!IF(studentMilestonesUGrad.size > 0, true, false)}"
+                                                        <apex:outputPanel
+                                                            rendered="{!IF(studentMilestonesUGrad.size > 0, true, false)}"
                                                         >
-                                                            <apex:repeat value="{!studentMilestonesUGrad}"
+                                                            <apex:repeat
+                                                                value="{!studentMilestonesUGrad}"
                                                                 var="milestone"
                                                             >
                                                                 <tr>
@@ -1986,7 +2019,8 @@
                                                                     </td>
                                                                     <td>
                                                                         <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                            <apex:param value="{!milestone.Date_Completed__c}"
+                                                                            <apex:param
+                                                                                value="{!milestone.Date_Completed__c}"
                                                                             />
                                                                         </apex:outputText>
                                                                     </td>
@@ -1996,7 +2030,8 @@
                                                                 </tr>
                                                             </apex:repeat>
                                                         </apex:outputPanel>
-                                                        <apex:outputPanel rendered="{!IF(studentMilestonesUGrad.size > 0, false, true)}"
+                                                        <apex:outputPanel
+                                                            rendered="{!IF(studentMilestonesUGrad.size > 0, false, true)}"
                                                         >
                                                             <div>No undergraduate milestones found.</div>
                                                         </apex:outputPanel>
@@ -2038,7 +2073,8 @@
                                                                     {!IF(ISBLANK(ugStudentProgram.Adm_Appl_Dt__c), '--',
                                                                     '')}
                                                                     <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                        <apex:param value="{!ugStudentProgram.Adm_Appl_Dt__c}"
+                                                                        <apex:param
+                                                                            value="{!ugStudentProgram.Adm_Appl_Dt__c}"
                                                                         />
                                                                     </apex:outputText>
                                                                 </td>
@@ -2109,7 +2145,8 @@
                                                     <tr>
                                                         <th>Financial Aid Issue</th>
                                                         <td id="sr_finAid_issue">
-                                                            <apex:repeat value="{!financialAidIndicators}"
+                                                            <apex:repeat
+                                                                value="{!financialAidIndicators}"
                                                                 var="indicator"
                                                             >
                                                                 <p>{!indicator}</p>
@@ -2122,7 +2159,7 @@
                                                             <br />
                                                             <div style="overflow: auto; max-height: 225px">
                                                                 <div id="ps_financial_aid_checklist_unresolved">
-                                                                    <apex:form >
+                                                                    <apex:form>
                                                                         <div id="unresolvedChecklistTable">
                                                                             <i class="fa fa-spinner fa-pulse"></i>
                                                                         </div>
@@ -2330,7 +2367,8 @@
                                                 </th>
                                                 <td colspan="2" class="gradTD">
                                                     {!IF(ISBLANK(gradProgram.gradProgramPlan.Cum_GPA__c), '--', '')}
-                                                    <apex:outputText value="{0,number,####.00}"
+                                                    <apex:outputText
+                                                        value="{0,number,####.00}"
                                                         style="{!IF(AND(NOT(ISBLANK(gradProgram.gradProgramPlan.Cum_GPA__c)), gradProgram.gradProgramPlan.Cum_GPA__c < 3.0), 'font-weight:bold;color:#8C1D40;', '')}"
                                                     >
                                                         <apex:param value="{!gradProgram.gradProgramPlan.Cum_GPA__c}" />
@@ -2389,10 +2427,12 @@
                                                     {!IF(OR(gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c==null,
                                                     gradProgram.gradMilestoneDiss.Format_Document_Type__c==null), '--',
                                                     '')}
-                                                    <apex:outputText rendered="{!gradProgram.gradMilestoneDiss.Format_Document_Type__c!=null}"
+                                                    <apex:outputText
+                                                        rendered="{!gradProgram.gradMilestoneDiss.Format_Document_Type__c!=null}"
                                                         value="{0, date, MM'/'dd'/'yyyy}"
                                                     >
-                                                        <apex:param value="{!gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c}"
+                                                        <apex:param
+                                                            value="{!gradProgram.gradMilestoneFormat.Format_Status_Last_Updated__c}"
                                                         />
                                                     </apex:outputText>
                                                 </td>
@@ -2431,7 +2471,8 @@
                                                     {!IF(gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c==null,
                                                     '--', '')}
                                                     <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
-                                                        <apex:param value="{!gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c}"
+                                                        <apex:param
+                                                            value="{!gradProgram.gradProgramPlan.Grad_iPOS_Status_Date__c}"
                                                         />
                                                     </apex:outputText>
                                                 </td>
@@ -2497,7 +2538,8 @@
                                                         style="{!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c == 0, 'display: none;', '')}"
                                                     >
                                                         <apex:outputText value="{0,number,###.00}">
-                                                            <apex:param value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c}"
+                                                            <apex:param
+                                                                value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_Before__c}"
                                                             />
                                                         </apex:outputText>
                                                     </span>
@@ -2520,7 +2562,8 @@
                                                         style="{!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c == 0, 'display: none;', '')}"
                                                     >
                                                         <apex:outputText value="{0,number,###.00}">
-                                                            <apex:param value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c}"
+                                                            <apex:param
+                                                                value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_After__c}"
                                                             />
                                                         </apex:outputText>
                                                     </span>
@@ -2553,7 +2596,8 @@
                                                         style="{!IF(gradProgram.gradProgramPlan.Grad_Blanket_Hours__c == 0, 'display: none;', '')}"
                                                     >
                                                         <apex:outputText value="{0,number,###.00}">
-                                                            <apex:param value="{!gradProgram.gradProgramPlan.Grad_Blanket_Hours__c}"
+                                                            <apex:param
+                                                                value="{!gradProgram.gradProgramPlan.Grad_Blanket_Hours__c}"
                                                             />
                                                         </apex:outputText>
                                                     </span>
@@ -2565,7 +2609,8 @@
                                                     {!IF(gradProgram.gradMilestoneDiss.Final_Defense_Results_Status_DtTm__c==null,
                                                     '--', '')}
                                                     <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
-                                                        <apex:param value="{!gradProgram.gradMilestoneDiss.Final_Defense_Results_Status_DtTm__c}"
+                                                        <apex:param
+                                                            value="{!gradProgram.gradMilestoneDiss.Final_Defense_Results_Status_DtTm__c}"
                                                         />
                                                     </apex:outputText>
                                                 </td>
@@ -2583,7 +2628,8 @@
                                                         style="{!IF(gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c == 0, 'display: none;', '')}"
                                                     >
                                                         <apex:outputText value="{0,number,###.00}">
-                                                            <apex:param value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c}"
+                                                            <apex:param
+                                                                value="{!gradProgram.gradProgramPlan.Grad_ASU_Hours_Transfer__c}"
                                                             />
                                                         </apex:outputText>
                                                     </span>
@@ -2601,7 +2647,8 @@
                                                         style="{!IF(gradProgram.gradProgramPlan.Tot_Cumulative__c == 0, 'display: none;', '')}"
                                                     >
                                                         <apex:outputText value="{0,number,###.00}">
-                                                            <apex:param value="{!gradProgram.gradProgramPlan.Tot_Cumulative__c}"
+                                                            <apex:param
+                                                                value="{!gradProgram.gradProgramPlan.Tot_Cumulative__c}"
                                                             />
                                                         </apex:outputText>
                                                     </span>
@@ -2829,7 +2876,8 @@
                                     </table>
                                 </div>
 
-                                <apex:outputText rendered="{!IF(activeGraduatePrograms.size > 0, false, true)}"
+                                <apex:outputText
+                                    rendered="{!IF(activeGraduatePrograms.size > 0, false, true)}"
                                     value="No active graduate programs/plans found."
                                 />
 
@@ -2876,7 +2924,8 @@
                                     </table>
                                 </div>
 
-                                <apex:outputText rendered="{!IF(completedGraduatePrograms.size > 0, false, true)}"
+                                <apex:outputText
+                                    rendered="{!IF(completedGraduatePrograms.size > 0, false, true)}"
                                     value="No completed graduate programs/plans found."
                                 />
 
@@ -2905,7 +2954,8 @@
                                                         <td>{!testScore.Test_Component__c}</td>
                                                         <td>
                                                             <apex:outputText value="{0,number,##.##}">
-                                                                <apex:param value="{!testScore.Test_Component_Score__c}"
+                                                                <apex:param
+                                                                    value="{!testScore.Test_Component_Score__c}"
                                                                 />
                                                             </apex:outputText>
                                                         </td>
@@ -2916,7 +2966,8 @@
                                                         </td>
                                                     </tr>
                                                 </apex:repeat>
-                                                <apex:outputPanel rendered="{!IF(testGradScoreList.size > 0, false, true)}"
+                                                <apex:outputPanel
+                                                    rendered="{!IF(testGradScoreList.size > 0, false, true)}"
                                                 >
                                                     <div>No graduate test scores found.</div>
                                                 </apex:outputPanel>
@@ -2960,7 +3011,8 @@
                                                                 {!IF(ISBLANK(gradStudentProgram.Adm_Appl_Dt__c), '--',
                                                                 '')}
                                                                 <apex:outputText value="{0,date,MM/dd/yyyy}">
-                                                                    <apex:param value="{!gradStudentProgram.Adm_Appl_Dt__c}"
+                                                                    <apex:param
+                                                                        value="{!gradStudentProgram.Adm_Appl_Dt__c}"
                                                                     />
                                                                 </apex:outputText>
                                                             </td>
@@ -3241,7 +3293,6 @@
             loadDepositStatus();
         }
 
-        
         function loadRemoteSunCardPhoto() {
             Visualforce.remoting.Manager.invokeAction(
                 '{!$RemoteAction.StudentProfileController.getSunCardPhotoRA}',
@@ -4121,7 +4172,7 @@
                 'DisplayUrl, EARN_CREDIT__c, EMPLID__c, ENRL_STATUS_REASON__c, ExternalId, ' +
                 'FT_FULL_NAME__c, Id, SCH_DAILY_TIME__c, SCH_HTML_DAY1__c, SESSION_CODE__c, ' +
                 'SSR_CLSTOPIC_DESCR__c, SSR_MTG_LOC_LONG__c, STDNT_ENRL_STATUS__c, STRM__c,  ' +
-                'SUBJECT__c, TERM_DESCR30__c, UNT_TAKEN__c, VALID_ATTEMPT__c, CONFIRMATION_OF_PARTICIPATION__c   ' +
+                'SUBJECT__c, TERM_DESCR30__c, UNT_TAKEN__c, VALID_ATTEMPT__c   ' +
                 'FROM PS_ASU_SP_CLASS_V__x  ' +
                 "WHERE EMPLID__c = '{!theContact.EMPLID__c}'  " +
                 'ORDER BY STRM__c DESC, CLASS_NBR__c ASC';
@@ -4306,7 +4357,6 @@
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Dates\')">Dates</th>' +
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Location\')">Location</th>' +
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Grade\')">Grade</th>' +
-                                                '<th scope="col">Conf. Of Participation</th>' +
                                                 '<th scope="col">ASR</th>' +
                                                 '</tr>' +
                                                 '</thead>' +
@@ -4361,11 +4411,8 @@
                                                     '<td data-header="Location">' +
                                                     result.enrolledClasses[i].SSR_MTG_LOC_LONG__c +
                                                     '</td>' +
-                                                    '<td data-header="Grade">' + 
+                                                    '<td data-header="Grade">' +
                                                     result.enrolledClasses[i].CRSE_GRADE_OFF__c +
-                                                    '</td>' +
-                                                    '<td data-header="Participation">' +
-                                                    result.enrolledClasses[i].CONFIRMATION_OF_PARTICIPATION__c +
                                                     '</td>' +
                                                     "<td style='display:none'>" +
                                                     result.enrolledClasses[i].EARN_CREDIT__c +
@@ -5022,19 +5069,19 @@
                                 '' +
                                 '<tr>' +
                                 '<td>' +
-                                    result[i].ServiceIndicatorActiveDate +
+                                result[i].ServiceIndicatorActiveDate +
                                 '</td>' +
                                 '<td>' +
-                                    result[i].ServiceIndicatorCode +
+                                result[i].ServiceIndicatorCode +
                                 '</td>' +
                                 '<td>' +
-                                    result[i].ServiceIndicatorCodeDescr +
+                                result[i].ServiceIndicatorCodeDescr +
                                 '</td>' +
                                 '<td>' +
-                                    result[i].ServiceIndReasonCodeDescr +
+                                result[i].ServiceIndReasonCodeDescr +
                                 '</td>' +
                                 '<td>' +
-                                    result[i].PositiveServiceIndicator +
+                                result[i].PositiveServiceIndicator +
                                 '</td>' +
                                 '</tr>';
                         }
@@ -5042,7 +5089,8 @@
                         html += '</tbody></table></div>';
 
                         document.getElementById('serviceIndicatorTable').innerHTML = html;
-                        document.getElementById('serviceIndicatorHeader').innerHTML = '&nbsp;Service Indicators (' + result.length + ')';
+                        document.getElementById('serviceIndicatorHeader').innerHTML =
+                            '&nbsp;Service Indicators (' + result.length + ')';
                     } else {
                         document.getElementById('serviceIndicatorTable').innerHTML =
                             'There are no service indicators available for this student.';
@@ -5087,28 +5135,28 @@
                                 '' +
                                 '<tr>' +
                                 '<td>' +
-                                    result[i].aid_year +
+                                result[i].aid_year +
                                 '</td>' +
                                 '<td>' +
-                                    result[i].term +
+                                result[i].term +
                                 '</td>' +
                                 '<td>' +
-                                    result[i].description +
+                                result[i].description +
                                 '</td>' +
                                 '<td>' +
-                                    result[i].checklist_cd +
+                                result[i].checklist_cd +
                                 '</td>' +
                                 '<td>' +
-                                    result[i].status +
+                                result[i].status +
                                 '</td>' +
                                 '<td>' +
-                                    result[i].checklistitemcd +
+                                result[i].checklistitemcd +
                                 '</td>' +
                                 '<td>' +
-                                    result[i].item_status +
+                                result[i].item_status +
                                 '</td>' +
                                 '<td>' +
-                                    result[i].status_dt +
+                                result[i].status_dt +
                                 '</td>' +
                                 '</tr>';
                         }
@@ -5141,7 +5189,7 @@
                             "<table class='table table-striped table-bordered'> " +
                             '<thead>' +
                             '<tr>' +
-                            '<th>Checklist Code</th>' +                            
+                            '<th>Checklist Code</th>' +
                             '<th>Checklist Item Code</th>' +
                             '<th>Description</th>' +
                             '<th>Status Date</th>' +
@@ -5158,19 +5206,19 @@
                                 '' +
                                 '<tr>' +
                                 '<td>' +
-                                    result[i].checklist_cd +
+                                result[i].checklist_cd +
                                 '</td>' +
                                 '<td>' +
-                                    result[i].checklistitemcd +
+                                result[i].checklistitemcd +
                                 '</td>' +
                                 '<td>' +
-                                    result[i].description +
+                                result[i].description +
                                 '</td>' +
                                 '<td>' +
-                                    result[i].status_dt +
+                                result[i].status_dt +
                                 '</td>' +
                                 '<td>' +
-                                    result[i].item_status +
+                                result[i].item_status +
                                 '</td>' +
                                 '</tr>';
                         }
@@ -5197,45 +5245,40 @@
                     var valueSet = Object.values(result);
 
                     if (keySet.length == null || keySet.length == 0) {
-                    	document.getElementById('selectListForEditMessages').innerHTML = 'No FA Edit Msgs found';
+                        document.getElementById('selectListForEditMessages').innerHTML = 'No FA Edit Msgs found';
                         return;
                     }
-                    
+
                     for (var i = 0; i < keySet.length; i++) {
                         editMessagesMap.set(keySet[i], valueSet[i]);
                     }
                     var selectHtml =
-                    "<label for='editMessageSelectOptions'>Academic Year:&nbsp;</label><select id='editMessageSelectOptions' onchange='buildEditMessageTable()'>";
+                        "<label for='editMessageSelectOptions'>Academic Year:&nbsp;</label><select id='editMessageSelectOptions' onchange='buildEditMessageTable()'>";
                     for (var i = 0; i < keySet.length; i++) {
                         selectHtml += '<option ';
-                        selectHtml +=
-                            " value='" +
-                            keySet[i] +
-                            "'>" +
-                            keySet[i] +
-                            '</option>';
+                        selectHtml += " value='" + keySet[i] + "'>" + keySet[i] + '</option>';
                     }
                     selectHtml += '</select>&nbsp;&nbsp;';
                     document.getElementById('selectListForEditMessages').innerHTML = selectHtml;
                     var test = document.getElementById('editMessageSelectOptions');
-                    
-                    buildEditMessageTable()
+
+                    buildEditMessageTable();
                 },
                 {buffer: false, escape: true, timeout: 120000}
             );
         }
-    
-    	function buildEditMessageTable() {
+
+        function buildEditMessageTable() {
             var selectedTerm = document.getElementById('editMessageSelectOptions').value;
             var messagesForSelectedTerm = editMessagesMap.get(selectedTerm);
-            
+
             var html =
                 '' +
                 "<div class='table-responsive'>" +
                 "<table class='table table-striped table-bordered'> " +
                 '<thead>' +
                 '<tr>' +
-                '<th>Academic Year</th>' +                            
+                '<th>Academic Year</th>' +
                 '<th>Aid Year</th>' +
                 '<th>Term</th>' +
                 '<th>Action Description</th>' +
@@ -5243,7 +5286,7 @@
                 '</tr>' +
                 '</thead>' +
                 '<tbody>';
-            
+
             for (var i = 0; i < messagesForSelectedTerm.length; i++) {
                 html +=
                     '' +
@@ -5265,15 +5308,15 @@
                     '</td>' +
                     '</tr>';
             }
-            
+
             html += '</tbody></table></div>';
-            
+
             document.getElementById('editMessageTable').innerHTML = html;
         }
 
         //New Line
         var awardMap = new Map();
-        
+
         function loadFinancialAidAwards() {
             Visualforce.remoting.Manager.invokeAction(
                 '{!$RemoteAction.StudentProfileController.getAwardStatusMap}',
@@ -5283,7 +5326,8 @@
                     var valueSet = Object.values(result);
 
                     if (keySet.length == null || keySet.length == 0) {
-                    	document.getElementById('selectListForAwards').innerHTML = 'There is currently no Financial Aid / Scholarship Award information available for this student';
+                        document.getElementById('selectListForAwards').innerHTML =
+                            'There is currently no Financial Aid / Scholarship Award information available for this student';
                         return;
                     }
 
@@ -5291,29 +5335,24 @@
                         awardMap.set(keySet[i], valueSet[i]);
                     }
                     var selectHtml =
-                    "<label for='awardSelectOptions'>Academic Year:&nbsp;</label><select id='awardSelectOptions' onchange='buildAwardTable()'>";
+                        "<label for='awardSelectOptions'>Academic Year:&nbsp;</label><select id='awardSelectOptions' onchange='buildAwardTable()'>";
                     for (var i = 0; i < keySet.length; i++) {
                         selectHtml += '<option ';
-                        selectHtml +=
-                            " value='" +
-                            keySet[i] +
-                            "'>" +
-                            keySet[i] +
-                            '</option>';
+                        selectHtml += " value='" + keySet[i] + "'>" + keySet[i] + '</option>';
                     }
                     selectHtml += '</select>&nbsp;&nbsp;';
                     document.getElementById('selectListForAwards').innerHTML = selectHtml;
 
-                    buildAwardTable()
+                    buildAwardTable();
                 },
                 {buffer: false, escape: true, timeout: 120000}
             );
         }
-    
-    	function buildAwardTable() {
+
+        function buildAwardTable() {
             var selectedYear = document.getElementById('awardSelectOptions').value;
             var awardsForSelectedYear = awardMap.get(selectedYear);
-            
+
             var html = '';
             var formatter = new Intl.NumberFormat('en-US', {
                 style: 'currency',
@@ -5327,7 +5366,9 @@
                     "<table class='table table-striped table-bordered'> " +
                     '<thead>' +
                     '<tr>' +
-                    '<th>' + awardsForSelectedYear[i].term_description + '</th>' +                            
+                    '<th>' +
+                    awardsForSelectedYear[i].term_description +
+                    '</th>' +
                     '<th>Category</th>' +
                     '<th>Current Offer</th>' +
                     '<th>Accepted Amount</th>' +
@@ -5336,7 +5377,7 @@
                     '</tr>' +
                     '</thead>' +
                     '<tbody>';
-                
+
                 var awardDetails = awardsForSelectedYear[i].award_details;
 
                 for (var j = 0; j < awardDetails.length; j++) {
@@ -5376,7 +5417,7 @@
                     formatter.format(awardsForSelectedYear[i].total_disbursed_amount) +
                     '</th>' +
                     '</tr>';
-                
+
                 html += '</tbody></table></div>';
             }
 
@@ -5385,7 +5426,7 @@
 
         //Charge History
         var chargeHistoryMap = new Map();
-        
+
         function loadFinancialAidChargeHistory() {
             Visualforce.remoting.Manager.invokeAction(
                 '{!$RemoteAction.StudentProfileController.getChargeHistoryMap}',
@@ -5395,7 +5436,8 @@
                     var valueSet = Object.values(result);
 
                     if (keySet.length == null || keySet.length == 0) {
-                    	document.getElementById('selectListForChargeHistory').innerHTML = 'There is currently no Charge History information available for this student';
+                        document.getElementById('selectListForChargeHistory').innerHTML =
+                            'There is currently no Charge History information available for this student';
                         return;
                     }
 
@@ -5403,29 +5445,24 @@
                         awardMap.set(keySet[i], valueSet[i]);
                     }
                     var selectHtml =
-                    "<label for='chargeHistorySelectOptions'>Academic Year:&nbsp;</label><select id='chargeHistorySelectOptions' onchange='buildChargeHistoryTable()'>";
+                        "<label for='chargeHistorySelectOptions'>Academic Year:&nbsp;</label><select id='chargeHistorySelectOptions' onchange='buildChargeHistoryTable()'>";
                     for (var i = 0; i < keySet.length; i++) {
                         selectHtml += '<option ';
-                        selectHtml +=
-                            " value='" +
-                            keySet[i] +
-                            "'>" +
-                            keySet[i] +
-                            '</option>';
+                        selectHtml += " value='" + keySet[i] + "'>" + keySet[i] + '</option>';
                     }
                     selectHtml += '</select>&nbsp;&nbsp;';
                     document.getElementById('selectListForChargeHistory').innerHTML = selectHtml;
 
-                    buildChargeHistoryTable()
+                    buildChargeHistoryTable();
                 },
                 {buffer: false, escape: true, timeout: 120000}
             );
         }
-    
-    	function buildChargeHistoryTable() {
+
+        function buildChargeHistoryTable() {
             var selectedTerm = document.getElementById('chargeHistorySelectOptions').value;
             var chargeHistoryForSelectedTerm = awardMap.get(selectedTerm);
-            
+
             var html = '';
             var formatter = new Intl.NumberFormat('en-US', {
                 style: 'currency',
@@ -5437,7 +5474,7 @@
                 "<div class='table-responsive'>" +
                 "<table class='table table-striped table-bordered'> " +
                 '<thead>' +
-                '<tr>' +                        
+                '<tr>' +
                 '<th>Term</th>' +
                 '<th>Description</th>' +
                 '<th>Charge</th>' +
@@ -5446,7 +5483,7 @@
                 '</tr>' +
                 '</thead>' +
                 '<tbody>';
-            
+
             var chargeHistoryDetails = chargeHistoryForSelectedTerm.charge_details;
 
             for (var j = 0; j < chargeHistoryDetails.length; j++) {
@@ -5471,21 +5508,20 @@
             }
 
             html +=
-                    '<tr>' +
-                    '<th colspan="2">Total</th>' +
-                    '<th>' +
-                    formatter.format(chargeHistoryForSelectedTerm.total_charges) +
-                    '</th>' +
-                    '<th>' +
-                    formatter.format(chargeHistoryForSelectedTerm.total_payment) +
-                    '</th>' +
-                    '<th>' +
-                    formatter.format(chargeHistoryForSelectedTerm.total_balance) +
-                    '</th>' +
-                    '</tr>';
-            
+                '<tr>' +
+                '<th colspan="2">Total</th>' +
+                '<th>' +
+                formatter.format(chargeHistoryForSelectedTerm.total_charges) +
+                '</th>' +
+                '<th>' +
+                formatter.format(chargeHistoryForSelectedTerm.total_payment) +
+                '</th>' +
+                '<th>' +
+                formatter.format(chargeHistoryForSelectedTerm.total_balance) +
+                '</th>' +
+                '</tr>';
+
             html += '</tbody></table></div>';
-            
 
             document.getElementById('chargeHistoryTable').innerHTML = html;
         }
@@ -5506,15 +5542,21 @@
                             '' +
                             "<div class='table-responsive'>" +
                             "<table class='table table-striped table-bordered'> " +
-                            "<tr>" +
-                            "<th> Current Amount Due </th>" +
-                            "<td>" + formatter.format(result.balances.due_amount) + "</td> </tr>" +
-                            "<tr>" +
-                            "<th> Future Amount Due </th>" +
-                            "<td>" + formatter.format(result.balances.balance_amount) + "</td> </tr>" +
-                            "<tr>" +
-                            "<th> Total Account Balance </th>" +
-                            "<td>" + formatter.format(result.balances.total_amount) + "</td> </tr>";
+                            '<tr>' +
+                            '<th> Current Amount Due </th>' +
+                            '<td>' +
+                            formatter.format(result.balances.due_amount) +
+                            '</td> </tr>' +
+                            '<tr>' +
+                            '<th> Future Amount Due </th>' +
+                            '<td>' +
+                            formatter.format(result.balances.balance_amount) +
+                            '</td> </tr>' +
+                            '<tr>' +
+                            '<th> Total Account Balance </th>' +
+                            '<td>' +
+                            formatter.format(result.balances.total_amount) +
+                            '</td> </tr>';
 
                         html += '</table></div>';
 
@@ -5524,15 +5566,21 @@
                             '' +
                             "<div class='table-responsive'>" +
                             "<table class='table table-striped table-bordered'> " +
-                            "<tr>" +
-                            "<th> Past Due Balance </th>" +
-                            "<td>" + "--" + "</td> </tr>" +
-                            "<tr>" +
-                            "<th> Outstanding Account Balance </th>" +
-                            "<td>" + "--" + "</td> </tr>" +
-                            "<tr>" +
-                            "<th> Total Account Balance </th>" +
-                            "<td>" + "--" + "</td> </tr>";
+                            '<tr>' +
+                            '<th> Past Due Balance </th>' +
+                            '<td>' +
+                            '--' +
+                            '</td> </tr>' +
+                            '<tr>' +
+                            '<th> Outstanding Account Balance </th>' +
+                            '<td>' +
+                            '--' +
+                            '</td> </tr>' +
+                            '<tr>' +
+                            '<th> Total Account Balance </th>' +
+                            '<td>' +
+                            '--' +
+                            '</td> </tr>';
 
                         html += '</table></div>';
 
@@ -5550,7 +5598,6 @@
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
                     if (Object.keys(result).length != 0) {
-
                         var html =
                             '' +
                             "<div style='font-weight:bold;'> Posted Refunds </div>" +
@@ -5574,13 +5621,13 @@
                                 '' +
                                 '<tr>' +
                                 '<td>' +
-                                    result.refunds[i].refund_date +
+                                result.refunds[i].refund_date +
                                 '</td>' +
                                 '<td>' +
-                                    result.refunds[i].refund_type +
+                                result.refunds[i].refund_type +
                                 '</td>' +
                                 '<td>' +
-                                    formatter.format(result.refunds[i].applied_amount) +
+                                formatter.format(result.refunds[i].applied_amount) +
                                 '</td>' +
                                 '</tr>';
                         }
@@ -5611,7 +5658,6 @@
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
                     if (Object.keys(result).length != 0) {
-
                         var html =
                             '' +
                             "<div class='table-responsive'>" +
@@ -5631,16 +5677,16 @@
                                 '' +
                                 '<tr>' +
                                 '<td>' +
-                                    result.deposits[i].deposit_status +
+                                result.deposits[i].deposit_status +
                                 '</td>' +
                                 '<td>' +
-                                    result.deposits[i].last_update_date +
+                                result.deposits[i].last_update_date +
                                 '</td>' +
                                 '<td>' +
-                                    result.deposits[i].pre_notification_status +
+                                result.deposits[i].pre_notification_status +
                                 '</td>' +
                                 '<td>' +
-                                    result.deposits[i].pre_notification_date +
+                                result.deposits[i].pre_notification_date +
                                 '</td>' +
                                 '</tr>';
                         }
@@ -5656,6 +5702,5 @@
                 {buffer: false, escape: true, timeout: 120000}
             );
         }
-
     </script>
 </apex:page>

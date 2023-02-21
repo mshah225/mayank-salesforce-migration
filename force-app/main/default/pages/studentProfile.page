@@ -4292,9 +4292,7 @@
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Dates\')">Dates</th>' +
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Location\')">Location</th>' +
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Grade\')">Grade</th>' +
-                                                '<th scope="col">Conf. Of Participation ' + 
-                                                '<a class="fa fa-question-circle" title="This will be set to Yes if:&#10;-Student participates via canvas&#10;-Student completes the COP survey on My ASU&#10;-Student is an international student  and exempt from the process&#10;&#10;This will be set to No if:&#10;-Student has not participated via canvas&#10;-Student has not completed the COP survey on My ASU" data-placement="right"></a>'
-                                                '</th>' +
+                                                '<th scope="col">Conf. Of Participation</th>' +
                                                 '<th scope="col">ASR</th>' +
                                                 '</tr>' +
                                                 '</thead>' +

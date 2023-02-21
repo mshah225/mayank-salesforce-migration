@@ -129,16 +129,27 @@ export default class LightningComboBox extends LightningElement {
         if (this.dynamicDropdown) this.regenerateDropdownAlignmentCss();
     }
 
+    zeroedYOffset = null;
     regenerateDropdownAlignmentCss() {
+        let css = this.template.host.style;
+
         const comboboxElem = this.template.querySelector('.slds-combobox');
+        const dynamicDropdownElem = this.template.querySelector('.dynamic-dropdown');
+
         const cTop = comboboxElem.getBoundingClientRect().top;
         const cHeight = comboboxElem.getBoundingClientRect().height;
         const cWidth = comboboxElem.getBoundingClientRect().width;
 
-        let comboboxContainerOffsetTop = cTop + cHeight + 'px';
+        // some location logic - since we care about location in viewport (and SF does some magic where position:fixed; top:0px ISNT the top of the viewport)
+        // so we need to zero-out first, that way we can ensure we align the dropdown with the combobox
+        if (this.zeroedYOffset == null) {
+            css.setProperty('--dynamicDropdownOffsetTop', '0px');
+            this.zeroedYOffset = dynamicDropdownElem.getBoundingClientRect().top;
+        }
+
+        let comboboxContainerOffsetTop = cTop + cHeight - this.zeroedYOffset + 'px';
         let comboboxContainerWidth = cWidth + 'px';
 
-        let css = this.template.host.style;
         css.setProperty('--dynamicDropdownOffsetTop', comboboxContainerOffsetTop);
         css.setProperty('--dynamicDropdownWidth', comboboxContainerWidth);
     }

@@ -19,7 +19,7 @@
  *  @function checkValidity() Check if the field is valid (i.e. if it is required, then it must have a value selected)
  */
 import {LightningElement, api} from 'lwc';
-import {cloneObj, parseBoolean, throwBackARenderCycle} from 'c/helperFunctions';
+import {cloneObj, parseBoolean, throwBackARenderCycle, getFixedYOffset} from 'c/helperFunctions';
 
 export default class LightningComboBox extends LightningElement {
     @api name;
@@ -129,25 +129,18 @@ export default class LightningComboBox extends LightningElement {
         if (this.dynamicDropdown) this.regenerateDropdownAlignmentCss();
     }
 
-    zeroedYOffset = null;
     regenerateDropdownAlignmentCss() {
         let css = this.template.host.style;
 
         const comboboxElem = this.template.querySelector('.slds-combobox');
-        const dynamicDropdownElem = this.template.querySelector('.dynamic-dropdown');
 
         const cTop = comboboxElem.getBoundingClientRect().top;
         const cHeight = comboboxElem.getBoundingClientRect().height;
         const cWidth = comboboxElem.getBoundingClientRect().width;
 
-        // some location logic - since we care about location in viewport (and SF does some magic where position:fixed; top:0px ISNT the top of the viewport)
-        // so we need to zero-out first, that way we can ensure we align the dropdown with the combobox
-        if (this.zeroedYOffset == null) {
-            css.setProperty('--dynamicDropdownOffsetTop', '0px');
-            this.zeroedYOffset = dynamicDropdownElem.getBoundingClientRect().top;
-        }
+        const zeroedYOffset = getFixedYOffset(comboboxElem);
 
-        let comboboxContainerOffsetTop = cTop + cHeight - this.zeroedYOffset + 'px';
+        let comboboxContainerOffsetTop = cTop + cHeight - zeroedYOffset + 'px';
         let comboboxContainerWidth = cWidth + 'px';
 
         css.setProperty('--dynamicDropdownOffsetTop', comboboxContainerOffsetTop);

@@ -1,3 +1,8 @@
+:host {
+    --dynamicDropdownOffsetTop: 0px;
+    --dynamicDropdownWidth: 0px;
+}
+
 :host .inputBox.active {
     border-color: var(--lwc-colorBorderBrand, #1b96ff);
     box-shadow: var(--lwc-shadowButtonFocus, 0 0 3px #0176d3);
@@ -52,4 +57,12 @@
 :host ::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background: rgba(0, 0, 0, 0.4);
+}
+
+/* For fixed-location dropdown that expands outside of modals */
+.dynamic-dropdown {
+    width: var(--dynamicDropdownWidth);
+    position:fixed;
+    top: var(--dynamicDropdownOffsetTop);
+    z-index: 9102;
 }

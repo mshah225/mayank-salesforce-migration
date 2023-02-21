@@ -11,6 +11,7 @@
  *  @param multiSelect Can more than one option be selected in the dropdown
  *  @param value Semicolon separated list of values for each option that should be selected
  *  @param options An array of options to show  [ { label: "John", value: "c-01", isLabel: false }, ... ]
+ *  @param dynamicDropdown A boolean that indicates whether the dropdown should use fixed positioning (and as a result pop out of modals or other containers)
  *  @function quietSelect(val) Set the value without triggering change events
  *  @function loudSelect(val) Set the value and trigger change events
  *  @function focus() Give focus to the dropdown
@@ -18,7 +19,7 @@
  *  @function checkValidity() Check if the field is valid (i.e. if it is required, then it must have a value selected)
  */
 import {LightningElement, api} from 'lwc';
-import {cloneObj} from 'c/helperFunctions';
+import {cloneObj, parseBoolean, throwBackARenderCycle} from 'c/helperFunctions';
 
 export default class LightningComboBox extends LightningElement {
     @api name;
@@ -27,8 +28,7 @@ export default class LightningComboBox extends LightningElement {
     @api placeholder = 'Select an Option';
 
     @api set required(val) {
-        if (typeof val === 'string') this._required = val === 'true';
-        else this._required = val;
+        this._required = parseBoolean(val);
     }
     get required() {
         return this._required;
@@ -36,13 +36,20 @@ export default class LightningComboBox extends LightningElement {
     _required = false;
 
     @api set multiSelect(val) {
-        if (typeof val === 'string') this._multiSelect = val === 'true';
-        else this._multiSelect = val;
+        this._multiSelect = parseBoolean(val);
     }
     get multiSelect() {
         return this._multiSelect;
     }
     _multiSelect = false;
+
+    @api set dynamicDropdown(val) {
+        this._dynamicDropdown = parseBoolean(val);
+    }
+    get dynamicDropdown() {
+        return this._dynamicDropdown;
+    }
+    _dynamicDropdown = false;
 
     @api set value(val) {
         this._value = val;
@@ -95,6 +102,12 @@ export default class LightningComboBox extends LightningElement {
         return classes.join(' ');
     }
 
+    get dropdownClasses() {
+        let classes = ['slds-dropdown', 'slds-dropdown_length-5', 'slds-dropdown_fluid'];
+        if (this.dynamicDropdown) classes.push('dynamic-dropdown');
+        return classes.join(' ');
+    }
+
     get ariaBoxIsExpanded() {
         return this.showDropdown ? 'true' : 'false';
     }
@@ -112,6 +125,22 @@ export default class LightningComboBox extends LightningElement {
         }
         this.queuedEvents = [];
         this.hasRendered = true;
+
+        if (this.dynamicDropdown) this.regenerateDropdownAlignmentCss();
+    }
+
+    regenerateDropdownAlignmentCss() {
+        const comboboxElem = this.template.querySelector('.slds-combobox');
+        const cTop = comboboxElem.getBoundingClientRect().top;
+        const cHeight = comboboxElem.getBoundingClientRect().height;
+        const cWidth = comboboxElem.getBoundingClientRect().width;
+
+        let comboboxContainerOffsetTop = cTop + cHeight + 'px';
+        let comboboxContainerWidth = cWidth + 'px';
+
+        let css = this.template.host.style;
+        css.setProperty('--dynamicDropdownOffsetTop', comboboxContainerOffsetTop);
+        css.setProperty('--dynamicDropdownWidth', comboboxContainerWidth);
     }
 
     /**
@@ -359,7 +388,7 @@ export default class LightningComboBox extends LightningElement {
         this.updatePlacard();
 
         // must throwback update one cycle sometimes - seems to be related to conditionally rendering fields (degree level, academic program, etc.)
-        this.throwBackARenderCycle(() => {
+        throwBackARenderCycle(() => {
             this.updatePlacard();
         });
     }
@@ -510,14 +539,5 @@ export default class LightningComboBox extends LightningElement {
                 detail: {},
             })
         );
-    }
-
-    /**
-     * Can throw a section of code outside the current rendering cycle - useful if we want to allow our parent LWC to complete a rendering cycle before
-     * running this code (this is used to doubly ensure the displayed placard is correct)
-     * @param {Function} fn
-     */
-    throwBackARenderCycle(fn) {
-        setTimeout(fn, 1);
     }
 }

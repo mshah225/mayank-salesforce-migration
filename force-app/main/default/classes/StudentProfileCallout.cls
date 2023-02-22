@@ -163,7 +163,7 @@ global with sharing class StudentProfileCallout {
         RenewableAidWrapper renewableAidForStudent;
 
         HttpRequest req = new HttpRequest();
-        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/account/renewable-aid');
+        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/renewable-aid');
         req.setMethod('GET');
         Http http = new Http();
         HTTPResponse res = http.send(req);
@@ -180,7 +180,7 @@ global with sharing class StudentProfileCallout {
         BookPaymentWrapper bookPaymentsForStudent;
 
         HttpRequest req = new HttpRequest();
-        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/account/ebpo');
+        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/ebpo');
         req.setMethod('GET');
         Http http = new Http();
         HTTPResponse res = http.send(req);

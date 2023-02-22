@@ -5879,8 +5879,8 @@
             );
         }
 
-        function replaceEmptyString (var stringToCheck) {
-            if (stringToCheck == null || stringToCheck == '') {
+        function replaceEmptyString (stringToCheck) {
+            if (!stringToCheck || stringToCheck == ' ') {
                 return '--';
             } else {
                 return stringToCheck;

@@ -17,7 +17,9 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
             return getFinancialAidRefunds();
         } else if (req.getEndPoint().contains('/account/deposit-status')) {
             return getDepositStatus();
-        }
+        } else if (req.getEndPoint().contains('/renewable-aid')) {
+            return getRenewableAid();
+        } 
         return null;
     }
 
@@ -308,4 +310,28 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
         return res;
     }
     
+    private HTTPResponse getRenewableAid() {
+        HttpResponse res = new HttpResponse();
+
+		String json =		'{' +
+		'    "emplid": "1000003193",' +
+		'    "aid_years": [' +
+		'        {' +
+		'            "aid_year": "2017",' +
+		'            "name": "ARIZONA GRADUATE SCHOLAR AWARD",' +
+		'            "terms_used": "0 of 4 terms",' +
+		'            "current_award": "2000",' +
+		'            "awards_description": "Funds for this program may be comprised of one or more named awards</br></br>",' +
+		'            "renewal_status": "New Award (100%)",' +
+		'            "measurement_description": "Measurement as of 06/06/2018:</br></br>",' +
+		'            "max_amount": "2000"' +
+		'        }' +
+		'    ]' +
+		'}';
+
+        res.setHeader('Content-Type', 'application/json');
+        res.setBody(json);
+        res.setStatusCode(200);
+        return res;
+    }
 }

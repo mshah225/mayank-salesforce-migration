@@ -4357,6 +4357,7 @@
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Dates\')">Dates</th>' +
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Location\')">Location</th>' +
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Grade\')">Grade</th>' +
+                                                '<th scope="col">Conf. Of Participation</th>' +
                                                 '<th scope="col">ASR</th>' +
                                                 '</tr>' +
                                                 '</thead>' +
@@ -4414,6 +4415,9 @@
                                                     '<td data-header="Grade">' +
                                                     result.enrolledClasses[i].CRSE_GRADE_OFF__c +
                                                     '</td>' +
+                                                    '<td data-header="Participation">' +
+                                                    result.enrolledClasses[i].CONFIRMATION_OF_PARTICIPATION__c +
+                                                    '</td>'
                                                     "<td style='display:none'>" +
                                                     result.enrolledClasses[i].EARN_CREDIT__c +
                                                     '' +

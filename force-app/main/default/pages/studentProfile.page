@@ -1308,6 +1308,24 @@
                                 <div class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
+                                        &nbsp;Renewable Aid Program Status
+                                    </h4>
+                                </div>
+
+                                <div style="overflow: auto; max-height: 400px">
+                                    <div id="renewableAidErrors"></div>
+                                    <div id="renewable_aid_list">
+                                        <apex:form>
+                                            <div id="renewableAidTable">
+                                                <i class="fa fa-spinner fa-pulse"></i>
+                                            </div>
+                                        </apex:form>
+                                    </div>
+                                </div>
+
+                                <div class="page-header-smaller">
+                                    <h4>
+                                        <i class="fa fa-caret-down"></i>
                                         &nbsp;Financial Aid Checklist | Financing Tasks
                                     </h4>
                                 </div>
@@ -3291,6 +3309,7 @@
             loadAccountBalance();
             loadRefunds();
             loadDepositStatus();
+            loadRenewableAid();
         }
 
         function loadRemoteSunCardPhoto() {
@@ -5706,5 +5725,74 @@
                 {buffer: false, escape: true, timeout: 120000}
             );
         }
+
+        //Renewable Aid
+        function loadRenewableAid() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getRenewableAid}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    if (Object.keys(result).length != 0) {
+                        var html =
+                            '' +
+                            "<div class='table-responsive'>" +
+                            "<table class='table table-striped table-bordered'> " +
+                            '<thead>' +
+                            '<tr>' +
+                            '<th>Aid Year</th>' +
+                            '<th>Name</th>' +
+                            '<th>Terms Used</th>' +
+                            '<th>Current Award</th>' +
+                            '<th>Award Descr</th>' +
+                            '<th>Renewal Status</th>' +
+                            '<th>Measurement Descr</th>' +
+                            '<th>Max Amount</th>' +
+                            '</tr>' +
+                            '</thead>' +
+                            '<tbody>';
+
+                        for (var i = 0; i < result.aid_years.length; i++) {
+                            html +=
+                                '' +
+                                '<tr>' +
+                                '<td>' +
+                                result.aid_years[i].aid_year +
+                                '</td>' +
+                                '<td>' +
+                                result.aid_years[i].name +
+                                '</td>' +
+                                '<td>' +
+                                result.aid_years[i].terms_used +
+                                '</td>' +
+                                '<td>' +
+                                result.aid_years[i].current_award +
+                                '</td>' +
+                                '<td>' +
+                                result.aid_years[i].awards_description +
+                                '</td>' +
+                                '<td>' +
+                                result.aid_years[i].renewal_status +
+                                '</td>' +
+                                '<td>' +
+                                result.aid_years[i].measurement_description +
+                                '</td>' +
+                                '<td>' +
+                                result.aid_years[i].max_amount +
+                                '</td>' +
+                                '</tr>';
+                        }
+
+                        html += '</tbody></table></div>';
+
+                        document.getElementById('renewableAidTable').innerHTML = html;
+                    } else {
+                        document.getElementById('renewableAidTable').innerHTML =
+                            'There is no Renewable Aid data available for this student.';
+                    }
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+
     </script>
 </apex:page>

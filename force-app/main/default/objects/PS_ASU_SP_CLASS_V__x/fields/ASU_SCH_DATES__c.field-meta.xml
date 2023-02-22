@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ASU_SCH_DATES__c</fullName>
+    <description>Data sourced from PS_CLASS_MTG_PAT.START_DT, END_DT</description>
+    <externalDeveloperName>ASU_SCH_DATES</externalDeveloperName>
+    <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>Dates</label>
+    <required>false</required>
+    <type>TextArea</type>
+</CustomField>

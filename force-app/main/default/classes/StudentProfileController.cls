@@ -1248,7 +1248,7 @@ global with sharing class StudentProfileController {
     }
 
     @RemoteAction
-    global static RenewableAidWrapper getBookPayments(String contactEmplid) {
+    global static BookPaymentWrapper getBookPayments(String contactEmplid) {
         return StudentProfileCallout.getBookPayments(contactEmplid);
     }    
 

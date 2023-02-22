@@ -89,7 +89,7 @@ public class StudentProfileCalloutTest {
     }
 
     @isTest
-    public static void testRenewableAid() {
+    public static void testBookPayment() {
         Test.setMock(HttpCalloutMock.class, new StudentProfileCalloutMock());
         BookPaymentWrapper bookPaymentsForStudent = StudentProfileCallout.getBookPayments(
             '1206104779'

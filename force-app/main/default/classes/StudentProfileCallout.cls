@@ -175,4 +175,21 @@ global with sharing class StudentProfileCallout {
 
         return renewableAidForStudent;
     }
+
+    global static BookPaymentWrapper getBookPayments(String emplid) {
+        BookPaymentWrapper bookPaymentsForStudent;
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Student_Finances/students/' + emplid + '/account/ebpo');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            bookPaymentsForStudent = BookPaymentWrapper.parse(responseBody);
+        }
+
+        return bookPaymentsForStudent;
+    }
 }

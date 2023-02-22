@@ -87,4 +87,14 @@ public class StudentProfileCalloutTest {
 
         System.assertEquals(renewableAidForStudent.emplid, '1206104779');
     }
+
+    @isTest
+    public static void testRenewableAid() {
+        Test.setMock(HttpCalloutMock.class, new StudentProfileCalloutMock());
+        BookPaymentWrapper bookPaymentsForStudent = StudentProfileCallout.getBookPayments(
+            '1206104779'
+        );
+
+        System.assertEquals(bookPaymentsForStudent.emplid, '1206104779');
+    }
 }

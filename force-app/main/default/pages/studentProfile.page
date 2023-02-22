@@ -1305,14 +1305,14 @@
                                     </div>
                                 </div>
 
-                                <div class="page-header-smaller">
+                                <div id="renewableAidHeader" class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
                                         &nbsp;Renewable Aid Program Status
                                     </h4>
                                 </div>
 
-                                <div style="overflow: auto; max-height: 400px">
+                                <div id="renewableAidBody" style="overflow: auto; max-height: 400px">
                                     <div id="renewableAidErrors"></div>
                                     <div id="renewable_aid_list">
                                         <apex:form>
@@ -1323,14 +1323,14 @@
                                     </div>
                                 </div>
 
-                                <div class="page-header-smaller">
+                                <div id ="bookPaymentHeader" class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
                                         &nbsp;Eligible Book Payment Options
                                     </h4>
                                 </div>
 
-                                <div style="overflow: auto; max-height: 400px">
+                                <div id ="bookPaymentBody" style="overflow: auto; max-height: 400px">
                                     <div id="bookPaymentErrors"></div>
                                     <div id="book_payment_list">
                                         <apex:form>
@@ -5751,7 +5751,7 @@
                 '{!$RemoteAction.StudentProfileController.getRenewableAid}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
-                    if (Object.keys(result).length != 0) {
+                    if (result.emplid != null) {
                         var html =
                             '' +
                             "<div class='table-responsive'>" +
@@ -5805,8 +5805,8 @@
 
                         document.getElementById('renewableAidTable').innerHTML = html;
                     } else {
-                        document.getElementById('renewableAidTable').innerHTML =
-                            'There is no Renewable Aid data available for this student.';
+                        document.getElementById('renewableAidHeader').style.display = "none"; 
+                        document.getElementById('renewableAidBody').style.display = "none"; 
                     }
                 },
                 {buffer: false, escape: true, timeout: 120000}
@@ -5819,7 +5819,7 @@
                 '{!$RemoteAction.StudentProfileController.getBookPayments}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
-                    if (Object.keys(result).length != 0) {
+                    if (result.emplid != null) {
                         var formatter = new Intl.NumberFormat('en-US', {
                                 style: 'currency',
                                 currency: 'USD',
@@ -5871,8 +5871,8 @@
 
                         document.getElementById('bookPaymentTable').innerHTML = html;
                     } else {
-                        document.getElementById('bookPaymentTable').innerHTML =
-                            'There is no Book Payment data available for this student.';
+                        document.getElementById('bookPaymentHeader').style.display = "none"; 
+                        document.getElementById('bookPaymentBody').style.display = "none"; 
                     }
                 },
                 {buffer: false, escape: true, timeout: 120000}

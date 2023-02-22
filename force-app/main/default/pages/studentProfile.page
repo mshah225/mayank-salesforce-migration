@@ -5882,6 +5882,8 @@
         function replaceEmptyString (var stringToCheck) {
             if (stringToCheck == null || stringToCheck == '') {
                 return '--';
+            } else {
+                return stringToCheck;
             }
         }
 

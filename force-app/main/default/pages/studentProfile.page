@@ -5775,28 +5775,28 @@
                                 '' +
                                 '<tr>' +
                                 '<td>' +
-                                result.aid_years[i].aid_year +
+                                    replaceEmptyString(result.aid_years[i].aid_year) +
                                 '</td>' +
                                 '<td>' +
-                                result.aid_years[i].name +
+                                    replaceEmptyString(result.aid_years[i].name) +
                                 '</td>' +
                                 '<td>' +
-                                result.aid_years[i].terms_used +
+                                    replaceEmptyString(result.aid_years[i].terms_used) +
                                 '</td>' +
                                 '<td>' +
-                                result.aid_years[i].current_award +
+                                    replaceEmptyString(result.aid_years[i].current_award) +
                                 '</td>' +
                                 '<td>' +
-                                result.aid_years[i].awards_description +
+                                    replaceEmptyString(result.aid_years[i].awards_description) +
                                 '</td>' +
                                 '<td>' +
-                                result.aid_years[i].renewal_status +
+                                    replaceEmptyString(result.aid_years[i].renewal_status) +
                                 '</td>' +
                                 '<td>' +
-                                result.aid_years[i].measurement_description +
+                                    replaceEmptyString(result.aid_years[i].measurement_description) +
                                 '</td>' +
                                 '<td>' +
-                                result.aid_years[i].max_amount +
+                                    replaceEmptyString(result.aid_years[i].max_amount) +
                                 '</td>' +
                                 '</tr>';
                         }
@@ -5877,6 +5877,12 @@
                 },
                 {buffer: false, escape: true, timeout: 120000}
             );
+        }
+
+        function replaceEmptyString (var stringToCheck) {
+            if (stringToCheck == null || stringToCheck == '') {
+                return '--';
+            }
         }
 
     </script>

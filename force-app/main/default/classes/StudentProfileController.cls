@@ -1244,12 +1244,16 @@ global with sharing class StudentProfileController {
 
     @RemoteAction
     global static RenewableAidWrapper getRenewableAid(String contactEmplid) {
-        return StudentProfileCallout.getRenewableAid(contactEmplid);
+        RenewableAidWrapper aidWrapper = StudentProfileCallout.getRenewableAid(contactEmplid);
+        aidWrapper.aid_years.sort();
+        return aidWrapper;   
     }
 
     @RemoteAction
     global static BookPaymentWrapper getBookPayments(String contactEmplid) {
-        return StudentProfileCallout.getBookPayments(contactEmplid);
+        BookPaymentWrapper bookPaymentWrap = StudentProfileCallout.getBookPayments(contactEmplid);
+        bookPaymentWrap.aid_years.sort();
+        return bookPaymentWrap; 
     }    
 
     global class FinancialAidWrapper {

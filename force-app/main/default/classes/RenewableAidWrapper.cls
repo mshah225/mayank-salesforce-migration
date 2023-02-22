@@ -16,9 +16,9 @@ global class RenewableAidWrapper {
 			cls_aid_years aidYearComparison = (cls_aid_years) comparison;
 
 			if (aidYearComparison.aid_year > aid_year) {
-				return 1;
-			} else {
 				return -1;
+			} else {
+				return 1;
 			}
         }
 	}

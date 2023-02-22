@@ -5816,7 +5816,7 @@
         //Book Payments
         function loadBookPayment() {
             Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.getBookPayment}',
+                '{!$RemoteAction.StudentProfileController.getBookPayments}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
                     if (Object.keys(result).length != 0) {

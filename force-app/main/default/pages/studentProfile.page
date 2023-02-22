@@ -5850,7 +5850,7 @@
                                 result.aid_years[i].aid_year +
                                 '</td>' +
                                 '<td>' +
-                                result.aid_years[i].term +
+                                result.aid_years[i].term_description +
                                 '</td>' +
                                 '<td>' +
                                 formatter.format(result.aid_years[i].amount) +
@@ -5862,7 +5862,7 @@
                                 result.aid_years[i].end_date +
                                 '</td>' +
                                 '<td>' +
-                                result.aid_years[i].term_description +
+                                result.aid_years[i].description +
                                 '</td>' +
                                 '</tr>';
                         }

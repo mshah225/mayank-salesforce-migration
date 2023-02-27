@@ -4486,6 +4486,7 @@
                                                 '<th scope="col" onclick="sortDroppedOnClick(\'Topic\')">Topic</th>' +
                                                 '<th scope="col" onclick="sortDroppedOnClick(\'Units\')">Units</th>' +
                                                 '<th scope="col" onclick="sortDroppedOnClick(\'Status\')">Status</th>' +
+                                                '<th scope="col">Conf. Of Participation</th>' +
                                                 '<th scope="col">ASR</th>' +
                                                 '</tr>' +
                                                 '</thead>' +
@@ -4520,6 +4521,9 @@
                                                     '</td>' +
                                                     '<td data-header="Status">' +
                                                     result.droppedClasses[i].ENRL_STATUS_REASON__c +
+                                                    '</td>' +
+                                                    '<td data-header="Participation">' +
+                                                    result.droppedClasses[i].CONFIRMATION_OF_PARTICIPATION__c +
                                                     '</td>' +
                                                     '<td data-header="ASR">' +
                                                     '--' +
@@ -4650,6 +4654,7 @@
                         '<th onclick="sortEnrolledOnClick(\'Dates\')">Dates</th>' +
                         '<th onclick="sortEnrolledOnClick(\'Location\')">Location</th>' +
                         '<th onclick="sortEnrolledOnClick(\'Grade\')">Grade</th>' +
+                        '<th scope="col">Conf. Of Participation</th>' +
                         '<th>ASR</th>' +
                         '</tr>' +
                         '</thead>' +
@@ -4701,6 +4706,9 @@
                             '</td>' +
                             '<td>' +
                             result[i].classInfo.CRSE_GRADE_OFF__c +
+                            '</td>' +
+                            '<td>' +
+                            result[i].classInfo.CONFIRMATION_OF_PARTICIPATION__c +
                             '</td>' +
                             "<td style='display:none'>" +
                             result[i].classInfo.EARN_CREDIT__c +
@@ -4760,6 +4768,7 @@
                             '<th onclick="sortDroppedOnClick(\'Topic\')">Topic</th>' +
                             '<th onclick="sortDroppedOnClick(\'Units\')">Units</th>' +
                             '<th onclick="sortDroppedOnClick(\'Status\')">Status</th>' +
+                            '<th>Conf. Of Participation</th>' +
                             '<th>ASR</th>' +
                             '</tr>' +
                             '</thead>' +
@@ -4794,6 +4803,9 @@
                                 '</td>' +
                                 '<td>' +
                                 result[i].classInfo.ENRL_STATUS_REASON__c +
+                                '</td>' +
+                                '<td>' +
+                                result[i].classInfo.CONFIRMATION_OF_PARTICIPATION__c +
                                 '</td>' +
                                 '<td>' +
                                 '--' +

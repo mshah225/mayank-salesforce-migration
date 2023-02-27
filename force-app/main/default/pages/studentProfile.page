@@ -4172,7 +4172,7 @@
                 'DisplayUrl, EARN_CREDIT__c, EMPLID__c, ENRL_STATUS_REASON__c, ExternalId, ' +
                 'FT_FULL_NAME__c, Id, SCH_DAILY_TIME__c, SCH_HTML_DAY1__c, SESSION_CODE__c, ' +
                 'SSR_CLSTOPIC_DESCR__c, SSR_MTG_LOC_LONG__c, STDNT_ENRL_STATUS__c, STRM__c,  ' +
-                'SUBJECT__c, TERM_DESCR30__c, UNT_TAKEN__c, VALID_ATTEMPT__c   ' +
+                'SUBJECT__c, TERM_DESCR30__c, UNT_TAKEN__c, VALID_ATTEMPT__c, CONFIRMATION_OF_PARTICIPATION__c ' +
                 'FROM PS_ASU_SP_CLASS_V__x  ' +
                 "WHERE EMPLID__c = '{!theContact.EMPLID__c}'  " +
                 'ORDER BY STRM__c DESC, CLASS_NBR__c ASC';
@@ -4357,6 +4357,7 @@
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Dates\')">Dates</th>' +
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Location\')">Location</th>' +
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Grade\')">Grade</th>' +
+                                                '<th scope="col">Conf. Of Participation</th>' +
                                                 '<th scope="col">ASR</th>' +
                                                 '</tr>' +
                                                 '</thead>' +
@@ -4414,6 +4415,9 @@
                                                     '<td data-header="Grade">' +
                                                     result.enrolledClasses[i].CRSE_GRADE_OFF__c +
                                                     '</td>' +
+                                                    '<td data-header="Participation">' +
+                                                    result.enrolledClasses[i].CONFIRMATION_OF_PARTICIPATION__c +
+                                                    '</td>'
                                                     "<td style='display:none'>" +
                                                     result.enrolledClasses[i].EARN_CREDIT__c +
                                                     '' +

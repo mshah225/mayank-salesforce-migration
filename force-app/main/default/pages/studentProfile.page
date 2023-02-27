@@ -4583,16 +4583,17 @@
                 var displayStyle = 'none';
                 if (
                     (termCell.indexOf(searchTerm) >= 0 || searchTerm == 'All') &&
-                    (sessionCell.indexOf(searchSession) >= 0 || searchSession == 'All') &&
-                    classTable.rows[r].cells.size > 14
+                    (sessionCell.indexOf(searchSession) >= 0 || searchSession == 'All')
                 ) {
                     displayStyle = 'table-row';
-                    if (curGpa == '' && searchTerm != 'All')
+                    if (curGpa == '' && searchTerm != 'All' && classTable.rows[r].cells[15] != null)
                         curGpa = 'Term GPA: ' + classTable.rows[r].cells[15].innerHTML + '&nbsp;&nbsp;&nbsp';
-                    if (cumGpa == '') cumGpa = 'Cumulative GPA: ' + classTable.rows[r].cells[16].innerHTML;
+                    if (cumGpa == '' && classTable.rows[r].cells[16] != null) {
+                        cumGpa = 'Cumulative GPA: ' + classTable.rows[r].cells[16].innerHTML;
+                    }
                     if (
-                        classTable.rows[r].cells[14].innerHTML == 'YY' &&
-                        classTable.rows[r].cells[17].innerHTML != '{!currentTerm}'
+                        classTable.rows[r].cells[14] != null && classTable.rows[r].cells[14].innerHTML == 'YY' &&
+                        classTable.rows[r].cells[17] != null && classTable.rows[r].cells[17].innerHTML != '{!currentTerm}'
                     ) {
                         earnedUnits += Number(classTable.rows[r].cells[6].innerHTML);
                     }
@@ -4668,9 +4669,9 @@
                         html +=
                             '' +
                             '<tr>' +
-                            '<td>' +
+                            '<td><b>' +
                             result[i].classInfo.TERM_DESCR30__c +
-                            '</td>' +
+                            '</b></td>' +
                             '<td>' +
                             result[i].classInfo.SESSION_CODE__c +
                             '</td>' +
@@ -4780,9 +4781,9 @@
                             html +=
                                 '' +
                                 '<tr>' +
-                                '<td>' +
+                                '<td><b>' +
                                 result[i].classInfo.TERM_DESCR30__c +
-                                '</td>' +
+                                '</b></td>' +
                                 '<td>' +
                                 result[i].classInfo.SESSION_CODE__c +
                                 '</td>' +

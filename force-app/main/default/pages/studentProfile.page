@@ -4462,6 +4462,7 @@
                                                 '<div>* in Location column in the table above means: No Scheduled Meetings/Locations</div>';
 
                                             document.getElementById('ps_enrolled_classes').innerHTML = html;
+                                            sortEnrolledClassList('Term');
                                             cleanUpUndefined('ps_enrolled_classes');
                                         } else {
                                             document.getElementById('psEnrolledClassesErrors').innerHTML =
@@ -4586,11 +4587,11 @@
                 ) {
                     displayStyle = 'table-row';
                     if (curGpa == '' && searchTerm != 'All')
-                        curGpa = 'Term GPA: ' + classTable.rows[r].cells[14].innerHTML + '&nbsp;&nbsp;&nbsp';
-                    if (cumGpa == '') cumGpa = 'Cumulative GPA: ' + classTable.rows[r].cells[15].innerHTML;
+                        curGpa = 'Term GPA: ' + classTable.rows[r].cells[15].innerHTML + '&nbsp;&nbsp;&nbsp';
+                    if (cumGpa == '') cumGpa = 'Cumulative GPA: ' + classTable.rows[r].cells[16].innerHTML;
                     if (
-                        classTable.rows[r].cells[13].innerHTML == 'YY' &&
-                        classTable.rows[r].cells[16].innerHTML != '{!currentTerm}'
+                        classTable.rows[r].cells[14].innerHTML == 'YY' &&
+                        classTable.rows[r].cells[17].innerHTML != '{!currentTerm}'
                     ) {
                         earnedUnits += Number(classTable.rows[r].cells[6].innerHTML);
                     }
@@ -4735,7 +4736,7 @@
                     html += '<div>* in Location column in the table above means: No Scheduled Meetings/Locations</div>';
 
                     document.getElementById('ps_enrolled_classes').innerHTML = html;
-                    filterClasses();
+                    sortEnrolledClassList('Term', 'DESC');
                     cleanUpUndefined('ps_enrolled_classes');
                 },
                 {buffer: false, escape: true, timeout: 120000}

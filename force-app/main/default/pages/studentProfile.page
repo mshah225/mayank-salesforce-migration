@@ -4583,7 +4583,8 @@
                 var displayStyle = 'none';
                 if (
                     (termCell.indexOf(searchTerm) >= 0 || searchTerm == 'All') &&
-                    (sessionCell.indexOf(searchSession) >= 0 || searchSession == 'All')
+                    (sessionCell.indexOf(searchSession) >= 0 || searchSession == 'All') &&
+                    classTable.rows[r].cells.size > 14
                 ) {
                     displayStyle = 'table-row';
                     if (curGpa == '' && searchTerm != 'All')

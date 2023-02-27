@@ -4462,7 +4462,7 @@
                                                 '<div>* in Location column in the table above means: No Scheduled Meetings/Locations</div>';
 
                                             document.getElementById('ps_enrolled_classes').innerHTML = html;
-                                            sortEnrolledClassList('Term', 'DESC');
+                                            sortEnrolledClassList('Term', true);
                                             cleanUpUndefined('ps_enrolled_classes');
                                         } else {
                                             document.getElementById('psEnrolledClassesErrors').innerHTML =

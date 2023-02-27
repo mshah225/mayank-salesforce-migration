@@ -4462,7 +4462,7 @@
                                                 '<div>* in Location column in the table above means: No Scheduled Meetings/Locations</div>';
 
                                             document.getElementById('ps_enrolled_classes').innerHTML = html;
-                                            sortEnrolledClassList('Term');
+                                            sortEnrolledClassList('Term', 'DESC');
                                             cleanUpUndefined('ps_enrolled_classes');
                                         } else {
                                             document.getElementById('psEnrolledClassesErrors').innerHTML =
@@ -4736,7 +4736,7 @@
                     html += '<div>* in Location column in the table above means: No Scheduled Meetings/Locations</div>';
 
                     document.getElementById('ps_enrolled_classes').innerHTML = html;
-                    sortEnrolledClassList('Term', 'DESC');
+                    filterClasses();
                     cleanUpUndefined('ps_enrolled_classes');
                 },
                 {buffer: false, escape: true, timeout: 120000}

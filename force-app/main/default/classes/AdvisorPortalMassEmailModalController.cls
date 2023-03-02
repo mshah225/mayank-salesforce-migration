@@ -23,6 +23,14 @@ public class AdvisorPortalMassEmailModalController {
             );
         }
 
+        // Get all contact ids
+        Map<Id, Case[]> contactIdToCasesMap = new Map<Id, List<Case>>();
+        for (AdvisorPortalContact contactWrapper : contactWrappersList) {
+            if (!contactIdToCasesMap.containsKey(contactWrapper.portalContact.Id)) {
+                contactIdToCasesMap.put(contactWrapper.portalContact.Id, new List<Case>());
+            }
+        }
+
         // Get all case ids
         List<Id> allCaseIds = new List<Id>();
         for (AdvisorPortalContact contactWrapper : contactWrappersList) {
@@ -36,8 +44,7 @@ public class AdvisorPortalMassEmailModalController {
             [SELECT Id, ContactId, OwnerId, Most_Recent_Queue__c, CreatedDate FROM Case WHERE Id IN :allCaseIds]
         );
 
-        // Construct map
-        Map<Id, Case[]> contactIdToCasesMap = new Map<Id, List<Case>>();
+        // For each contact, add in the cases
         for (Case c : cases) {
             if (!contactIdToCasesMap.containsKey(c.ContactId)) {
                 contactIdToCasesMap.put(c.ContactId, new List<Case>());

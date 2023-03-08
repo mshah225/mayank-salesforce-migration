@@ -4408,6 +4408,7 @@
                                                 '<div>* in Location column in the table above means: No Scheduled Meetings/Locations</div>';
 
                                             document.getElementById('ps_enrolled_classes').innerHTML = html;
+                                            sortEnrolledClassList('Term', true);
                                             cleanUpUndefined('ps_enrolled_classes');
                                         } else {
                                             document.getElementById('psEnrolledClassesErrors').innerHTML =
@@ -4432,6 +4433,7 @@
                                                 '<th scope="col" onclick="sortDroppedOnClick(\'Topic\')">Topic</th>' +
                                                 '<th scope="col" onclick="sortDroppedOnClick(\'Units\')">Units</th>' +
                                                 '<th scope="col" onclick="sortDroppedOnClick(\'Status\')">Status</th>' +
+                                                '<th scope="col">Conf. Of Participation</th>' +
                                                 '<th scope="col">ASR</th>' +
                                                 '</tr>' +
                                                 '</thead>' +
@@ -4466,6 +4468,9 @@
                                                     '</td>' +
                                                     '<td data-header="Status">' +
                                                     result.droppedClasses[i].ENRL_STATUS_REASON__c +
+                                                    '</td>' +
+                                                    '<td data-header="Participation">' +
+                                                    result.droppedClasses[i].CONFIRMATION_OF_PARTICIPATION__c +
                                                     '</td>' +
                                                     '<td data-header="ASR">' +
                                                     '--' +
@@ -4527,12 +4532,14 @@
                     (sessionCell.indexOf(searchSession) >= 0 || searchSession == 'All')
                 ) {
                     displayStyle = 'table-row';
-                    if (curGpa == '' && searchTerm != 'All')
-                        curGpa = 'Term GPA: ' + classTable.rows[r].cells[14].innerHTML + '&nbsp;&nbsp;&nbsp';
-                    if (cumGpa == '') cumGpa = 'Cumulative GPA: ' + classTable.rows[r].cells[15].innerHTML;
+                    if (curGpa == '' && searchTerm != 'All' && classTable.rows[r].cells[15] != null)
+                        curGpa = 'Term GPA: ' + classTable.rows[r].cells[15].innerHTML + '&nbsp;&nbsp;&nbsp';
+                    if (cumGpa == '' && classTable.rows[r].cells[16] != null) {
+                        cumGpa = 'Cumulative GPA: ' + classTable.rows[r].cells[16].innerHTML;
+                    }
                     if (
-                        classTable.rows[r].cells[13].innerHTML == 'YY' &&
-                        classTable.rows[r].cells[16].innerHTML != '{!currentTerm}'
+                        classTable.rows[r].cells[14] != null && classTable.rows[r].cells[14].innerHTML == 'YY' &&
+                        classTable.rows[r].cells[17] != null && classTable.rows[r].cells[17].innerHTML != '{!currentTerm}'
                     ) {
                         earnedUnits += Number(classTable.rows[r].cells[6].innerHTML);
                     }
@@ -4596,6 +4603,7 @@
                         '<th onclick="sortEnrolledOnClick(\'Dates\')">Dates</th>' +
                         '<th onclick="sortEnrolledOnClick(\'Location\')">Location</th>' +
                         '<th onclick="sortEnrolledOnClick(\'Grade\')">Grade</th>' +
+                        '<th scope="col">Conf. Of Participation</th>' +
                         '<th>ASR</th>' +
                         '</tr>' +
                         '</thead>' +
@@ -4607,9 +4615,9 @@
                         html +=
                             '' +
                             '<tr>' +
-                            '<td>' +
+                            '<td><b>' +
                             result[i].classInfo.TERM_DESCR30__c +
-                            '</td>' +
+                            '</b></td>' +
                             '<td>' +
                             result[i].classInfo.SESSION_CODE__c +
                             '</td>' +
@@ -4647,6 +4655,9 @@
                             '</td>' +
                             '<td>' +
                             result[i].classInfo.CRSE_GRADE_OFF__c +
+                            '</td>' +
+                            '<td>' +
+                            result[i].classInfo.CONFIRMATION_OF_PARTICIPATION__c +
                             '</td>' +
                             "<td style='display:none'>" +
                             result[i].classInfo.EARN_CREDIT__c +
@@ -4706,6 +4717,7 @@
                             '<th onclick="sortDroppedOnClick(\'Topic\')">Topic</th>' +
                             '<th onclick="sortDroppedOnClick(\'Units\')">Units</th>' +
                             '<th onclick="sortDroppedOnClick(\'Status\')">Status</th>' +
+                            '<th>Conf. Of Participation</th>' +
                             '<th>ASR</th>' +
                             '</tr>' +
                             '</thead>' +
@@ -4715,9 +4727,9 @@
                             html +=
                                 '' +
                                 '<tr>' +
-                                '<td>' +
+                                '<td><b>' +
                                 result[i].classInfo.TERM_DESCR30__c +
-                                '</td>' +
+                                '</b></td>' +
                                 '<td>' +
                                 result[i].classInfo.SESSION_CODE__c +
                                 '</td>' +
@@ -4740,6 +4752,9 @@
                                 '</td>' +
                                 '<td>' +
                                 result[i].classInfo.ENRL_STATUS_REASON__c +
+                                '</td>' +
+                                '<td>' +
+                                result[i].classInfo.CONFIRMATION_OF_PARTICIPATION__c +
                                 '</td>' +
                                 '<td>' +
                                 '--' +

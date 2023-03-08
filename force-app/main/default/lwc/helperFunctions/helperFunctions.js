@@ -89,3 +89,25 @@ export function niceLog(title, message, type) {
 
     loggingFunc(title, message);
 }
+
+let fixedYOffset = null; // state variable for finding y offset
+/**
+ * Salesforce sometimes does weird stuff which can cause position:fixed;top:0px to not align with the top of the viewport
+ * One case where this can happen is with modals launched by a record action.c/advisorPortalA
+ *
+ * This function returns the offset so that, when using position:fixed, you know how many pixels to subtract from the desired location
+ *
+ * @param {Node} attachRoot Node where we ca .appendChild and .removeChild for the created element
+ * @returns An integer indicating how many pixels from the top of the viewport position:fixed;top:0px is
+ */
+export function getFixedYOffset(attachRoot) {
+    if (fixedYOffset === null) {
+        const elem = document.createElement('div');
+        elem.style.position = 'fixed';
+        elem.style.top = '0px';
+        attachRoot.appendChild(elem);
+        fixedYOffset = elem.getBoundingClientRect().top;
+        attachRoot.removeChild(elem);
+    }
+    return fixedYOffset;
+}

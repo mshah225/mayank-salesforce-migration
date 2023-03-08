@@ -1254,6 +1254,12 @@ global with sharing class StudentProfileController {
         BookPaymentWrapper bookPaymentWrap = StudentProfileCallout.getBookPayments(contactEmplid);
         bookPaymentWrap.aid_years.sort();
         return bookPaymentWrap; 
+    }  
+
+    @RemoteAction
+    global static TuitionResidencyWrapper getTuitionResidencyStatus(String contactEmplid) {
+        TuitionResidencyWrapper residencyStatus = StudentProfileCallout.getTuitionResidencyStatus(contactEmplid);
+        return residencyStatus; 
     }    
 
     global class FinancialAidWrapper {

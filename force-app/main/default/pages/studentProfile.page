@@ -957,8 +957,9 @@
                                                     <tr>
                                                         <th>Residency</th>
                                                         <td>
-                                                            {!IF(ISBLANK(studentProgram.Residency__c), '--',
-                                                            studentProgram.Residency__c)}
+                                                            <div id="residencyStatus">
+                                                                <i class="fa fa-spinner fa-pulse"></i>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -3275,6 +3276,7 @@
             loadDepositStatus();
             loadRenewableAid();
             loadBookPayment();
+            loadResidencyStatus();
         }
 
         function loadRemoteSunCardPhoto() {
@@ -5834,6 +5836,29 @@
                     } else {
                         document.getElementById('bookPaymentHeader').style.display = "none"; 
                         document.getElementById('bookPaymentBody').style.display = "none"; 
+                    }
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+
+        function loadResidencyStatus() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getBookPayments}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    if (result.tuition_residency.size > 0) {
+                        var html;
+
+                        if (result.tuition_residency[0].residency == null || result.tuition_residency[0].residency == '') {
+                            html = '--';
+                        } else {
+                            html = result.tuition_residency[0].residency;
+                        }                         
+
+                        document.getElementById('residencyStatus').innerHTML = html;
+                    } else {
+                        document.getElementById('residencyStatus').innerHTML = "--"; 
                     }
                 },
                 {buffer: false, escape: true, timeout: 120000}

@@ -13,7 +13,7 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
             return getFinancialAidChargeHistory();
         } else if (req.getEndPoint().contains('/account/balance')) {
             return getFinancialAidAccountBalance();
-        } else if (req.getEndPoint().contains('/account/refunds')) {
+        } else if (req.getEndPoint().contains('/account/recent-refunds')) {
             return getFinancialAidRefunds();
         } else if (req.getEndPoint().contains('/account/deposit-status')) {
             return getDepositStatus();

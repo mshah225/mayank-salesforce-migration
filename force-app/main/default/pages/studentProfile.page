@@ -5867,7 +5867,7 @@
                 '{!$RemoteAction.StudentProfileController.getTuitionResidencyStatus}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
-                    if (result.tuition_residency.length > 0) {
+                    if (result.tuition_residency != null && result.tuition_residency.length > 0) {
                         var html;
 
                         if (result.tuition_residency[0].residency == null || result.tuition_residency[0].residency == '') {
@@ -5950,23 +5950,23 @@
             html +=
                 '<tr>' +
                 '<td>' +
-                'Overall SAP Status'
+                '<b>Overall SAP Status</b>' +
                 '</td>' +
-                '<td>' +
+                '<td><b>' +
                     sapForSelectedTerm[0].sapDescription +
-                '</td>' +
-                '<td>' +
+                '</b></td>' +
+                '<td><b>' +
                     sapForSelectedTerm[1].sapDescription +
-                '</td>' +
-                '<td>' +
+                '</b></td>' +
+                '<td><b>' +
                     sapForSelectedTerm[2].sapDescription +
-                '</td>' +
+                '</b></td>' +
                 '</tr>';
 
             html +=
                 '<tr>' +
                 '<td>' +
-                'Pace Rate'
+                'Pace Rate' +
                 '</td>' +
                 '<td>' +
                     sapForSelectedTerm[0].paceRateDescription +
@@ -5982,7 +5982,7 @@
             html +=
                 '<tr>' +
                 '<td>' +
-                'Maximum Credit Hour'
+                'Maximum Credit Hour' +
                 '</td>' +
                 '<td>' +
                     sapForSelectedTerm[0].maximumHourDescription +
@@ -5998,7 +5998,7 @@
             html +=
                 '<tr>' +
                 '<td>' +
-                'Minimum GPA'
+                'Minimum GPA' +
                 '</td>' +
                 '<td>' +
                     sapForSelectedTerm[0].minimumGpaDescription +

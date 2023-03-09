@@ -1262,6 +1262,24 @@ global with sharing class StudentProfileController {
         return residencyStatus; 
     }    
 
+    @RemoteAction
+    global static Map<String, List<SAPWrapper.cls_sap>> getAcademicProgress(String contactEmplid) {
+        SAPWrapper academicProgressWrapper = StudentProfileCallout.getAcademicProgress(contactEmplid);
+        
+        Map<String, List<SAPWrapper.cls_sap>> academicYearToSAP = new Map<String, List<SAPWrapper.cls_sap>>();
+
+        if (academicProgressWrapper == null) {
+            return null;
+        }
+
+        for (SAPWrapper.cls_academic_year yearsWithSAP : academicProgressWrapper.academic_year) {
+            academicYearToSAP.put(yearsWithSAP.aid_year, yearsWithSAP.sap);
+        }
+
+        return academicYearToSAP;
+
+    }
+
     global class FinancialAidWrapper {
         public Set<String> aidYears { get; set; }
         public List<Financial_Aid_Detail__c> summaryRecords { get; set; }

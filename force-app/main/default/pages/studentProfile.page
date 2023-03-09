@@ -1281,6 +1281,25 @@
                                 <div class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
+                                        &nbsp;Satisfactory Academic Progress
+                                    </h4>
+                                </div>
+
+                                <div style="overflow: auto; max-height: 400px">
+                                    <div id="sapErrors"></div>
+                                    <div id="sapList">
+                                        <apex:form >
+                                            <div style="margin-bottom: 15px" id="selectListForSAP">
+                                                <i class="fa fa-spinner fa-pulse"></i>
+                                            </div>
+                                            <div id="sapTable"></div>
+                                        </apex:form>
+                                    </div>
+                                </div>
+
+                                <div class="page-header-smaller">
+                                    <h4>
+                                        <i class="fa fa-caret-down"></i>
                                         &nbsp;Financial Aid and Scholarships Awards
                                     </h4>
                                 </div>
@@ -5871,6 +5890,85 @@
             } else {
                 return stringToCheck;
             }
+        }
+
+        var sapMap = new Map();
+
+        function loadAcademicProgress() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getAcademicProgress}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    var keySet = Object.keys(result);
+                    var valueSet = Object.values(result);
+
+                    if (keySet.length == null || keySet.length == 0) {
+                        document.getElementById('selectListForSAP').innerHTML =
+                            'There is currently no Satisfactory Academic Progress information available for this student';
+                        return;
+                    }
+
+                    for (var i = 0; i < keySet.length; i++) {
+                        sapMap.set(keySet[i], valueSet[i]);
+                    }
+                    var selectHtml =
+                        "<label for='sapSelectOptions'>Academic Year:&nbsp;</label><select id='sapSelectOptions' onchange='buildSAPTable()'>";
+                    for (var i = 0; i < keySet.length; i++) {
+                        selectHtml += '<option ';
+                        selectHtml += " value='" + keySet[i] + "'>" + keySet[i] + '</option>';
+                    }
+                    selectHtml += '</select>&nbsp;&nbsp;';
+                    document.getElementById('selectListForSAP').innerHTML = selectHtml;
+
+                    buildSAPTable();
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+
+        function buildSAPTable() {
+            var selectedTerm = document.getElementById('sapSelectOptions').value;
+            var sapForSelectedTerm = sapMap.get(selectedTerm);
+
+            var html = '';
+
+            html +=
+                '' +
+                "<div class='table-responsive'>" +
+                "<table class='table table-striped table-bordered'> " +
+                '<thead>' +
+                '<tr>' +
+                '<th></th>' +
+                '<th>Fall</th>' +
+                '<th>Spring</th>' +
+                '<th>Summer</th>' +
+                '</tr>' +
+                '</thead>' +
+                '<tbody>';
+
+            var chargeHistoryDetails = chargeHistoryForSelectedTerm.charge_details;
+
+            for (var j = 0; j < chargeHistoryDetails.length; j++) {
+                html +=
+                    '<tr>' +
+                    '<td>' +
+                    'Overall SAP Status'
+                    '</td>' +
+                    '<td>' +
+                    chargeHistoryDetails[j].description +
+                    '</td>' +
+                    '<td>' +
+                    formatter.format(chargeHistoryDetails[j].charge) +
+                    '</td>' +
+                    '<td>' +
+                    formatter.format(chargeHistoryDetails[j].payment) +
+                    '</td>' +
+                    '</tr>';
+            }
+
+            html += '</tbody></table></div>';
+
+            document.getElementById('sapTable').innerHTML = html;
         }
 
     </script>

@@ -129,7 +129,7 @@ global with sharing class StudentProfileCallout {
         FinancialAidRefundWrapper refundsForStudent;
 
         HttpRequest req = new HttpRequest();
-        req.setEndpoint('callout:Student_Finances/students/' + emplid + '/account/refunds');
+        req.setEndpoint('callout:Student_Finances/students/' + emplid + '/account/recent-refunds');
         req.setMethod('GET');
         Http http = new Http();
         HTTPResponse res = http.send(req);

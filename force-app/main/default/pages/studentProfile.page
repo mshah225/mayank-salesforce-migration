@@ -3296,6 +3296,7 @@
             loadRenewableAid();
             loadBookPayment();
             loadResidencyStatus();
+            loadAcademicProgress();
         }
 
         function loadRemoteSunCardPhoto() {
@@ -5946,25 +5947,69 @@
                 '</thead>' +
                 '<tbody>';
 
-            var chargeHistoryDetails = chargeHistoryForSelectedTerm.charge_details;
+            html +=
+                '<tr>' +
+                '<td>' +
+                'Overall SAP Status'
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[0].sapDescription +
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[1].sapDescription +
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[2].sapDescription +
+                '</td>' +
+                '</tr>';
 
-            for (var j = 0; j < chargeHistoryDetails.length; j++) {
-                html +=
-                    '<tr>' +
-                    '<td>' +
-                    'Overall SAP Status'
-                    '</td>' +
-                    '<td>' +
-                    chargeHistoryDetails[j].description +
-                    '</td>' +
-                    '<td>' +
-                    formatter.format(chargeHistoryDetails[j].charge) +
-                    '</td>' +
-                    '<td>' +
-                    formatter.format(chargeHistoryDetails[j].payment) +
-                    '</td>' +
-                    '</tr>';
-            }
+            html +=
+                '<tr>' +
+                '<td>' +
+                'Pace Rate'
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[0].paceRateDescription +
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[1].paceRateDescription +
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[2].paceRateDescription +
+                '</td>' +
+                '</tr>';
+
+            html +=
+                '<tr>' +
+                '<td>' +
+                'Maximum Credit Hour'
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[0].maximumHourDescription +
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[1].maximumHourDescription +
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[2].maximumHourDescription +
+                '</td>' +
+                '</tr>';
+
+            html +=
+                '<tr>' +
+                '<td>' +
+                'Minimum GPA'
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[0].minimumGpaDescription +
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[1].minimumGpaDescription +
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[2].minimumGpaDescription +
+                '</td>' +
+                '</tr>';
 
             html += '</tbody></table></div>';
 

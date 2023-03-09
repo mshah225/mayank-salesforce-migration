@@ -1258,8 +1258,12 @@ global with sharing class StudentProfileController {
 
     @RemoteAction
     global static TuitionResidencyWrapper getTuitionResidencyStatus(String contactEmplid) {
-        TuitionResidencyWrapper residencyStatus = StudentProfileCallout.getTuitionResidencyStatus(contactEmplid);
-        return residencyStatus; 
+        try {
+            TuitionResidencyWrapper residencyStatus = StudentProfileCallout.getTuitionResidencyStatus(contactEmplid);
+            return residencyStatus; 
+        } catch (Exception e) {
+            return null;
+        }
     }    
 
     @RemoteAction

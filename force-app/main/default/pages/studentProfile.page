@@ -5867,7 +5867,7 @@
                 '{!$RemoteAction.StudentProfileController.getTuitionResidencyStatus}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
-                    if (result.tuition_residency != null && result.tuition_residency.length > 0) {
+                    if (result != null && result.tuition_residency.length > 0) {
                         var html;
 
                         if (result.tuition_residency[0].residency == null || result.tuition_residency[0].residency == '') {

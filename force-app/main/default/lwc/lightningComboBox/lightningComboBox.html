@@ -42,12 +42,7 @@
                     ></div>
                 </div>
                 <!-- Dropdown List -->
-                <div
-                    id="listbox-id"
-                    class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid"
-                    role="listbox"
-                    onkeydown={keyboardController}
-                >
+                <div id="listbox-id" class={dropdownClasses} role="listbox" onkeydown={keyboardController}>
                     <ul class="slds-listbox slds-listbox_vertical recordListBox" role="presentation">
                         <template for:each={options} for:item="option">
                             <template if:true={option.isLabel}>

@@ -1,7 +1,7 @@
 import {LightningElement, api} from 'lwc';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import {CloseActionScreenEvent} from 'lightning/actions';
-import {getRecordNotifyChange} from 'lightning/uiRecordApi';
+import {notifyRecordUpdateAvailable} from 'lightning/uiRecordApi';
 
 export default class LightningCaseTransferModalLex extends LightningElement {
     @api recordId;
@@ -26,7 +26,7 @@ export default class LightningCaseTransferModalLex extends LightningElement {
             .then(() => {
                 this.closeModal();
                 this.sendToast('Success', 'Case transferred!', 'success');
-                getRecordNotifyChange([{recordId: this.recordId}]); // trigger Lightning Experience tab refresh
+                notifyRecordUpdateAvailable([{recordId: this.recordId}]); // trigger Lightning Experience tab refresh
             })
             .catch((err) => {
                 this.closeModal();

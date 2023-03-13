@@ -214,7 +214,7 @@ global with sharing class StudentProfileCallout {
         SAPWrapper academicProgressForStudent;
 
         HttpRequest req = new HttpRequest();
-        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/sap');
+        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/sap-summary');
         req.setMethod('GET');
         Http http = new Http();
         HTTPResponse res = http.send(req);

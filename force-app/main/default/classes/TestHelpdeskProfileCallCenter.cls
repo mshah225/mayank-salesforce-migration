@@ -19,7 +19,7 @@ public class TestHelpdeskProfileCallCenter {
     }
 
     private static String getCallCenterId() {
-        CallCenter cc = [SELECT Id FROM CallCenter WHERE InternalName = 'inContactCallCenter'];
+        CallCenter cc = [SELECT Id FROM CallCenter WHERE InternalName = 'NICECXoneClassic'];
         return cc.Id;
     }
 

@@ -158,4 +158,38 @@ global with sharing class StudentProfileCallout {
 
         return depositsForStudent;
     }
+
+    global static RenewableAidWrapper getRenewableAid(String emplid) {
+        RenewableAidWrapper renewableAidForStudent;
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/renewable-aid');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            renewableAidForStudent = RenewableAidWrapper.parse(responseBody);
+        }
+
+        return renewableAidForStudent;
+    }
+
+    global static BookPaymentWrapper getBookPayments(String emplid) {
+        BookPaymentWrapper bookPaymentsForStudent;
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/ebpo');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            bookPaymentsForStudent = BookPaymentWrapper.parse(responseBody);
+        }
+
+        return bookPaymentsForStudent;
+    }
 }

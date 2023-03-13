@@ -2,12 +2,7 @@
 <template>
     <lightning-quick-action-panel header="Transfer Case">
         <template if:true={caseIds}>
-            <div class="mnh-300px">
-                <c-lightning-case-transfer-view
-                    mass-transfer="false"
-                    case-ids={caseIds}
-                ></c-lightning-case-transfer-view>
-            </div>
+            <c-lightning-case-transfer-view mass-transfer="false" case-ids={caseIds}></c-lightning-case-transfer-view>
         </template>
         <div slot="footer">
             <lightning-button variant="neutral" label="Cancel" onclick={closeModal}></lightning-button>

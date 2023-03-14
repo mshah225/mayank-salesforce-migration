@@ -29,11 +29,20 @@ global class SAPWrapper {
 	}
 
 	global static SAPWrapper parse(String json) {
+		String currentTerm = [SELECT CurrTerm__c FROM StudentTerm__c LIMIT 1].CurrTerm__c;
+		String currentAidYear = [SELECT Aid_Year__c FROM Term__c WHERE PeopleSoft_Code__c =: currentTerm LIMIT 1].Aid_Year__c;
+
+
 		SAPWrapper wrapperResults = (SAPWrapper) System.JSON.deserialize(json, SAPWrapper.class);
 
 		wrapperResults.academic_year.sort();
 
+		List<cls_academic_year> currentAndFutureYears = new List<cls_academic_year>();
+
 		for (cls_academic_year academicYear : wrapperResults.academic_year) {
+			if (academicYear.aid_year < currentAidYear) {
+				continue;
+			}
 			if (academicYear.sap.size() != 3) {
 				Boolean fall = false;
 				Boolean spring = false;
@@ -53,34 +62,36 @@ global class SAPWrapper {
 					cls_sap fallSap = new cls_sap();
 					String adjustedYear = '' + (Integer.valueOf(academicYear.aid_year) - 1);
 					fallSap.term = '2' + adjustedYear.right(2) + '7';
-					fallSap.sapDescription = 'Undetermined';
-					fallSap.paceRateDescription = 'Undetermined';
-					fallSap.maximumHourDescription = 'Undetermined';
-					fallSap.minimumGpaDescription = 'Undetermined';
+					fallSap.sapDescription = '--';
+					fallSap.paceRateDescription = '--';
+					fallSap.maximumHourDescription = '--';
+					fallSap.minimumGpaDescription = '--';
 					academicYear.sap.add(fallSap);
 				}
 				if (!spring) {
 					cls_sap springSap = new cls_sap();
 					springSap.term = '2' + academicYear.aid_year.right(2) + '1';
-					springSap.sapDescription = 'Undetermined';
-					springSap.paceRateDescription = 'Undetermined';
-					springSap.maximumHourDescription = 'Undetermined';
-					springSap.minimumGpaDescription = 'Undetermined';
+					springSap.sapDescription = '--';
+					springSap.paceRateDescription = '--';
+					springSap.maximumHourDescription = '--';
+					springSap.minimumGpaDescription = '--';
 					academicYear.sap.add(springSap);
 				}
 				if (!summer) {
 					cls_sap summerSap = new cls_sap();
 					summerSap.term = '2' + academicYear.aid_year.right(2) + '1';
-					summerSap.sapDescription = 'Undetermined';
-					summerSap.paceRateDescription = 'Undetermined';
-					summerSap.maximumHourDescription = 'Undetermined';
-					summerSap.minimumGpaDescription = 'Undetermined';
+					summerSap.sapDescription = '--';
+					summerSap.paceRateDescription = '--';
+					summerSap.maximumHourDescription = '--';
+					summerSap.minimumGpaDescription = '--';
 					academicYear.sap.add(summerSap);
 				}
 			}
 			academicYear.sap.sort();
+			currentAndFutureYears.add(academicYear);
 		}
 
+		wrapperResults.academic_year = currentAndFutureYears;
 		return wrapperResults;
 	}
 }

@@ -5940,9 +5940,9 @@
                 '<thead>' +
                 '<tr>' +
                 '<th></th>' +
-                '<th>Fall</th>' +
-                '<th>Spring</th>' +
-                '<th>Summer</th>' +
+                '<th>Fall ' + (selectedTerm - 1) + '</th>' +
+                '<th>Spring ' + selectedTerm + '</th>' +
+                '<th>Summer ' + selectedTerm + '</th>' +
                 '</tr>' +
                 '</thead>' +
                 '<tbody>';

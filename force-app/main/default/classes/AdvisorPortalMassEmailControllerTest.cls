@@ -94,17 +94,17 @@ private class AdvisorPortalMassEmailControllerTest {
         Map<Id, Case[]> mapping = new Map<Id, Case[]>();
         mapping.put(testContact.Id, testCases);
 
-        List<String> contactWrappersJSONList = new List<String>();
+        List<AdvisorPortalContact> contactWrappersListJSON = new List<AdvisorPortalContact>();
         AdvisorPortalContact advisorPortalContact = new AdvisorPortalContact(testContact);
         for (Case c : testCases) {
             AdvisorPortalCase advisorCase = new AdvisorPortalCase(c);
             advisorPortalContact.addCase(advisorCase);
         }
-        contactWrappersJSONList.add(JSON.serialize(advisorPortalContact));
+        contactWrappersListJSON.add(advisorPortalContact);
 
         Test.startTest();
         AdvisorPortalMassEmailModalController.createPortalEmailsStr(
-            contactWrappersJSONList,
+            JSON.serialize(contactWrappersListJSON),
             'Test Subject',
             'Testing some email body text.'
         );
@@ -181,13 +181,13 @@ private class AdvisorPortalMassEmailControllerTest {
         Contact testContact = new Contact(FirstName = 'Mister', LastName = 'Stark');
         insert testContact;
 
-        List<String> contactWrappersJSONList = new List<String>();
+        List<AdvisorPortalContact> contactWrappersListJSON = new List<AdvisorPortalContact>();
         AdvisorPortalContact advisorPortalContact = new AdvisorPortalContact(testContact);
-        contactWrappersJSONList.add(JSON.serialize(advisorPortalContact));
+        contactWrappersListJSON.add(advisorPortalContact);
 
         Test.startTest();
         AdvisorPortalMassEmailModalController.createPortalEmailsStr(
-            contactWrappersJSONList,
+            JSON.serialize(contactWrappersListJSON),
             'Test Subject',
             'Testing some email body text.'
         );

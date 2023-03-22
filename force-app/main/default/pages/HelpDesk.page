@@ -159,30 +159,57 @@
             color: #546990 !important;
         }
     </style>
-    <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3,
-            'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}" />
+    <apex:stylesheet
+        value="{!URLFOR($Resource.MyASUHeader4_3,
+            'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"
+    />
     <apex:outputPanel layout="block" style="margin-top: 10px; min-width: 1300px; overflow: auto; padding: 10px">
         <apex:form id="myform" html-novalidate="novalidate">
             <apex:actionFunction name="reRenderMessagePanel" reRender="messages" />
             <apex:pageMessages id="messages" escape="false" />
             <div id="first">
                 <apex:outputPanel id="innerfirst" layout="block">
-                    <apex:outputPanel id="innerfirstSearchContact" layout="block" rendered="{!isNewContactSelected = false}">
+                    <apex:outputPanel
+                        id="innerfirstSearchContact"
+                        layout="block"
+                        rendered="{!isNewContactSelected = false}"
+                    >
                         <apex:pageBlock title="{!IF(isContactSet, 'Contact Details', 'Contact Search')}" id="criteria">
                             <apex:pageBlockButtons id="duoAuthStatus" location="top">
-                                <div style="text-align: right;">
-                                    <i class="fa fa-check" aria-hidden="true" style="color:#78BE20; display:{!IF(isDuoAuthenticated, '', 'none')}" />
-                                    <i class="fa fa-times" aria-hidden="true" style="color:#E31C3D; display:{!IF(isDuoAuthenticated, 'none', '')}" />
+                                <div style="text-align: right">
+                                    <i
+                                        class="fa fa-check"
+                                        aria-hidden="true"
+                                        style="color:#78BE20; display:{!IF(isDuoAuthenticated, '', 'none')}"
+                                    />
+                                    <i
+                                        class="fa fa-times"
+                                        aria-hidden="true"
+                                        style="color:#E31C3D; display:{!IF(isDuoAuthenticated, 'none', '')}"
+                                    />
                                     <strong>Duo Authentication</strong>
                                 </div>
                             </apex:pageBlockButtons>
                             <apex:outputPanel id="alius-format178">
-                                <apex:pageMessage severity="warning" title="Duo Authentication" summary="The Caller did not complete DUO Authentication."
-                                    rendered="{!AND(hasANIPresent, !isDuoAuthenticated)}" />
-                                <apex:pageMessage severity="warning" title="Duo Authentication" summary="Phone Number was not provided, so an authentication check was not made."
-                                    rendered="{!NOT(hasANIPresent)}" />
+                                <apex:pageMessage
+                                    severity="warning"
+                                    title="Duo Authentication"
+                                    summary="The Caller did not complete DUO Authentication."
+                                    rendered="{!AND(hasANIPresent, !isDuoAuthenticated)}"
+                                />
+                                <apex:pageMessage
+                                    severity="warning"
+                                    title="Duo Authentication"
+                                    summary="Phone Number was not provided, so an authentication check was not made."
+                                    rendered="{!NOT(hasANIPresent)}"
+                                />
                             </apex:outputPanel>
-                            <apex:actionFunction name="searchServer" action="{!buildSearchString}" rerender="results,innersecond,messages" status="loadingStatus">
+                            <apex:actionFunction
+                                name="searchServer"
+                                action="{!buildSearchString}"
+                                rerender="results,innersecond,messages"
+                                status="loadingStatus"
+                            >
                                 <apex:param name="firstName" value="" />
 
                                 <apex:param name="lastName" value="" />
@@ -200,7 +227,12 @@
                                 <apex:param name="personalemail" value="" />
                             </apex:actionFunction>
 
-                            <apex:actionFunction name="toggleResults" action="{!toggleSort}" rerender="results,messages" status="loadingStatus">
+                            <apex:actionFunction
+                                name="toggleResults"
+                                action="{!toggleSort}"
+                                rerender="results,messages"
+                                status="loadingStatus"
+                            >
                                 <apex:param name="firstName" value="" />
 
                                 <apex:param name="lastName" value="" />
@@ -224,30 +256,67 @@
                                     <apex:PageBlockSectionItem />
                                     <apex:inputField value="{!contactsrch.firstname}" id="firstnamesrch" />
 
-                                    <apex:inputField value="{!contactsrch.lastname}" required="false" id="lastnamesrch" />
+                                    <apex:inputField
+                                        value="{!contactsrch.lastname}"
+                                        required="false"
+                                        id="lastnamesrch"
+                                    />
 
                                     <apex:inputField value="{!contactsrch.phone}" required="false" id="phonesrch" />
 
-                                    <apex:inputField value="{!contactsrch.birthdate}" required="false" style="width: 125px" id="birthdatesrch" />
+                                    <apex:inputField
+                                        value="{!contactsrch.birthdate}"
+                                        required="false"
+                                        style="width: 125px"
+                                        id="birthdatesrch"
+                                    />
 
-                                    <apex:inputText label="ASURITE ID" required="false" id="asuriteidsrch" value="{!contactsrch.ASURite_ID__c}" />
+                                    <apex:inputText
+                                        label="ASURITE ID"
+                                        required="false"
+                                        id="asuriteidsrch"
+                                        value="{!contactsrch.ASURite_ID__c}"
+                                    />
 
-                                    <apex:inputText label="EMPLID" required="false" id="emplidsrch" value="{!contactsrch.EMPLID__c}" />
+                                    <apex:inputText
+                                        label="EMPLID"
+                                        required="false"
+                                        id="emplidsrch"
+                                        value="{!contactsrch.EMPLID__c}"
+                                    />
 
-                                    <apex:inputField value="{!contactsrch.ASU_Email__c}" required="false" id="directoryemailsrch" />
+                                    <apex:inputField
+                                        value="{!contactsrch.ASU_Email__c}"
+                                        required="false"
+                                        id="directoryemailsrch"
+                                    />
 
-                                    <apex:inputField value="{!contactsrch.Personal_Email__c}" required="false" id="personalemailsrch" />
+                                    <apex:inputField
+                                        value="{!contactsrch.Personal_Email__c}"
+                                        required="false"
+                                        id="personalemailsrch"
+                                    />
 
                                     <apex:outputText value="{!callerID}" id="callerID" label="Caller ID" />
 
-                                    <apex:outputField value="{!contactsrch.Help_Desk_Provided_Phone__c}" id="helpDeskPhone" />
+                                    <apex:outputField
+                                        value="{!contactsrch.Help_Desk_Provided_Phone__c}"
+                                        id="helpDeskPhone"
+                                    />
 
                                     <apex:pageBlockSectionItem rendered="{!IF(selectedContactId != null, true,false)}">
                                         <apex:outputLabel for="detailLink" value="Contact Details" />
 
-                                        <apex:outputLink id="detailLink" onclick="openDetail('{!selectedContactId}', '{!contactName}'); return false;" style="text-decoration: none">
+                                        <apex:outputLink
+                                            id="detailLink"
+                                            onclick="openDetail('{!selectedContactId}', '{!contactName}'); return false;"
+                                            style="text-decoration: none"
+                                        >
                                             Open Detail Page&nbsp;&nbsp;
-                                            <i class="fa fa-external-link" style="margin-top: 2px; position: absolute"></i>
+                                            <i
+                                                class="fa fa-external-link"
+                                                style="margin-top: 2px; position: absolute"
+                                            ></i>
                                         </apex:outputLink>
                                     </apex:pageBlockSectionItem>
 
@@ -260,10 +329,17 @@
                                     <apex:pageBlockSectionItem id="alius-format179">
                                         <apex:outputLabel for="snLink" value="Service Now" />
 
-                                        <apex:outputLink id="snLink" target="_blank" onclick="openPage('https://asu.service-now.com/navpage.do'); return false;"
-                                            style="text-decoration: none">
+                                        <apex:outputLink
+                                            id="snLink"
+                                            target="_blank"
+                                            onclick="openPage('https://asu.service-now.com/navpage.do'); return false;"
+                                            style="text-decoration: none"
+                                        >
                                             Open Service Now&nbsp;&nbsp;
-                                            <i class="fa fa-external-link" style="margin-top: 2px; position: absolute"></i>
+                                            <i
+                                                class="fa fa-external-link"
+                                                style="margin-top: 2px; position: absolute"
+                                            ></i>
                                         </apex:outputLink>
                                     </apex:pageBlockSectionItem>
                                 </apex:pageBlockSection>
@@ -271,52 +347,88 @@
                                 <br />
                                 <div>
                                     <i>
-                                        <strong>Please note:</strong> Due to platform limitations on date searches, searching with
-                                        a birthdate may take longer than expected.
+                                        <strong>Please note:</strong> Due to platform limitations on date searches,
+                                        searching with a birthdate may take longer than expected.
                                     </i>
                                 </div>
                             </div>
 
-                            <div style="
+                            <div
+                                style="
                                     text-align: center;
                                     border-top: 1px solid #dbdbdb;
                                     padding-top: 10px;
                                     margin-top: 10px;
-                                ">
-                                <apex:commandButton id="searchBtn" value="Search" onClick="doSearch(false); return false;" rerender="results,innersecond,messages"
-                                    styleClass="customActionBtn" />
+                                "
+                            >
+                                <apex:commandButton
+                                    id="searchBtn"
+                                    value="Search"
+                                    onClick="doSearch(false); return false;"
+                                    rerender="results,innersecond,messages"
+                                    styleClass="customActionBtn"
+                                />
 
-                                <apex:commandButton id="contactSearchBtn" action="{!clearContactSearch}" value="Clear" immediate="true" reRender="innerfirst,innersecond,results"
-                                    status="loadingStatus" styleClass="customBtn" />
+                                <apex:commandButton
+                                    id="contactSearchBtn"
+                                    action="{!clearContactSearch}"
+                                    value="Clear"
+                                    immediate="true"
+                                    reRender="innerfirst,innersecond,results"
+                                    status="loadingStatus"
+                                    styleClass="customBtn"
+                                />
 
-                                <apex:commandButton action="{!newContact}" value="New Contact" reRender="innerfirst,innersecond,results" status="loadingStatus"
-                                    styleClass="customBtn" />
+                                <apex:commandButton
+                                    action="{!newContact}"
+                                    value="New Contact"
+                                    reRender="innerfirst,innersecond,results"
+                                    status="loadingStatus"
+                                    styleClass="customBtn"
+                                />
 
-                                <apex:commandButton action="{!setAsHelpDeskProvidedPhone}" immediate="true" value="Set as Help Desk Provided Phone" reRender="innerfirst"
-                                    rendered="{!IF(isContactSet && ($CurrentPage.parameters.ANI != null), true, false)}" styleClass="customBtn"
-                                    status="loadingStatus" />
+                                <apex:commandButton
+                                    action="{!setAsHelpDeskProvidedPhone}"
+                                    immediate="true"
+                                    value="Set as Help Desk Provided Phone"
+                                    reRender="innerfirst"
+                                    rendered="{!IF(isContactSet && ($CurrentPage.parameters.ANI != null), true, false)}"
+                                    styleClass="customBtn"
+                                    status="loadingStatus"
+                                />
 
                                 <apex:actionStatus id="loadingStatus">
                                     <apex:facet name="start">
-                                        <i class="fa fa-spinner fa-spin" style="
+                                        <i
+                                            class="fa fa-spinner fa-spin"
+                                            style="
                                                 margin-top: 8px;
                                                 margin-left: 5px;
                                                 font-size: 14pt;
                                                 color: #334b70;
                                                 position: absolute;
-                                            "></i>
+                                            "
+                                        ></i>
                                     </apex:facet>
                                 </apex:actionStatus>
                             </div>
                         </apex:pageBlock>
                     </apex:outputPanel>
 
-                    <apex:outputPanel id="innerfirstNewContact" layout="block" rendered="{!isNewContactSelected = true}">
+                    <apex:outputPanel
+                        id="innerfirstNewContact"
+                        layout="block"
+                        rendered="{!isNewContactSelected = true}"
+                    >
                         <apex:pageBlock title="New Contact" id="newcon">
                             <apex:pageBlockSection id="newconsection" showHeader="false" columns="2">
                                 <apex:inputField value="{!mycontact.Firstname}" />
 
-                                <apex:inputField value="{!mycontact.Lastname}" required="false" id="newcontactlastname" />
+                                <apex:inputField
+                                    value="{!mycontact.Lastname}"
+                                    required="false"
+                                    id="newcontactlastname"
+                                />
 
                                 <apex:inputField value="{!mycontact.Email}" />
 
@@ -334,25 +446,44 @@
 
                                 <apex:inputField value="{!mycontact.MailingPostalCode}" />
 
-                                <apex:inputField value="{!mycontact.MailingCountryCode}" label="" style="display: none; visibility: hidden" />
+                                <apex:inputField
+                                    value="{!mycontact.MailingCountryCode}"
+                                    label=""
+                                    style="display: none; visibility: hidden"
+                                />
                             </apex:pageBlockSection>
 
                             <apex:pageBlockButtons location="bottom">
-                                <apex:commandButton action="{!saveContact}" value="Save" reRender="innerfirst,innersecond,messages" status="loadingStatus2"
-                                    styleClass="customActionBtn" />
+                                <apex:commandButton
+                                    action="{!saveContact}"
+                                    value="Save"
+                                    reRender="innerfirst,innersecond,messages"
+                                    status="loadingStatus2"
+                                    styleClass="customActionBtn"
+                                />
 
-                                <apex:commandButton action="{!cancelNewContact}" immediate="true" value="Cancel" reRender="innerfirst,innersecond,results,messages"
-                                    status="loadingStatus2" styleClass="customBtn" onComplete="disableCaseFields();" />
+                                <apex:commandButton
+                                    action="{!cancelNewContact}"
+                                    immediate="true"
+                                    value="Cancel"
+                                    reRender="innerfirst,innersecond,results,messages"
+                                    status="loadingStatus2"
+                                    styleClass="customBtn"
+                                    onComplete="disableCaseFields();"
+                                />
 
                                 <apex:actionStatus id="loadingStatus2">
                                     <apex:facet name="start">
-                                        <i class="fa fa-spinner fa-spin" style="
+                                        <i
+                                            class="fa fa-spinner fa-spin"
+                                            style="
                                                 margin-top: 8px;
                                                 margin-left: 5px;
                                                 font-size: 14pt;
                                                 color: #334b70;
                                                 position: absolute;
-                                            "></i>
+                                            "
+                                        ></i>
                                     </apex:facet>
                                 </apex:actionStatus>
                             </apex:pageBlockButtons>
@@ -363,18 +494,41 @@
 
             <div id="second">
                 <apex:outputPanel id="innersecond" layout="block">
-                    <apex:outputPanel id="innersecondOpenCases" layout="block" rendered="{!NOT(isNewCaseSelected)
+                    <apex:outputPanel
+                        id="innersecondOpenCases"
+                        layout="block"
+                        rendered="{!NOT(isNewCaseSelected)
                                               && NOT(isExistingCaseSelected)
-                                              && NOT(isCloseCase)}">
+                                              && NOT(isCloseCase)}"
+                    >
                         <apex:pageBlock title="Cases" id="opencasespb">
                             <div style="height: 350px; overflow-y: auto; border-bottom: solid 1px #ccc">
-                                <apex:pageBlockTable value="{!cases}" var="case" id="opencasespbt" rendered="{!NOT(isNewContactSelected)
-                                                             && isContactSet}">
+                                <apex:pageBlockTable
+                                    value="{!cases}"
+                                    var="case"
+                                    id="opencasespbt"
+                                    rendered="{!NOT(isNewContactSelected)
+                                                             && isContactSet}"
+                                >
                                     <apex:column headerValue="">
-                                        <apex:commandLink action="{!setAsCase}" title="Set as Case" rerender="innerfirst,innersecond,results" id="setAsCaseId" status="loadingStatus3"
-                                            onComplete="disableCaseFields();">
-                                            <apex:param name="selectedCaseId" value="{!case.Ca.id}" assignTo="{!selectedCaseId}" />
-                                            <apex:param name="knowString" value="{!case.Ca.Subject}" assignTo="{!knowString}" />
+                                        <apex:commandLink
+                                            action="{!setAsCase}"
+                                            title="Set as Case"
+                                            rerender="innerfirst,innersecond,results"
+                                            id="setAsCaseId"
+                                            status="loadingStatus3"
+                                            onComplete="disableCaseFields();"
+                                        >
+                                            <apex:param
+                                                name="selectedCaseId"
+                                                value="{!case.Ca.id}"
+                                                assignTo="{!selectedCaseId}"
+                                            />
+                                            <apex:param
+                                                name="knowString"
+                                                value="{!case.Ca.Subject}"
+                                                assignTo="{!knowString}"
+                                            />
                                             <i class="fa fa-plus-circle" style="font-size: 14pt; color: #334b70"></i>
                                         </apex:commandLink>
                                     </apex:column>
@@ -394,34 +548,58 @@
                             </div>
 
                             <apex:pageBlockButtons location="bottom">
-                                <apex:commandButton id="newCaseButton" action="{!newCase}" value="New Case" disabled="{!NOT(isContactSet)}" reRender="innersecond"
-                                    styleClass="customActionBtn" status="loadingStatus3" />
+                                <apex:commandButton
+                                    id="newCaseButton"
+                                    action="{!newCase}"
+                                    value="New Case"
+                                    disabled="{!NOT(isContactSet)}"
+                                    reRender="innersecond"
+                                    styleClass="customActionBtn"
+                                    status="loadingStatus3"
+                                />
 
-                                <apex:commandButton id="studentProfileButton" onclick="openStudentProfile('{!contactsrch.EMPLID__c}', '{!contactName}'); return false;"
-                                    value="Student Profile" disabled="{!NOT(isContactSet && NOT(ISNULL(contactsrch.EMPLID__c) || contactsrch.EMPLID__c == ''))}"
-                                    reRender="innersecond" styleClass="customActionBtn" status="loadingStatus3" />
+                                <apex:commandButton
+                                    id="studentProfileButton"
+                                    onclick="openStudentProfile('{!contactsrch.EMPLID__c}', '{!contactName}'); return false;"
+                                    value="Student Profile"
+                                    disabled="{!NOT(isContactSet && NOT(ISNULL(contactsrch.EMPLID__c) || contactsrch.EMPLID__c == ''))}"
+                                    reRender="innersecond"
+                                    styleClass="customActionBtn"
+                                    status="loadingStatus3"
+                                />
 
                                 <apex:actionStatus id="loadingStatus3">
                                     <apex:facet name="start">
-                                        <i class="fa fa-spinner fa-spin" style="
+                                        <i
+                                            class="fa fa-spinner fa-spin"
+                                            style="
                                                 margin-top: 8px;
                                                 margin-left: 5px;
                                                 font-size: 14pt;
                                                 color: #334b70;
                                                 position: absolute;
-                                            "></i>
+                                            "
+                                        ></i>
                                     </apex:facet>
                                 </apex:actionStatus>
                             </apex:pageBlockButtons>
                         </apex:pageBlock>
                     </apex:outputPanel>
 
-                    <apex:outputPanel id="innersecondNewCase" layout="block" rendered="{!(isNewCaseSelected || isExistingCaseSelected) && NOT(isCloseCase)}">
+                    <apex:outputPanel
+                        id="innersecondNewCase"
+                        layout="block"
+                        rendered="{!(isNewCaseSelected || isExistingCaseSelected) && NOT(isCloseCase)}"
+                    >
                         <apex:pageBlock title="Case Details - {!mycase.CaseNumber}" id="case">
                             <div style="height: 335px; overflow-y: auto; margin: -10px">
                                 <fieldset id="caseFieldset">
                                     <apex:pageBlockSection columns="2" collapsible="false" id="pageSection">
-                                        <apex:inputField value="{!mycase.Subject}" html-autofocus="true" style="width: 90%" />
+                                        <apex:inputField
+                                            value="{!mycase.Subject}"
+                                            html-autofocus="true"
+                                            style="width: 90%"
+                                        />
 
                                         <apex:inputField value="{!mycase.Campus__c}" />
 
@@ -430,11 +608,21 @@
                                         <apex:inputField value="{!mycase.Case_Term__c}" />
 
                                         <apex:pageBlockSectionItem id="alius-format180">
-                                            <apex:outputLabel value="Case Functional Group" for="functionalGroupOptions" />
+                                            <apex:outputLabel
+                                                value="Case Functional Group"
+                                                for="functionalGroupOptions"
+                                            />
                                             <apex:actionRegion id="alius-format181">
-                                                <apex:selectList id="functionalGroupOptions" label="Case Functional Group" value="{!ccPicklist.selectedFunctionalGroup}"
-                                                    size="1">
-                                                    <apex:actionSupport event="onchange" action="{!ccPicklist.updateCategoryAndSubCategory}" rerender="mypage:myform:case:pageSection:categorySectionItem:categoryOptions, mypage:myform:case:pageSection:subCategorySectionItem:subCategoryOptions"
+                                                <apex:selectList
+                                                    id="functionalGroupOptions"
+                                                    label="Case Functional Group"
+                                                    value="{!ccPicklist.selectedFunctionalGroup}"
+                                                    size="1"
+                                                >
+                                                    <apex:actionSupport
+                                                        event="onchange"
+                                                        action="{!ccPicklist.updateCategoryAndSubCategory}"
+                                                        rerender="mypage:myform:case:pageSection:categorySectionItem:categoryOptions, mypage:myform:case:pageSection:subCategorySectionItem:subCategoryOptions"
                                                     />
                                                     <apex:selectOptions value="{!ccPicklist.functionalGroupOptions}" />
                                                 </apex:selectList>
@@ -446,30 +634,20 @@
                                         <apex:pageBlockSectionItem id="categorySectionItem">
                                             <apex:outputLabel value="Case Category" for="categoryOptions" />
                                             <apex:actionRegion id="alius-format182">
-                                                <apex:selectList id="categoryOptions" value="{!ccPicklist.selectedCategory}" size="1">
-                                                    <apex:actionSupport event="onchange" action="{!updateOnCategoryChange}" rerender="mypage:myform:case:pageSection:subCategorySectionItem:subCategoryOptions, mypage:myform:case:pageSection:descriptionBox"
+                                                <apex:selectList
+                                                    id="categoryOptions"
+                                                    value="{!ccPicklist.selectedCategory}"
+                                                    size="1"
+                                                >
+                                                    <apex:actionSupport
+                                                        event="onchange"
+                                                        action="{!updateOnCategoryChange}"
+                                                        rerender="mypage:myform:case:pageSection:subCategorySectionItem:subCategoryOptions, mypage:myform:case:pageSection:descriptionBox"
                                                     />
                                                     <apex:selectOptions value="{!ccPicklist.categoryOptions}" />
                                                 </apex:selectList>
                                             </apex:actionRegion>
                                         </apex:pageBlockSectionItem>
-
-                                        <apex:inputField value="{!mycase.Reason_for_Escalation__c}" />
-
-                                        <apex:inputField value="{!mycase.Status}">
-                                            <apex:actionSupport event="onchange" reRender="innersecondNewCase" />
-                                        </apex:inputField>
-
-                                        <apex:pageBlockSectionItem id="subCategorySectionItem">
-                                            <apex:outputLabel value="Case Sub Category" for="subCategoryOptions" />
-                                            <apex:actionRegion id="alius-format183">
-                                                <apex:selectList id="subCategoryOptions" label="Case Sub Category" value="{!ccPicklist.selectedSubCategory}" size="1">
-                                                    <apex:selectOptions value="{!ccPicklist.subCategoryOptions}" />
-                                                </apex:selectList>
-                                            </apex:actionRegion>
-                                        </apex:pageBlockSectionItem>
-
-                                        <br/>
 
                                         <apex:pageBlockSectionItem id="alius-format184">
                                             <apex:outputLabel for="originSelect" value="Origin" />
@@ -478,72 +656,175 @@
                                             </apex:selectList>
                                         </apex:pageBlockSectionItem>
 
+                                        <apex:inputField value="{!mycase.Status}">
+                                            <apex:actionSupport event="onchange" reRender="innersecondNewCase" />
+                                        </apex:inputField>
+
+                                        <apex:pageBlockSectionItem id="subCategorySectionItem">
+                                            <apex:outputLabel value="Case Sub Category" for="subCategoryOptions" />
+                                            <apex:actionRegion id="alius-format183">
+                                                <apex:selectList
+                                                    id="subCategoryOptions"
+                                                    label="Case Sub Category"
+                                                    value="{!ccPicklist.selectedSubCategory}"
+                                                    size="1"
+                                                >
+                                                    <apex:selectOptions value="{!ccPicklist.subCategoryOptions}" />
+                                                </apex:selectList>
+                                            </apex:actionRegion>
+                                        </apex:pageBlockSectionItem>
+
+                                        <apex:inputField value="{!mycase.Priority}">
+                                            <apex:actionSupport event="onchange" reRender="escalationOptions" />
+                                        </apex:inputField>
+
+                                        <apex:inputField
+                                            id="escalationOptions"
+                                            value="{!mycase.Reason_for_Escalation__c}"
+                                        />
+
                                         <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED}">
                                             <apex:outputLabel value="Forward To Unit" for="forwardToUnit" />
-                                            <apex:inputField id="forwardToUnit" value="{!mycase.Forward_To_Unit__c}" style="width: 100%">
+                                            <apex:inputField
+                                                id="forwardToUnit"
+                                                value="{!mycase.Forward_To_Unit__c}"
+                                                style="width: 100%"
+                                            >
                                                 <apex:actionSupport event="onchange" reRender="innersecondNewCase" />
                                             </apex:inputField>
                                         </apex:pageBlockSectionItem>
 
                                         <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED}">
                                             <apex:outputLabel value="Forward Case Comments" for="forwardCaseComments" />
-                                            <apex:inputField id="forwardCaseComments" value="{!mycase.Forward_Case_Comments__c}" style="width: 95%; height: 90px" />
+                                            <apex:inputField
+                                                id="forwardCaseComments"
+                                                value="{!mycase.Forward_Case_Comments__c}"
+                                                style="width: 95%; height: 90px"
+                                            />
                                         </apex:pageBlockSectionItem>
 
-                                        <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED && mycase.Forward_To_Unit__c == OTHER_UNIT}">
+                                        <apex:pageBlockSectionItem
+                                            rendered="{!mycase.Status == CLOSED_FORWARDED && mycase.Forward_To_Unit__c == OTHER_UNIT}"
+                                        >
                                             <apex:outputLabel value="Forward To Email" for="forwardToEmail" />
-                                            <apex:inputField id="forwardToEmail" value="{!mycase.Forward_To_Email__c}" />
+                                            <apex:inputField
+                                                id="forwardToEmail"
+                                                value="{!mycase.Forward_To_Email__c}"
+                                            />
                                         </apex:pageBlockSectionItem>
 
-                                        <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED && mycase.Forward_To_Unit__c == SERVICE_NOW}">
-                                            <apex:outputLabel value="Service Now Ticket Number" for="serviceNowTicketNumber" />
-                                            <apex:inputField id="serviceNowTicketNumber" value="{!mycase.ServiceNow_Ticket_Number__c}" />
+                                        <apex:pageBlockSectionItem
+                                            rendered="{!mycase.Status == CLOSED_FORWARDED && mycase.Forward_To_Unit__c == SERVICE_NOW}"
+                                        >
+                                            <apex:outputLabel
+                                                value="Service Now Ticket Number"
+                                                for="serviceNowTicketNumber"
+                                            />
+                                            <apex:inputField
+                                                id="serviceNowTicketNumber"
+                                                value="{!mycase.ServiceNow_Ticket_Number__c}"
+                                            />
                                         </apex:pageBlockSectionItem>
 
-                                        <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED && (mycase.Forward_To_Unit__c == SERVICE_NOW || mycase.Forward_To_Unit__c == OTHER_UNIT)}"
+                                        <apex:pageBlockSectionItem
+                                            rendered="{!mycase.Status == CLOSED_FORWARDED && (mycase.Forward_To_Unit__c == SERVICE_NOW || mycase.Forward_To_Unit__c == OTHER_UNIT)}"
                                         />
 
-                                        <apex:inputField id="descriptionBox" value="{!myCase.Description}" style="width: 90%; height: 120px">
-                                            <apex:actionSupport event="onchange" action="{!saveDescription}" rerender="descriptionBox" />
+                                        <apex:inputField
+                                            id="descriptionBox"
+                                            value="{!myCase.Description}"
+                                            style="width: 90%; height: 120px"
+                                        >
+                                            <apex:actionSupport
+                                                event="onchange"
+                                                action="{!saveDescription}"
+                                                rerender="descriptionBox"
+                                            />
                                         </apex:inputField>
 
-                                        <apex:inputField value="{!mycase.Private_Note_Help_Desk__c}" style="width: 90%; height: 120px" />
+                                        <apex:inputField
+                                            value="{!mycase.Private_Note_Help_Desk__c}"
+                                            style="width: 90%; height: 120px"
+                                        />
                                     </apex:pageBlockSection>
                                 </fieldset>
                             </div>
 
                             <apex:pageBlockButtons location="bottom">
-                                <apex:commandButton id="editCaseButton" onClick="enableCaseFields();" value="Edit" rendered="{!isExistingCaseSelected}" rerender="none"
-                                    styleClass="customBtn" status="loadingStatus4" />
-
-                                <apex:commandButton id="saveCaseButton" action="{!saveCase}" value="Save" reRender="messages" styleClass="customBtn" status="loadingStatus4"
-                                    onclick="event.target.classList.add('disabled')" oncomplete="event.target.classList.remove('disabled')"
+                                <apex:commandButton
+                                    id="editCaseButton"
+                                    onClick="enableCaseFields();"
+                                    value="Edit"
+                                    rendered="{!isExistingCaseSelected}"
+                                    rerender="none"
+                                    styleClass="customBtn"
+                                    status="loadingStatus4"
                                 />
 
-                                <apex:commandButton id="saveAndTransferCaseButton" action="{!saveAndTransferCase}" value="Save & Transfer" styleClass="customBtn"
-                                    status="loadingStatus4" onclick="event.target.classList.add('disabled')" oncomplete="event.target.classList.remove('disabled')"
+                                <apex:commandButton
+                                    id="saveCaseButton"
+                                    action="{!saveCase}"
+                                    value="Save"
+                                    reRender="messages"
+                                    styleClass="customBtn"
+                                    status="loadingStatus4"
+                                    onclick="event.target.classList.add('disabled')"
+                                    oncomplete="event.target.classList.remove('disabled')"
                                 />
 
-                                <apex:commandButton id="saveAndCloseCaseButton" action="{!saveAndCloseCase}" value="Save & Close" rerender="innersecond,messages"
-                                    styleClass="customBtn" status="loadingStatus4" onclick="event.target.classList.add('disabled')"
-                                    oncomplete="closeTab('{!savedAndClosed}');" />
+                                <apex:commandButton
+                                    id="saveAndTransferCaseButton"
+                                    action="{!saveAndTransferCase}"
+                                    value="Save & Transfer"
+                                    styleClass="customBtn"
+                                    status="loadingStatus4"
+                                    onclick="event.target.classList.add('disabled')"
+                                    oncomplete="event.target.classList.remove('disabled')"
+                                />
 
-                                <apex:commandButton id="cancelCaseButton" action="{!cancelCase}" value="Cancel" immediate="true" reRender="innersecond,results,messages"
-                                    styleClass="customBtn" status="loadingStatus4" />
+                                <apex:commandButton
+                                    id="saveAndCloseCaseButton"
+                                    action="{!saveAndCloseCase}"
+                                    value="Save & Close"
+                                    rerender="innersecond,messages"
+                                    styleClass="customBtn"
+                                    status="loadingStatus4"
+                                    onclick="event.target.classList.add('disabled')"
+                                    oncomplete="closeTab('{!savedAndClosed}');"
+                                />
 
-                                <apex:commandButton id="studentProfileButtonCase" onclick="openStudentProfile('{!contactsrch.EMPLID__c}', '{!contactName}'); return false;"
-                                    value="Student Profile" disabled="{!ISNULL(contactsrch.EMPLID__c) || contactsrch.EMPLID__c == ''}"
-                                    reRender="innersecond" styleClass="customBtn" status="loadingStatus4" />
+                                <apex:commandButton
+                                    id="cancelCaseButton"
+                                    action="{!cancelCase}"
+                                    value="Cancel"
+                                    immediate="true"
+                                    reRender="innersecond,results,messages"
+                                    styleClass="customBtn"
+                                    status="loadingStatus4"
+                                />
+
+                                <apex:commandButton
+                                    id="studentProfileButtonCase"
+                                    onclick="openStudentProfile('{!contactsrch.EMPLID__c}', '{!contactName}'); return false;"
+                                    value="Student Profile"
+                                    disabled="{!ISNULL(contactsrch.EMPLID__c) || contactsrch.EMPLID__c == ''}"
+                                    reRender="innersecond"
+                                    styleClass="customBtn"
+                                    status="loadingStatus4"
+                                />
 
                                 <apex:actionStatus id="loadingStatus4">
                                     <apex:facet name="start">
-                                        <i class="fa fa-spinner fa-spin" style="
+                                        <i
+                                            class="fa fa-spinner fa-spin"
+                                            style="
                                                 margin-top: 8px;
                                                 margin-left: 5px;
                                                 font-size: 14pt;
                                                 color: #334b70;
                                                 position: absolute;
-                                            "></i>
+                                            "
+                                        ></i>
                                     </apex:facet>
                                 </apex:actionStatus>
                             </apex:pageBlockButtons>
@@ -556,25 +837,49 @@
         <div id="third">
             <apex:outputPanel id="results">
                 <apex:form id="knowledgeForm">
-                    <apex:pageBlock id="resultsBlock" rendered="{!IF(!isKnowledgeSearch
-                                            && !isNewContactSelected, true, false)}" title="Search Results">
+                    <apex:pageBlock
+                        id="resultsBlock"
+                        rendered="{!IF(!isKnowledgeSearch
+                                            && !isNewContactSelected, true, false)}"
+                        title="Search Results"
+                    >
                         <div style="max-height: 300px; overflow-y: auto">
-                            <apex:outputPanel rendered="{!IF((contacts.size == 0 &&
-                                    !isKnowledgeSearch), true, false)}">
+                            <apex:outputPanel
+                                rendered="{!IF((contacts.size == 0 &&
+                                    !isKnowledgeSearch), true, false)}"
+                            >
                                 <div style="font-weight: bold; height: 100px; padding: 15px">No Results found.</div>
                             </apex:outputPanel>
 
-                            <apex:pageBlockTable rendered="{!IF(contacts.size > 0, true, false)}" value="{!contacts}" var="contact" cellPadding="5">
+                            <apex:pageBlockTable
+                                rendered="{!IF(contacts.size > 0, true, false)}"
+                                value="{!contacts}"
+                                var="contact"
+                                cellPadding="5"
+                            >
                                 <apex:column headerValue="">
-                                    <apex:commandLink action="{!setAsContact}" title="Set as Contact" rerender="innersecond,criteria,results" status="loadingStatus3">
-                                        <apex:param name="selectedContactId" value="{!contact.id}" assignTo="{!selectedContactId}" />
+                                    <apex:commandLink
+                                        action="{!setAsContact}"
+                                        title="Set as Contact"
+                                        rerender="innersecond,criteria,results"
+                                        status="loadingStatus3"
+                                    >
+                                        <apex:param
+                                            name="selectedContactId"
+                                            value="{!contact.id}"
+                                            assignTo="{!selectedContactId}"
+                                        />
                                         <i class="fa fa-plus-circle" style="font-size: 14pt; color: #334b70"></i>
                                     </apex:commandLink>
                                 </apex:column>
 
                                 <apex:column id="alius-format185">
                                     <apex:facet name="header">
-                                        <apex:commandLink value="First Name" onClick="doSearch(true); return false;" rerender="results">
+                                        <apex:commandLink
+                                            value="First Name"
+                                            onClick="doSearch(true); return false;"
+                                            rerender="results"
+                                        >
                                             <apex:param name="sortField" value="firstName" assignTo="{!sortField}" />
                                         </apex:commandLink>
                                     </apex:facet>
@@ -584,7 +889,11 @@
 
                                 <apex:column id="alius-format186">
                                     <apex:facet name="header">
-                                        <apex:commandLink value="Last Name" onClick="doSearch(true); return false;" rerender="results">
+                                        <apex:commandLink
+                                            value="Last Name"
+                                            onClick="doSearch(true); return false;"
+                                            rerender="results"
+                                        >
                                             <apex:param name="sortField" value="lastName" assignTo="{!sortField}" />
                                         </apex:commandLink>
                                     </apex:facet>
@@ -594,7 +903,11 @@
 
                                 <apex:column id="alius-format187">
                                     <apex:facet name="header">
-                                        <apex:commandLink value="Phone" onClick="doSearch(true); return false;" rerender="results">
+                                        <apex:commandLink
+                                            value="Phone"
+                                            onClick="doSearch(true); return false;"
+                                            rerender="results"
+                                        >
                                             <apex:param name="sortField" value="Phone" assignTo="{!sortField}" />
                                         </apex:commandLink>
                                     </apex:facet>
@@ -604,8 +917,16 @@
 
                                 <apex:column id="alius-format188">
                                     <apex:facet name="header">
-                                        <apex:commandLink value="Help Desk Provided Phone" onClick="doSearch(true); return false;" rerender="results">
-                                            <apex:param name="sortField" value="Help_Desk_Provided_Phone__c" assignTo="{!sortField}" />
+                                        <apex:commandLink
+                                            value="Help Desk Provided Phone"
+                                            onClick="doSearch(true); return false;"
+                                            rerender="results"
+                                        >
+                                            <apex:param
+                                                name="sortField"
+                                                value="Help_Desk_Provided_Phone__c"
+                                                assignTo="{!sortField}"
+                                            />
                                         </apex:commandLink>
                                     </apex:facet>
 
@@ -614,7 +935,11 @@
 
                                 <apex:column id="alius-format189">
                                     <apex:facet name="header">
-                                        <apex:commandLink value="Birthdate" onClick="doSearch(true); return false;" rerender="results">
+                                        <apex:commandLink
+                                            value="Birthdate"
+                                            onClick="doSearch(true); return false;"
+                                            rerender="results"
+                                        >
                                             <apex:param name="sortField" value="birthdate" assignTo="{!sortField}" />
                                         </apex:commandLink>
                                     </apex:facet>
@@ -624,8 +949,16 @@
 
                                 <apex:column id="alius-format190">
                                     <apex:facet name="header">
-                                        <apex:commandLink value="ASURITE" onClick="doSearch(true); return false;" rerender="results">
-                                            <apex:param name="sortField" value="ASURite_ID__c" assignTo="{!sortField}" />
+                                        <apex:commandLink
+                                            value="ASURITE"
+                                            onClick="doSearch(true); return false;"
+                                            rerender="results"
+                                        >
+                                            <apex:param
+                                                name="sortField"
+                                                value="ASURite_ID__c"
+                                                assignTo="{!sortField}"
+                                            />
                                         </apex:commandLink>
                                     </apex:facet>
 
@@ -634,7 +967,11 @@
 
                                 <apex:column id="alius-format191">
                                     <apex:facet name="header">
-                                        <apex:commandLink value="EMPLID" onClick="doSearch(true); return false;" rerender="results">
+                                        <apex:commandLink
+                                            value="EMPLID"
+                                            onClick="doSearch(true); return false;"
+                                            rerender="results"
+                                        >
                                             <apex:param name="sortField" value="EMPLID__c" assignTo="{!sortField}" />
                                         </apex:commandLink>
                                     </apex:facet>
@@ -644,7 +981,11 @@
 
                                 <apex:column id="alius-format192">
                                     <apex:facet name="header">
-                                        <apex:commandLink value="Directory Email" onClick="doSearch(true); return false;" rerender="results">
+                                        <apex:commandLink
+                                            value="Directory Email"
+                                            onClick="doSearch(true); return false;"
+                                            rerender="results"
+                                        >
                                             <apex:param name="sortField" value="ASU_Email__c" assignTo="{!sortField}" />
                                         </apex:commandLink>
                                     </apex:facet>
@@ -653,8 +994,16 @@
 
                                 <apex:column id="alius-format193">
                                     <apex:facet name="header">
-                                        <apex:commandLink value="Personal Email" onClick="doSearch(true); return false;" rerender="results">
-                                            <apex:param name="sortField" value="Personal_Email__c" assignTo="{!sortField}" />
+                                        <apex:commandLink
+                                            value="Personal Email"
+                                            onClick="doSearch(true); return false;"
+                                            rerender="results"
+                                        >
+                                            <apex:param
+                                                name="sortField"
+                                                value="Personal_Email__c"
+                                                assignTo="{!sortField}"
+                                            />
                                         </apex:commandLink>
                                     </apex:facet>
 
@@ -663,7 +1012,11 @@
 
                                 <apex:column id="alius-format194">
                                     <apex:facet name="header">
-                                        <apex:commandLink value="CAP" onClick="doSearch(true); return false;" rerender="results">
+                                        <apex:commandLink
+                                            value="CAP"
+                                            onClick="doSearch(true); return false;"
+                                            rerender="results"
+                                        >
                                             <apex:param name="sortField" value="CAP__c" assignTo="{!sortField}" />
                                         </apex:commandLink>
                                     </apex:facet>
@@ -673,7 +1026,11 @@
 
                                 <apex:column id="alius-format195">
                                     <apex:facet name="header">
-                                        <apex:commandLink value="FERPA Hold" onClick="doSearch(true); return false;" rerender="results">
+                                        <apex:commandLink
+                                            value="FERPA Hold"
+                                            onClick="doSearch(true); return false;"
+                                            rerender="results"
+                                        >
                                             <apex:param name="sortField" value="FERPA" assignTo="{!sortField}" />
                                         </apex:commandLink>
                                     </apex:facet>
@@ -684,51 +1041,88 @@
                         </div>
                     </apex:pageBlock>
 
-                    <apex:pageBlock id="knowledgeResults" rendered="{!isKnowledgeSearch && isContactSet}" title="{!IF(!isArticleDetails, 'Articles', 'Article Details')}">
+                    <apex:pageBlock
+                        id="knowledgeResults"
+                        rendered="{!isKnowledgeSearch && isContactSet}"
+                        title="{!IF(!isArticleDetails, 'Articles', 'Article Details')}"
+                    >
                         <div style="max-height: 300px; overflow-y: auto">
                             <apex:outputPanel rendered="{!IF(!isKnowSearchbox && !isArticleDetails, true, false)}">
                                 <h5>Attached to this Case</h5>
                                 &nbsp;&nbsp;&nbsp;
-                                <apex:commandLink rerender="results,messages" status="knowStatus1" action="{!knowledgeSearch}">
+                                <apex:commandLink
+                                    rerender="results,messages"
+                                    status="knowStatus1"
+                                    action="{!knowledgeSearch}"
+                                >
                                     <apex:param name="isKnowSearchBox" value="true" assignTo="{!isKnowSearchBox}" />
-                                    <apex:param name="knowString" value="{!mycase.Subject}" assignTo="{!knowString}" /> Find More
+                                    <apex:param name="knowString" value="{!mycase.Subject}" assignTo="{!knowString}" />
+                                    Find More
                                 </apex:commandLink>
 
                                 <apex:actionStatus id="knowStatus1">
                                     <apex:facet name="start">
-                                        <i class="fa fa-spinner fa-spin" style="
+                                        <i
+                                            class="fa fa-spinner fa-spin"
+                                            style="
                                                 margin-top: -1px;
                                                 margin-left: 9px;
                                                 font-size: 14pt;
                                                 color: #334b70;
                                                 position: absolute;
-                                            "></i>
+                                            "
+                                        ></i>
                                     </apex:facet>
                                 </apex:actionStatus>
 
                                 <br />
                                 <br />
 
-                                <apex:pageBlockTable value="{!attachedFAQs}" var="af" rendered="{!IF(attachedFAQs.size > 0, true,
-                                                             false)}">
+                                <apex:pageBlockTable
+                                    value="{!attachedFAQs}"
+                                    var="af"
+                                    rendered="{!IF(attachedFAQs.size > 0, true,
+                                                             false)}"
+                                >
                                     <apex:column style="width: 10px">
-                                        <apex:commandLink id="removeArtLink" action="{!removeArticleFromCase}" title="Remove Article from Case" rerender="knowledgeResults"
-                                            status="knowStatus1">
-                                            <apex:param name="selectedKnowledgeArticleId" value="{!af.KnowledgeArticleId}" assignTo="{!selectedKnowledgeArticleId}" />
+                                        <apex:commandLink
+                                            id="removeArtLink"
+                                            action="{!removeArticleFromCase}"
+                                            title="Remove Article from Case"
+                                            rerender="knowledgeResults"
+                                            status="knowStatus1"
+                                        >
+                                            <apex:param
+                                                name="selectedKnowledgeArticleId"
+                                                value="{!af.KnowledgeArticleId}"
+                                                assignTo="{!selectedKnowledgeArticleId}"
+                                            />
                                             <i class="fa fa-minus-circle" style="font-size: 12pt; color: #990033"></i>
                                         </apex:commandLink>
                                     </apex:column>
 
                                     <apex:column id="alius-format196">
-                                        <apex:commandLink action="{!articleDetails}" rerender="results" status="knowStatus1" style="font-weight: bold">
-                                            <apex:param name="selectedKnowledgeArticleId" value="{!af.KnowledgeArticleId}" assignTo="{!selectedKnowledgeArticleId}" />
-                                            <apex:param name="isAttached" value="true" assignTo="{!isAttached}" /> {!af.Title}
+                                        <apex:commandLink
+                                            action="{!articleDetails}"
+                                            rerender="results"
+                                            status="knowStatus1"
+                                            style="font-weight: bold"
+                                        >
+                                            <apex:param
+                                                name="selectedKnowledgeArticleId"
+                                                value="{!af.KnowledgeArticleId}"
+                                                assignTo="{!selectedKnowledgeArticleId}"
+                                            />
+                                            <apex:param name="isAttached" value="true" assignTo="{!isAttached}" />
+                                            {!af.Title}
                                         </apex:commandLink>
 
                                         <br />
 
-                                        <apex:outputText rendered="{!IF(af.Summary != null,
-                                                true, false)}">
+                                        <apex:outputText
+                                            rendered="{!IF(af.Summary != null,
+                                                true, false)}"
+                                        >
                                             {!af.Summary}
                                         </apex:outputText>
                                     </apex:column>
@@ -736,45 +1130,87 @@
                             </apex:outputPanel>
 
                             <apex:outputPanel rendered="{!IF(isKnowSearchBox && !isArticleDetails, true, false)}">
-                                <apex:commandLink rerender="results,messages" status="knowStatus" styleClass="btn customBtn">
+                                <apex:commandLink
+                                    rerender="results,messages"
+                                    status="knowStatus"
+                                    styleClass="btn customBtn"
+                                >
                                     <apex:param name="isKnowSearchBox" value="false" assignTo="{!isKnowSearchBox}" />
                                     <i class="fa fa-chevron-left"></i>
                                 </apex:commandLink>
 
-                                <apex:inputText value="{!knowString}" style="padding: 5px; width: 170px" html-placeholder="Search for Knowledge Articles"
-                                    onkeypress="return noenter(event);" />
+                                <apex:inputText
+                                    value="{!knowString}"
+                                    style="padding: 5px; width: 170px"
+                                    html-placeholder="Search for Knowledge Articles"
+                                    onkeypress="return noenter(event);"
+                                />
 
-                                <apex:commandLink id="knowledgeSearchBtn" value="Search" action="{!knowledgeSearch}" styleClass="btn customActionBtn" rerender="results,messages"
-                                    status="knowStatus" />
+                                <apex:commandLink
+                                    id="knowledgeSearchBtn"
+                                    value="Search"
+                                    action="{!knowledgeSearch}"
+                                    styleClass="btn customActionBtn"
+                                    rerender="results,messages"
+                                    status="knowStatus"
+                                />
 
                                 <apex:actionStatus id="knowStatus">
                                     <apex:facet name="start">
-                                        <i class="fa fa-spinner fa-spin" style="padding: 0px 5px; font-size: 14pt; color: #334b70"></i>
+                                        <i
+                                            class="fa fa-spinner fa-spin"
+                                            style="padding: 0px 5px; font-size: 14pt; color: #334b70"
+                                        ></i>
                                     </apex:facet>
                                 </apex:actionStatus>
 
                                 <br />
                                 <br />
 
-                                <apex:pageBlockTable value="{!faqList}" var="f" rendered="{!IF(faqList.size > 0, true, false)}">
+                                <apex:pageBlockTable
+                                    value="{!faqList}"
+                                    var="f"
+                                    rendered="{!IF(faqList.size > 0, true, false)}"
+                                >
                                     <apex:column style="width: 10px">
-                                        <apex:commandLink id="addArtLink" action="{!attachArticleToCase}" title="Attach Article to Case" rerender="knowledgeResults"
-                                            status="knowStatus">
-                                            <apex:param name="selectedKnowledgeArticleId" value="{!f.KnowledgeArticleId}" assignTo="{!selectedKnowledgeArticleId}" />
+                                        <apex:commandLink
+                                            id="addArtLink"
+                                            action="{!attachArticleToCase}"
+                                            title="Attach Article to Case"
+                                            rerender="knowledgeResults"
+                                            status="knowStatus"
+                                        >
+                                            <apex:param
+                                                name="selectedKnowledgeArticleId"
+                                                value="{!f.KnowledgeArticleId}"
+                                                assignTo="{!selectedKnowledgeArticleId}"
+                                            />
                                             <i class="fa fa-plus-circle" style="font-size: 12pt; color: #334b70"></i>
                                         </apex:commandLink>
                                     </apex:column>
 
                                     <apex:column headerValue="Results">
-                                        <apex:commandLink action="{!articleDetails}" rerender="results" status="knowStatus" style="font-weight: bold">
-                                            <apex:param name="selectedKnowledgeArticleId" value="{!f.KnowledgeArticleId}" assignTo="{!selectedKnowledgeArticleId}" />
-                                            <apex:param name="isAttached" value="false" assignTo="{!isAttached}" /> {!f.Title}
+                                        <apex:commandLink
+                                            action="{!articleDetails}"
+                                            rerender="results"
+                                            status="knowStatus"
+                                            style="font-weight: bold"
+                                        >
+                                            <apex:param
+                                                name="selectedKnowledgeArticleId"
+                                                value="{!f.KnowledgeArticleId}"
+                                                assignTo="{!selectedKnowledgeArticleId}"
+                                            />
+                                            <apex:param name="isAttached" value="false" assignTo="{!isAttached}" />
+                                            {!f.Title}
                                         </apex:commandLink>
 
                                         <br />
 
-                                        <apex:outputText rendered="{!IF(f.Summary != null,
-                                                true, false)}">
+                                        <apex:outputText
+                                            rendered="{!IF(f.Summary != null,
+                                                true, false)}"
+                                        >
                                             {!f.Summary}
                                         </apex:outputText>
                                     </apex:column>
@@ -786,29 +1222,64 @@
                                 </apex:outputText>
                             </apex:outputPanel>
 
-                            <apex:outputPanel rendered="{!IF(isArticleDetails && !isKnowSearchBox, true,
-                                    false)}">
+                            <apex:outputPanel
+                                rendered="{!IF(isArticleDetails && !isKnowSearchBox, true,
+                                    false)}"
+                            >
                                 <apex:outputPanel rendered="{!IF(selectedFAQ != null, true, false)}">
                                     <div style="padding: 15px">
-                                        <apex:commandLink rerender="results,messages" status="artDetailStatus" styleClass="btn customBtn" style="margin-left: 0px">
-                                            <apex:param name="isKnowSearchBox" value="false" assignTo="{!isKnowSearchBox}" />
-                                            <apex:param name="isArticleDetails" value="false" assignTo="{!isArticleDetails}" />
+                                        <apex:commandLink
+                                            rerender="results,messages"
+                                            status="artDetailStatus"
+                                            styleClass="btn customBtn"
+                                            style="margin-left: 0px"
+                                        >
+                                            <apex:param
+                                                name="isKnowSearchBox"
+                                                value="false"
+                                                assignTo="{!isKnowSearchBox}"
+                                            />
+                                            <apex:param
+                                                name="isArticleDetails"
+                                                value="false"
+                                                assignTo="{!isArticleDetails}"
+                                            />
                                             <i class="fa fa-chevron-left"></i>
                                             &nbsp;&nbsp;Back
                                         </apex:commandLink>
 
-                                        <apex:commandLink id="addArtLinkDetails" action="{!attachArticleToCase}" title="Attach Article to Case" styleClass="btn customActionBtn"
-                                            rendered="{!NOT(isAttached)}" rerender="knowledgeResults" status="artDetailStatus">
-                                            <apex:param name="selectedKnowledgeArticleId" value="{!selectedFAQ.KnowledgeArticleId}" assignTo="{!selectedKnowledgeArticleId}"
+                                        <apex:commandLink
+                                            id="addArtLinkDetails"
+                                            action="{!attachArticleToCase}"
+                                            title="Attach Article to Case"
+                                            styleClass="btn customActionBtn"
+                                            rendered="{!NOT(isAttached)}"
+                                            rerender="knowledgeResults"
+                                            status="artDetailStatus"
+                                        >
+                                            <apex:param
+                                                name="selectedKnowledgeArticleId"
+                                                value="{!selectedFAQ.KnowledgeArticleId}"
+                                                assignTo="{!selectedKnowledgeArticleId}"
                                             />
                                             <i class="fa fa-plus-circle"></i>
                                             &nbsp;&nbsp;Attach to Case
                                         </apex:commandLink>
 
-                                        <apex:commandLink id="removeArtLinkDetails" action="{!removeArticleFromCase}" title="Remove Article from Case" rendered="{!isAttached}"
-                                            rerender="knowledgeResults" styleClass="btn customActionBtn" style="background-color: #990033; border: solid 1px #990033"
-                                            status="artDetailStatus">
-                                            <apex:param name="selectedKnowledgeArticleId" value="{!selectedFAQ.KnowledgeArticleId}" assignTo="{!selectedKnowledgeArticleId}"
+                                        <apex:commandLink
+                                            id="removeArtLinkDetails"
+                                            action="{!removeArticleFromCase}"
+                                            title="Remove Article from Case"
+                                            rendered="{!isAttached}"
+                                            rerender="knowledgeResults"
+                                            styleClass="btn customActionBtn"
+                                            style="background-color: #990033; border: solid 1px #990033"
+                                            status="artDetailStatus"
+                                        >
+                                            <apex:param
+                                                name="selectedKnowledgeArticleId"
+                                                value="{!selectedFAQ.KnowledgeArticleId}"
+                                                assignTo="{!selectedKnowledgeArticleId}"
                                             />
                                             <i class="fa fa-minus-circle"></i>
                                             &nbsp;&nbsp;Remove from Case
@@ -816,7 +1287,10 @@
 
                                         <apex:actionStatus id="artDetailStatus">
                                             <apex:facet name="start">
-                                                <i class="fa fa-spinner fa-spin" style="padding: 0px 5px; font-size: 14pt; color: #334b70"></i>
+                                                <i
+                                                    class="fa fa-spinner fa-spin"
+                                                    style="padding: 0px 5px; font-size: 14pt; color: #334b70"
+                                                ></i>
                                             </apex:facet>
                                         </apex:actionStatus>
 
@@ -846,16 +1320,19 @@
             var firstname = document.getElementById(
                 '{!$Component.mypage.myform.criteria.criteriasection.firstnamesrch}'
             ).value;
-            var lastname = document.getElementById('{!$Component.mypage.myform.criteria.criteriasection.lastnamesrch}')
-                .value;
+            var lastname = document.getElementById(
+                '{!$Component.mypage.myform.criteria.criteriasection.lastnamesrch}'
+            ).value;
             var phone = document.getElementById('{!$Component.mypage.myform.criteria.criteriasection.phonesrch}').value;
             var birthdate = document.getElementById(
                 '{!$Component.mypage.myform.criteria.criteriasection.birthdatesrch}'
             ).value;
-            var asurite = document.getElementById('{!$Component.mypage.myform.criteria.criteriasection.asuriteidsrch}')
-                .value;
-            var emplId = document.getElementById('{!$Component.mypage.myform.criteria.criteriasection.emplidsrch}')
-                .value;
+            var asurite = document.getElementById(
+                '{!$Component.mypage.myform.criteria.criteriasection.asuriteidsrch}'
+            ).value;
+            var emplId = document.getElementById(
+                '{!$Component.mypage.myform.criteria.criteriasection.emplidsrch}'
+            ).value;
             var directoryEmail = document.getElementById(
                 '{!$Component.mypage.myform.criteria.criteriasection.directoryemailsrch}'
             ).value;

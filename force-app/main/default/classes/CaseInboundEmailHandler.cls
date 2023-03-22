@@ -50,7 +50,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             lName = lName.trim();
 
             // Check the inbound email for filtered terms; if found, no do nothing
-            /* Disabled by chussey1 on 3/22/23 due to row lock issue
             String filteredTerm = filteredTermFound();
             if (filteredTerm != null) {
                 if (loggingSettings.Spam_Logging__c) {
@@ -58,7 +57,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 }
                 return result;
             }
-            */
 
             String caseId = extractIdRefNew(email.plainTextBody);
 
@@ -945,7 +943,9 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             }
         }
         if (!filtersToUpdate.isEmpty()) {
+            /* Disabled by chussey1 on 3/22/23 due to row lock issue
             update filtersToUpdate;
+            */
             return filtersToUpdate.get(0).Name;
         }
         return null;

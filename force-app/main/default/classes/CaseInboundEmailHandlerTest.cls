@@ -1355,7 +1355,6 @@ public with sharing class CaseInboundEmailHandlerTest {
         System.assertEquals(null, contactAfterTest.Last_Case_Email_Used__c);
     }
 
-    /* Disabled by chussey1 on 3/22/23 due to row lock issue
     @isTest
     private static void filterOnBody() {
         CaseInboundEmailHandler emailHandler = new CaseInboundEmailHandler();
@@ -1414,7 +1413,6 @@ public with sharing class CaseInboundEmailHandlerTest {
         List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
         System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
     }
-    */
 
     @isTest
     private static void emailWithAttachmentAndNewContactNoError() {

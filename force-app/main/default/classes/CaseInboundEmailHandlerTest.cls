@@ -187,12 +187,10 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         insert carDefault;
 
-        /* Disabled by chussey1 on 3/22/23 due to row lock issue
         Email_To_Case_Filter__c etcf1 = new Email_To_Case_Filter__c(Name = 'Test Filter');
         Email_To_Case_Filter__c etcf2 = new Email_To_Case_Filter__c(Name = 'blockme@test.test');
         insert etcf1;
         insert etcf2;
-        */
 
         EmailTemplate e2;
         System.runAs(new User(Id = Userinfo.getUserId())) {

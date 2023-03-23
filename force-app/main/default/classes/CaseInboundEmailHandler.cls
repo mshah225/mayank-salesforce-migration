@@ -831,7 +831,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         Boolean attachSuccess = handleAttachments(lostEmail, email).success;
         lostEmail.RejectedAttachments__c = !attachSuccess;
         if (!attachSuccess) {
-            String attachmentInfo = '\n**********\nCase ID: ' + (theCase != null ? theCase?.Id : 'SPAM: Not Created') + '\n\n*****List of Attachments*****\n';
+            String attachmentInfo = '\n**********\nCase ID: ' + (theCase != null ? String.valueOf(theCase.Id) : 'SPAM: Not Created') + '\n\n*****List of Attachments*****\n';
             if (email.binaryAttachments != null) {
                 for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments) {
                     attachmentInfo +=

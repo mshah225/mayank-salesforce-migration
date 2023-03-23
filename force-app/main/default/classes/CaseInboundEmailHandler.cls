@@ -907,14 +907,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
     }
 
     private String filteredTermFound() {
-        Email_To_Case_Filter__c[] filteredTerms = [
+        Email_Case_Filter__c[] filteredTerms = [
             SELECT Name, Rejection_Count__c, Filter_Email_Body__c
-            FROM Email_To_Case_Filter__c
+            FROM Email_Case_Filter__c
             ORDER BY Filter_Email_Body__c ASC
         ];
 
-        List<Email_To_Case_Filter__c> filtersToUpdate = new List<Email_To_Case_Filter__c>();
-        for (Email_To_Case_Filter__c filter : filteredTerms) {
+        List<Email_Case_Filter__c> filtersToUpdate = new List<Email_Case_Filter__c>();
+        for (Email_Case_Filter__c filter : filteredTerms) {
             if (filter.Rejection_Count__c == null) {
                 filter.Rejection_Count__c = 0;
             }
@@ -943,9 +943,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             }
         }
         if (!filtersToUpdate.isEmpty()) {
-            /* Disabled by chussey1 on 3/22/23 due to row lock issue
-            update filtersToUpdate;
-            */
+
+            if (configMap.get('Filter Rejection Count On') != null && configMap.get('Filter Rejection Count On')) {
+                update filtersToUpdate;
+            }
+
             return filtersToUpdate.get(0).Name;
         }
         return null;

@@ -944,7 +944,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         }
         if (!filtersToUpdate.isEmpty()) {
 
-            if (configMap.get('Filter Rejection Count On') != null && configMap.get('Filter Rejection Count On')) {
+            if (configMap.get('Filter Rejection Count On') != null && configMap.get('Filter Rejection Count On') == 'true') {
                 update filtersToUpdate;
             }
 

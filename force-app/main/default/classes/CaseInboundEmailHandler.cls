@@ -288,6 +288,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
                 // Multiple matches - require further filtering using name
                 if (contacts.size() > 1) {
+
+                    theCase.Description =
+                            'Note: there is more than one Contact with this email address. ' + theCase.Description;
+
                     List<Contact> filteredContacts = new List<Contact>();
 
                     for (Contact c : contacts) {
@@ -310,12 +314,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     theCase.ContactId = theContact.Id;
                     theCase.AccountId = theContact.AccountId;
                     emailContact = contacts[0];
-
-                    // How to handle multiple contacts? Addting a note to the Case description for now.
-                    if (contacts.size() > 1) {
-                        theCase.Description =
-                            'Note: there is more than one Contact with this email address. ' + theCase.Description;
-                    }
 
                     // If the sender's email does not match the primary Email field for this Contact, update that field and note why
                     if (theContact.Email == null || theContact.Email != cleanFromAddress) {

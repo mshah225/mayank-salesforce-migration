@@ -941,7 +941,9 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             }
         }
         if (!filtersToUpdate.isEmpty()) {
+            /* Disabled by chussey1 on 3/22/23 due to row lock issue
             update filtersToUpdate;
+            */
             return filtersToUpdate.get(0).Name;
         }
         return null;

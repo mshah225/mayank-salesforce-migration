@@ -294,19 +294,51 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
                     List<Contact> filteredContacts = new List<Contact>();
 
+                    // If there are no contacts that also match on first name and last name
+                    // then we will need to make a new Contact
                     for (Contact c : contacts) {
-                        if (
-                            (c.FirstName != null &&
-                            c.LastName != null) &&
-                            c.FirstName.toLowerCase() == fname.toLowerCase() &&
-                            c.LastName.toLowerCase() == lname.toLowerCase()
-                        ) {
-                            filteredContacts.add(c);
+                        /**
+                         * If both:
+                         *  1. First name of contact and fname from email are either:
+                         *     a. both are null/empty string (String.isEmpty)
+                         *     b. both the same (case insenstive)
+                         *  2. Lase name of contact and lname from email are either:
+                         *     a. both are null/empty string (String.isEmpty)
+                         *     b. both the same (case insenstive)
+                         */
+
+                        Boolean matchFirstName = false;
+                        Boolean matchLastName = false;
+
+                        if (String.isEmpty(c.FirstName)) {
+                            // First name is null/empty string
+                            // so fname should be too
+                            matchFirstName = String.isEmpty(fname);
+                        } else {
+                            // First name is set - so fname should match
+                            matchFirstName = c.FirstName.equalsIgnoreCase(fname);
                         }
+
+                        if (String.isEmpty(c.LastName)) {
+                            // Last name is null/empty string
+                            // so lname should be too
+                            matchLastName = String.isEmpty(lname);
+                        } else {
+                            // Last name is set - so lname should match
+                            matchLastName = c.LastName.equalsIgnoreCase(lname);
+                        }
+
+                        if (matchFirstName && matchLastName)
+                            // Then this contact ahould be used
+                            filteredContacts.add(c);
                     }
 
                     contacts.clear();
                     contacts.addAll(filteredContacts);
+
+                    //Also ,add a note to the Case description.
+                    theCase.Description =
+                        'Note: there is more than one Contact with this email address. ' + theCase.Description;
                 }
 
                 if (contacts.size() > 0) {

@@ -187,8 +187,8 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         insert carDefault;
 
-        Email_To_Case_Filter__c etcf1 = new Email_To_Case_Filter__c(Name = 'Test Filter');
-        Email_To_Case_Filter__c etcf2 = new Email_To_Case_Filter__c(Name = 'blockme@test.test');
+        Email_Case_Filter__c etcf1 = new Email_Case_Filter__c(Name = 'Test Filter');
+        Email_Case_Filter__c etcf2 = new Email_Case_Filter__c(Name = 'blockme@test.test');
         insert etcf1;
         insert etcf2;
 
@@ -1359,8 +1359,8 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         Messaging.InboundEmail email = new Messaging.InboundEmail();
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
-        List<Email_To_Case_Filter__c> filtersToAdd = new List<Email_To_Case_Filter__c>();
-        filtersToAdd.add(new Email_To_Case_Filter__c(Name = 'banana', Filter_Email_Body__c = true));
+        List<Email_Case_Filter__c> filtersToAdd = new List<Email_Case_Filter__c>();
+        filtersToAdd.add(new Email_Case_Filter__c(Name = 'banana', Filter_Email_Body__c = true));
         insert filtersToAdd;
 
         List<string> toAddresses = new List<string>();
@@ -1389,8 +1389,8 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         Messaging.InboundEmail email = new Messaging.InboundEmail();
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
-        List<Email_To_Case_Filter__c> filtersToAdd = new List<Email_To_Case_Filter__c>();
-        filtersToAdd.add(new Email_To_Case_Filter__c(Name = 'banana', Filter_Email_Body__c = false));
+        List<Email_Case_Filter__c> filtersToAdd = new List<Email_Case_Filter__c>();
+        filtersToAdd.add(new Email_Case_Filter__c(Name = 'banana', Filter_Email_Body__c = false));
         insert filtersToAdd;
 
         List<string> toAddresses = new List<string>();

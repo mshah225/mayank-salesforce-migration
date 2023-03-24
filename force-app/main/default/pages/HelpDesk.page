@@ -592,7 +592,7 @@
                         rendered="{!(isNewCaseSelected || isExistingCaseSelected) && NOT(isCloseCase)}"
                     >
                         <apex:pageBlock title="Case Details - {!mycase.CaseNumber}" id="case">
-                            <div style="height: 335px; overflow-y: auto; margin: -10px">
+                            <div style="height: 417px; overflow-y: auto; margin: -10px">
                                 <fieldset id="caseFieldset">
                                     <apex:pageBlockSection columns="2" collapsible="false" id="pageSection">
                                         <apex:inputField

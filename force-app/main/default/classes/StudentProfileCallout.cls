@@ -192,4 +192,38 @@ global with sharing class StudentProfileCallout {
 
         return bookPaymentsForStudent;
     }
+
+    global static TuitionResidencyWrapper getTuitionResidencyStatus(String emplid) {
+        TuitionResidencyWrapper tuitionResidencyForStudent;
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/tuition-residency');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            tuitionResidencyForStudent = TuitionResidencyWrapper.parse(responseBody);
+        }
+
+        return tuitionResidencyForStudent;
+    }
+
+    global static SAPWrapper getAcademicProgress(String emplid) {
+        SAPWrapper academicProgressForStudent;
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/sap-summary');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            academicProgressForStudent = SAPWrapper.parse(responseBody);
+        }
+
+        return academicProgressForStudent;
+    }
 }

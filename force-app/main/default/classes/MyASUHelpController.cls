@@ -98,12 +98,19 @@ public with sharing class MyASUHelpController {
                 }
             }
 
-            if (Label.MyASU_Help_Alert_Status == 'true') {
+            List<ASU_Alert_Messages__mdt> alertMessages = [
+                SELECT Display_Message__c, url__c, Priority__c
+                FROM ASU_Alert_Messages__mdt
+                WHERE MasterLabel LIKE '%ASUHelpTab%' AND Is_Active__c = true
+                ORDER BY Priority__c
+            ];
+
+            for (ASU_Alert_Messages__mdt message : alertMessages) {
                 alertHandler.newAlert(
                     customAlert.WARNING,
                     ' ',
-                    'Have a financial aid question? There may be high call volumes, so consider contacting us about Fall 2022 after February 1. Click here to get quick answers to the most common questions.',
-                    'https://students.asu.edu/contact/financialaid'
+                    message.Display_Message__c,
+                    message.url__c
                 );
             }
         }

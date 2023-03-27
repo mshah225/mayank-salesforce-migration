@@ -1254,7 +1254,35 @@ global with sharing class StudentProfileController {
         BookPaymentWrapper bookPaymentWrap = StudentProfileCallout.getBookPayments(contactEmplid);
         bookPaymentWrap.aid_years.sort();
         return bookPaymentWrap; 
+    }  
+
+    @RemoteAction
+    global static TuitionResidencyWrapper getTuitionResidencyStatus(String contactEmplid) {
+        try {
+            TuitionResidencyWrapper residencyStatus = StudentProfileCallout.getTuitionResidencyStatus(contactEmplid);
+            return residencyStatus; 
+        } catch (Exception e) {
+            return null;
+        }
     }    
+
+    @RemoteAction
+    global static Map<String, List<SAPWrapper.cls_sap>> getAcademicProgress(String contactEmplid) {
+        SAPWrapper academicProgressWrapper = StudentProfileCallout.getAcademicProgress(contactEmplid);
+        
+        Map<String, List<SAPWrapper.cls_sap>> academicYearToSAP = new Map<String, List<SAPWrapper.cls_sap>>();
+
+        if (academicProgressWrapper == null) {
+            return null;
+        }
+
+        for (SAPWrapper.cls_academic_year yearsWithSAP : academicProgressWrapper.academic_year) {
+            academicYearToSAP.put(yearsWithSAP.aid_year, yearsWithSAP.sap);
+        }
+
+        return academicYearToSAP;
+
+    }
 
     global class FinancialAidWrapper {
         public Set<String> aidYears { get; set; }

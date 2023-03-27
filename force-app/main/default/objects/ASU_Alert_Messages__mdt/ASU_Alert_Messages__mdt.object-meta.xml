@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Configurable messages that can display alerts at the top of various pages.
+
+Currently on used on the Help Tab</description>
+    <label>ASU Alert Messages</label>
+    <pluralLabel>ASU Alert Messages</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

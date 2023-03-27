@@ -957,8 +957,9 @@
                                                     <tr>
                                                         <th>Residency</th>
                                                         <td>
-                                                            {!IF(ISBLANK(studentProgram.Residency__c), '--',
-                                                            studentProgram.Residency__c)}
+                                                            <div id="residencyStatus">
+                                                                <i class="fa fa-spinner fa-pulse"></i>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -1275,6 +1276,25 @@
                                         </div>
                                         <div id="chargeHistoryTable"></div>
                                     </apex:form>
+                                </div>
+
+                                <div class="page-header-smaller">
+                                    <h4>
+                                        <i class="fa fa-caret-down"></i>
+                                        &nbsp;Satisfactory Academic Progress
+                                    </h4>
+                                </div>
+
+                                <div style="overflow: auto; max-height: 400px">
+                                    <div id="sapErrors"></div>
+                                    <div id="sapList">
+                                        <apex:form >
+                                            <div style="margin-bottom: 15px" id="selectListForSAP">
+                                                <i class="fa fa-spinner fa-pulse"></i>
+                                            </div>
+                                            <div id="sapTable"></div>
+                                        </apex:form>
+                                    </div>
                                 </div>
 
                                 <div class="page-header-smaller">
@@ -3275,6 +3295,8 @@
             loadDepositStatus();
             loadRenewableAid();
             loadBookPayment();
+            loadResidencyStatus();
+            loadAcademicProgress();
         }
 
         function loadRemoteSunCardPhoto() {
@@ -5840,12 +5862,158 @@
             );
         }
 
+        function loadResidencyStatus() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getTuitionResidencyStatus}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    if (result != null && result.tuition_residency.length > 0) {
+                        var html;
+
+                        if (result.tuition_residency[0].residency == null || result.tuition_residency[0].residency == '') {
+                            html = '--';
+                        } else {
+                            html = result.tuition_residency[0].residency;
+                        }                         
+
+                        document.getElementById('residencyStatus').innerHTML = html;
+                    } else {
+                        document.getElementById('residencyStatus').innerHTML = "--"; 
+                    }
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+
         function replaceEmptyString (stringToCheck) {
             if (!stringToCheck || stringToCheck == ' ') {
                 return '--';
             } else {
                 return stringToCheck;
             }
+        }
+
+        var sapMap = new Map();
+
+        function loadAcademicProgress() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getAcademicProgress}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    var keySet = Object.keys(result);
+                    var valueSet = Object.values(result);
+
+                    if (keySet.length == null || keySet.length == 0) {
+                        document.getElementById('selectListForSAP').innerHTML =
+                            'There is currently no Satisfactory Academic Progress information available for this student';
+                        return;
+                    }
+
+                    for (var i = 0; i < keySet.length; i++) {
+                        sapMap.set(keySet[i], valueSet[i]);
+                    }
+                    var selectHtml =
+                        "<label for='sapSelectOptions'>Academic Year:&nbsp;</label><select id='sapSelectOptions' onchange='buildSAPTable()'>";
+                    for (var i = 0; i < keySet.length; i++) {
+                        selectHtml += '<option ';
+                        selectHtml += " value='" + keySet[i] + "'>" + keySet[i] + '</option>';
+                    }
+                    selectHtml += '</select>&nbsp;&nbsp;';
+                    document.getElementById('selectListForSAP').innerHTML = selectHtml;
+
+                    buildSAPTable();
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+
+        function buildSAPTable() {
+            var selectedTerm = document.getElementById('sapSelectOptions').value;
+            var sapForSelectedTerm = sapMap.get(selectedTerm);
+
+            var html = '';
+
+            html +=
+                '' +
+                "<div class='table-responsive'>" +
+                "<table class='table table-striped table-bordered'> " +
+                '<thead>' +
+                '<tr>' +
+                '<th></th>' +
+                '<th>Fall ' + (selectedTerm - 1) + '</th>' +
+                '<th>Spring ' + selectedTerm + '</th>' +
+                '<th>Summer ' + selectedTerm + '</th>' +
+                '</tr>' +
+                '</thead>' +
+                '<tbody>';
+
+            html +=
+                '<tr>' +
+                '<td>' +
+                '<b>Overall SAP Status</b>' +
+                '</td>' +
+                '<td><b>' +
+                    sapForSelectedTerm[0].sapDescription +
+                '</b></td>' +
+                '<td><b>' +
+                    sapForSelectedTerm[1].sapDescription +
+                '</b></td>' +
+                '<td><b>' +
+                    sapForSelectedTerm[2].sapDescription +
+                '</b></td>' +
+                '</tr>';
+
+            html +=
+                '<tr>' +
+                '<td>' +
+                'Pace Rate' +
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[0].paceRateDescription +
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[1].paceRateDescription +
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[2].paceRateDescription +
+                '</td>' +
+                '</tr>';
+
+            html +=
+                '<tr>' +
+                '<td>' +
+                'Maximum Credit Hour' +
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[0].maximumHourDescription +
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[1].maximumHourDescription +
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[2].maximumHourDescription +
+                '</td>' +
+                '</tr>';
+
+            html +=
+                '<tr>' +
+                '<td>' +
+                'Minimum GPA' +
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[0].minimumGpaDescription +
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[1].minimumGpaDescription +
+                '</td>' +
+                '<td>' +
+                    sapForSelectedTerm[2].minimumGpaDescription +
+                '</td>' +
+                '</tr>';
+
+            html += '</tbody></table></div>';
+
+            document.getElementById('sapTable').innerHTML = html;
         }
 
     </script>

@@ -53,7 +53,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             String filteredTerm = filteredTermFound();
             if (filteredTerm != null) {
                 if (loggingSettings.Spam_Logging__c) {
-                    generateLostEmail(email, theCase, 'Filtered Term: ' + filteredTerm);
+                    generateLostEmail(email, null, 'Filtered Term: ' + filteredTerm);
                 }
                 return result;
             }
@@ -831,7 +831,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         Boolean attachSuccess = handleAttachments(lostEmail, email).success;
         lostEmail.RejectedAttachments__c = !attachSuccess;
         if (!attachSuccess) {
-            String attachmentInfo = '\n**********\nCase ID: ' + theCase.Id + '\n\n*****List of Attachments*****\n';
+            String attachmentInfo = '\n**********\nCase ID: ' + (theCase != null ? String.valueOf(theCase.Id) : 'SPAM: Not Created') + '\n\n*****List of Attachments*****\n';
             if (email.binaryAttachments != null) {
                 for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments) {
                     attachmentInfo +=
@@ -943,7 +943,9 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             }
         }
         if (!filtersToUpdate.isEmpty()) {
+            /* Disabled by chussey1 on 3/22/23 due to row lock issue
             update filtersToUpdate;
+            */
             return filtersToUpdate.get(0).Name;
         }
         return null;

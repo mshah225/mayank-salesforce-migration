@@ -635,7 +635,7 @@ public with sharing class HelpDeskController {
         isExistingCaseSelected = false;
 
         if (myCase == null) {
-            myCase = new Case();
+            myCase = new Case(Priority = 'Normal');
         } else {
             myCase.clear();
         }

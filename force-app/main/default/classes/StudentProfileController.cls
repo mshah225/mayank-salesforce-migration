@@ -659,6 +659,7 @@ global with sharing class StudentProfileController {
             SELECT Name, Id 
             FROM Case_Classification__c 
             WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
+            ORDER BY Name ASC
         ];
 
         for (Case_Classification__c functionalGroup : caseFunctionaGroupPicklistValues){

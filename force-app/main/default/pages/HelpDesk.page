@@ -675,7 +675,7 @@
                                             </apex:actionRegion>
                                         </apex:pageBlockSectionItem>
 
-                                        <apex:inputField value="{!mycase.Priority}">
+                                        <apex:inputField required="true" value="{!mycase.Priority}">
                                             <apex:actionSupport event="onchange" reRender="escalationOptions" />
                                         </apex:inputField>
 

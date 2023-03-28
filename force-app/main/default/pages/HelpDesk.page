@@ -517,7 +517,7 @@
                                             rerender="innerfirst,innersecond,results"
                                             id="setAsCaseId"
                                             status="loadingStatus3"
-                                            onComplete="disableCaseFields();"
+                                            onComplete="disableCaseFields(); document.getElementsByClassName('requiredBlock')[0].style.display = 'none';"
                                         >
                                             <apex:param
                                                 name="selectedCaseId"
@@ -556,6 +556,7 @@
                                     reRender="innersecond"
                                     styleClass="customActionBtn"
                                     status="loadingStatus3"
+                                    oncomplete="document.getElementsByClassName('requiredBlock')[0].style.display = 'none';"
                                 />
 
                                 <apex:commandButton

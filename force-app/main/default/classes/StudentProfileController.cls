@@ -653,6 +653,21 @@ global with sharing class StudentProfileController {
         }
     }
 
+    public List<SelectOption> getCaseFunctionaGroupPicklist() {
+        List<SelectOption> caseFunctionaGroupPicklist = new List<SelectOption>();
+        List<Case_Classification__c> caseFunctionaGroupPicklistValues = [
+            SELECT Name, Id 
+            FROM Case_Classification__c 
+            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
+        ];
+
+        for (Case_Classification__c functionalGroup : caseFunctionaGroupPicklistValues){
+            caseFunctionaGroupPicklist.add(new SelectOption(functionalGroup.Id, functionalGroup.Name));
+        }
+
+        return caseFunctionaGroupPicklist;
+    }
+
     private void setTestScores() {
         setUndergradStudentTestScores();
         setGraduateStudentTestScores();
@@ -1106,7 +1121,7 @@ global with sharing class StudentProfileController {
     }
 
     @RemoteAction
-    global static String createCase(String descriptionIn, String subjectIn, String emplidIn) {
+    global static String createCase(String descriptionIn, String subjectIn, String funcGroup, String emplidIn) {
         try {
             Id student = [SELECT Id FROM Contact WHERE EmplId__c = :emplidIn LIMIT 1].Id;
             RecordType recordType = [SELECT Id FROM RecordType WHERE Name = 'ASU Service' LIMIT 1];
@@ -1116,6 +1131,7 @@ global with sharing class StudentProfileController {
                 ContactId = student,
                 Subject = subjectIn,
                 Description = descriptionIn,
+                CC_Functional_Group__c = funcGroup,
                 Origin__c = 'Student Profile',
                 IsVisibleInSelfService = false
             );
@@ -1129,6 +1145,7 @@ global with sharing class StudentProfileController {
         }
         return null;
     }
+
 
     @RemoteAction
     global static List<ServiceIndicatorWrapper.ServiceIndicator> getServiceIndicatorsForStudent(String contactEmplid) {

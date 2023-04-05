@@ -262,11 +262,34 @@ private class pkb_ControllerTest {
         p = pkbsc.saveSettings();
         System.assertEquals(p, null);
 
-        // throw the test bit and try again
+        // asserting the selected settings value is not empty
+        System.assert(pkbsc.settingsPicked);
+
+        // asserting the settings map is not empty
+        System.assert(pkbsc.settingsExist);
+
         // save the settings and assert that the resulting page ref contains the id of the settings
+
+        pkb_ka__c test_pkb_ka = new pkb_ka__c();
+        test_pkb_ka.Name = 'test_pkb_ka';
+        test_pkb_ka.apiName__c = 'Test_API_Name_1';
+        test_pkb_ka.layout__c = 'Test_Layout_1';
+        test_pkb_ka.pkb__c = pkb.Id;
+        insert test_pkb_ka;
+
+        pkbsc.kaTypes = '[    {        "Id": "' + test_pkb_ka.Id + '",        "apiName__c": "Test_API_Name_1_changed",        "layout__c": "Test_Layout_1_changed"    },    {        "apiName__c": "Test_API_Name_2",        "layout__c": "Test_Layout_2"    }]        ';
+
         pkb_SettingsController.isRunningTest = true;
         p = pkbsc.saveSettings();
         System.assert(p.getUrl().contains(pkb.Id));
+
+        // Assert that two pkb_ka__c records were inserted
+        List<pkb_ka__c> insertedRecords = [    SELECT Id, Name, apiName__c, layout__c, pkb__c    FROM pkb_ka__c    WHERE pkb__c = :pkb.Id];
+        System.assertEquals(2, insertedRecords.size(), 'Expected two pkb_ka__c records to be inserted');
+        System.assertEquals('Test_API_Name_1_changed', insertedRecords[0].apiName__c);   
+        System.assertEquals('Test_Layout_1_changed', insertedRecords[0].layout__c);
+        System.assertEquals('Test_API_Name_2', insertedRecords[1].apiName__c);   
+        System.assertEquals('Test_Layout_2', insertedRecords[1].layout__c);
     }
 
     static testMethod void testSettings_CTI_keywords() {

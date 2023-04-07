@@ -74,7 +74,7 @@ export default class AdvisorPortalModalMassEmail extends LightningModal {
 
     // Send the emails!
     sendEmails() {
-        const jsonWrappers = [];
+        const contactWrappers = [];
         for (let i = 0; i < this.selectedContactWrappers.length; i++) {
             const entry = this.selectedContactWrappers[i];
             const cases = [];
@@ -82,19 +82,17 @@ export default class AdvisorPortalModalMassEmail extends LightningModal {
                 cases.push({portalCase: {Id: entry.cases[j].caseId}});
             }
             // Add to wrappers
-            jsonWrappers.push(
-                JSON.stringify({
-                    portalContact: {Id: entry.contactId},
-                    cases: cases,
-                })
-            );
+            contactWrappers.push({
+                portalContact: {Id: entry.contactId},
+                cases: cases,
+            });
         }
 
         this.sendLoadingEvent(true);
         this.disableClose = true;
         this.isSubmitting = true;
         createPortalEmailsStr({
-            contactWrappersJSONList: jsonWrappers,
+            contactWrappersListJSON: JSON.stringify(contactWrappers),
             subject: this.subject,
             body: this.body,
         })

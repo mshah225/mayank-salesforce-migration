@@ -14,34 +14,34 @@ public class AdvisorPortalMassEmailModalController {
     }
 
     @AuraEnabled
-    public static void createPortalEmailsStr(List<String> contactWrappersJSONList, String subject, String body) {
-        List<AdvisorPortalContact> contactWrappersList = new List<AdvisorPortalContact>();
+    public static void createPortalEmailsStr(String contactWrappersListJSON, String subject, String body) {
+        List<AdvisorPortalContact> contactWrappersList = (List<AdvisorPortalContact>) JSON.deserialize(
+            contactWrappersListJSON,
+            List<AdvisorPortalContact>.class
+        );
 
-        for (String contactWrapperJSON : contactWrappersJSONList) {
-            contactWrappersList.add(
-                (AdvisorPortalContact) JSON.deserialize(contactWrapperJSON, AdvisorPortalContact.class)
-            );
-        }
+        // Get all contact ids
+        Map<Id, Case[]> contactIdToCasesMap = new Map<Id, List<Case>>();
+        for (AdvisorPortalContact contactWrapper : contactWrappersList)
+            if (!contactIdToCasesMap.containsKey(contactWrapper.portalContact.Id))
+                contactIdToCasesMap.put(contactWrapper.portalContact.Id, new List<Case>());
 
         // Get all case ids
         List<Id> allCaseIds = new List<Id>();
-        for (AdvisorPortalContact contactWrapper : contactWrappersList) {
-            for (AdvisorPortalCase caseWrapper : contactWrapper.cases) {
+        for (AdvisorPortalContact contactWrapper : contactWrappersList)
+            for (AdvisorPortalCase caseWrapper : contactWrapper.cases)
                 allCaseIds.add(caseWrapper.portalCase.Id);
-            }
-        }
 
-        // Get needed details
+        // Get needed case details
         List<Case> cases = new List<Case>(
             [SELECT Id, ContactId, OwnerId, Most_Recent_Queue__c, CreatedDate FROM Case WHERE Id IN :allCaseIds]
         );
 
-        // Construct map
-        Map<Id, Case[]> contactIdToCasesMap = new Map<Id, List<Case>>();
+        // For each contact, add in the cases
         for (Case c : cases) {
-            if (!contactIdToCasesMap.containsKey(c.ContactId)) {
+            if (!contactIdToCasesMap.containsKey(c.ContactId))
                 contactIdToCasesMap.put(c.ContactId, new List<Case>());
-            }
+
             contactIdToCasesMap.get(c.ContactId).add(c);
         }
 

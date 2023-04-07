@@ -1326,7 +1326,7 @@
                                 <div id="renewableAidBody" style="overflow: auto; max-height: 400px">
                                     <div id="renewableAidErrors"></div>
                                     <div id="renewable_aid_list">
-                                        <apex:form>
+                                        <apex:form >
                                             <div id="renewableAidTable">
                                                 <i class="fa fa-spinner fa-pulse"></i>
                                             </div>
@@ -1344,7 +1344,7 @@
                                 <div id ="bookPaymentBody" style="overflow: auto; max-height: 400px">
                                     <div id="bookPaymentErrors"></div>
                                     <div id="book_payment_list">
-                                        <apex:form>
+                                        <apex:form >
                                             <div id="bookPaymentTable">
                                                 <i class="fa fa-spinner fa-pulse"></i>
                                             </div>

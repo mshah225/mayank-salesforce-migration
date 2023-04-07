@@ -635,7 +635,7 @@ public with sharing class HelpDeskController {
         isExistingCaseSelected = false;
 
         if (myCase == null) {
-            myCase = new Case();
+            myCase = new Case(Priority = 'Normal');
         } else {
             myCase.clear();
         }
@@ -761,7 +761,9 @@ public with sharing class HelpDeskController {
                 Forward_To_Email__c,
                 ClosedDate,
                 CaseNumber,
-                CreatedDate
+                CreatedDate,
+                Priority,
+                Reason_for_Escalation__c
             FROM Case
             WHERE ContactId = :selectedContactId
             ORDER BY Status, CreatedDate DESC

@@ -28,7 +28,7 @@ public with sharing class LiveAgentPostSurveyControllerTest {
         LiveAgentPostSurveyController controller = new LiveAgentPostSurveyController();
 
         System.assert(controller.postChatSurveyLink.contains('getfeedback.com'));
-        System.assertEquals('0036T000043oW2z', controller.nonAuthCallerId);
+        System.assertEquals(nonAuthCallerId, controller.nonAuthCallerId);
         System.assertEquals(defaultOfflineMsg, controller.agentOfflineMessage);
         System.assertEquals('Visitor', controller.contactName);
     }
@@ -36,7 +36,7 @@ public with sharing class LiveAgentPostSurveyControllerTest {
     private static void testContactAsParam() {
         String contactId = [SELECT Id FROM Contact].Id;
         PageReference pageRef = Page.LiveAgentPostSurvey;
-        pageRef.getParameters().put('attachedRecords', '{ "ContactId" : "'+contactId+'" }');
+        pageRef.getParameters().put('attachedRecords', '{ "ContactId" : "' + contactId + '" }');
         Test.setCurrentPage(pageRef);
         LiveAgentPostSurveyController controller = new LiveAgentPostSurveyController();
 

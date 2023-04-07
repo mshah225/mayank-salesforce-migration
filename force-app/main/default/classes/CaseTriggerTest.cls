@@ -19,7 +19,7 @@ public with sharing class CaseTriggerTest {
             TimeZoneSidKey = 'America/New_York',
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'UTF-8',
-            ProfileId = IDHelper.getProfileId('System Administrator'),
+            ProfileId = RecordIdHelper.getProfileId('System Administrator'),
             LanguageLocaleKey = 'en_US',
             IsActive = true
         );
@@ -35,7 +35,7 @@ public with sharing class CaseTriggerTest {
             TimeZoneSidKey = 'America/New_York',
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'UTF-8',
-            ProfileId = IDHelper.getProfileId('System Administrator'),
+            ProfileId = RecordIdHelper.getProfileId('System Administrator'),
             LanguageLocaleKey = 'en_US',
             IsActive = true
         );
@@ -51,7 +51,7 @@ public with sharing class CaseTriggerTest {
             TimeZoneSidKey = 'America/New_York',
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'UTF-8',
-            ProfileId = IDHelper.getProfileId('System Administrator'),
+            ProfileId = RecordIdHelper.getProfileId('System Administrator'),
             LanguageLocaleKey = 'en_US',
             IsActive = true
         );
@@ -84,7 +84,7 @@ public with sharing class CaseTriggerTest {
         List<Id> classificationIds = new List<Id>();
         if (funcGrpName != null) {
             Case_Classification__c funcGrp = new Case_Classification__c(
-                RecordTypeId = IDHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group'),
+                RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group'),
                 Name = funcGrpName,
                 Record_Types__c = 'ASU Service',
                 Active__c = true,
@@ -95,7 +95,7 @@ public with sharing class CaseTriggerTest {
 
             if (categoryName != null) {
                 Case_Classification__c category = new Case_Classification__c(
-                    RecordTypeId = IDHelper.getRecordTypeId('Case_Classification__c', 'Category'),
+                    RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Category'),
                     Name = categoryName,
                     Parent__c = funcGrp.Id,
                     Active__c = true,
@@ -106,7 +106,7 @@ public with sharing class CaseTriggerTest {
 
                 if (subCategoryName != null) {
                     Case_Classification__c subCategory = new Case_Classification__c(
-                        RecordTypeId = IDHelper.getRecordTypeId('Case_Classification__c', 'Sub_Category'),
+                        RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Sub_Category'),
                         Name = subCategoryName,
                         Parent__c = category.Id,
                         Active__c = true,
@@ -126,7 +126,7 @@ public with sharing class CaseTriggerTest {
 
         Case newCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             Associate_Case_to_Active_Opportunity__c = true,
             Subject = 'Test Subject',
             Description = 'Test Desc',
@@ -154,7 +154,7 @@ public with sharing class CaseTriggerTest {
 
         Case newCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             Associate_Case_to_Active_Opportunity__c = true,
             Type_of_Additional_Assignment_Needed__c = 'Territory Manager',
             Subject = 'Test Subject',
@@ -187,7 +187,7 @@ public with sharing class CaseTriggerTest {
 
         Case newCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             Associate_Case_to_Active_Opportunity__c = true,
             Type_of_Additional_Assignment_Needed__c = 'Enrollment Coach',
             Subject = 'Test Subject',
@@ -272,7 +272,7 @@ public with sharing class CaseTriggerTest {
         Campaign camp = new Campaign(
             Name = 'C Test',
             Type = 'Web',
-            RecordTypeId = IDHelper.getRecordTypeId('Campaign', 'Other_Source'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Campaign', 'Other_Source'),
             Case_Assignment_Rule__c = car.Id,
             IsActive = true
         );
@@ -282,7 +282,7 @@ public with sharing class CaseTriggerTest {
 
         Case newCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             Case_Source__c = camp.Id,
             Associate_Case_to_Active_Opportunity__c = false,
             CC_Functional_Group__c = fgId,
@@ -375,7 +375,7 @@ public with sharing class CaseTriggerTest {
         Campaign camp = new Campaign(
             Name = 'C Test',
             Type = 'Web',
-            RecordTypeId = IDHelper.getRecordTypeId('Campaign', 'Other_Source'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Campaign', 'Other_Source'),
             Case_Assignment_Rule__c = car.Id,
             IsActive = true
         );
@@ -390,7 +390,7 @@ public with sharing class CaseTriggerTest {
 
         Case newCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             Case_Source__c = camp.Id,
             Associate_Case_to_Active_Opportunity__c = false,
             Subject = 'Test Subject',
@@ -480,7 +480,7 @@ public with sharing class CaseTriggerTest {
         Campaign camp = new Campaign(
             Name = 'C Test',
             Type = 'Web',
-            RecordTypeId = IDHelper.getRecordTypeId('Campaign', 'Other_Source'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Campaign', 'Other_Source'),
             Case_Assignment_Rule__c = car.Id,
             IsActive = true
         );
@@ -495,7 +495,7 @@ public with sharing class CaseTriggerTest {
 
         Case newCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             Case_Source__c = camp.Id,
             Associate_Case_to_Active_Opportunity__c = false,
             Subject = 'Test Subject',
@@ -583,7 +583,7 @@ public with sharing class CaseTriggerTest {
         Campaign camp = new Campaign(
             Name = 'C Test',
             Type = 'Web',
-            RecordTypeId = IDHelper.getRecordTypeId('Campaign', 'Other_Source'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Campaign', 'Other_Source'),
             Case_Assignment_Rule__c = car.Id,
             IsActive = true
         );
@@ -593,7 +593,7 @@ public with sharing class CaseTriggerTest {
 
         Case newCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             Case_Source__c = camp.Id,
             Associate_Case_to_Active_Opportunity__c = false,
             CC_Functional_Group__c = fgId,
@@ -688,7 +688,7 @@ public with sharing class CaseTriggerTest {
         Campaign camp = new Campaign(
             Name = 'C Test',
             Type = 'Web',
-            RecordTypeId = IDHelper.getRecordTypeId('Campaign', 'Other_Source'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Campaign', 'Other_Source'),
             IsActive = true
         );
         insert camp;
@@ -707,7 +707,7 @@ public with sharing class CaseTriggerTest {
 
         Case newCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             Case_Source__c = camp.Id,
             Associate_Case_to_Active_Opportunity__c = false,
             Subject = 'Test Subject',
@@ -797,7 +797,7 @@ public with sharing class CaseTriggerTest {
         Campaign camp = new Campaign(
             Name = 'C Test',
             Type = 'Web',
-            RecordTypeId = IDHelper.getRecordTypeId('Campaign', 'Other_Source'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Campaign', 'Other_Source'),
             IsActive = true
         );
         insert camp;
@@ -817,7 +817,7 @@ public with sharing class CaseTriggerTest {
 
         Case newCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             Case_Source__c = camp.Id,
             Associate_Case_to_Active_Opportunity__c = false,
             Subject = 'Test Subject',
@@ -911,7 +911,7 @@ public with sharing class CaseTriggerTest {
         Campaign camp = new Campaign(
             Name = 'C Test',
             Type = 'Web',
-            RecordTypeId = IDHelper.getRecordTypeId('Campaign', 'Other_Source'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Campaign', 'Other_Source'),
             IsActive = true
         );
         insert camp;
@@ -933,7 +933,7 @@ public with sharing class CaseTriggerTest {
 
         Case newCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             Case_Source__c = camp.Id,
             Associate_Case_to_Active_Opportunity__c = false,
             Subject = 'Test Subject',
@@ -1229,7 +1229,7 @@ public with sharing class CaseTriggerTest {
 
         Case newCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             Subject = 'Test Subject',
             CC_Functional_Group__c = funcGrpId1,
             Description = 'Test Desc',
@@ -1273,7 +1273,7 @@ public with sharing class CaseTriggerTest {
 
         Case newCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             Subject = 'Test Subject',
             CC_Functional_Group__c = funcGrpId1,
             Description = 'Test Desc',
@@ -1342,7 +1342,7 @@ public with sharing class CaseTriggerTest {
 
         Case newCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             Subject = 'Test Subject',
             CC_Functional_Group__c = funcGrpId,
             CC_Category__c = catId,
@@ -1387,7 +1387,7 @@ public with sharing class CaseTriggerTest {
 
         Case newCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             Subject = 'Test Subject',
             OwnerId = testGroup.Id,
             Description = 'Test Desc',
@@ -1422,7 +1422,7 @@ public with sharing class CaseTriggerTest {
 
         Case newCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             Subject = 'Test Subject',
             OwnerId = testGroup.Id,
             Description = 'Test Desc',
@@ -1450,7 +1450,7 @@ public with sharing class CaseTriggerTest {
 
         Case newCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             Subject = 'Test Subject',
             CC_Functional_Group__c = fgId,
             Description = 'Test Desc',
@@ -1464,7 +1464,7 @@ public with sharing class CaseTriggerTest {
         Test.stopTest();
 
         newCase = [SELECT Id, RecordTypeId FROM Case];
-        System.assertEquals(IDHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'), newCase.RecordTypeId);
+        System.assertEquals(RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach'), newCase.RecordTypeId);
     }
 
     @isTest
@@ -1475,7 +1475,7 @@ public with sharing class CaseTriggerTest {
 
         Case newCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             Subject = 'Test Subject',
             CC_Functional_Group__c = fgId,
             Description = 'Test Desc',
@@ -1489,7 +1489,7 @@ public with sharing class CaseTriggerTest {
         Test.stopTest();
 
         newCase = [SELECT Id, RecordTypeId FROM Case];
-        System.assertEquals(IDHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach'), newCase.RecordTypeId);
+        System.assertEquals(RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach'), newCase.RecordTypeId);
     }
 
     @isTest
@@ -1511,7 +1511,7 @@ public with sharing class CaseTriggerTest {
         // Test when functional group is Admission Services
         Case admissionServicesFuncGrpCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Service'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Service'),
             Subject = 'Test Subject',
             CC_Functional_Group__c = fgId1,
             Description = 'Test Desc',
@@ -1519,7 +1519,7 @@ public with sharing class CaseTriggerTest {
         );
         Case recruitmentCategoryCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Service'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Service'),
             Subject = 'Test Subject',
             CC_Functional_Group__c = fgId2,
             CC_Category__c = catId2,
@@ -1528,7 +1528,7 @@ public with sharing class CaseTriggerTest {
         );
         Case recruitmentSubCategoryCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Service'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Service'),
             Subject = 'Test Subject',
             CC_Functional_Group__c = fgId3,
             CC_Category__c = catId3,
@@ -1548,15 +1548,15 @@ public with sharing class CaseTriggerTest {
         recruitmentSubCategoryCase = [SELECT Id, RecordTypeId FROM Case WHERE Id = :recruitmentSubCategoryCase.Id];
 
         System.assertEquals(
-            IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             admissionServicesFuncGrpCase.RecordTypeId
         );
         System.assertEquals(
-            IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             recruitmentCategoryCase.RecordTypeId
         );
         System.assertEquals(
-            IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             recruitmentSubCategoryCase.RecordTypeId
         );
     }
@@ -1576,7 +1576,7 @@ public with sharing class CaseTriggerTest {
 
         Case newCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Admission_Services'),
             Subject = 'Test Subject',
             CC_Functional_Group__c = fgId,
             CC_Category__c = catId,
@@ -1593,7 +1593,7 @@ public with sharing class CaseTriggerTest {
 
         newCase = [SELECT Id, RecordTypeId FROM Case WHERE Id = :newCase.Id];
 
-        System.assertEquals(IDHelper.getRecordTypeId('Case', 'ASU_Service'), newCase.RecordTypeId);
+        System.assertEquals(RecordIdHelper.getRecordTypeId('Case', 'ASU_Service'), newCase.RecordTypeId);
     }
 
     @isTest
@@ -1606,7 +1606,7 @@ public with sharing class CaseTriggerTest {
 
         Case newCase = new Case(
             ContactId = con.Id,
-            RecordTypeId = IDHelper.getRecordTypeId('Case', 'ASU_Retention_Outreach'),
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Retention_Outreach'),
             Subject = 'Test Subject',
             CC_Functional_Group__c = fgId,
             CC_Category__c = catId,
@@ -1622,7 +1622,7 @@ public with sharing class CaseTriggerTest {
 
         newCase = [SELECT Id, RecordTypeId FROM Case WHERE Id = :newCase.Id];
 
-        System.assertEquals(IDHelper.getRecordTypeId('Case', 'ASU_Student_Outreach'), newCase.RecordTypeId);
+        System.assertEquals(RecordIdHelper.getRecordTypeId('Case', 'ASU_Student_Outreach'), newCase.RecordTypeId);
     }
 
     @isTest

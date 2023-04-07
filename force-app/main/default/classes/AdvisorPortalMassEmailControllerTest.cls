@@ -94,17 +94,17 @@ private class AdvisorPortalMassEmailControllerTest {
         Map<Id, Case[]> mapping = new Map<Id, Case[]>();
         mapping.put(testContact.Id, testCases);
 
-        List<String> contactWrappersJSONList = new List<String>();
+        List<AdvisorPortalContact> contactWrappersListJSON = new List<AdvisorPortalContact>();
         AdvisorPortalContact advisorPortalContact = new AdvisorPortalContact(testContact);
         for (Case c : testCases) {
             AdvisorPortalCase advisorCase = new AdvisorPortalCase(c);
             advisorPortalContact.addCase(advisorCase);
         }
-        contactWrappersJSONList.add(JSON.serialize(advisorPortalContact));
+        contactWrappersListJSON.add(advisorPortalContact);
 
         Test.startTest();
         AdvisorPortalMassEmailModalController.createPortalEmailsStr(
-            contactWrappersJSONList,
+            JSON.serialize(contactWrappersListJSON),
             'Test Subject',
             'Testing some email body text.'
         );
@@ -155,6 +155,39 @@ private class AdvisorPortalMassEmailControllerTest {
         Test.startTest();
         AdvisorPortalMassEmailModalController.createPortalEmails(
             mapping,
+            'Test Subject',
+            'Testing some email body text.'
+        );
+        Test.stopTest();
+
+        Integer emailsFoundWithOnlyContact = 0;
+        List<Portal_Email__c> assertPortalEmails = [
+            SELECT Subject__c, Additional_Message_Text__c, Contact__c, Case__c, Status__c
+            FROM Portal_Email__c
+        ];
+        System.assertEquals(1, assertPortalEmails.size(), '1 Portal Email should have been created for the contact.');
+
+        System.assertEquals(
+            'New',
+            assertPortalEmails[0].Status__c,
+            'The status should be set to \'New\' for the only Contact portal email.'
+        );
+        System.assert(String.isNotBlank(assertPortalEmails[0].Subject__c));
+        System.assert(String.isNotBlank(assertPortalEmails[0].Additional_Message_Text__c));
+    }
+
+    @isTest
+    static void testCreatePortalEmailsStrNoCases() {
+        Contact testContact = new Contact(FirstName = 'Mister', LastName = 'Stark');
+        insert testContact;
+
+        List<AdvisorPortalContact> contactWrappersListJSON = new List<AdvisorPortalContact>();
+        AdvisorPortalContact advisorPortalContact = new AdvisorPortalContact(testContact);
+        contactWrappersListJSON.add(advisorPortalContact);
+
+        Test.startTest();
+        AdvisorPortalMassEmailModalController.createPortalEmailsStr(
+            JSON.serialize(contactWrappersListJSON),
             'Test Subject',
             'Testing some email body text.'
         );

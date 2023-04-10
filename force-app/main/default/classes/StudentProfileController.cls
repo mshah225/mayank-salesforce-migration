@@ -917,7 +917,7 @@ global with sharing class StudentProfileController {
             SELECT et4ae5__SubjectLine__c, et4ae5__DateSent__c 
             FROM et4ae5__IndividualEmailResult__c 
             WHERE 
-                et4ae5__SendDefinition__r.et4ae5__Business_Unit__r.et4ae5__Business_Unit_ID__c = '7276811' 
+                et4ae5__SendDefinition__r.et4ae5__Business_Unit__r.et4ae5__Business_Unit_ID__c =: businessUnitForEmails
                 AND et4ae5__DateSent__c > LAST_YEAR
                 AND et4ae5__Contact__c =: theContact.Id
             ORDER BY et4ae5__DateSent__c DESC

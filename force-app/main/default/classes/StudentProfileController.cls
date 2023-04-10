@@ -912,6 +912,7 @@ global with sharing class StudentProfileController {
 
     private void setContactEmailRecords() {
         emailsForContact = new List<et4ae5__IndividualEmailResult__c>();
+        String businessUnitForEmails = Label.SP_BU_EmailSends;
         List<et4ae5__IndividualEmailResult__c> emailResults = [
             SELECT et4ae5__SubjectLine__c, et4ae5__DateSent__c 
             FROM et4ae5__IndividualEmailResult__c 

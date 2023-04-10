@@ -1411,6 +1411,10 @@
                                             <apex:column headerValue="Date Sent" value="{!emailSends.et4ae5__DateSent__c}" />
                                         </apex:dataTable>
                                     </div>
+
+                                    <apex:outputText rendered="{!IF(emailsForContact.size > 0, false, true)}"
+                                        value="No IER Email Send records are available for this student"
+                                    />
                                 </div>
 
                                 <div class="page-header-smaller">

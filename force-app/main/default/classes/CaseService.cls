@@ -541,6 +541,8 @@ public class CaseService {
                 mapCCIdToName.get(caseRecord.CC_Category__c).equalsIgnoreCase('Outreach')
             ) {
                 caseRecord.RecordTypeId = RecordIDHelper.getRecordTypeId('Case', 'ASU_Student_Outreach');
+            } else if (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Graduate Advisor Portal')) {
+                caseRecord.RecordTypeId = RecordIDHelper.getRecordTypeId('Case', 'ASU_Graduate_Advisor_Portal');
             }
         }
     }

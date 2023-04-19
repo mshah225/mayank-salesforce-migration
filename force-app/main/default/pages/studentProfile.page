@@ -1396,6 +1396,30 @@
                                 <div class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
+                                        &nbsp;SBS Marketing Cloud IER Email Sends
+                                    </h4>
+                                </div>
+
+                                <div style="overflow: auto;">
+                                    <div class="table-responsive">
+                                        <apex:dataTable styleClass="table table-striped table-bordered"
+                                            value="{!emailsForContact}"
+                                            var="emailSends"
+                                            rendered="{!IF(emailsForContact.size > 0,true,false)}"
+                                        >
+                                            <apex:column headerValue="Email Subject" value="{!emailSends.et4ae5__SubjectLine__c}" />
+                                            <apex:column headerValue="Date Sent" value="{!emailSends.et4ae5__DateSent__c}" />
+                                        </apex:dataTable>
+                                    </div>
+
+                                    <apex:outputText rendered="{!IF(emailsForContact.size > 0, false, true)}"
+                                        value="No IER Email Send records are available for this student"
+                                    />
+                                </div>
+
+                                <div class="page-header-smaller">
+                                    <h4>
+                                        <i class="fa fa-caret-down"></i>
                                         &nbsp;Financial Aid User Edit Messages
                                     </h4>
                                 </div>

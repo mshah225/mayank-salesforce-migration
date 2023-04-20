@@ -439,18 +439,6 @@
                                             <div class="modal-body">
                                                 <div id="modalError" style="color: red"></div>
                                                 <div class="form-group">
-                                                    <label for="comment">Subject:</label>
-                                                    <input type="text" class="form-control" id="usrSubject" />
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="comment">Description:</label>
-                                                    <textarea
-                                                        class="form-control"
-                                                        rows="5"
-                                                        id="usrDescription"
-                                                    ></textarea>
-                                                </div>
-                                                <div class="form-group">
                                                     <label for="comment">Functional Group:</label>
                                                     <apex:form>
                                                         <apex:selectList
@@ -463,6 +451,18 @@
                                                             ></apex:selectOptions>
                                                         </apex:selectList>
                                                     </apex:form>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="comment">Subject:</label>
+                                                    <input type="text" class="form-control" id="usrSubject" />
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="comment">Description:</label>
+                                                    <textarea
+                                                        class="form-control"
+                                                        rows="5"
+                                                        id="usrDescription"
+                                                    ></textarea>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">

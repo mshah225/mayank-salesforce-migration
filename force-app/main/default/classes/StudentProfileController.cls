@@ -16,6 +16,7 @@ global with sharing class StudentProfileController {
     public List<Student_Program_Plan__c> activeGradProgramPlans { get; set; }
     public List<Student_Program_Plan__c> completedGradProgramPlans { get; set; }
     public List<Service_Indicator__c> serviceIndicators { get; set; }
+    public List<et4ae5__IndividualEmailResult__c> emailsForContact {get; set;}
     public Student_Program_Plan__c studentProgram { get; set; }
     public List<Student_Program_Plan_Advisor__c> ugStudentProgramAdvisors { get; set; }
     public List<Student_Program_Plan_Advisor__c> gradStudentProgramAdvisors { get; set; }
@@ -93,6 +94,8 @@ global with sharing class StudentProfileController {
         set;
     }
 
+    
+
     public StudentProfileController() {
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
@@ -123,6 +126,7 @@ global with sharing class StudentProfileController {
             setAdvisorStatus();
             setCIIndex();
             setFinancialAidIndicator();
+            setContactEmailRecords();
         } else {
             initializeValuesForNullContactId();
             ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
@@ -903,6 +907,24 @@ global with sharing class StudentProfileController {
             ciIndex = '' + studentOpp[0].CI_Score__c;
         } else {
             ciIndex = '--';
+        }
+    }
+
+    private void setContactEmailRecords() {
+        emailsForContact = new List<et4ae5__IndividualEmailResult__c>();
+        String businessUnitForEmails = Label.SP_BU_EmailSends;
+        List<et4ae5__IndividualEmailResult__c> emailResults = [
+            SELECT et4ae5__SubjectLine__c, et4ae5__DateSent__c 
+            FROM et4ae5__IndividualEmailResult__c 
+            WHERE 
+                et4ae5__SendDefinition__r.et4ae5__Business_Unit__r.et4ae5__Business_Unit_ID__c =: businessUnitForEmails
+                AND et4ae5__DateSent__c > LAST_YEAR
+                AND et4ae5__Contact__c =: theContact.Id
+            ORDER BY et4ae5__DateSent__c DESC
+        ];
+
+        if (emailResults != null) {
+            emailsForContact = emailResults;
         }
     }
 

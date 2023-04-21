@@ -1396,6 +1396,30 @@
                                 <div class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
+                                        &nbsp;SBS Marketing Cloud IER Email Sends
+                                    </h4>
+                                </div>
+
+                                <div style="overflow: auto;">
+                                    <div class="table-responsive">
+                                        <apex:dataTable styleClass="table table-striped table-bordered"
+                                            value="{!emailsForContact}"
+                                            var="emailSends"
+                                            rendered="{!IF(emailsForContact.size > 0,true,false)}"
+                                        >
+                                            <apex:column headerValue="Email Subject" value="{!emailSends.et4ae5__SubjectLine__c}" />
+                                            <apex:column headerValue="Date Sent" value="{!emailSends.et4ae5__DateSent__c}" />
+                                        </apex:dataTable>
+                                    </div>
+
+                                    <apex:outputText rendered="{!IF(emailsForContact.size > 0, false, true)}"
+                                        value="No IER Email Send records are available for this student"
+                                    />
+                                </div>
+
+                                <div class="page-header-smaller">
+                                    <h4>
+                                        <i class="fa fa-caret-down"></i>
                                         &nbsp;Financial Aid User Edit Messages
                                     </h4>
                                 </div>
@@ -4363,7 +4387,9 @@
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Dates\')">Dates</th>' +
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Location\')">Location</th>' +
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Grade\')">Grade</th>' +
-                                                '<th scope="col">Conf. Of Participation</th>' +
+                                                '<th scope="col">Conf. Of Participation ' +
+                                                '<a class="fa fa-question-circle" title="Yes means:&#10;-Student participated in this class in Canvas&#10;-Student completed the Confirmation of Participation (COP) survey&#10;-Student is an international student and exempt from the process&#10;&#10;No means:&#10;-Student has not met any of those conditions&#10;&#10;-- means:&#10;-The class was taken before ASU tracked COP in this way" data-placement="right"></a>' +
+                                            	'</th>' +
                                                 '<th scope="col">ASR</th>' +
                                                 '</tr>' +
                                                 '</thead>' +
@@ -4493,7 +4519,9 @@
                                                 '<th scope="col" onclick="sortDroppedOnClick(\'Topic\')">Topic</th>' +
                                                 '<th scope="col" onclick="sortDroppedOnClick(\'Units\')">Units</th>' +
                                                 '<th scope="col" onclick="sortDroppedOnClick(\'Status\')">Status</th>' +
-                                                '<th scope="col">Conf. Of Participation</th>' +
+                                                '<th scope="col">Conf. Of Participation ' +
+                                                '<a class="fa fa-question-circle" title="Yes means:&#10;-Student participated in this class in Canvas&#10;-Student completed the Confirmation of Participation (COP) survey&#10;-Student is an international student and exempt from the process&#10;&#10;No means:&#10;-Student has not met any of those conditions&#10;&#10;-- means:&#10;-The class was taken before ASU tracked COP in this way" data-placement="right"></a>' +
+                                            	'</th>' +
                                                 '<th scope="col">ASR</th>' +
                                                 '</tr>' +
                                                 '</thead>' +
@@ -4663,8 +4691,10 @@
                         '<th onclick="sortEnrolledOnClick(\'Dates\')">Dates</th>' +
                         '<th onclick="sortEnrolledOnClick(\'Location\')">Location</th>' +
                         '<th onclick="sortEnrolledOnClick(\'Grade\')">Grade</th>' +
-                        '<th scope="col">Conf. Of Participation</th>' +
-                        '<th>ASR</th>' +
+                        '<th scope="col">Conf. Of Participation ' +
+                        '<a class="fa fa-question-circle" title="Yes means:&#10;-Student participated in this class in Canvas&#10;-Student completed the Confirmation of Participation (COP) survey&#10;-Student is an international student and exempt from the process&#10;&#10;No means:&#10;-Student has not met any of those conditions&#10;&#10;-- means:&#10;-The class was taken before ASU tracked COP in this way" data-placement="right"></a>' +
+                        '</th>' +
+                        '<th scope="col">ASR</th>' +
                         '</tr>' +
                         '</thead>' +
                         '<tbody>';
@@ -4777,8 +4807,10 @@
                             '<th onclick="sortDroppedOnClick(\'Topic\')">Topic</th>' +
                             '<th onclick="sortDroppedOnClick(\'Units\')">Units</th>' +
                             '<th onclick="sortDroppedOnClick(\'Status\')">Status</th>' +
-                            '<th>Conf. Of Participation</th>' +
-                            '<th>ASR</th>' +
+                            '<th scope="col">Conf. Of Participation ' +
+                            '<a class="fa fa-question-circle" title="Yes means:&#10;-Student participated in this class in Canvas&#10;-Student completed the Confirmation of Participation (COP) survey&#10;-Student is an international student and exempt from the process&#10;&#10;No means:&#10;-Student has not met any of those conditions&#10;&#10;-- means:&#10;-The class was taken before ASU tracked COP in this way" data-placement="right"></a>' +
+                            '</th>' +
+                            '<th scope="col">ASR</th>' +
                             '</tr>' +
                             '</thead>' +
                             '<tbody>';

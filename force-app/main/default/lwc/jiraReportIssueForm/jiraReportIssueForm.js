@@ -1,23 +1,17 @@
 import {LightningElement, api} from 'lwc';
-import createIssue from '@salesforce/apex/JiraReportIssueController.callout';
+import createBugReport from '@salesforce/apex/JiraReportIssueController.createBugReport';
+import createNewDevelopmentRequest from '@salesforce/apex/JiraReportIssueController.createNewDevelopmentRequest';
 
 export default class JiraReportIssueForm extends LightningElement {
     @api title;
-
-    alert;
-    get showAlert() {
-        return this.alert != null && this.alert !== '';
-    }
-    alertHref;
-    get showAlertLink() {
-        return this.alertHref != null && this.alertHref !== '';
-    }
-
     @api type;
     @api questionListJSON;
 
     configurableQuestions = [];
     disabledButton = false;
+
+    alert;
+    alertHref;
 
     connectedCallback() {
         if (this.questionListJSON != null && this.questionListJSON != '') {
@@ -28,6 +22,13 @@ export default class JiraReportIssueForm extends LightningElement {
             const question = this.configurableQuestions[i];
             question.key = 'key-' + i;
             question.answer = '';
+            // Setup label for request form (this is a temporary holdever from before we supported setting jiraLabel - can be removed in a future update to page config)
+            if (question.action === 'requestForm') {
+                if (question.jiraLabel == null) question.jiraLabel = 'Request Form';
+                question.action = null;
+            }
+            // Set the label to the question if it is unspecified
+            if (question.jiraLabel == null) question.jiraLabel = question.question;
         }
     }
 
@@ -40,12 +41,6 @@ export default class JiraReportIssueForm extends LightningElement {
         for (let i = 0; i < this.configurableQuestions.length && !found; i++) {
             if (this.configurableQuestions[i].key === questionKey) {
                 this.configurableQuestions[i].answer = answer;
-                found = true;
-            }
-        }
-        for (let i = 0; i < this.alwaysQuestions.length && !found; i++) {
-            if (this.alwaysQuestions[i].key === questionKey) {
-                this.alwaysQuestions[i].answer = answer;
                 found = true;
             }
         }
@@ -65,35 +60,35 @@ export default class JiraReportIssueForm extends LightningElement {
             let title = null;
             let qaList = [];
             let watchers = null;
-            let reqForm = null;
 
             for (let i = 0; i < this.configurableQuestions.length; i++) {
                 const q = this.configurableQuestions[i];
-                const thisQA = '*' + q.question + '*\n' + q.answer;
+
+                const thisQA = '*' + q.jiraLabel + '*\n' + q.answer;
                 if (q.type === 'label') continue; // don't add labels to the body
                 if (q.action != null) {
                     // is action is specified - then we need to do something special
                     if (q.action === 'title') if (q.answer.length > 0) title = q.answer;
                     if (q.action === 'watcherList') if (q.answer.length > 0) watchers = q.answer;
-                    if (q.action === 'requestForm') if (q.answer.length > 0) reqForm = q.answer;
                     continue;
                 }
+                if (q.answer.length === 0) continue; // skip is empty
                 // for each question and answer - we add it to the qaList
                 qaList.push(thisQA);
             }
-
-            if (reqForm != null) qaList.push('*Request Form:*\n' + reqForm);
 
             let description = qaList.join('\n\n'); // combine to make mega string
 
             let type = this.type;
 
             this.disabledButton = true;
+
+            let createIssue = type.toLowerCase().includes('new') ? createNewDevelopmentRequest : createBugReport; // determine which function to call
+
             createIssue({
                 title,
                 description,
                 watchers,
-                type,
             })
                 .then((val) => {
                     let key = val;

@@ -129,7 +129,7 @@ global with sharing class StudentProfileCallout {
         FinancialAidRefundWrapper refundsForStudent;
 
         HttpRequest req = new HttpRequest();
-        req.setEndpoint('callout:Student_Finances/students/' + emplid + '/account/refunds');
+        req.setEndpoint('callout:Student_Finances/students/' + emplid + '/account/recent-refunds');
         req.setMethod('GET');
         Http http = new Http();
         HTTPResponse res = http.send(req);
@@ -140,5 +140,90 @@ global with sharing class StudentProfileCallout {
         }
 
         return refundsForStudent;
+    }
+
+    global static DepositStatusWrapper getDepositStatus(String emplid) {
+        DepositStatusWrapper depositsForStudent;
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Student_Finances/students/' + emplid + '/account/deposit-status');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            depositsForStudent = DepositStatusWrapper.parse(responseBody);
+        }
+
+        return depositsForStudent;
+    }
+
+    global static RenewableAidWrapper getRenewableAid(String emplid) {
+        RenewableAidWrapper renewableAidForStudent;
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/renewable-aid');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            renewableAidForStudent = RenewableAidWrapper.parse(responseBody);
+        }
+
+        return renewableAidForStudent;
+    }
+
+    global static BookPaymentWrapper getBookPayments(String emplid) {
+        BookPaymentWrapper bookPaymentsForStudent;
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/ebpo');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            bookPaymentsForStudent = BookPaymentWrapper.parse(responseBody);
+        }
+
+        return bookPaymentsForStudent;
+    }
+
+    global static TuitionResidencyWrapper getTuitionResidencyStatus(String emplid) {
+        TuitionResidencyWrapper tuitionResidencyForStudent;
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/tuition-residency');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            tuitionResidencyForStudent = TuitionResidencyWrapper.parse(responseBody);
+        }
+
+        return tuitionResidencyForStudent;
+    }
+
+    global static SAPWrapper getAcademicProgress(String emplid) {
+        SAPWrapper academicProgressForStudent;
+
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint('callout:Financial_Aid/students/' + emplid + '/sap-summary');
+        req.setMethod('GET');
+        Http http = new Http();
+        HTTPResponse res = http.send(req);
+        String responseBody = res.getBody();
+
+        if (responseBody != null) {
+            academicProgressForStudent = SAPWrapper.parse(responseBody);
+        }
+
+        return academicProgressForStudent;
     }
 }

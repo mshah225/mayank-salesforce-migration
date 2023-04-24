@@ -13,9 +13,15 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
             return getFinancialAidChargeHistory();
         } else if (req.getEndPoint().contains('/account/balance')) {
             return getFinancialAidAccountBalance();
-        } else if (req.getEndPoint().contains('/account/refunds')) {
+        } else if (req.getEndPoint().contains('/account/recent-refunds')) {
             return getFinancialAidRefunds();
-        }
+        } else if (req.getEndPoint().contains('/account/deposit-status')) {
+            return getDepositStatus();
+        } else if (req.getEndPoint().contains('/renewable-aid')) {
+            return getRenewableAid();
+        } else if (req.getEndPoint().contains('/ebpo')) {
+            return getBookPayment();
+        } 
         return null;
     }
 
@@ -274,5 +280,84 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
         res.setStatusCode(200);
         return res;
     }
+
+    private HTTPResponse getDepositStatus() {
+        HttpResponse res = new HttpResponse();
+        String json=		'{'+
+		'    "emplid": "1206104779",'+
+		'    "deposits": ['+
+		'        {'+
+		'            "last_update_date": "2021-06-26",'+
+		'            "pre_notification_code": "C",'+
+		'            "pre_notification_date": "2021-06-26",'+
+		'            "campus_id": "995888422",'+
+		'            "pre_notification_status": "Completed",'+
+		'            "deposit_status": "Active",'+
+		'            "days_since_prenote_date": 584'+
+		'        },'+
+		'        {'+
+		'            "last_update_date": "2021-06-26",'+
+		'            "pre_notification_code": "C",'+
+		'            "pre_notification_date": "2021-06-26",'+
+		'            "campus_id": "995888422",'+
+		'            "pre_notification_status": "Completed",'+
+		'            "deposit_status": "Active",'+
+		'            "days_since_prenote_date": 584'+
+		'        }'+
+		'    ]'+
+		'}';
+        res.setHeader('Content-Type', 'application/json');
+        res.setBody(json);
+        res.setStatusCode(200);
+        return res;
+    }
     
+    private HTTPResponse getRenewableAid() {
+        HttpResponse res = new HttpResponse();
+
+		String json =		'{' +
+		'    "emplid": "1206104779",' +
+		'    "aid_years": [' +
+		'        {' +
+		'            "aid_year": "2017",' +
+		'            "name": "ARIZONA GRADUATE SCHOLAR AWARD",' +
+		'            "terms_used": "0 of 4 terms",' +
+		'            "current_award": "2000",' +
+		'            "awards_description": "Funds for this program may be comprised of one or more named awards</br></br>",' +
+		'            "renewal_status": "New Award (100%)",' +
+		'            "measurement_description": "Measurement as of 06/06/2018:</br></br>",' +
+		'            "max_amount": "2000"' +
+		'        }' +
+		'    ]' +
+		'}';
+
+        res.setHeader('Content-Type', 'application/json');
+        res.setBody(json);
+        res.setStatusCode(200);
+        return res;
+    }
+
+    private HTTPResponse getBookPayment() {
+        HttpResponse res = new HttpResponse();
+
+		String json =		'{'+
+		'    "emplid": "1206104779",'+
+		'    "aid_years": ['+
+		'        {'+
+		'            "aid_year": "2023",'+
+		'            "term": "2227",'+
+		'            "term_description": "2022 Fall",'+
+		'            "amount": 150,'+
+		'            "begin_date": "2022-09-21",'+
+		'            "end_date": "2022-10-26",'+
+		'            "description": "Pacific Dental students use your book scholarship at the ASU Bookstore"'+
+		'        }'+
+		'    ]'+
+		'}';
+
+        res.setHeader('Content-Type', 'application/json');
+        res.setBody(json);
+        res.setStatusCode(200);
+        return res;
+    }
 }

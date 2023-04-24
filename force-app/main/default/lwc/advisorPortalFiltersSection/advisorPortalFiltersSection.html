@@ -2,14 +2,29 @@
     <div class="slds-grid slds-gutters slds-wrap">
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
             <lightning-input
-                label="Student"
+                label="Student †"
                 type="text"
                 name="studentString"
                 data-name="studentString"
                 oncommit={changeField}
                 onchange={stopEvent}
                 value={currentFilter.studentString}
-            ></lightning-input>
+                class="tooltip-enabled-field"
+                aria-describedby="studentStringTooltip"
+                onkeydown={closeTooltipOnEscape}
+                onblur={resetTooltipState}
+            >
+            </lightning-input>
+            <div class="slds-is-absolute slds-text-body_small tooltip" role="tooltip" id="studentStringTooltip">
+                <div class="slds-hide_medium">
+                    † Search by "FirstName LastName" (must search with full name, either preferred or legal), "ASURITE",
+                    or "EMPLID".
+                </div>
+                <div class="slds-show_medium">
+                    † Search by "FirstName LastName" (must search with full<br />name, either preferred or legal),
+                    "ASURITE", or "EMPLID".
+                </div>
+            </div>
         </div>
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
             <c-lightning-combo-box
@@ -390,7 +405,7 @@
         </template>
     </div>
     <div class="slds-grid slds-wrap slds-gutters_x-small slds-var-m-top_small">
-        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+        <div class="slds-col slds-size_1-of-1">
             <lightning-button label="Clear Filters" title="Clear Filters" onclick={clearFilters}></lightning-button>
             <lightning-button
                 variant="brand"
@@ -399,10 +414,6 @@
                 onclick={applyFilters}
                 class="slds-var-m-left_xx-small"
             ></lightning-button>
-        </div>
-        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-text-body_small">
-            <div class="slds-text-align_right slds-show_medium">† Uses full name (preferred or legal)</div>
-            <div class="slds-var-m-top_xx-small slds-hide_medium">† Uses full name (preferred or legal)</div>
         </div>
     </div>
 </template>

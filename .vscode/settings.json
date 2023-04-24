@@ -28,6 +28,12 @@
             "tooltip": "A script to initialize or refresh a Salesforce developer's setup"
         },
         {
+            "arguments": ["Run LWC Tests"],
+            "command": "terminals.runTerminalByName",
+            "text": "$(play) Run LWC Tests",
+            "tooltip": "Runs local LWC jest tests"
+        },
+        {
             "arguments": ["Ratchet"],
             "command": "terminals.runTerminalByName",
             "text": "$(play) Ratchet",
@@ -81,6 +87,15 @@
             "focus": true,
             "icon": "code",
             "name": "Ratchet",
+            "open": true,
+            "recycle": true
+        },
+        {
+            "commands": ["npm run test:unit"],
+            "description": "Runs local LWC tests",
+            "focus": true,
+            "icon": "code",
+            "name": "Run LWC Tests",
             "open": true,
             "recycle": true
         }

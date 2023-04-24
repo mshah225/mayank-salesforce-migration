@@ -88,8 +88,6 @@ public without sharing class OpportunityHandler implements ITrigger {
                 }
             }
         }
-
-        OpportunityService.updateAccountIdFromContact(Trigger.new, Trigger.oldMap);
     }
 
     /**

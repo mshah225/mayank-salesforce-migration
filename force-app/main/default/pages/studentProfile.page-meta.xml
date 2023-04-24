@@ -4,4 +4,9 @@
     <availableInTouch>false</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
     <label>studentProfile</label>
+    <packageVersions>
+        <majorNumber>242</majorNumber>
+        <minorNumber>43</minorNumber>
+        <namespace>et4ae5</namespace>
+    </packageVersions>
 </ApexPage>

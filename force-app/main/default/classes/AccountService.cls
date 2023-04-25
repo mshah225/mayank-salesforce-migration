@@ -1,7 +1,7 @@
 public without sharing class AccountService {
     public static Boolean assignTerritoryDone = false;
 
-    public void assignTerritory(List<Account> newAccounts, Boolean isInsert) {
+    public static void assignTerritory(List<Account> newAccounts, Boolean isInsert) {
         if (assignTerritoryDone) {
             return;
         }
@@ -37,7 +37,7 @@ public without sharing class AccountService {
         assignTerritoryDone = isInsert ? true : false;
     }
 
-    public void assignTerritory(List<Account> newAccounts, Map<Id, Account> oldAccountsMap) {
+    public static void assignTerritory(List<Account> newAccounts, Map<Id, Account> oldAccountsMap) {
         assignTerritory(newAccounts, false);
         for (Account newAccount : newAccounts) {
             if (

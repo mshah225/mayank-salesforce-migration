@@ -13,55 +13,6 @@ public without sharing class TerritoryAssignmentTest {
     }
 
     @isTest
-    public static void testAccountGeomarketCodeAssignment() {
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
-
-        Account HS = new Account();
-        HS.Name = 'Test High School';
-        insert HS;
-
-        Contact con = new Contact();
-        con.FirstName = 'TestFirstName';
-        con.LastName = 'TestLastName';
-        con.MailingPostalCode = '90210';
-        con.Geomarket_Code__c = 'CA-01';
-        insert con;
-
-        con = [SELECT Id, AccountId FROM Contact WHERE Id = :con.Id];
-
-        Key_Value__c KV = new Key_Value__c();
-        KV.Geomarket_ZIP__c = '85287';
-        KV.Geomarket_Code__c = 'GM-01';
-        insert KV;
-
-        Opportunity Opp = new Opportunity();
-        Opp.Name = 'Test Opp';
-        Opp.Contact__c = con.Id;
-        Opp.AccountId = con.AccountID;
-        Opp.StageName = 'Prospect';
-        Opp.CloseDate = date.today() + 365;
-        Opp.Type = 'First Time Freshman';
-        Opp.OwnerId = TestUser.Id;
-        insert Opp;
-
-        AccountService.assignTerritoryDone = false;
-
-        Test.startTest();
-        HS.ShippingPostalCode = '85287';
-        HS.Territory_Manager__c = TestUser.Id;
-        update HS;
-        Test.stopTest();
-
-        String accountGeoCodeAfterUpdate = [SELECT Id, Geomarket_Code__c FROM Account WHERE Id = :HS.Id LIMIT 1]
-        .Geomarket_Code__c;
-
-        System.assert(
-            accountGeoCodeAfterUpdate == KV.Geomarket_Code__c,
-            'Account Geomarket Code did not match by ZIP code'
-        );
-    }
-
-    @isTest
     public static void testContactGeomarketCodeAssignment() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 

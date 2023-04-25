@@ -1,29 +1,26 @@
 import {LightningElement, api} from 'lwc';
 import submitForm from '@salesforce/apex/JiraAddCommentFormController.submitForm';
 import LightningQuestionAnswerModal from 'c/lightningQuestionAnswerModal';
+import {cloneObj} from 'c/helperFunctions';
 
 export default class JiraTicketTable extends LightningElement {
     @api tickets;
 
-    testFormQuestions = [
-        {key: 'environment', question: 'What environment will be used for testing?', type: 'textarea'},
-        {key: 'testplan', question: 'Test plan (including test cases):', type: 'textarea'},
-        {key: 'testers', question: 'Tester(s):', type: 'textarea'},
-        {key: 'config', question: 'What configuration changes need to be made?', type: 'textarea'},
-    ];
-    techReviewFormQuestions = [
-        {key: 'summary', question: 'Brief summary of the changes:', type: 'textarea'},
-        {key: 'changes', question: 'What were the test cases?', type: 'textarea'},
-        {key: 'admin', question: 'Name of admin who tested and signed off:', type: 'textarea'},
-        {key: 'stakeholder', question: 'Name of stakeholder representative who signed off:', type: 'textarea'},
-        {key: 'metadata', question: 'What metadata needs to be migrated?', type: 'textarea'},
-        {
-            key: 'config',
-            question: 'What configuration and security changes need to be made before or after deploy?',
-            type: 'textarea',
-        },
-        {key: 'documentation', question: 'Future state documentaion (with explanation of changes):', type: 'textarea'},
-    ];
+    @api set testFormQuestions(val) {
+        this._testFormQuestions = cloneObj(val);
+    }
+    get testFormQuestions() {
+        return this._testFormQuestions;
+    }
+    _testFormQuestions = [];
+
+    @api set techReviewFormQuestions(val) {
+        this._techReviewFormQuestions = cloneObj(val);
+    }
+    get techReviewFormQuestions() {
+        return this._techReviewFormQuestions;
+    }
+    _techReviewFormQuestions = [];
 
     async openTestFormModal(e) {
         const issueKey = e.target.value;

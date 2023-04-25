@@ -7,4 +7,13 @@
         <target>lightningCommunity__Page</target>
         <target>lightningCommunity__Default</target>
     </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="testFormQuestionListJSON" type="String"
+                label="Testing Form Question List JSON" />
+            <property name="techReviewQuestionListJSON" type="String"
+                label="Tech Review Form Question List JSON" />
+        </targetConfig>
+    </targetConfigs>
+
 </LightningComponentBundle>

@@ -35,9 +35,7 @@ public without sharing class ContactDispatcher implements TriggerDispatcherInter
     }
     public void afterUpdate() {
         ContactService.afterTriggerSyncAccounts(newList);
-
-        TerritoryAssignmentContact ta = new TerritoryAssignmentContact();
-        ta.assignTerritory();
+        ContactService.assignTerritory(newList, oldMap);
     }
     public void afterDelete() {
     }

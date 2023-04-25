@@ -1,4 +1,6 @@
 public class ContactService {
+    public static Boolean assignTerritoryDone = false;
+
     /**
      * Returns all the fields on Case in a String
      * @return A string containing all the Case fields
@@ -501,5 +503,34 @@ public class ContactService {
         contactToAccountRTIdMap.put(sfMasteredContactRecTypeId, sfMasteredContactAccountRecTypeId);
 
         return contactToAccountRTIdMap.get(contactRecordTypeId);
+    }
+
+    public static void assignTerritory(List<Contact> newContacts, Map<Id, Contact> oldContactsMap) {
+        if (assignTerritoryDone) {
+            return;
+        }
+
+        Set<Id> contactIdsWithTAChanges = new Set<Id>();
+        for (Contact newContact : newContacts) {
+            if (newContact.MailingState != oldContactMap.get(newContact.Id).MailingState) {
+                contactIdsWithTAChanges.add(newContact.Id);
+            }
+        }
+
+        List<Opportunity> oppList = new List<Opportunity>(
+            [
+                SELECT Id, Territory_Assignment_Required__c
+                FROM Opportunity
+                WHERE Contact__c IN :contactIdsWithTAChanges
+            ]
+        );
+
+        if (oppList.size() > 0) {
+            for (Opportunity o : oppList) {
+                o.Territory_Assignment_Required__c = true;
+            }
+            TerritoryAssignmentService.updateOpportunityList(oppList);
+            assignTerritoryDone = true;
+        }
     }
 }

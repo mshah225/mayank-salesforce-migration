@@ -44,7 +44,7 @@ public without sharing class TerritoryAssignmentTest {
         Opp.OwnerId = TestUser.Id;
         insert Opp;
 
-        TerritoryAssignmentAccount.assignTerritoryDone = false;
+        AccountService.assignTerritoryDone = false;
 
         Test.startTest();
         HS.ShippingPostalCode = '85287';
@@ -55,7 +55,7 @@ public without sharing class TerritoryAssignmentTest {
         String accountGeoCodeAfterUpdate = [SELECT Id, Geomarket_Code__c FROM Account WHERE Id = :HS.Id LIMIT 1]
         .Geomarket_Code__c;
 
-        System.Assert(
+        System.assert(
             accountGeoCodeAfterUpdate == KV.Geomarket_Code__c,
             'Account Geomarket Code did not match by ZIP code'
         );
@@ -149,15 +149,15 @@ public without sharing class TerritoryAssignmentTest {
 
         Test.stopTest();
 
-        System.Assert(
+        System.assert(
             contactGeoCodeAfterUpdate == KVContact.Geomarket_Code__c,
             'Contact Geomarket Code did not match by ZIP code'
         );
-        System.Assert(
+        System.assert(
             contactHSGeoCodeAfterUpdate == KVHS.Geomarket_Code__c,
             'Contact Geomarket Code did not match by Last Attended High School Geomarket Code'
         );
-        System.Assert(
+        System.assert(
             contactCollegeGeoCodeAfterUpdate == KVCollege.Geomarket_Code__c,
             'Contact Geomarket Code did not match by Last Attended College Geomarket Code'
         );
@@ -204,7 +204,7 @@ public without sharing class TerritoryAssignmentTest {
             LIMIT 1
         ]
         .Territory_Assignment_Last_Rule_Type__c;
-        System.Assert(
+        System.assert(
             lastRuleType == 'Freshman Scholar',
             'Rule did not assign correctly by rule type Freshman Scholar: ' + lastRuleType
         );
@@ -300,7 +300,7 @@ public without sharing class TerritoryAssignmentTest {
         ]
         .Territory_Assignment_Last_Rule_Type__c;
 
-        System.Assert(LastRuleType == tarRuleKey, 'Rule did not assign correctly by rule type International');
+        System.assert(LastRuleType == tarRuleKey, 'Rule did not assign correctly by rule type International');
     }
 
     @isTest
@@ -745,7 +745,7 @@ public without sharing class TerritoryAssignmentTest {
             LIMIT 1
         ]
         .Territory_Assignment_Last_Rule_Type__c;
-        System.Assert(
+        System.assert(
             LastRuleType == 'Location - Lake Havasu',
             'Rule did not assign correctly by rule type Lake Havasu: ' + LastRuleType
         );
@@ -794,7 +794,7 @@ public without sharing class TerritoryAssignmentTest {
             LIMIT 1
         ]
         .Territory_Assignment_Last_Rule_Type__c;
-        System.Assert(
+        System.assert(
             LastRuleType == 'Location - Lake Havasu',
             'Rule did not assign correctly by rule type Lake Havasu: ' + LastRuleType
         );
@@ -847,7 +847,7 @@ public without sharing class TerritoryAssignmentTest {
         ]
         .Territory_Assignment_Last_Rule_Type__c;
 
-        System.Assert(
+        System.assert(
             LastRuleType == 'Last Attended High School',
             'Rule did not assign correctly by rule type Last High School Attended'
         );
@@ -944,7 +944,7 @@ public without sharing class TerritoryAssignmentTest {
         ]
         .Territory_Assignment_Last_Rule_Type__c;
 
-        System.Assert(
+        System.assert(
             LastRuleType == 'Last Attended College, Type ' + Opp.Type,
             'Rule did not assign correctly by rule type Last College Attended'
         );
@@ -998,7 +998,7 @@ public without sharing class TerritoryAssignmentTest {
         ]
         .Territory_Assignment_Last_Rule_Type__c;
 
-        System.Assert(
+        System.assert(
             LastRuleType == 'Geomarket, Type ' + Opp.Type,
             'Rule did not assign correctly by rule type Geomarket'
         );
@@ -1048,7 +1048,7 @@ public without sharing class TerritoryAssignmentTest {
         ]
         .Territory_Assignment_Last_Rule_Type__c;
 
-        System.Assert(
+        System.assert(
             LastRuleType == 'State, ' + Con.MailingState + ', Type ' + Opp.Type,
             'Rule did not assign correctly by rule type State: ' + LastRuleType
         );
@@ -1093,7 +1093,7 @@ public without sharing class TerritoryAssignmentTest {
         ]
         .Territory_Assignment_Last_Rule_Type__c;
 
-        System.Assert(
+        System.assert(
             LastRuleType == 'Default User',
             'Rule did not assign correctly by rule type Default User: ' + LastRuleType
         );
@@ -1170,8 +1170,8 @@ public without sharing class TerritoryAssignmentTest {
             LIMIT 1
         ];
 
-        System.Assert(OppAfterInsert.OwnerId == TestUser.Id);
-        System.Assert(
+        System.assert(OppAfterInsert.OwnerId == TestUser.Id);
+        System.assert(
             OppAfterInsert.Territory_Assignment_Last_Rule_Type__c == 'Inactive Territory Manager',
             'Did not correctly identify inactive User: ' + OppAfterInsert.Territory_Assignment_Last_Rule_Type__c
         );
@@ -1211,7 +1211,7 @@ public without sharing class TerritoryAssignmentTest {
             [SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c FROM Lead WHERE Id = :leadList[0].Id LIMIT 1]
         );
 
-        System.Assert(
+        System.assert(
             newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Freshman Scholar',
             'Rule did not assign correctly by rule type Freshman Scholar'
         );
@@ -1250,7 +1250,7 @@ public without sharing class TerritoryAssignmentTest {
             [SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c FROM Lead WHERE Id = :leadList[0].Id LIMIT 1]
         );
 
-        System.Assert(
+        System.assert(
             newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'International||',
             'Rule did not assign correctly by rule type Default User: ' +
             newLeadList[0].Territory_Assignment_Last_Rule_Type__c
@@ -1303,11 +1303,11 @@ public without sharing class TerritoryAssignmentTest {
             ]
         );
 
-        System.Assert(
+        System.assert(
             newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Last Institution Attended',
             'Rule did not assign correctly by rule type Last Institution Attended'
         );
-        System.Assert(
+        System.assert(
             newLeadList[0].OwnerId == testUser.Id,
             'Territory Assignment did not assign Owner correctly for Lead/Last Institution'
         );
@@ -1354,7 +1354,7 @@ public without sharing class TerritoryAssignmentTest {
             ]
         );
 
-        System.Assert(
+        System.assert(
             newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'State, Type ' + leadList[0].Type__c,
             'Rule did not assign correctly by rule type Lead/State'
         );
@@ -1393,7 +1393,7 @@ public without sharing class TerritoryAssignmentTest {
             [SELECT Id, Type__c, Territory_Assignment_Last_Rule_Type__c FROM Lead WHERE Id = :leadList[0].Id LIMIT 1]
         );
 
-        System.Assert(
+        System.assert(
             newLeadList[0].Territory_Assignment_Last_Rule_Type__c == 'Default User',
             'Rule did not assign correctly by rule type Default User'
         );

@@ -1,4 +1,6 @@
 public without sharing class PreviousEducationService {
+    public static Boolean assignTerritoryDone = false;
+
     /**
      * Update the Previous Educations' Contacts' Last_HS_Attended__c and Last_College_Attended__c
      * This expects to run once ALL Previous Eductions are retrievable via SOQL (so in the AFTER triggers)
@@ -109,5 +111,45 @@ public without sharing class PreviousEducationService {
             key += '|C';
 
         return key;
+    }
+
+    public static void assignTerritory(List<Previous_Education__c> newPreviousEducations) {
+        if (assignTerritoryDone) {
+            return;
+        }
+
+        // Get all contact ids for these Previous Educations
+        Set<Id> contactIdSet = new Set<Id>();
+        for (Previous_Education__c previousEducation : newPreviousEducations)
+            contactIdSet.add(previousEducation.Contact__c);
+
+        // If these Previous Educations had some contact lookups - we need to update the territory assignment for their Opportunities
+        if (!contactIdSet.isEmpty()) {
+            List<Opportunity> oppList = new List<Opportunity>(
+                [
+                    SELECT
+                        Id,
+                        Contact__c,
+                        Account.Name,
+                        Account.Institution_Type__c,
+                        Account.Territory_Manager__c,
+                        Type,
+                        OwnerId
+                    FROM Opportunity
+                    WHERE Contact__c IN :contactIdSet
+                ]
+            );
+
+            List<Opportunity> oppToUpdate = new List<Opportunity>();
+
+            for (Opportunity opp : oppList) {
+                opp.Territory_Assignment_Required__c = true;
+                oppToUpdate.add(opp);
+            }
+
+            if (!oppToUpdate.isEmpty())
+                TerritoryAssignmentService.updateOpportunityList(oppToUpdate);
+        }
+        assignTerritoryDone = true;
     }
 }

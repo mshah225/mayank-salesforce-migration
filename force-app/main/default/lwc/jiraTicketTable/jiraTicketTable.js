@@ -107,3 +107,21 @@ export default class JiraTicketTable extends LightningElement {
         return code === 13 /*enter*/ || code === 32 /*space*/;
     }
 }
+
+export class TicketItem {
+    issueId = null;
+    key = null;
+    url = null;
+    issueType = null;
+    summary = null;
+    status = null;
+
+    constructor(parsedIssue) {
+        this.issueId = parsedIssue.id;
+        this.key = parsedIssue.key;
+        this.url = 'https://asudev.jira.com/browse/' + parsedIssue.key;
+        this.issueType = parsedIssue.fields.issuetype.name;
+        this.summary = parsedIssue.fields.summary;
+        this.status = parsedIssue.fields.status.name;
+    }
+}

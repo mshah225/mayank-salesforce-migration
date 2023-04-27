@@ -1,18 +1,18 @@
 <template>
     <table class="slds-table slds-table_cell-buffer slds-table_bordered">
         <thead>
-            <tr class="slds-line-height_reset">
+            <tr class="slds-line-height_reset" data-testid="header">
                 <th class="slds-text-title_caps" scope="col">
-                    <div class="slds-truncate" title="Ticket Number">Ticket Number</div>
+                    <div class="slds-truncate" title="Ticket Number" data-testid="header-key">Ticket Number</div>
                 </th>
                 <th class="slds-text-title_caps" scope="col">
-                    <div class="slds-truncate" title="Ticket Type">Ticket Type</div>
+                    <div class="slds-truncate" title="Ticket Type" data-testid="header-type">Ticket Type</div>
                 </th>
                 <th class="slds-text-title_caps" scope="col">
-                    <div class="slds-truncate" title="Summary">Summary</div>
+                    <div class="slds-truncate" title="Summary" data-testid="header-descr">Summary</div>
                 </th>
                 <th class="slds-text-title_caps" scope="col">
-                    <div class="slds-truncate" title="Status">Status</div>
+                    <div class="slds-truncate" title="Status" data-testid="header-status">Status</div>
                 </th>
                 <th class="slds-text-title_caps" scope="col">
                     <div class="slds-truncate" title="Testing Form">Testing Form</div>
@@ -24,20 +24,20 @@
         </thead>
         <tbody>
             <template for:each={tickets} for:item="ticket">
-                <tr key={ticket.issueId} class="slds-hint-parent">
+                <tr key={ticket.issueId} class="slds-hint-parent" data-testid="ticket">
                     <td data-label="Contact">
                         <div class="slds-truncate">
-                            <a href={ticket.url} target="_blank">{ticket.key}</a>
+                            <a href={ticket.url} target="_blank" data-testid="ticket-key">{ticket.key}</a>
                         </div>
                     </td>
                     <td data-label="Contact">
-                        <div class="slds-truncate">{ticket.issueType}</div>
+                        <div class="slds-truncate" data-testid="ticket-type">{ticket.issueType}</div>
                     </td>
                     <td data-label="Contact" style="max-width: 200px">
-                        <div class="slds-truncate">{ticket.summary}</div>
+                        <div class="slds-truncate" data-testid="ticket-descr">{ticket.summary}</div>
                     </td>
                     <td data-label="Contact" style="max-width: 200px">
-                        <div class="slds-truncate">{ticket.status}</div>
+                        <div class="slds-truncate" data-testid="ticket-status">{ticket.status}</div>
                     </td>
                     <td data-label="QA">
                         <div class="slds-truncate">
@@ -47,6 +47,7 @@
                                 title="Testing Form"
                                 value={ticket.key}
                                 onclick={openTestFormModal}
+                                data-testid="ticket-testing-form-button"
                             ></lightning-button>
                         </div>
                     </td>
@@ -58,6 +59,7 @@
                                 title="Tech Review Form"
                                 value={ticket.key}
                                 onclick={openTechReviewFormModal}
+                                data-testid="ticket-tech-review-form-button"
                             ></lightning-button>
                         </div>
                     </td>

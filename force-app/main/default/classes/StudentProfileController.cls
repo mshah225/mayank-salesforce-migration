@@ -667,7 +667,7 @@ global with sharing class StudentProfileController {
             ORDER BY Name ASC
         ];
 
-        caseFunctionaGroupPicklist.add(new SelectOption('', '--'));
+        caseFunctionaGroupPicklist.add(new SelectOption('', '<SELECT>'));
         for (Case_Classification__c functionalGroup : caseFunctionaGroupPicklistValues){
             caseFunctionaGroupPicklist.add(new SelectOption(functionalGroup.Id, functionalGroup.Name));
         }

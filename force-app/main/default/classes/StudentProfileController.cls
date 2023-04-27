@@ -663,6 +663,7 @@ global with sharing class StudentProfileController {
             ORDER BY Name ASC
         ];
 
+        caseFunctionaGroupPicklist.add(new SelectOption('', '--'));
         for (Case_Classification__c functionalGroup : caseFunctionaGroupPicklistValues){
             caseFunctionaGroupPicklist.add(new SelectOption(functionalGroup.Id, functionalGroup.Name));
         }

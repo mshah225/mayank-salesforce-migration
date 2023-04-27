@@ -3296,7 +3296,10 @@
             var description = document.getElementById('usrDescription').value;
             var e = document.getElementsByClassName('chartBlock')[0];
             var funcGroup = e.options[e.selectedIndex].value;
-            if (subject.length <= 0 || description.length <= 0) {
+            if (funcGroup == '') {
+                document.getElementById('modalError').innerHTML =
+                    'You must select a functional group';
+            } else if (subject.length <= 0 || description.length <= 0) {
                 document.getElementById('modalError').innerHTML =
                     'Please ensure that subject and description are not blank';
             } else {

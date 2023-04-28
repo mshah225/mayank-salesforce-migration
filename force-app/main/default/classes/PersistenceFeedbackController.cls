@@ -3,7 +3,6 @@ public without sharing class PersistenceFeedbackController {
     private String caseContactId; // The Id of the contact to associate the case to
     @TestVisible
     private Boolean URLParamsExistAndAreValid; // Determines if the required URL parameters were provided and are valid
-    private Boolean useLoggedInContact = false; // Determines if we should attempt to automatically detect the contact for the case
     private Feedback_Cars__c settings; // List of cached car Ids for assigning the feedback case
 
     public String retURL { get; set; } // Deprecated: displays breadcrumbs with a "back" butotn. Do not use.
@@ -20,27 +19,22 @@ public without sharing class PersistenceFeedbackController {
     public pageReference init() {
         try {
             alertHandler = new AlertHandler();
-            URLParamsExistAndAreValid = true;
             caseDescription = ApexPages.currentPage().getParameters().get('misc');
             retURL = ApexPages.currentPage().getParameters().get('retURL');
-            caseContactId = ApexPages.currentPage().getParameters().get('contactId');
 
             if (caseDescription != '' && caseDescription != null) {
                 caseDescription = CaseDescription + '\n';
+            } else {
+                URLParamsExistAndAreValid = false;
+                throw new MissingUrlParametersException('Error: Missing URL parameter \'misc\' required.');
             }
 
+            URLParamsExistAndAreValid = true;
             return null;
         } catch (Exception e) {
-            List<String> vars = new List<String>();
+            List<String> params = new List<String> {'URLParamsExistAndAreValid', 'caseDescription', 'caseContactId', 'alertHandler'};
 
-            vars.add(ErrorLogger.convertBooleanToJSON('useLoggedInContact', useLoggedInContact));
-            vars.add(ErrorLogger.convertBooleanToJSON('URLParamsExistAndAreValid', URLParamsExistAndAreValid));
-            vars.add(ErrorLogger.convertStringToJSON('caseDescription', caseDescription));
-            vars.add(ErrorLogger.convertIdToJSON('caseContactId', caseContactId));
-
-            for (customAlert ca : alertHandler.alerts) {
-                vars.add(ErrorLogger.convertStringToJSON('Alert:', ca.message));
-            }
+            List<String> vars = LoggerHelper(new List<String>(), params);
 
             ErrorLogger.log(e, vars, debug, caseContactId);
             return null;
@@ -92,6 +86,8 @@ public without sharing class PersistenceFeedbackController {
                     WHERE Id = :settings.CAR_Id__c
                 ];
 
+                caseContactId = ContactService.getLoggedInContactId();
+
                 feedbackCase = new Case(
                     RecordType = [SELECT Id FROM RecordType WHERE Name = 'ASU Service' LIMIT 1],
                     status = 'New',
@@ -120,24 +116,40 @@ public without sharing class PersistenceFeedbackController {
 
                 caseDescription = '';
             }
-            system.debug('called');
             return null;
         } catch (Exception e) {
-            List<String> vars = new List<String>();
+            List<String> params = new List<String> {'useLoggedInContact', 'URLParamsExistAndAreValid', 'caseDescription', 'proceed', 'caseContactId', 'alertHandler', 'feedbackCase'};
 
-            vars.add(ErrorLogger.convertBooleanToJSON('useLoggedInContact', useLoggedInContact));
-            vars.add(ErrorLogger.convertBooleanToJSON('URLParamsExistAndAreValid', URLParamsExistAndAreValid));
-            vars.add(ErrorLogger.convertStringToJSON('caseDescription', caseDescription));
-            vars.add(ErrorLogger.convertBooleanToJSON('proceed', proceed));
-            vars.add(string.valueOf(alertHandler));
-            vars.add(ErrorLogger.convertIdToJSON('caseContactId', caseContactId));
-            vars.add(ErrorLogger.convertSObjectToJSON('feedbackCase', feedbackCase));
+            List<String> vars = LoggerHelper(new List<String>(), params);
 
             ErrorLogger.log(e, vars, debug, caseContactId);
             return null;
         }
     }
 
+    private List<String> LoggerHelper(List<String> vars, List<String> params) {
+        for(String param : params){
+            if(param == 'caseContactId'){
+                vars.add(ErrorLogger.convertIdToJSON('caseContactId', caseContactId));
+            } else if(param == 'URLParamsExistAndAreValid'){
+                vars.add(ErrorLogger.convertBooleanToJSON('URLParamsExistAndAreValid', URLParamsExistAndAreValid));
+            } else if(param == 'caseDescription'){
+                vars.add(ErrorLogger.convertStringToJSON('caseDescription', caseDescription));
+            } else if(param == 'carName'){
+                vars.add(ErrorLogger.convertStringToJSON('carName', carName));
+            } else if(param == 'alertHandler'){
+                vars.add(string.valueOf(alertHandler));
+            } else {
+                return null;
+            }
+        }
+        return vars;
+    }
+
     private class dynamicFeedbackException extends Exception {
     }
+
+    private class MissingUrlParametersException extends Exception {
+    }
+    
 }

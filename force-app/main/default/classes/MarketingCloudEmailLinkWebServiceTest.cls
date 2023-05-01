@@ -7,8 +7,8 @@ private class MarketingCloudEmailLinkWebServiceTest {
     private static void insertTestData() {
         ExactTargetApiConfig__c testingConfiguration = new ExactTargetApiConfig__c();
         testingConfiguration.Name = MarketingCloudViewEmailController.CUSTOM_SETTING_BY_NAME;
-        testingConfiguration.ClientId__c = MarketingCloudEmailLinkMockCallout.CLIENT_ID;
-        testingConfiguration.ClientSecret__c = MarketingCloudEmailLinkMockCallout.CLIENT_SECRET;
+        testingConfiguration.ClientId__c = MarketingCloudEmailLinkCalloutMock.CLIENT_ID;
+        testingConfiguration.ClientSecret__c = MarketingCloudEmailLinkCalloutMock.CLIENT_SECRET;
         testingConfiguration.Endpoint__c = 'https://test.example.com';
         insert testingConfiguration;
 
@@ -49,7 +49,7 @@ private class MarketingCloudEmailLinkWebServiceTest {
     @isTest
     private static void errorCalloutForBadAuthorization() {
         MarketingCloudEmailLinkWebService service = new MarketingCloudEmailLinkWebService(INVALID_CONFIGURATION_NAME);
-        Test.setMock(HttpCalloutMock.class, new MarketingCloudEmailLinkMockCallout());
+        Test.setMock(HttpCalloutMock.class, new MarketingCloudEmailLinkCalloutMock());
 
         String errorMessage;
         Test.startTest();
@@ -68,13 +68,13 @@ private class MarketingCloudEmailLinkWebServiceTest {
         MarketingCloudEmailLinkWebService service = new MarketingCloudEmailLinkWebService(
             MarketingCloudViewEmailController.CUSTOM_SETTING_BY_NAME
         );
-        Test.setMock(HttpCalloutMock.class, new MarketingCloudEmailLinkMockCallout());
+        Test.setMock(HttpCalloutMock.class, new MarketingCloudEmailLinkCalloutMock());
 
         Test.startTest();
         String retrievedEmailLink = service.retrieveViewEmailUrl('jobId1', 'ThisIsTheSubscriberKey');
         Test.stopTest();
 
-        System.assertEquals(MarketingCloudEmailLinkMockCallout.VIEW_EMAIL_URL, retrievedEmailLink);
+        System.assertEquals(MarketingCloudEmailLinkCalloutMock.VIEW_EMAIL_URL, retrievedEmailLink);
     }
 
     @isTest
@@ -82,7 +82,7 @@ private class MarketingCloudEmailLinkWebServiceTest {
         MarketingCloudEmailLinkWebService service = new MarketingCloudEmailLinkWebService(
             MarketingCloudViewEmailController.CUSTOM_SETTING_BY_NAME
         );
-        Test.setMock(HttpCalloutMock.class, new MarketingCloudEmailLinkMockCallout());
+        Test.setMock(HttpCalloutMock.class, new MarketingCloudEmailLinkCalloutMock());
 
         String errorMessage;
         Test.startTest();

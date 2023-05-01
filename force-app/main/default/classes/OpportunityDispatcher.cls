@@ -19,13 +19,11 @@ public class OpportunityDispatcher implements TriggerDispatcherInterface {
     public void beforeInsert() {
         OpportunityService.populateNullContactsFromAccounts(newList);
         OpportunityService.insertCollegePlan(newList);
-        TerritoryAssignmentOpportunity ta = new TerritoryAssignmentOpportunity();
-        ta.assignTerritory();
+        OpportunityService.assignTerritory(newList, oldMap);
     }
     public void beforeUpdate() {
         OpportunityService.updateCollegeIfPlanChanged(newList, oldMap);
-        TerritoryAssignmentOpportunity ta = new TerritoryAssignmentOpportunity();
-        ta.assignTerritory();
+        OpportunityService.assignTerritory(newList, oldMap);
     }
     public void beforeDelete() {
     }

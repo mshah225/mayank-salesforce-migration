@@ -7,6 +7,7 @@ public class OpportunityService {
 
     static Id undergradProspectId;
     static Id gradProspectId;
+    public static Boolean assignTerritoryDone = false;
 
     private static void loadIds() {
         List<RecordType> prospectIds = [
@@ -57,14 +58,14 @@ public class OpportunityService {
         }
 
         for (Contact con : contactsToAssociate) {
-            Opportunity o = new Opportunity();
-            o.Contact__c = con.Id;
-            o.RecordTypeId = undergradProspectId;
-            o.StageName = 'Prospect';
-            o.CloseDate = closeDate.addYears(1);
-            o.Name = 'Test Opportunity for ' + con.Name;
-            o.AccountId = con.AccountId;
-            undergradProspects.add(o);
+            Opportunity opp = new Opportunity();
+            opp.Contact__c = con.Id;
+            opp.RecordTypeId = undergradProspectId;
+            opp.StageName = 'Prospect';
+            opp.CloseDate = closeDate.addYears(1);
+            opp.Name = 'Test Opportunity for ' + con.Name;
+            opp.AccountId = con.AccountId;
+            undergradProspects.add(opp);
         }
 
         return undergradProspects;
@@ -85,14 +86,14 @@ public class OpportunityService {
         }
 
         for (Contact con : contactsToAssociate) {
-            Opportunity o = new Opportunity();
-            o.Contact__c = con.Id;
-            o.RecordTypeId = gradProspectId;
-            o.StageName = 'Prospect';
-            o.CloseDate = closeDate.addYears(1);
-            o.Name = 'Test Opportunity for ' + con.Name;
-            o.AccountId = con.AccountId;
-            gradProspects.add(o);
+            Opportunity opp = new Opportunity();
+            opp.Contact__c = con.Id;
+            opp.RecordTypeId = gradProspectId;
+            opp.StageName = 'Prospect';
+            opp.CloseDate = closeDate.addYears(1);
+            opp.Name = 'Test Opportunity for ' + con.Name;
+            opp.AccountId = con.AccountId;
+            gradProspects.add(opp);
         }
 
         return gradProspects;
@@ -262,5 +263,564 @@ public class OpportunityService {
                 updatedOpportunity.College__c = programColleges.get(updatedOpportunity.Academic_Plan__c);
             }
         }
+    }
+
+    public static void assignTerritory(List<Opportunity> newOpportunities, Map<Id, Opportunity> oldOpportunitiesMap) {
+        Set<Id> contactIdSet = new Set<Id>();
+        List<Contact> contactList = new List<Contact>();
+        Set<Id> locationSet = new Set<Id>();
+        Set<Id> ContactIsFTF = new Set<Id>();
+
+        //Get all Contact IDs and First Time Freshman Contact Ids linked to the Opportunities
+        for (Opportunity newOpportunity : newOpportunities) {
+            contactIdSet.Add(newOpportunity.Contact__c);
+            locationSet.add(
+                newOpportunity.Admitted_Location__c == null
+                    ? newOpportunity.Location__c
+                    : newOpportunity.Admitted_Location__c
+            );
+
+            if (newOpportunity.Type == 'First Time Freshman') {
+                ContactIsFTF.add(newOpportunity.Contact__c);
+            }
+        }
+
+        if (contactIdSet.size() > 0) {
+            //Load all contacts attached to the Opportunities
+            contactList = [
+                SELECT
+                    Id,
+                    Geomarket_Code__c,
+                    MailingPostalCode,
+                    MailingState,
+                    MailingCountry,
+                    Last_HS_Attended__c,
+                    Last_College_Attended__c,
+                    Last_HS_Attended__r.Territory_Manager__c,
+                    Last_HS_Attended__r.Territory_Manager__r.IsActive,
+                    Last_HS_Attended__r.Territory_Manager__r.Name,
+                    Last_College_Attended__r.Territory_Manager__c,
+                    Last_College_Attended__r.Territory_Manager__r.Name,
+                    Last_College_Attended__r.Territory_Manager__r.IsActive
+                FROM Contact
+                WHERE Id IN :contactIdSet
+            ];
+        }
+
+        /**
+         * Start Contact Geomarket Code Evaluation
+         */
+        if (contactList.size() > 0) {
+            Set<String> ContactZips = new Set<String>();
+            Map<String, String> KVMap = new Map<String, String>();
+            Set<Id> InstitutionIdSet = new Set<Id>();
+
+            //Load up the last HS and last College attended for all contacts
+            //Also load up the Zip codes for all contacts
+            for (Contact c : contactList) {
+                if (!InstitutionIdSet.contains(c.Last_HS_Attended__c)) {
+                    InstitutionIdSet.add(c.Last_HS_Attended__c);
+                }
+
+                if (!InstitutionIdSet.contains(c.Last_College_Attended__c)) {
+                    InstitutionIdSet.add(c.Last_College_Attended__c);
+                }
+                //Ensures Zipcode is five digits or less
+                string shortZip = TerritoryAssignmentService.shortenZipCode(c.MailingPostalCode);
+                ContactZips.add(shortZip);
+            }
+
+            if (ContactZips.size() > 0 && InstitutionIdSet.size() > 0) {
+                //Load all Accounts representing HSs or Colleges attended by Contacts on Opps
+                Map<Id, Account> InstMap = new Map<Id, Account>(
+                    [SELECT Id, Geomarket_Code__c FROM Account WHERE Id IN :InstitutionIdSet]
+                );
+
+                List<Key_Value__c> KVList = [
+                    SELECT Id, Geomarket_ZIP__c, Geomarket_Code__c
+                    FROM Key_Value__c
+                    WHERE RecordType.DeveloperName = 'Geomarket_Code_Map' AND Geomarket_ZIP__c IN :ContactZips
+                ];
+
+                for (Key_Value__c K : KVList) {
+                    KVMap.put(K.Geomarket_ZIP__c, K.Geomarket_Code__c);
+                }
+
+                List<Contact> geoMarketChanged = new List<Contact>();
+                //For each contact
+                for (Contact Cons : contactList) {
+                    //Ensures Zipcode is five digits or less
+                    string shortZip = TerritoryAssignmentService.shortenZipCode(Cons.MailingPostalCode);
+
+                    //If the contact is a FTF and has a last HS attended
+                    //Update the contact's geomarket code to reflect this
+                    if (Cons.Last_HS_Attended__c != null && ContactIsFTF.contains(Cons.Id)) {
+                        Account thisInstitution = InstMap.get(Cons.Last_HS_Attended__c);
+                        if (
+                            thisInstitution.Geomarket_Code__c != null &&
+                            Cons.Geomarket_Code__c != thisInstitution.Geomarket_Code__c
+                        ) {
+                            Cons.Geomarket_Code__c = thisInstitution.Geomarket_Code__c;
+                            geoMarketChanged.add(Cons);
+                        } else if (Cons.Geomarket_Code__c != KVMap.get(shortZip)) {
+                            Cons.Geomarket_Code__c = KVMap.get(shortZip);
+                            geoMarketChanged.add(Cons);
+                        }
+                    } else if (Cons.Last_College_Attended__c != null && !ContactIsFTF.contains(Cons.Id)) {
+                        //Else if the contact is not an FTF and has a last college attended
+                        //Update the contact's geomarket code to reflect this
+                        Account thisInstitution = InstMap.get(Cons.Last_College_Attended__c);
+                        if (
+                            thisInstitution.Geomarket_Code__c != null &&
+                            Cons.Geomarket_Code__c != thisInstitution.Geomarket_Code__c
+                        ) {
+                            Cons.Geomarket_Code__c = thisInstitution.Geomarket_Code__c;
+                            geoMarketChanged.add(Cons);
+                        } else if (Cons.Geomarket_Code__c != KVMap.get(shortZip)) {
+                            Cons.Geomarket_Code__c = KVMap.get(shortZip);
+                            geoMarketChanged.add(Cons);
+                        }
+                    } else if (Cons.Geomarket_Code__c != KVMap.get(shortZip)) {
+                        //Else simply update the contact's geomarket code to reflect their postal code
+                        Cons.Geomarket_Code__c = KVMap.get(shortZip);
+                        geoMarketChanged.add(Cons);
+                    }
+                }
+
+                if (geoMarketChanged.size() > 0) {
+                    TerritoryAssignmentService.updateContactList(geoMarketChanged);
+                }
+            }
+        }
+
+        /**
+         * Start Territory Assignment Evaluation
+         */
+        Boolean anyTerritoryAssignmentRequired = false;
+
+        for (Opportunity newOpportunity : newOpportunities) {
+            // Force all new undergraduate opportunities to be evaluated for territory assignment
+            if (oldOpportunitiesMap != null && oldOpportunitiesMap.size() > 0) {
+                // Only evaluate territory assignment for opportunities where a field changes that could impact an assignment
+                if (newOpportunity.Career__c != 'Undergraduate') {
+                    newOpportunity.Territory_Assignment_Required__c = false;
+                } else if (
+                    newOpportunity.Territory_Assignment_Required__c == true ||
+                    oldOpportunitiesMap.get(newOpportunity.Id).Type != newOpportunity.Type ||
+                    oldOpportunitiesMap.get(newOpportunity.Id).International_Student__c !=
+                    newOpportunity.International_Student__c ||
+                    oldOpportunitiesMap.get(newOpportunity.Id).Location__c != newOpportunity.Location__c ||
+                    oldOpportunitiesMap.get(newOpportunity.Id).StageName != newOpportunity.StageName ||
+                    oldOpportunitiesMap.get(newOpportunity.Id).Potential_National_Scholar__c !=
+                    newOpportunity.Potential_National_Scholar__c
+                ) {
+                    anyTerritoryAssignmentRequired = true;
+                    newOpportunity.Territory_Assignment_Required__c = true;
+                }
+            } else {
+                if (newOpportunity.Career__c != 'Undergraduate') {
+                    newOpportunity.Territory_Assignment_Required__c = false;
+                } else {
+                    anyTerritoryAssignmentRequired = true;
+                    newOpportunity.Territory_Assignment_Required__c = true;
+                }
+            }
+        }
+
+        if (anyTerritoryAssignmentRequired) {
+            Map<Id, Contact> contactMap = new Map<Id, Contact>(contactList);
+            Map<Id, Location__c> locationMap = new Map<Id, Location__c>(
+                [SELECT Id, Name, Location_Code__c FROM Location__c WHERE Id IN :locationSet]
+            );
+
+            // Build map with Territory_Assignment_Rule__c Rule_Key__c values
+            List<Territory_Assignment_Rule__c> territoryAssignmentRuleList = new List<Territory_Assignment_Rule__c>(
+                [SELECT Id, Rule_Key__c, User__c, User__r.IsActive FROM Territory_Assignment_Rule__c]
+            );
+
+            Map<String, Territory_Assignment_Rule__c> territoryAssignmentRuleMap = new Map<String, Territory_Assignment_Rule__c>();
+            for (Territory_Assignment_Rule__c TARM : territoryAssignmentRuleList) {
+                territoryAssignmentRuleMap.put(TARM.Rule_Key__c, TARM);
+            }
+
+            // Get all of the tars keyed by rule key. Used for international assignment now.
+            Map<String, List<Territory_Assignment_Rule__c>> mapOfTarsByRuleKey = TerritoryAssignmentService.mapTerritoryAssignmentRulesToRuleKey();
+
+            for (Opportunity opp : newOpportunities) {
+                Boolean inactiveUserFound = false;
+                Contact thisContact = contactMap.get(opp.Contact__c);
+                Location__c thisLocation = locationMap.get(
+                    opp.Admitted_Location__c == null ? opp.Location__c : opp.Admitted_Location__c
+                );
+
+                if (thisLocation == null) {
+                    thisLocation = new Location__c();
+                }
+
+                // Start Territory Assignment Rules Evaluation
+                if (opp.Territory_Assignment_Required__c && thisContact != null) {
+                    opp.Territory_Assignment_Required__c = false;
+                    opp.Territory_Assignment_Last_Run__c = Datetime.Now();
+
+                    // Freshman Scholar
+                    if (opp.Type == 'First Time Freshman' && opp.Potential_National_Scholar__c) {
+                        Territory_Assignment_Rule__c tar = territoryAssignmentRuleMap.get('Freshman Scholar');
+
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                                inactiveUserFound = true;
+                            } else {
+                                opp.OwnerId = tar.User__c;
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Freshman Scholar';
+
+                                continue;
+                            }
+                        }
+                    }
+
+                    // Location
+                    if (
+                        thisLocation != null &&
+                        thisLocation.Location_Code__c != null &&
+                        thisLocation.Location_Code__c.equalsIgnoreCase('CALHC')
+                    ) {
+                        Territory_Assignment_Rule__c tar = territoryAssignmentRuleMap.get(
+                            'Location' + '|' + 'Lake Havasu'
+                        );
+
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                                inactiveUserFound = true;
+                            } else {
+                                opp.OwnerId = tar.User__c;
+                                opp.Territory_Assignment_Last_Run__c = Datetime.Now();
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Location - Lake Havasu';
+
+                                continue;
+                            }
+                        }
+                    }
+
+                    // International
+                    if (opp.International_Student__c) {
+                        List<Territory_Assignment_Rule__c> possibleTars = new List<Territory_Assignment_Rule__c>();
+                        Territory_Assignment_Rule__c tar = null;
+                        Decimal oppAssignNumber = opp.Opportunity_Assignment_Number_Rand__c;
+                        String oppCountry = thisContact.MailingCountry;
+
+                        if (String.isNotEmpty(oppCountry)) {
+                            oppCountry = TerritoryAssignmentService.getSFCountry(oppCountry);
+                        }
+
+                        // Avoid NPE on Opportunity Assignment Number Rand. At least one of these should be populated.
+                        if (oppAssignNumber == null) {
+                            oppAssignNumber = opp.Opportunity_Assignment_Number__c;
+                        }
+
+                        // Begin filter hierarchy
+                        if (opp.StageName == 'Admitted - Conditional') {
+                            possibleTars = mapOfTarsByRuleKey.get('International Admitted - Conditional');
+                        } else if (opp.Type == 'Transfer') {
+                            possibleTars = mapOfTarsByRuleKey.get('International|Transfer|' + oppCountry);
+
+                            /**
+                             * The oppCountry may be defined, but we don't have a Transfer TAR for it.
+                             * Use the default TAR for International Transfer
+                             */
+                            if (possibleTars == null || possibleTars.isEmpty()) {
+                                possibleTars = mapOfTarsByRuleKey.get('International|Transfer|');
+                            }
+                        } else if (String.isNotEmpty(oppCountry)) {
+                            possibleTars = mapOfTarsByRuleKey.get('International|' + opp.Type + '|' + oppCountry);
+                        }
+
+                        // Hit the default International manager
+                        if (possibleTars == null || possibleTars.isEmpty()) {
+                            possibleTars = mapOfTarsByRuleKey.get('International||');
+                        }
+
+                        tar = TerritoryAssignmentService.getTerritoryAssignmentRule(possibleTars, oppAssignNumber);
+
+                        // As long as we found a relevant Territory Assignment Rule, populate the information on the Opportunity
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                                inactiveUserFound = true;
+                            } else {
+                                opp.OwnerId = tar != null &&
+                                    opp.Territory_Assignment_Last_Rule_Type__c != 'International'
+                                    ? tar.User__c
+                                    : opp.OwnerId;
+                                opp.Territory_Assignment_Last_Run__c = Datetime.Now();
+                                opp.Territory_Assignment_Last_Rule_Type__c = tar.Rule_Key__c;
+
+                                continue;
+                            }
+                        }
+                    }
+
+                    // Last High School Attended
+                    if (
+                        thisContact.Last_HS_Attended__c != null &&
+                        thisContact.Last_HS_Attended__r.Territory_Manager__c != null &&
+                        opp.Type == 'First Time Freshman'
+                    ) {
+                        if (thisContact.Last_HS_Attended__r.Territory_Manager__r.IsActive == false) {
+                            opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                            inactiveUserFound = true;
+                        } else {
+                            opp.OwnerId = thisContact.Last_HS_Attended__r.Territory_Manager__c;
+                            opp.Territory_Assignment_Last_Run__c = Datetime.Now();
+                            opp.Territory_Assignment_Last_Rule_Type__c = 'Last Attended High School';
+
+                            continue;
+                        }
+                    }
+
+                    // Last College Attended
+                    if (
+                        thisContact.Last_College_Attended__c != null &&
+                        thisContact.Last_College_Attended__r.Territory_Manager__c != null &&
+                        opp.Type == 'First Time Freshman'
+                    ) {
+                        if (thisContact.Last_College_Attended__r.Territory_Manager__r.IsActive == false) {
+                            opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                            inactiveUserFound = true;
+                        } else {
+                            opp.OwnerId = thisContact.Last_College_Attended__r.Territory_Manager__c;
+                            opp.Territory_Assignment_Last_Run__c = Datetime.Now();
+                            opp.Territory_Assignment_Last_Rule_Type__c = 'Last Attended College, Type First Time Freshman';
+
+                            continue;
+                        }
+                    }
+
+                    if (
+                        thisContact.Last_College_Attended__c != null &&
+                        thisContact.Last_College_Attended__r.Territory_Manager__c != null &&
+                        opp.Type == 'Readmission'
+                    ) {
+                        if (thisContact.Last_College_Attended__r.Territory_Manager__r.IsActive == false) {
+                            opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                            inactiveUserFound = true;
+                        } else {
+                            opp.OwnerId = thisContact.Last_College_Attended__r.Territory_Manager__c;
+                            opp.Territory_Assignment_Last_Run__c = Datetime.Now();
+                            opp.Territory_Assignment_Last_Rule_Type__c = 'Last Attended College, Type Readmission';
+
+                            continue;
+                        }
+                    }
+
+                    if (
+                        thisContact.Last_College_Attended__c != null &&
+                        thisContact.Last_College_Attended__r.Territory_Manager__c != null &&
+                        opp.Type == 'Transfer'
+                    ) {
+                        if (thisContact.Last_College_Attended__r.Territory_Manager__r.IsActive == false) {
+                            opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                            inactiveUserFound = true;
+                        } else {
+                            opp.OwnerId = thisContact.Last_College_Attended__r.Territory_Manager__c;
+                            opp.Territory_Assignment_Last_Run__c = Datetime.Now();
+                            opp.Territory_Assignment_Last_Rule_Type__c = 'Last Attended College, Type Transfer';
+
+                            continue;
+                        }
+                    }
+
+                    // Geomarket Code
+                    if (thisContact.Geomarket_Code__c != null && opp.Type == 'First Time Freshman') {
+                        Territory_Assignment_Rule__c tar = territoryAssignmentRuleMap.get(
+                            'Geomarket' + '|' + opp.Type + '|' + thisContact.Geomarket_Code__c
+                        );
+
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                                inactiveUserFound = true;
+                            } else {
+                                opp.OwnerId = tar.User__c;
+                                opp.Territory_Assignment_Last_Run__c = Datetime.Now();
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Geomarket, Type First Time Freshman';
+
+                                continue;
+                            }
+                        }
+                    }
+
+                    if (thisContact.Geomarket_Code__c != null && opp.Type == 'Readmission') {
+                        Territory_Assignment_Rule__c tar = territoryAssignmentRuleMap.get(
+                            'Geomarket' + '|' + opp.Type + '|' + thisContact.Geomarket_Code__c
+                        );
+
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                                inactiveUserFound = true;
+                            } else {
+                                opp.OwnerId = tar.User__c;
+                                opp.Territory_Assignment_Last_Run__c = Datetime.Now();
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Geomarket, Type Readmission';
+
+                                continue;
+                            }
+                        }
+                    }
+
+                    if (thisContact.Geomarket_Code__c != null && opp.Type == 'Transfer') {
+                        Territory_Assignment_Rule__c tar = territoryAssignmentRuleMap.get(
+                            'Geomarket' + '|' + opp.Type + '|' + thisContact.Geomarket_Code__c
+                        );
+
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                                inactiveUserFound = true;
+                            } else {
+                                opp.OwnerId = tar.User__c;
+                                opp.Territory_Assignment_Last_Run__c = Datetime.Now();
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Geomarket, Type Transfer';
+
+                                continue;
+                            }
+                        }
+                    }
+
+                    // State
+                    if (thisContact.MailingState != null) {
+                        String USState = thisContact.MailingState;
+                        Territory_Assignment_Rule__c tar = territoryAssignmentRuleMap.get(
+                            'State' + '|' + opp.Type + '|' + USState
+                        );
+
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                                inactiveUserFound = true;
+                            } else {
+                                opp.OwnerId = tar.User__c;
+                                opp.Territory_Assignment_Last_Run__c = Datetime.Now();
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'State, ' + USState + ', Type ' + opp.Type;
+
+                                continue;
+                            }
+                        }
+                    }
+
+                    // Default User
+                    if (opp.Type == 'Graduate') {
+                        Territory_Assignment_Rule__c tar = territoryAssignmentRuleMap.get(
+                            'Default User' + '|' + opp.Type
+                        );
+
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                                inactiveUserFound = true;
+                            } else {
+                                opp.OwnerId = tar.User__c;
+                                opp.Territory_Assignment_Last_Run__c = Datetime.Now();
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Default User';
+
+                                continue;
+                            }
+                        }
+                    } else if (opp.Type == 'Law') {
+                        Territory_Assignment_Rule__c tar = territoryAssignmentRuleMap.get(
+                            'Default User' + '|' + opp.Type
+                        );
+
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                                inactiveUserFound = true;
+                            } else {
+                                opp.OwnerId = tar.User__c;
+                                opp.Territory_Assignment_Last_Run__c = Datetime.Now();
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Default User';
+
+                                continue;
+                            }
+                        }
+                    } else if (opp.Type == 'First Time Freshman') {
+                        Territory_Assignment_Rule__c tar = territoryAssignmentRuleMap.get(
+                            'Default User' + '|' + opp.Type
+                        );
+
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                                inactiveUserFound = true;
+                            } else {
+                                opp.OwnerId = tar.User__c;
+                                if (!inactiveUserFound) {
+                                    opp.Territory_Assignment_Last_Rule_Type__c = 'Default User';
+                                }
+
+                                opp.Territory_Assignment_Required__c = false;
+
+                                continue;
+                            }
+                        }
+                    } else if (opp.Type == 'Transfer') {
+                        Territory_Assignment_Rule__c tar = territoryAssignmentRuleMap.get(
+                            'Default User' + '|' + opp.Type
+                        );
+
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                                inactiveUserFound = true;
+                            } else {
+                                opp.OwnerId = tar.User__c;
+                                opp.Territory_Assignment_Last_Run__c = Datetime.Now();
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Default User';
+
+                                continue;
+                            }
+                        }
+                    } else if (opp.Type == 'Non-Degree') {
+                        Territory_Assignment_Rule__c tar = territoryAssignmentRuleMap.get(
+                            'Default User' + '|' + opp.Type
+                        );
+
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                                inactiveUserFound = true;
+                            } else {
+                                opp.OwnerId = tar.User__c;
+                                opp.Territory_Assignment_Last_Run__c = Datetime.Now();
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Default User';
+
+                                continue;
+                            }
+                        }
+                    } else if (opp.Type == 'Readmission') {
+                        Territory_Assignment_Rule__c tar = territoryAssignmentRuleMap.get(
+                            'Default User' + '|' + opp.Type
+                        );
+
+                        if (tar != null) {
+                            if (tar.User__r.IsActive == false) {
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                                inactiveUserFound = true;
+                            } else {
+                                opp.OwnerId = tar.User__c;
+                                opp.Territory_Assignment_Last_Run__c = Datetime.Now();
+                                opp.Territory_Assignment_Last_Rule_Type__c = 'Default User';
+
+                                continue;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        assignTerritoryDone = true;
     }
 }

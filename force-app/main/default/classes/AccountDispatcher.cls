@@ -17,7 +17,7 @@ public class AccountDispatcher implements TriggerDispatcherInterface {
     }
 
     public void beforeInsert() {
-        AccountService.assignTerritory(newList, true);
+        AccountService.assignTerritory(newList, oldMap);
     }
     public void beforeUpdate() {
         AccountService.assignTerritory(newList, oldMap);

@@ -1,10 +1,11 @@
 public without sharing class AccountService {
     public static Boolean assignTerritoryDone = false;
 
-    public static void assignTerritory(List<Account> newAccounts, Boolean isInsert) {
+    public static void assignTerritory(List<Account> newAccounts, Map<Id, Account> oldAccountsMap) {
         if (assignTerritoryDone) {
             return;
         }
+        assignTerritoryDone = true;
 
         Map<String, String> geomarketZipWithGeomarketCode = new Map<String, String>();
         Set<String> zipcodesToCheck = new Set<String>();
@@ -34,29 +35,25 @@ public without sharing class AccountService {
             }
         }
 
-        assignTerritoryDone = isInsert ? true : false;
-    }
+        if (oldAccountsMap != null && oldAccountsMap.size() > 0) {
+            for (Account newAccount : newAccounts) {
+                if (
+                    newAccount.Defer_Territory_Assignment__c == false &&
+                    oldAccountsMap.get(newAccount.Id).Defer_Territory_Assignment__c == true
+                ) {
+                    continue;
+                }
 
-    public static void assignTerritory(List<Account> newAccounts, Map<Id, Account> oldAccountsMap) {
-        assignTerritory(newAccounts, false);
-        for (Account newAccount : newAccounts) {
-            if (
-                newAccount.Defer_Territory_Assignment__c == false &&
-                oldAccountsMap.get(newAccount.Id).Defer_Territory_Assignment__c == true
-            ) {
-                continue;
-            }
-
-            if (
-                newAccount.Territory_Manager__c != null &&
-                oldAccountsMap.get(newAccount.Id).Territory_Manager__c != newAccount.Territory_Manager__c &&
-                oldAccountsMap.get(newAccount.Id).Territory_Manager__c != null
-            ) {
-                newAccount.Defer_Territory_Assignment__c = true;
-                newAccount.Previous_Territory_Manager_ID__c = oldAccountsMap.get(newAccount.Id).Territory_Manager__c;
+                if (
+                    newAccount.Territory_Manager__c != null &&
+                    oldAccountsMap.get(newAccount.Id).Territory_Manager__c != newAccount.Territory_Manager__c &&
+                    oldAccountsMap.get(newAccount.Id).Territory_Manager__c != null
+                ) {
+                    newAccount.Defer_Territory_Assignment__c = true;
+                    newAccount.Previous_Territory_Manager_ID__c = oldAccountsMap.get(newAccount.Id)
+                        .Territory_Manager__c;
+                }
             }
         }
-
-        assignTerritoryDone = true;
     }
 }

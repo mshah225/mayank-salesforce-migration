@@ -2,18 +2,6 @@
 public with sharing class LeadTriggerTest {
     static Integer TRIGGERLOAD = 5;
 
-    @testSetup
-    static void setup() {
-        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
-        User testUser = (User) userCreator.create(1)[0];
-
-        Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
-
-        testUser.ProfileId = saProfile;
-
-        insert testUser;
-    }
-
     // Build Leads
     static List<Lead> createLeads(Integer quantity) {
         List<Lead> leadList = new List<Lead>();
@@ -224,6 +212,12 @@ public with sharing class LeadTriggerTest {
 
     @isTest
     public static void testLeadFreshmanScholar() {
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        User testUser = (User) userCreator.create(1)[0];
+        Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
+        testUser.ProfileId = saProfile;
+        insert testUser;
+
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         List<Lead> leadList = new List<Lead>();
@@ -264,6 +258,12 @@ public with sharing class LeadTriggerTest {
 
     @isTest
     public static void testLeadInternational() {
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        User testUser = (User) userCreator.create(1)[0];
+        Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
+        testUser.ProfileId = saProfile;
+        insert testUser;
+
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         List<Lead> leadList = new List<Lead>();
@@ -304,6 +304,12 @@ public with sharing class LeadTriggerTest {
 
     @isTest
     public static void testLeadLastInstitution() {
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        User testUser = (User) userCreator.create(1)[0];
+        Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
+        testUser.ProfileId = saProfile;
+        insert testUser;
+
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Key_Value__c KVHS = new Key_Value__c();
@@ -360,6 +366,12 @@ public with sharing class LeadTriggerTest {
 
     @isTest
     public static void testLeadState() {
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        User testUser = (User) userCreator.create(1)[0];
+        Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
+        testUser.ProfileId = saProfile;
+        insert testUser;
+
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
@@ -407,6 +419,12 @@ public with sharing class LeadTriggerTest {
 
     @isTest
     public static void testLeadDefaultUser() {
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        User testUser = (User) userCreator.create(1)[0];
+        Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
+        testUser.ProfileId = saProfile;
+        insert testUser;
+
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         List<Lead> leadList = new List<Lead>();

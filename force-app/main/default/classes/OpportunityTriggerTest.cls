@@ -839,7 +839,7 @@ public with sharing class OpportunityTriggerTest {
 
         Account highSchool = new Account();
         highSchool.Name = 'Test High School';
-        highSchool.Institution_Type__c = 'highSchool';
+        highSchool.Institution_Type__c = 'HS';
         highSchool.Territory_Manager__c = TestUser.Id;
         insert highSchool;
 

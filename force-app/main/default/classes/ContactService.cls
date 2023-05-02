@@ -512,7 +512,7 @@ public class ContactService {
 
         Set<Id> contactIdsWithTAChanges = new Set<Id>();
         for (Contact newContact : newContacts) {
-            if (newContact.MailingState != oldContactMap.get(newContact.Id).MailingState) {
+            if (newContact.MailingState != oldContactsMap.get(newContact.Id).MailingState) {
                 contactIdsWithTAChanges.add(newContact.Id);
             }
         }

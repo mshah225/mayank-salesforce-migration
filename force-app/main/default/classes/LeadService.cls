@@ -1,5 +1,6 @@
 public class LeadService {
     public static boolean ranLeadConversion = false;
+    public static Boolean assignTerritoryDone = false;
 
     /**
      * Creates a Lead with all required fields, usually for unit testing
@@ -414,6 +415,280 @@ public class LeadService {
                     leadsNeedingPreviousEducation
                 );
                 insert previousEducationList;
+            }
+        }
+    }
+
+    public static void assignTerritory(List<Lead> newLeads, Map<Id, Lead> oldLeadsMap) {
+        if (assignTerritoryDone) {
+            return;
+        }
+        assignTerritoryDone = true;
+
+        /**
+         * Start lead geomarket code evaluation
+         */
+        Set<Id> leadInstitutionsToCheck = new Set<Id>();
+        Set<String> zipcodesToCheck = new Set<String>();
+        Map<String, String> keyValueMap = new Map<String, String>();
+        Map<Id, Account> institutionMap;
+
+        for (Lead newLead : newLeads) {
+            //Ensures Zipcode is five digits or less
+            string shortZip = TerritoryAssignmentService.shortenZipCode(newLead.postalCode);
+            zipcodesToCheck.add(shortZip);
+            if (newLead.Last_Institution_Attended__c != null) {
+                leadInstitutionsToCheck.add(newLead.Last_Institution_Attended__c);
+            }
+        }
+
+        if (leadInstitutionsToCheck.size() > 0) {
+            institutionMap = new Map<Id, Account>(
+                [
+                    SELECT
+                        Id,
+                        Geomarket_Code__c,
+                        Institution_Type__c,
+                        Territory_Manager__c,
+                        Territory_Manager__r.IsActive
+                    FROM Account
+                    WHERE Id IN :leadInstitutionsToCheck
+                ]
+            );
+        }
+
+        List<Key_Value__c> keyValueList = [
+            SELECT Id, Geomarket_ZIP__c, Geomarket_Code__c
+            FROM Key_Value__c
+            WHERE RecordType.DeveloperName = 'Geomarket_Code_Map' AND Geomarket_ZIP__c IN :zipcodesToCheck
+        ];
+
+        for (Key_Value__c key : keyValueList) {
+            keyValueMap.put(key.Geomarket_ZIP__c, key.Geomarket_Code__c);
+        }
+
+        for (Lead leadGeo : newLeads) {
+            //Ensure zip code is five characters or less
+            String shortZip = TerritoryAssignmentService.shortenZipCode(leadGeo.PostalCode);
+            // TODO: Also, is institution type relevant for the Lead type?  Need clarification on this condition
+            if (
+                leadGeo.Last_Institution_Attended__c != null &&
+                institutionMap.get(leadGeo.Last_Institution_Attended__c).Geomarket_Code__c != null
+            ) {
+                LeadGeo.Geomarket_Code__c = institutionMap.get(leadGeo.Last_Institution_Attended__c).Geomarket_Code__c;
+            } else if (shortZip != null && keyValueMap.containsKey(shortZip)) {
+                leadGeo.Geomarket_Code__c = keyValueMap.get(shortZip);
+            }
+        }
+
+        /**
+         * Start territory assignment evaluation
+         */
+
+        // Build map with Territory_Assignment_Rule__c Rule_Key__c values
+        Map<String, Territory_Assignment_Rule__c> territoryAssignmentRuleMap = new Map<String, Territory_Assignment_Rule__c>();
+
+        List<Territory_Assignment_Rule__c> territoryAssignmentRuleList = [
+            SELECT Id, Rule_Key__c, User__c, User__r.IsActive
+            FROM Territory_Assignment_Rule__c
+        ];
+
+        for (Territory_Assignment_Rule__c tarm : territoryAssignmentRuleList) {
+            territoryAssignmentRuleMap.put(tarm.Rule_Key__c, tarm);
+        }
+
+        // isUpdate: Only evaluate territory assignment for leads where a field changes that could impact an assignment
+        // OR
+        // isInsert: Force all new leads to be evaluated for territory assignment
+        if (oldLeadsMap != null && oldLeadsMap.size() > 0) {
+            for (Lead newLead : newLeads) {
+                // Fields to check
+                Boolean taRequired = newLead.Territory_Assignment_Required__c = true;
+                Boolean typeChanged = oldLeadsMap.get(newLead.Id).Type__c != newLead.Type__c;
+                Boolean geoMarketChanged = oldLeadsMap.get(newLead.Id).Geomarket_Code__c != newLead.Geomarket_Code__c;
+                Boolean stateChanged = oldLeadsMap.get(newLead.Id).State != newLead.State;
+                Boolean lastInstitutionChanged =
+                    oldLeadsMap.get(newLead.Id).Last_Institution_Attended__c != newLead.Last_Institution_Attended__c;
+                Boolean interStatusChanged =
+                    oldLeadsMap.get(newLead.Id).International_Student__c != newLead.International_Student__c;
+                Boolean natScholarPotentialChanged =
+                    oldLeadsMap.get(newLead.Id).Potential_National_Scholar__c != newLead.Potential_National_Scholar__c;
+
+                if (
+                    taRequired ||
+                    typeChanged ||
+                    geoMarketChanged ||
+                    stateChanged ||
+                    lastInstitutionChanged ||
+                    interStatusChanged ||
+                    natScholarPotentialChanged
+                ) {
+                    newLead.Territory_Assignment_Required__c = true;
+                }
+            }
+        } else {
+            for (Lead newLead : newLeads) {
+                newLead.Territory_Assignment_Required__c = true;
+            }
+        }
+
+        // Get all of the TARs keyed by Rule Key. Used for international assignments.
+        Map<String, List<Territory_Assignment_Rule__c>> mapOfTarsByRuleKey = TerritoryAssignmentService.mapTerritoryAssignmentRulesToRuleKey();
+
+        for (Lead newLead : newLeads) {
+            if (newLead.Territory_Assignment_Required__c) {
+                newLead.Territory_Assignment_Required__c = false;
+                newLead.Territory_Assignment_Last_Run__c = Datetime.Now();
+
+                // Freshman National Scholar
+                if (newLead.Type__c == 'First Time Freshman' && newLead.Potential_National_Scholar__c) {
+                    Territory_Assignment_Rule__c tar = territoryAssignmentRuleMap.get('Freshman Scholar');
+
+                    if (tar != null) {
+                        if (tar.User__r.IsActive == false) {
+                            newLead.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                        } else {
+                            newLead.OwnerId = tar.User__c;
+                            newLead.Territory_Assignment_Last_Rule_Type__c = 'Freshman Scholar';
+
+                            continue;
+                        }
+                    }
+                }
+
+                // International
+                if (newLead.International_Student__c) {
+                    List<Territory_Assignment_Rule__c> possibleTars = new List<Territory_Assignment_Rule__c>();
+                    Territory_Assignment_Rule__c tar = null;
+                    Decimal leadAssignNumber = newLead.Lead_Assignment_Number__c;
+                    String leadCountry = newLead.Silverpop_Mailing_Country__c;
+                    String leadType = newLead.Type__c;
+
+                    // Use the PSCountry mapping to get the correct integration value.
+                    if (String.isNotEmpty(leadCountry)) {
+                        leadCountry = TerritoryAssignmentService.getSFCountry(leadCountry);
+                    }
+
+                    // Being filter hierarchy
+                    if (leadType == 'First Time Freshman' || leadType == 'Transfer' || leadType == 'Readmission') {
+                        possibleTars = mapOfTarsByRuleKey.get('International|' + leadType + '|' + leadCountry);
+
+                        /**
+                         * The lead's mailing country may be defined, but we don't have a TAR for
+                         * it. Use the default TAR for this lead type instead.
+                         */
+                        if (possibleTars == null || possibleTars.isEmpty()) {
+                            possibleTars = mapOfTarsByRuleKey.get('International|' + leadType + '|');
+                        }
+                    }
+
+                    // Use the default International manager
+                    if (possibleTars == null || possibleTars.isEmpty()) {
+                        possibleTars = mapOfTarsByRuleKey.get('International||');
+                    }
+
+                    tar = TerritoryAssignmentService.getTerritoryAssignmentRule(possibleTars, leadAssignNumber);
+
+                    // As long as we found a relevant Territory Assignment Rule, populate the information on the Opportunity
+                    if (tar != null) {
+                        if (tar.User__r.IsActive) {
+                            newLead.OwnerId = tar.User__c;
+                            newLead.Territory_Assignment_Last_Rule_Type__c = tar.Rule_Key__c;
+
+                            continue;
+                        } else {
+                            newLead.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                        }
+                    }
+                }
+
+                // Last Institution Attended
+                if (newLead.Last_Institution_Attended__c != null) {
+                    if (
+                        (newLead.Type__c == 'First Time Freshman' &&
+                        institutionMap.containsKey(newLead.Last_Institution_Attended__c) &&
+                        institutionMap.get(newLead.Last_Institution_Attended__c).Institution_Type__c == 'HS' &&
+                        institutionMap.get(newLead.Last_Institution_Attended__c).Territory_Manager__c != null) ||
+                        ((newLead.Type__c == 'Transfer' ||
+                        newLead.Type__c == 'Readmission') &&
+                        institutionMap.get(newLead.Last_Institution_Attended__c).Institution_Type__c != 'HS' &&
+                        institutionMap.get(newLead.Last_Institution_Attended__c).Territory_Manager__c != null)
+                    ) {
+                        if (
+                            institutionMap.get(newLead.Last_Institution_Attended__c).Territory_Manager__r.IsActive ==
+                            false
+                        ) {
+                            newLead.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                        } else {
+                            newLead.OwnerId = institutionMap.get(newLead.Last_Institution_Attended__c)
+                                .Territory_Manager__c;
+                            newLead.Territory_Assignment_Last_Rule_Type__c = 'Last Institution Attended';
+
+                            continue;
+                        }
+                    }
+                }
+
+                // GeoMarket
+                if (
+                    newLead.Geomarket_Code__c != null &&
+                    territoryAssignmentRuleMap.containsKey(
+                        'Geomarket' + '|' + newLead.Type__c + '|' + newLead.Geomarket_Code__c
+                    )
+                ) {
+                    Territory_Assignment_Rule__c tar = territoryAssignmentRuleMap.get(
+                        'Geomarket' + '|' + newLead.Type__c + '|' + newLead.Geomarket_Code__c
+                    );
+
+                    if (tar != null) {
+                        if (tar.User__r.IsActive == false) {
+                            newLead.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                        } else {
+                            newLead.OwnerId = tar.User__c;
+                            newLead.Territory_Assignment_Last_Rule_Type__c = 'Geomarket, Type ' + newLead.Type__c;
+
+                            continue;
+                        }
+                    }
+                }
+
+                // Mailing State
+                if (
+                    newLead.State != null &&
+                    territoryAssignmentRuleMap.containsKey('State' + '|' + newLead.Type__c + '|' + newLead.State)
+                ) {
+                    Territory_Assignment_Rule__c tar = territoryAssignmentRuleMap.get(
+                        'State' + '|' + newLead.Type__c + '|' + newLead.State
+                    );
+
+                    if (tar != null) {
+                        if (tar.User__r.IsActive == false) {
+                            newLead.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                        } else {
+                            newLead.OwnerId = tar.User__c;
+                            newLead.Territory_Assignment_Last_Rule_Type__c = 'State, Type ' + newLead.Type__c;
+
+                            continue;
+                        }
+                    }
+                }
+
+                // Default User
+                if (territoryAssignmentRuleMap.containsKey('Default User' + '|' + newLead.Type__c)) {
+                    Territory_Assignment_Rule__c tar = territoryAssignmentRuleMap.get(
+                        'Default User' + '|' + newLead.Type__c
+                    );
+                    if (tar != null) {
+                        if (tar.User__r.IsActive == false) {
+                            newLead.Territory_Assignment_Last_Rule_Type__c = 'Inactive Territory Manager';
+                        } else {
+                            newLead.OwnerId = tar.User__c;
+                            newLead.Territory_Assignment_Last_Rule_Type__c = 'Default User';
+
+                            continue;
+                        }
+                    }
+                }
             }
         }
     }

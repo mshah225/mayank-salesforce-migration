@@ -499,7 +499,7 @@ public with sharing class LeadTriggerTest {
 
         Test.startTest();
         // Force an update to run on lead
-        TerritoryAssignmentLead.assignTerritoryDone = false;
+        LeadService.assignTerritoryDone = false;
 
         Lead updatedLead = [SELECT Id FROM Lead WHERE Id = :l.Id];
         updatedLead.International_Student__c = true;

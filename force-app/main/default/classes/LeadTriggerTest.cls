@@ -218,7 +218,7 @@ public with sharing class LeadTriggerTest {
         testUser.ProfileId = saProfile;
         insert testUser;
 
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
+        testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         List<Lead> leadList = new List<Lead>();
 
@@ -264,7 +264,7 @@ public with sharing class LeadTriggerTest {
         testUser.ProfileId = saProfile;
         insert testUser;
 
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
+        testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         List<Lead> leadList = new List<Lead>();
 
@@ -310,7 +310,7 @@ public with sharing class LeadTriggerTest {
         testUser.ProfileId = saProfile;
         insert testUser;
 
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
+        testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Key_Value__c KVHS = new Key_Value__c();
         KVHS.Geomarket_ZIP__c = '84108';
@@ -372,7 +372,7 @@ public with sharing class LeadTriggerTest {
         testUser.ProfileId = saProfile;
         insert testUser;
 
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
+        testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
         aTar1.Rule_Type__c = 'State';
@@ -425,7 +425,7 @@ public with sharing class LeadTriggerTest {
         testUser.ProfileId = saProfile;
         insert testUser;
 
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
+        testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
         List<Lead> leadList = new List<Lead>();
 

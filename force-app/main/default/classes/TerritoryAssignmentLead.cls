@@ -17,7 +17,7 @@ public without sharing class TerritoryAssignmentLead {
 
         for (Lead l : (List<Lead>) Trigger.new) {
             //Ensures Zipcode is five digits or less
-            string shortZip = TerritoryAssignmentService.shortenZipCode(l.postalCode);
+            string shortZip = TerritoryAssignmentHelper.shortenZipCode(l.postalCode);
             ZipsInTrigger.add(shortZip);
             if (l.Last_Institution_Attended__c != null) {
                 leadInstitutionSet.add(l.Last_Institution_Attended__c);
@@ -51,7 +51,7 @@ public without sharing class TerritoryAssignmentLead {
 
         for (Lead leadGeo : (List<Lead>) Trigger.New) {
             //Ensure zip code is five characters or less
-            String shortZip = TerritoryAssignmentService.shortenZipCode(leadGeo.PostalCode);
+            String shortZip = TerritoryAssignmentHelper.shortenZipCode(leadGeo.PostalCode);
             // TODO: Also, is institution type relevant for the Lead type?  Need clarification on this condition
             if (
                 leadGeo.Last_Institution_Attended__c != null &&
@@ -118,7 +118,7 @@ public without sharing class TerritoryAssignmentLead {
         }
 
         // Get all of the TARs keyed by Rule Key. Used for international assignments.
-        Map<String, List<Territory_Assignment_Rule__c>> mapOfTarsByRuleKey = TerritoryAssignmentService.mapTerritoryAssignmentRulesToRuleKey();
+        Map<String, List<Territory_Assignment_Rule__c>> mapOfTarsByRuleKey = TerritoryAssignmentHelper.mapTerritoryAssignmentRulesToRuleKey();
 
         for (Lead l : (List<Lead>) Trigger.new) {
             if (l.Territory_Assignment_Required__c) {
@@ -151,7 +151,7 @@ public without sharing class TerritoryAssignmentLead {
 
                     // Use the PSCountry mapping to get the correct integration value.
                     if (String.isNotEmpty(leadCountry)) {
-                        leadCountry = TerritoryAssignmentService.getSFCountry(leadCountry);
+                        leadCountry = TerritoryAssignmentHelper.getSFCountry(leadCountry);
                     }
 
                     // Being filter hierarchy
@@ -172,7 +172,7 @@ public without sharing class TerritoryAssignmentLead {
                         possibleTars = mapOfTarsByRuleKey.get('International||');
                     }
 
-                    tar = TerritoryAssignmentService.getTerritoryAssignmentRule(possibleTars, leadAssignNumber);
+                    tar = TerritoryAssignmentHelper.getTerritoryAssignmentRule(possibleTars, leadAssignNumber);
 
                     // As long as we found a relevant Territory Assignment Rule, populate the information on the Opportunity
                     if (tar != null) {
@@ -216,11 +216,7 @@ public without sharing class TerritoryAssignmentLead {
                     TerritoryAssignmentRuleMap.containsKey('Geomarket' + '|' + l.Type__c + '|' + l.Geomarket_Code__c)
                 ) {
                     Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
-                        'Geomarket' +
-                        '|' +
-                        l.Type__c +
-                        '|' +
-                        l.Geomarket_Code__c
+                        'Geomarket' + '|' + l.Type__c + '|' + l.Geomarket_Code__c
                     );
 
                     if (tar != null) {
@@ -240,11 +236,7 @@ public without sharing class TerritoryAssignmentLead {
                     l.State != null && TerritoryAssignmentRuleMap.containsKey('State' + '|' + l.Type__c + '|' + l.State)
                 ) {
                     Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
-                        'State' +
-                        '|' +
-                        l.Type__c +
-                        '|' +
-                        l.State
+                        'State' + '|' + l.Type__c + '|' + l.State
                     );
 
                     if (tar != null) {

@@ -58,7 +58,7 @@ public without sharing class TerritoryAssignmentOpportunity {
                     InstitutionIdSet.add(c.Last_College_Attended__c);
                 }
                 //Ensures Zipcode is five digits or less
-                string shortZip = TerritoryAssignmentService.shortenZipCode(c.MailingPostalCode);
+                string shortZip = TerritoryAssignmentHelper.shortenZipCode(c.MailingPostalCode);
                 ContactZips.add(shortZip);
             }
 
@@ -82,7 +82,7 @@ public without sharing class TerritoryAssignmentOpportunity {
                 //For each contact
                 for (Contact Cons : contactList) {
                     //Ensures Zipcode is five digits or less
-                    string shortZip = TerritoryAssignmentService.shortenZipCode(Cons.MailingPostalCode);
+                    string shortZip = TerritoryAssignmentHelper.shortenZipCode(Cons.MailingPostalCode);
 
                     //If the contact is a FTF and has a last HS attended
                     //Update the contact's geomarket code to reflect this
@@ -120,7 +120,7 @@ public without sharing class TerritoryAssignmentOpportunity {
                 }
 
                 if (geoMarketChanged.size() > 0) {
-                    TerritoryAssignmentService.updateContactList(geoMarketChanged);
+                    TerritoryAssignmentHelper.updateContactList(geoMarketChanged);
                 }
             }
         }
@@ -176,7 +176,7 @@ public without sharing class TerritoryAssignmentOpportunity {
             }
 
             // Get all of the tars keyed by rule key. Used for international assignment now.
-            Map<String, List<Territory_Assignment_Rule__c>> mapOfTarsByRuleKey = TerritoryAssignmentService.mapTerritoryAssignmentRulesToRuleKey();
+            Map<String, List<Territory_Assignment_Rule__c>> mapOfTarsByRuleKey = TerritoryAssignmentHelper.mapTerritoryAssignmentRulesToRuleKey();
 
             for (Opportunity Opp : (List<Opportunity>) Trigger.New) {
                 Boolean inactiveUserFound = false;
@@ -218,9 +218,7 @@ public without sharing class TerritoryAssignmentOpportunity {
                         thisLocation.Location_Code__c.equalsIgnoreCase('CALHC')
                     ) {
                         Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
-                            'Location' +
-                            '|' +
-                            'Lake Havasu'
+                            'Location' + '|' + 'Lake Havasu'
                         );
 
                         if (tar != null) {
@@ -245,7 +243,7 @@ public without sharing class TerritoryAssignmentOpportunity {
                         String oppCountry = thisContact.MailingCountry;
 
                         if (String.isNotEmpty(oppCountry)) {
-                            oppCountry = TerritoryAssignmentService.getSFCountry(oppCountry);
+                            oppCountry = TerritoryAssignmentHelper.getSFCountry(oppCountry);
                         }
 
                         // Avoid NPE on Opportunity Assignment Number Rand. At least one of these should be populated.
@@ -275,7 +273,7 @@ public without sharing class TerritoryAssignmentOpportunity {
                             possibleTars = mapOfTarsByRuleKey.get('International||');
                         }
 
-                        tar = TerritoryAssignmentService.getTerritoryAssignmentRule(possibleTars, oppAssignNumber);
+                        tar = TerritoryAssignmentHelper.getTerritoryAssignmentRule(possibleTars, oppAssignNumber);
 
                         // As long as we found a relevant Territory Assignment Rule, populate the information on the Opportunity
                         if (tar != null) {
@@ -368,11 +366,7 @@ public without sharing class TerritoryAssignmentOpportunity {
                     // Geomarket Code
                     if (thisContact.Geomarket_Code__c != null && Opp.Type == 'First Time Freshman') {
                         Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
-                            'Geomarket' +
-                            '|' +
-                            Opp.Type +
-                            '|' +
-                            thisContact.Geomarket_Code__c
+                            'Geomarket' + '|' + Opp.Type + '|' + thisContact.Geomarket_Code__c
                         );
 
                         if (tar != null) {
@@ -391,11 +385,7 @@ public without sharing class TerritoryAssignmentOpportunity {
 
                     if (thisContact.Geomarket_Code__c != null && Opp.Type == 'Readmission') {
                         Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
-                            'Geomarket' +
-                            '|' +
-                            Opp.Type +
-                            '|' +
-                            thisContact.Geomarket_Code__c
+                            'Geomarket' + '|' + Opp.Type + '|' + thisContact.Geomarket_Code__c
                         );
 
                         if (tar != null) {
@@ -414,11 +404,7 @@ public without sharing class TerritoryAssignmentOpportunity {
 
                     if (thisContact.Geomarket_Code__c != null && Opp.Type == 'Transfer') {
                         Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
-                            'Geomarket' +
-                            '|' +
-                            Opp.Type +
-                            '|' +
-                            thisContact.Geomarket_Code__c
+                            'Geomarket' + '|' + Opp.Type + '|' + thisContact.Geomarket_Code__c
                         );
 
                         if (tar != null) {
@@ -439,11 +425,7 @@ public without sharing class TerritoryAssignmentOpportunity {
                     if (thisContact.MailingState != null) {
                         String USState = thisContact.MailingState;
                         Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
-                            'State' +
-                            '|' +
-                            Opp.Type +
-                            '|' +
-                            USState
+                            'State' + '|' + Opp.Type + '|' + USState
                         );
 
                         if (tar != null) {
@@ -463,9 +445,7 @@ public without sharing class TerritoryAssignmentOpportunity {
                     // Default User
                     if (Opp.Type == 'Graduate') {
                         Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
-                            'Default User' +
-                            '|' +
-                            Opp.Type
+                            'Default User' + '|' + Opp.Type
                         );
 
                         if (tar != null) {
@@ -482,9 +462,7 @@ public without sharing class TerritoryAssignmentOpportunity {
                         }
                     } else if (Opp.Type == 'Law') {
                         Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
-                            'Default User' +
-                            '|' +
-                            Opp.Type
+                            'Default User' + '|' + Opp.Type
                         );
 
                         if (tar != null) {
@@ -501,9 +479,7 @@ public without sharing class TerritoryAssignmentOpportunity {
                         }
                     } else if (Opp.Type == 'First Time Freshman') {
                         Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
-                            'Default User' +
-                            '|' +
-                            Opp.Type
+                            'Default User' + '|' + Opp.Type
                         );
 
                         if (tar != null) {
@@ -523,9 +499,7 @@ public without sharing class TerritoryAssignmentOpportunity {
                         }
                     } else if (Opp.Type == 'Transfer') {
                         Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
-                            'Default User' +
-                            '|' +
-                            Opp.Type
+                            'Default User' + '|' + Opp.Type
                         );
 
                         if (tar != null) {
@@ -542,9 +516,7 @@ public without sharing class TerritoryAssignmentOpportunity {
                         }
                     } else if (Opp.Type == 'Non-Degree') {
                         Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
-                            'Default User' +
-                            '|' +
-                            Opp.Type
+                            'Default User' + '|' + Opp.Type
                         );
 
                         if (tar != null) {
@@ -561,9 +533,7 @@ public without sharing class TerritoryAssignmentOpportunity {
                         }
                     } else if (Opp.Type == 'Readmission') {
                         Territory_Assignment_Rule__c tar = TerritoryAssignmentRuleMap.get(
-                            'Default User' +
-                            '|' +
-                            Opp.Type
+                            'Default User' + '|' + Opp.Type
                         );
 
                         if (tar != null) {

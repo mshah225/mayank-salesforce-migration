@@ -12,7 +12,7 @@ public without sharing class TerritoryAssignmentAccount {
 
         for (Account InsZip : (List<Account>) Trigger.New) {
             //Ensures Zipcode is five digits or less
-            string shortZip = TerritoryAssignmentService.shortenZipCode(InsZip.ShippingPostalCode);
+            string shortZip = TerritoryAssignmentHelper.shortenZipCode(InsZip.ShippingPostalCode);
             ZipsInTrigger.add(shortZip);
         }
 
@@ -29,7 +29,7 @@ public without sharing class TerritoryAssignmentAccount {
 
             for (Account AccGeo : (List<Account>) Trigger.New) {
                 //Ensures Zipcode is five digits or less
-                string shortZip = TerritoryAssignmentService.shortenZipCode(AccGeo.ShippingPostalCode);
+                string shortZip = TerritoryAssignmentHelper.shortenZipCode(AccGeo.ShippingPostalCode);
                 AccGeo.Geomarket_Code__c = KVMap.get(shortZip);
             }
         }

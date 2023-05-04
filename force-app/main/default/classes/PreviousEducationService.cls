@@ -148,7 +148,7 @@ public without sharing class PreviousEducationService {
             }
 
             if (!oppToUpdate.isEmpty())
-                TerritoryAssignmentService.updateOpportunityList(oppToUpdate);
+                TerritoryAssignmentHelper.updateOpportunityList(oppToUpdate);
         }
         assignTerritoryDone = true;
     }

@@ -99,4 +99,17 @@ public class TerritoryAssignmentRuleTriggerTest {
         System.assert(!tar.Defer_Territory_Assignment__c);
         System.assertEquals(null, tar.Previous_User_ID__c);
     }
+
+    @isTest
+    private static void testTerritoryAssignmentRule() {
+        Territory_Assignment_Rule__c testRule = new Territory_Assignment_Rule__c();
+        List<User> userList = [SELECT Id FROM User LIMIT 2];
+        testRule.User__c = userList[0].Id;
+        insert testRule;
+
+        testRule.User__c = userList[1].Id;
+        update testRule;
+        List<Territory_Assignment_Rule__c> ruleList = [SELECT User__c FROM Territory_Assignment_Rule__c];
+        System.assertEquals(userList[1].Id, ruleList[0].User__c);
+    }
 }

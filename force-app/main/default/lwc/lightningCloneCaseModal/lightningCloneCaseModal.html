@@ -1,0 +1,90 @@
+<template>
+    <lightning-quick-action-panel header="Clone Case">
+        <div class="slds-p-bottom_large slds-p-left_large slds-is-relative" style="width: 100%">
+            <!-- Form loader -->
+            <template lwc:if={loading}>
+                <br />
+                <br />
+                <div class="slds-spinner_container">
+                    <div class="slds-spinner_brand slds-spinner slds-spinner_medium slds-is-relative" role="alert">
+                        <span class="slds-assistive-text">Loading...</span>
+                        <div class="slds-spinner__dot-a"></div>
+                        <div class="slds-spinner__dot-b"></div>
+                        <br />
+                        <br />
+                    </div>
+                </div>
+                <br />
+                <br />
+            </template>
+
+            <!-- Clone case form -->
+            <template lwc:else>
+                <lightning-record-edit-form
+                    object-api-name="Case"
+                    density="comfy"
+                    onsuccess={handleSuccess}
+                    onsubmit={handleSubmit}
+                    onload={handleLoad}
+                >
+                    <lightning-input-field
+                        field-name="ContactId"
+                        value={getContact}
+                        onchange={handleContactChange}
+                    ></lightning-input-field>
+
+                    <lightning-combobox
+                        name="CC_Category__c"
+                        label="Category"
+                        value={getCategory}
+                        placeholder="Select Category"
+                        options={categoryOptions}
+                        onchange={handleCategoryChange}
+                        disabled={categoryDisabled}
+                        style="width: 99%; margin-left: 4.5px"
+                    ></lightning-combobox>
+                    <lightning-combobox
+                        name="CC_Sub_Category__c"
+                        label="Sub Category"
+                        value={getSubCategory}
+                        placeholder="Select Sub Category"
+                        options={subCategoryOptions}
+                        onchange={handleSubCategoryChange}
+                        disabled={subCategoryDisabled}
+                        style="width: 99%; margin-left: 4.5px"
+                    ></lightning-combobox>
+
+                    <lightning-input-field field-name="Origin__c" value={getOrigin} onchange={handleOriginChange}>
+                    </lightning-input-field>
+                    <lightning-input-field field-name="Status" value={getStatus} onchange={handleStatusChange}>
+                    </lightning-input-field>
+                    <lightning-input-field field-name="Subject" value={getSubject} onchange={handleSubjectChange}>
+                    </lightning-input-field>
+                    <lightning-input-field
+                        field-name="Description"
+                        value={getDescription}
+                        onchange={handleDescriptionChange}
+                    >
+                    </lightning-input-field>
+
+                    <hr
+                        style="
+                            margin-top: 10px;
+                            margin-bottom: 10px;
+                            border-top: 2px solid
+                                var(--slds-g-color-border-base-1, var(--lwc-colorBorder, rgb(229, 229, 229)));
+                            position: relative;
+                            left: -40px;
+                            width: calc(100% + 60px);
+                        "
+                    />
+                    <div class="slds-float_right">
+                        <lightning-button label="Cancel" variant="neutral" onclick={closeModal}></lightning-button
+                        >&nbsp;
+                        <lightning-button label="Submit" type="submit" variant="brand"></lightning-button>
+                    </div>
+                </lightning-record-edit-form>
+            </template>
+        </div>
+    </lightning-quick-action-panel>
+</template>

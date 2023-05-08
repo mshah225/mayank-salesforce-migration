@@ -2,6 +2,9 @@
 
 ### Metadata Contents
 
+| [Code Metrics](metrics/README.md) | [Code Coverage](coverage/README.md) |
+| --------------------------------- | ----------------------------------- |
+
 <details>
     <summary><strong>ApexClass</strong></summary>
     <ul>

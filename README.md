@@ -54,6 +54,8 @@
         <li><a href="https://github.com/asu-sf/metadata-analysis/blob/main/versions/LightningComponentBundle_version_list.csv">Outdated API Versions</a></li>
     </ul>
 </details>
-<br>
+
+| [Code Metrics](https://github.com/asu-sf/metadata-analysis/blob/main/metrics/README.md) | [Code Coverage](https://github.com/asu-sf/metadata-analysis/blob/main/coverage/README.md) |
+| --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 
 **Development environment setup instructions are available [here](https://asudev.jira.com/l/c/n7urbMRc).**

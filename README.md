@@ -55,7 +55,7 @@
     </ul>
 </details>
 
-| [Code Metrics](metrics/README.md) | [Code Coverage](coverage/README.md) |
-| --------------------------------- | ----------------------------------- |
+| [Code Metrics](https://github.com/asu-sf/metadata-analysis/blob/main/metrics/README.md) | [Code Coverage](https://github.com/asu-sf/metadata-analysis/blob/main/coverage/README.md) |
+| --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
 
 **Development environment setup instructions are available [here](https://asudev.jira.com/l/c/n7urbMRc).**

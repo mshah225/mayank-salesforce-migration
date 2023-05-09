@@ -166,42 +166,46 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
 
     renderCategories() {
         if (this.selectedFunctionalGroup) {
-            // set options
-            this.categoryOptions = this.rawClassificationData
-                // filter options by selected fuctional group
-                .filter((f) => f.Parent__c === this.selectedFunctionalGroup)
-                .map((element) => {
-                    return {
-                        label: element.Name,
-                        value: element.Id,
-                    };
-                });
-            // enable this dropdown
-            this.categoryDisabled = false;
+            if (this.rawClassificationData) {
+                // set options
+                this.categoryOptions = this.rawClassificationData
+                    // filter options by selected fuctional group
+                    .filter((f) => f.Parent__c === this.selectedFunctionalGroup)
+                    .map((element) => {
+                        return {
+                            label: element.Name,
+                            value: element.Id,
+                        };
+                    });
+                // enable this dropdown
+                this.categoryDisabled = false;
 
-            // Add empty option to remove category
-            this.categoryOptions.unshift({label: '--', value: ''});
+                // Add empty option to remove category
+                this.categoryOptions.unshift({label: '--', value: ''});
+            }
         }
     }
 
     renderSubCategories() {
         // Show appropriate subcategories based on selected category option
         if (this.selectedCategory) {
-            // set options
-            this.subCategoryOptions = this.rawClassificationData
-                // filter options by selected category
-                .filter((f) => f.Parent__c === this.selectedCategory)
-                .map((element) => {
-                    return {
-                        label: element.Name,
-                        value: element.Id,
-                    };
-                });
-            // enable this dropdown
-            this.subCategoryDisabled = false;
+            if (this.rawClassificationData) {
+                // set options
+                this.subCategoryOptions = this.rawClassificationData
+                    // filter options by selected category
+                    .filter((f) => f.Parent__c === this.selectedCategory)
+                    .map((element) => {
+                        return {
+                            label: element.Name,
+                            value: element.Id,
+                        };
+                    });
+                // enable this dropdown
+                this.subCategoryDisabled = false;
 
-            // Add empty option to remove sub-category
-            this.subCategoryOptions.unshift({label: '--', value: ''});
+                // Add empty option to remove sub-category
+                this.subCategoryOptions.unshift({label: '--', value: ''});
+            }
         }
     }
 

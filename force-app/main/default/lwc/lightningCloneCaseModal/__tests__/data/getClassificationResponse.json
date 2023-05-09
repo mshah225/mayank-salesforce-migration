@@ -1,0 +1,16 @@
+[
+    {
+        "Id": "Group A",
+        "Name": "Test Functional Group"
+    },
+    {
+        "Id": "1234567890",
+        "Name": "Test Case Category",
+        "Parent__c": "Group A"
+    },
+    {
+        "Id": "asdfghjkl",
+        "Name": "Test Sub Category",
+        "Parent__c": "1234567890"
+    }
+]

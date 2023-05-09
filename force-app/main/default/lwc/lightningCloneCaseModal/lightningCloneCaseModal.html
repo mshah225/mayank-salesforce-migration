@@ -1,19 +1,11 @@
 <template>
     <lightning-quick-action-panel header="Clone Case">
-        <div class="slds-p-bottom_large slds-p-left_large slds-is-relative" style="width: 100%">
+        <div class="slds-p-bottom_large slds-p-left_large slds-is-relative">
             <!-- Form loader -->
             <template lwc:if={loading}>
                 <br />
                 <br />
-                <div class="slds-spinner_container">
-                    <div class="slds-spinner_brand slds-spinner slds-spinner_medium slds-is-relative" role="alert">
-                        <span class="slds-assistive-text">Loading...</span>
-                        <div class="slds-spinner__dot-a"></div>
-                        <div class="slds-spinner__dot-b"></div>
-                        <br />
-                        <br />
-                    </div>
-                </div>
+                <lightning-spinner variant="brand" alternative-text="Loading..." size="medium"></lightning-spinner>
                 <br />
                 <br />
             </template>
@@ -24,13 +16,29 @@
                     object-api-name="Case"
                     density="comfy"
                     onsuccess={handleSuccess}
-                    onsubmit={handleSubmit}
                     onload={handleLoad}
                 >
+                    <lightning-input-field field-name="ContactId" value={getContact}></lightning-input-field>
+
                     <lightning-input-field
-                        field-name="ContactId"
-                        value={getContact}
-                        onchange={handleContactChange}
+                        field-name="CC_Functional_Group__c"
+                        value={getFunctionalGroup}
+                        class="slds-hidden"
+                        style="display: none"
+                    ></lightning-input-field>
+
+                    <lightning-input-field
+                        field-name="CC_Category__c"
+                        value={getCategory}
+                        class="slds-hidden"
+                        style="display: none"
+                    ></lightning-input-field>
+
+                    <lightning-input-field
+                        field-name="CC_Sub_Category__c"
+                        value={getSubCategory}
+                        class="slds-hidden"
+                        style="display: none"
                     ></lightning-input-field>
 
                     <lightning-combobox
@@ -54,18 +62,10 @@
                         style="width: 99%; margin-left: 4.5px"
                     ></lightning-combobox>
 
-                    <lightning-input-field field-name="Origin__c" value={getOrigin} onchange={handleOriginChange}>
-                    </lightning-input-field>
-                    <lightning-input-field field-name="Status" value={getStatus} onchange={handleStatusChange}>
-                    </lightning-input-field>
-                    <lightning-input-field field-name="Subject" value={getSubject} onchange={handleSubjectChange}>
-                    </lightning-input-field>
-                    <lightning-input-field
-                        field-name="Description"
-                        value={getDescription}
-                        onchange={handleDescriptionChange}
-                    >
-                    </lightning-input-field>
+                    <lightning-input-field field-name="Origin__c" value={getOrigin}> </lightning-input-field>
+                    <lightning-input-field field-name="Status" value={getStatus}> </lightning-input-field>
+                    <lightning-input-field field-name="Subject" value={getSubject}> </lightning-input-field>
+                    <lightning-input-field field-name="Description" value={getDescription}> </lightning-input-field>
 
                     <hr
                         style="

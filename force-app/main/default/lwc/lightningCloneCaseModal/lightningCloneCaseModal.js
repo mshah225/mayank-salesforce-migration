@@ -20,9 +20,6 @@ const FIELDS = [
 export default class LightningCloneCaseModal extends NavigationMixin(LightningElement) {
     @api recordId;
 
-    /* set this variable to false, to avoid debug statements */
-    DEBUG_LEVEL = false;
-
     categoryOptions = [];
     subCategoryOptions = [];
     isLoading = true;
@@ -42,19 +39,6 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
     selectedSubject = '';
     selectedDescription = '';
 
-    // credits: https://salesforce.stackexchange.com/questions/304495/controlling-the-height-of-a-lightning-combobox-dropdown
-    constructor() {
-        super();
-
-        // reducing the default height for picklist dropdowns
-        const style = document.createElement('style');
-        // below you specify the CSS selector to be changed in the combobox
-        style.innerText = `.slds-listbox.slds-listbox_vertical.slds-dropdown.slds-dropdown_fluid.slds-dropdown_left {
-            height: 220px !important;
-        }`;
-        document.querySelector('head').appendChild(style);
-    }
-
     @wire(getRecord, {recordId: '$recordId', fields: FIELDS})
     caseHandler({error, data}) {
         if (data) {
@@ -64,15 +48,16 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
             this.setCloneData();
 
             this.loadClassifications();
-
-            if (this.DEBUG_LEVEL) {
-                console.log('case: ', this.case);
-                console.log('raw classification data: ', this.rawClassificationData);
-            }
         } else if (error) {
             this.error = error;
             this.case = undefined;
-            console.log(this.error);
+            const event = new ShowToastEvent({
+                title: 'Error',
+                message: error.body.message,
+                variant: 'error',
+            });
+            this.dispatchEvent(event);
+
             this.loading = false;
         }
     }
@@ -87,11 +72,9 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
     }
 
     get debug() {
-        if (this.DEBUG_LEVEL) {
-            console.log('loader status: ', this.isLoading);
-            console.log('record id: ', this.recordId);
-            console.log('case: ', this.case);
-        }
+        console.log('loader status: ', this.isLoading);
+        console.log('record id: ', this.recordId);
+        console.log('case: ', this.case);
 
         return 'test: v3';
     }
@@ -115,6 +98,10 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
 
     get getContact() {
         return this.selectedContact;
+    }
+
+    get getFunctionalGroup() {
+        return this.selectedFunctionalGroup;
     }
 
     get getCategory() {
@@ -175,11 +162,6 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
     renderDropdowns() {
         this.renderCategories();
         this.renderSubCategories();
-        if (this.DEBUG_LEVEL) {
-            console.log('-- Printing category and sub category options from renderDropdowns() --');
-            console.log('category options: ', this.categoryOptions);
-            console.log('sub category options', this.subCategoryOptions);
-        }
     }
 
     renderCategories() {
@@ -227,36 +209,6 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
         this.isLoading = false;
     }
 
-    handleContactChange(event) {
-        const selectedContact = event.target.value;
-        this.selectedContact = selectedContact;
-        if (this.DEBUG_LEVEL) console.log('Updated contact: ', this.selectedContact);
-    }
-
-    handleOriginChange(event) {
-        const selectedOrigin = event.target.value;
-        this.selectedOrigin = selectedOrigin;
-        if (this.DEBUG_LEVEL) console.log('Updated origin: ', this.selectedOrigin);
-    }
-
-    handleStatusChange(event) {
-        const selectedStatus = event.target.value;
-        this.selectedStatus = selectedStatus;
-        if (this.DEBUG_LEVEL) console.log('Updated status: ', this.selectedStatus);
-    }
-
-    handleSubjectChange(event) {
-        const selectedSubject = event.target.value;
-        this.selectedSubject = selectedSubject;
-        if (this.DEBUG_LEVEL) console.log('Updated subject: ', this.selectedSubject);
-    }
-
-    handleDescriptionChange(event) {
-        const selectedDescription = event.target.value;
-        this.selectedDescription = selectedDescription;
-        if (this.DEBUG_LEVEL) console.log('Updated description: ', this.selectedDescription);
-    }
-
     handleCategoryChange(event) {
         // Reset the sub-category selection
         this.clearSubCategory();
@@ -264,14 +216,12 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
         // Set category
         const selectedCategory = event.target.value;
         this.selectedCategory = selectedCategory;
-        if (this.DEBUG_LEVEL) console.log('Updated category: ', this.selectedCategory);
         this.renderSubCategories();
     }
 
     handleSubCategoryChange(event) {
         const selectedSubCategory = event.target.value;
         this.selectedSubCategory = selectedSubCategory;
-        if (this.DEBUG_LEVEL) console.log('Updated sub category: ', this.selectedSubCategory);
     }
 
     handleSuccess(event) {
@@ -289,30 +239,6 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
         this.closeModal();
     }
 
-    handleSubmit() {
-        const fields = {
-            ContactId: this.selectedContact,
-            CC_Category__c: this.selectedCategory,
-            CC_Sub_Category__c: this.selectedSubCategory,
-            Origin__c: this.selectedOrigin,
-            Status: this.selectedStatus,
-            Subject: this.selectedSubject,
-            Description: this.selectedDescription,
-            CC_Functional_Group__c: this.selectedFunctionalGroup,
-        };
-
-        if (this.DEBUG_LEVEL) console.log(`Printing cloned case fields before submitting :`, fields);
-
-        // Make sure our fields are validated
-        if (!this.validateFields()) {
-            return;
-        }
-
-        this.loading = true;
-
-        this.template.querySelector('lightning-record-edit-form').submit(fields);
-    }
-
     redirectToClonedCase(recordId) {
         // open newly created record on new page
         this[NavigationMixin.Navigate]({
@@ -323,16 +249,5 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
                 actionName: 'view',
             },
         });
-    }
-
-    /**
-     * Validate input fields
-     */
-    validateFields() {
-        return [...this.template.querySelectorAll('lightning-combobox')].reduce((validSoFar, field) => {
-            // Return whether all fields up to this point are valid and whether current field is valid
-            // reportValidity returns validity and also displays/clear message on element based on validity
-            return validSoFar && field.reportValidity();
-        }, true);
     }
 }

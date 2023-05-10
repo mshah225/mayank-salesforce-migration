@@ -1,5 +1,5 @@
 @isTest
-public class MarketingCloudTextOptInCalloutMock implements HttpCalloutMock {
+public class MarketingCloudSMSOptInCalloutMock implements HttpCalloutMock {
     public Boolean shouldFindExistingContact = true;
     public Boolean shouldFailAuthorization = false;
     public Boolean shouldReturnNoId = false;
@@ -73,31 +73,31 @@ public class MarketingCloudTextOptInCalloutMock implements HttpCalloutMock {
         if (shouldFindExistingContact) {
             response.setBody(
                 '{' +
-                (shouldReturnMalformedContact ? '"MALFORMED"::{]]]: [' : '"contact": [') +
-                '{' +
-                '"id": "' +
-                (shouldReturnNoId ? '' : c.Id) +
-                '",' +
-                '"emplid": null,' +
-                '"asurite": null,' +
-                '"firstname": "Sally",' +
-                '"lastname": "Student",' +
-                '"middlename": null,' +
-                '"birthdate": null,' +
-                '"email": "suzeeq223@gmail.com.dev",' +
-                '"phone": "(623) 555-1212",' +
-                '"city": null,' +
-                '"country": "United States",' +
-                '"countrycode": "US",' +
-                '"street": "111 E North Drive",' +
-                '"postalcode": "85287",' +
-                '"state": "Arizona",' +
-                '"statecode": "AZ",' +
-                '"createddate": "2014-05-02T23:31:50Z",' +
-                '"recordtypeid": "012d0000000wzM5AAI"' +
-                '}' +
-                ']' +
-                '}'
+                    (shouldReturnMalformedContact ? '"MALFORMED"::{]]]: [' : '"contact": [') +
+                    '{' +
+                    '"id": "' +
+                    (shouldReturnNoId ? '' : c.Id) +
+                    '",' +
+                    '"emplid": null,' +
+                    '"asurite": null,' +
+                    '"firstname": "Sally",' +
+                    '"lastname": "Student",' +
+                    '"middlename": null,' +
+                    '"birthdate": null,' +
+                    '"email": "suzeeq223@gmail.com.dev",' +
+                    '"phone": "(623) 555-1212",' +
+                    '"city": null,' +
+                    '"country": "United States",' +
+                    '"countrycode": "US",' +
+                    '"street": "111 E North Drive",' +
+                    '"postalcode": "85287",' +
+                    '"state": "Arizona",' +
+                    '"statecode": "AZ",' +
+                    '"createddate": "2014-05-02T23:31:50Z",' +
+                    '"recordtypeid": "012d0000000wzM5AAI"' +
+                    '}' +
+                    ']' +
+                    '}'
             );
         } else {
             response.setBody('{"contactDetails": []}');
@@ -118,15 +118,15 @@ public class MarketingCloudTextOptInCalloutMock implements HttpCalloutMock {
         if (!shouldReturnEmptyWhenCreatingContact) {
             response.setBody(
                 '{' +
-                (shouldReturnMalformedContact ? '"MALFORMED"::{]]] [{' : '"upsertResults": [{') +
-                '"created": "true",' +
-                '"id": "' +
-                (shouldReturnNoId ? '' : c.Id) +
-                '",' +
-                '"success": "true",' +
-                '"message": "MESSAGE_HERE"' +
-                '}]' +
-                '}'
+                    (shouldReturnMalformedContact ? '"MALFORMED"::{]]] [{' : '"upsertResults": [{') +
+                    '"created": "true",' +
+                    '"id": "' +
+                    (shouldReturnNoId ? '' : c.Id) +
+                    '",' +
+                    '"success": "true",' +
+                    '"message": "MESSAGE_HERE"' +
+                    '}]' +
+                    '}'
             );
         }
 

@@ -1,10 +1,3 @@
-/* eslint-disable compat/compat */
-/* eslint-disable @salesforce/aura/ecma-intrinsics */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
-/* eslint-disable no-sequences */
-/* eslint-disable no-constant-condition */
-/* eslint-disable no-undef */
 import {createElement} from 'lwc';
 import LightningCloneCaseModal from 'c/lightningCloneCaseModal';
 import {getRecord} from 'lightning/uiRecordApi';
@@ -46,7 +39,7 @@ describe('c-lightning-clone-case-modal', () => {
 
     beforeEach(async () => {
         getClassifications.mockResolvedValue(mockGetClassifications);
-    })
+    });
 
     async function flushPromises() {
         return Promise.resolve();
@@ -204,7 +197,7 @@ describe('c-lightning-clone-case-modal', () => {
             {
                 label: 'Test Sub Category',
                 value: 'asdfghjkl',
-            }
+            },
         ];
 
         // Arrange

@@ -1,6 +1,3 @@
-/* eslint-disable no-useless-return */
-/* eslint-disable no-console */
-/* eslint-disable no-unused-expressions */
 import {LightningElement, api, wire} from 'lwc';
 import {CloseActionScreenEvent} from 'lightning/actions';
 import {getRecord, getFieldValue} from 'lightning/uiRecordApi';

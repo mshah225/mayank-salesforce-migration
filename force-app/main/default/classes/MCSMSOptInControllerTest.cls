@@ -45,7 +45,7 @@ public with sharing class MCSMSOptInControllerTest {
         String shortCode = '883009';
         String messageText = 'Message text goes here.';
 
-        Test.setMock(HttpCalloutMock.class, new MarketingCloudTextOptInCalloutMock());
+        Test.setMock(HttpCalloutMock.class, new MarketingCloudSMSOptInCalloutMock());
         Test.startTest();
         MCSMSOptInController.OptInResult oir = MCSMSOptInController.optIn(
             subscriberKey,
@@ -96,7 +96,7 @@ public with sharing class MCSMSOptInControllerTest {
         String shortCode = '883009';
         String messageText = 'Message text goes here.';
 
-        Test.setMock(HttpCalloutMock.class, new MarketingCloudTextOptInCalloutMock());
+        Test.setMock(HttpCalloutMock.class, new MarketingCloudSMSOptInCalloutMock());
         Test.startTest();
         MCSMSOptInController.OptInResult oir = MCSMSOptInController.optIn(
             subscriberKey,
@@ -147,7 +147,7 @@ public with sharing class MCSMSOptInControllerTest {
         String shortCode = '883009';
         String messageText = 'Message text goes here.';
 
-        MarketingCloudTextOptInCalloutMock calloutMock = new MarketingCloudTextOptInCalloutMock();
+        MarketingCloudSMSOptInCalloutMock calloutMock = new MarketingCloudSMSOptInCalloutMock();
         calloutMock.shouldFindExistingContact = false;
         Test.setMock(HttpCalloutMock.class, calloutMock);
         Test.startTest();
@@ -200,7 +200,7 @@ public with sharing class MCSMSOptInControllerTest {
         String shortCode = '883009';
         String messageText = 'Message text goes here.';
 
-        Test.setMock(HttpCalloutMock.class, new MarketingCloudTextOptInCalloutMock());
+        Test.setMock(HttpCalloutMock.class, new MarketingCloudSMSOptInCalloutMock());
         Test.startTest();
         MCSMSOptInController.OptInResult oir1 = MCSMSOptInController.optIn(
             subscriberKey,
@@ -291,7 +291,7 @@ public with sharing class MCSMSOptInControllerTest {
         String shortCode = '883009';
         String messageText = 'Message text goes here.';
 
-        MarketingCloudTextOptInCalloutMock calloutMock = new MarketingCloudTextOptInCalloutMock();
+        MarketingCloudSMSOptInCalloutMock calloutMock = new MarketingCloudSMSOptInCalloutMock();
         calloutMock.shouldReturnMalformedContact = true;
         Test.setMock(HttpCalloutMock.class, calloutMock);
         Test.startTest();
@@ -344,7 +344,7 @@ public with sharing class MCSMSOptInControllerTest {
         String shortCode = '883009';
         String messageText = 'Message text goes here.';
 
-        MarketingCloudTextOptInCalloutMock calloutMock = new MarketingCloudTextOptInCalloutMock();
+        MarketingCloudSMSOptInCalloutMock calloutMock = new MarketingCloudSMSOptInCalloutMock();
         calloutMock.shouldReturnNoId = true;
         Test.setMock(HttpCalloutMock.class, calloutMock);
         Test.startTest();
@@ -397,7 +397,7 @@ public with sharing class MCSMSOptInControllerTest {
         String shortCode = '883009';
         String messageText = 'Message text goes here.';
 
-        MarketingCloudTextOptInCalloutMock calloutMock = new MarketingCloudTextOptInCalloutMock();
+        MarketingCloudSMSOptInCalloutMock calloutMock = new MarketingCloudSMSOptInCalloutMock();
         calloutMock.shouldFindExistingContact = false;
         calloutMock.shouldReturnMalformedContact = true;
         Test.setMock(HttpCalloutMock.class, calloutMock);
@@ -451,7 +451,7 @@ public with sharing class MCSMSOptInControllerTest {
         String shortCode = '883009';
         String messageText = 'Message text goes here.';
 
-        MarketingCloudTextOptInCalloutMock calloutMock = new MarketingCloudTextOptInCalloutMock();
+        MarketingCloudSMSOptInCalloutMock calloutMock = new MarketingCloudSMSOptInCalloutMock();
         calloutMock.shouldFindExistingContact = false;
         calloutMock.shouldReturnNoId = true;
         Test.setMock(HttpCalloutMock.class, calloutMock);
@@ -505,7 +505,7 @@ public with sharing class MCSMSOptInControllerTest {
         String shortCode = '883009';
         String messageText = 'Message text goes here.';
 
-        MarketingCloudTextOptInCalloutMock calloutMock = new MarketingCloudTextOptInCalloutMock();
+        MarketingCloudSMSOptInCalloutMock calloutMock = new MarketingCloudSMSOptInCalloutMock();
         calloutMock.shouldFindExistingContact = false;
         calloutMock.shouldReturnEmptyWhenCreatingContact = true;
         Test.setMock(HttpCalloutMock.class, calloutMock);
@@ -559,7 +559,7 @@ public with sharing class MCSMSOptInControllerTest {
         String shortCode = '883009';
         String messageText = 'Message text goes here.';
 
-        MarketingCloudTextOptInCalloutMock calloutMock = new MarketingCloudTextOptInCalloutMock();
+        MarketingCloudSMSOptInCalloutMock calloutMock = new MarketingCloudSMSOptInCalloutMock();
         calloutMock.shouldFailAuthorization = true;
         Test.setMock(HttpCalloutMock.class, calloutMock);
         Test.startTest();

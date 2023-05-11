@@ -15,7 +15,6 @@ public with sharing class CoachPortalMainPageController {
             if (ownerId == null) {
                 ownerId = UserInfo.getUserId();
             }
-
             return ownerId;
         }
         set;
@@ -28,13 +27,12 @@ public with sharing class CoachPortalMainPageController {
         get {
             if (myResource == null) {
                 myResource = [
-                    SELECT Id, Role__c, Success_Pod__c
+                    SELECT Id, Role__c, Success_Pod__c, RecordTypeId
                     FROM Success_Resource__c
                     WHERE Resource__c = :ownerId
                     LIMIT 1
                 ];
             }
-
             return myResource;
         }
         set;
@@ -48,7 +46,6 @@ public with sharing class CoachPortalMainPageController {
             if (mySuccessRole == null) {
                 mySuccessRole = myResource.Role__c;
             }
-
             return mySuccessRole;
         }
         set;
@@ -62,8 +59,34 @@ public with sharing class CoachPortalMainPageController {
             if (mySuccessPod == null) {
                 mySuccessPod = myResource.Success_Pod__c;
             }
-
             return mySuccessPod;
+        }
+        set;
+    }
+
+    public Id mySuccessRTID {
+        get {
+            if (mySuccessRTID == null) {
+                mySuccessRTID = myResource.RecordTypeId;
+            }
+            return mySuccessRTID;
+        }
+        set;
+    }
+
+    public String mySuccessRT {
+        get {
+            if (mySuccessRT == null) {
+                mySuccessRT = myResource.DeveloperName;
+                mySuccessRT = [
+                    SELECT Id, DeveloperName
+                    FROM RecordType
+                    WHERE Id = :mySuccessRTID
+                    LIMIT 1
+                ]
+                .DeveloperName;
+            }
+            return mySuccessRT;
         }
         set;
     }
@@ -135,7 +158,7 @@ public with sharing class CoachPortalMainPageController {
                 SELECT Id, Name, Resource__r.Name, Resource_Name__c
                 FROM Success_Resource__c
                 WHERE
-                    RecordTypeId = :CoachResourceRTID
+                    RecordTypeId = :mySuccessRTID
                     AND Success_POD__c = :mySuccessPod
                     AND Resource__c != :ownerId
                     AND isActive__c = TRUE
@@ -149,16 +172,35 @@ public with sharing class CoachPortalMainPageController {
         set;
     }
 
-    /*
-     * Coach Success_Resource__c Record Type Id
-     */
-    private Id CoachResourceRTID {
+    private Id coachStudentRTID {
         get {
-            if (CoachResourceRTID == null) {
-                CoachResourceRTID = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Coach');
+            if (coachStudentRTID == null) {
+                coachStudentRTID = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Coach');
             }
 
-            return CoachResourceRTID;
+            return coachStudentRTID;
+        }
+        set;
+    }
+
+    private Id faIntakeStudentRTID {
+        get {
+            if (faIntakeStudentRTID == null) {
+                faIntakeStudentRTID = RecordIdHelper.getRecordTypeId('Success_Student__c', 'FA_Intake');
+            }
+
+            return faIntakeStudentRTID;
+        }
+        set;
+    }
+
+    private Id reEntryStudentRTID {
+        get {
+            if (reEntryStudentRTID == null) {
+                reEntryStudentRTID = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Re_Entry');
+            }
+
+            return reEntryStudentRTID;
         }
         set;
     }
@@ -166,13 +208,13 @@ public with sharing class CoachPortalMainPageController {
     /*
      * ASU Coach Outreach Case Record Type Id
      */
-    public Id CoachCaseRTID {
+    public Id coachCaseRTID {
         get {
-            if (CoachCaseRTID == null) {
-                CoachCaseRTID = RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach');
+            if (coachCaseRTID == null) {
+                coachCaseRTID = RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach');
             }
 
-            return CoachCaseRTID;
+            return coachCaseRTID;
         }
         set;
     }
@@ -180,13 +222,73 @@ public with sharing class CoachPortalMainPageController {
     /*
      * Coach Email record Type Id
      */
-    public Id CoachEmailRTID {
+    public Id coachEmailRTID {
         get {
-            if (CoachEmailRTID == null) {
-                CoachEmailRTID = RecordIdHelper.getRecordTypeId('Portal_Email__c', 'Coach');
+            if (coachEmailRTID == null) {
+                coachEmailRTID = RecordIdHelper.getRecordTypeId('Portal_Email__c', 'Coach');
             }
 
-            return CoachEmailRTID;
+            return coachEmailRTID;
+        }
+        set;
+    }
+
+    /*
+     * The query used to generate the summary list for the current resource
+     */
+    public String mySummaryListQuery {
+        get {
+            if (ownerId != null) {
+                mySummaryListQuery =
+                    '' +
+                    'SELECT COUNT(Id) total, Subject ' +
+                    'FROM Case ' +
+                    'WHERE OwnerId = \'' +
+                    ownerId +
+                    '\' ' +
+                    'AND RecordTypeId = \'' +
+                    coachCaseRTID +
+                    '\' ' +
+                    'AND IsClosed = false ' +
+                    'AND Category__c != \'Watchlist\' ' +
+                    'GROUP BY Subject ' +
+                    'ORDER BY Subject ASC NULLS LAST LIMIT 1000';
+            }
+
+            return mySummaryListQuery;
+        }
+        set;
+    }
+
+    /*
+     * The query used to retrieve the students for the active resource
+     */
+    public String myStudentsQuery {
+        get {
+            if (ownerId != null) {
+                Id myStudentsRTID = mySuccessRT == 'FA_Intake' ? faIntakeStudentRTID : null;
+                myStudentsRTID = mySuccessRT == 'Re_Entry' &&
+                    myStudentsRTID == null
+                    ? reEntryStudentRTID
+                    : coachStudentRTID;
+
+                myStudentsQuery =
+                    '' +
+                    'SELECT Student_Name__c, EMPLID__c, Student__c, Success_Resource__r.Resource__c, ' +
+                    'ASURiteID__c,Student__r.FirstName, Student__r.LastName ' +
+                    'FROM Success_Student__c ' +
+                    'WHERE Success_Resource__r.Resource__c = \'' +
+                    ownerId +
+                    '\' ' +
+                    'AND Is_Active__c = true ' +
+                    'AND Coaching_Student__c = true ' +
+                    'AND RecordTypeId = \'' +
+                    myStudentsRTID +
+                    '\' ' +
+                    'ORDER BY Student_Name__c ASC LIMIT 5000';
+            }
+
+            return myStudentsQuery;
         }
         set;
     }
@@ -206,89 +308,13 @@ public with sharing class CoachPortalMainPageController {
                     ownerId +
                     '\' ' +
                     'AND Category__c != \'Watchlist\' ' +
-                    'AND recordTypeId = \'' +
-                    CoachCaseRTID +
+                    'AND RecordTypeId = \'' +
+                    coachCaseRTID +
                     '\' ' +
                     'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 5000';
             }
 
             return myProactiveQuery;
-        }
-        set;
-    }
-
-    /*
-     * The query used to retrieve the watchlistCases for the current resource
-     */
-    public String myWatchlistQuery {
-        get {
-            if (ownerId != null) {
-                myWatchlistQuery =
-                    '' +
-                    'SELECT CaseNumber, ContactId, Contact.Name, Contact.EMPLID__c, Contact.FirstName, Contact.LastName, Contact.tz__Local_Time_Short__c, ' +
-                    'Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
-                    'FROM Case ' +
-                    'WHERE OwnerId = \'' +
-                    ownerId +
-                    '\' ' +
-                    'AND Category__c = \'Watchlist\' ' +
-                    'AND recordTypeId = \'' +
-                    CoachCaseRTID +
-                    '\' ' +
-                    'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 5000';
-            }
-
-            return myWatchlistQuery;
-        }
-        set;
-    }
-
-    /*
-     * The query used to retrieve the students for the active resource
-     */
-    public String myStudentsQuery {
-        get {
-            if (ownerId != null) {
-                myStudentsQuery =
-                    '' +
-                    'SELECT Student_Name__c, EMPLID__c, Student__c, Success_Resource__r.Resource__c, ' +
-                    'ASURiteID__c,Student__r.FirstName, Student__r.LastName ' +
-                    'FROM Success_Student__c ' +
-                    'WHERE Success_Resource__r.Resource__c = \'' +
-                    ownerId +
-                    '\' ' +
-                    'AND Is_Active__c = true ' +
-                    'AND Coaching_Student__c = true ORDER BY Student_Name__c ASC LIMIT 5000';
-            }
-
-            return myStudentsQuery;
-        }
-        set;
-    }
-
-    /*
-     * The query used to generate the summary list for the current resource
-     */
-    public String mySummaryListQuery {
-        get {
-            if (ownerId != null) {
-                mySummaryListQuery =
-                    '' +
-                    'SELECT count(Id) total, Subject ' +
-                    'FROM Case ' +
-                    'WHERE OwnerId = \'' +
-                    ownerId +
-                    '\' ' +
-                    'AND recordTypeId = \'' +
-                    CoachCaseRTID +
-                    '\' ' +
-                    'AND IsClosed = false ' +
-                    'AND Category__c != \'Watchlist\' ' +
-                    'GROUP BY Subject ' +
-                    'ORDER BY Subject ASC NULLS LAST LIMIT 1000';
-            }
-
-            return mySummaryListQuery;
         }
         set;
     }

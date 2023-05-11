@@ -335,10 +335,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
                     contacts.clear();
                     contacts.addAll(filteredContacts);
-
-                    //Also ,add a note to the Case description.
-                    theCase.Description =
-                        'Note: there is more than one Contact with this email address. ' + theCase.Description;
                 }
 
                 if (contacts.size() > 0) {

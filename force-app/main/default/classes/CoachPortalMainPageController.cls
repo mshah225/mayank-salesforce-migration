@@ -64,7 +64,7 @@ public with sharing class CoachPortalMainPageController {
         set;
     }
 
-    public Id mySuccessRTID {
+    private Id mySuccessRTID {
         get {
             if (mySuccessRTID == null) {
                 mySuccessRTID = myResource.RecordTypeId;
@@ -74,7 +74,7 @@ public with sharing class CoachPortalMainPageController {
         set;
     }
 
-    public String mySuccessRT {
+    private String mySuccessRT {
         get {
             if (mySuccessRT == null) {
                 mySuccessRT = myResource.DeveloperName;

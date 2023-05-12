@@ -7,7 +7,12 @@ trigger PersistenceOutlookTrigger on Persistence_Outlook__c(
     before insert,
     before update
 ) {
-    PersistenceOutlookDispatcher d = new PersistenceOutlookDispatcher(Trigger.new, Trigger.newMap, Trigger.old, Trigger.oldMap);
+    PersistenceOutlookDispatcher d = new PersistenceOutlookDispatcher(
+        Trigger.new,
+        Trigger.newMap,
+        Trigger.old,
+        Trigger.oldMap
+    );
 
     if (Trigger.isBefore) {
         if (Trigger.isUpdate)
@@ -24,7 +29,7 @@ trigger PersistenceOutlookTrigger on Persistence_Outlook__c(
             d.afterInsert();
         if (Trigger.isDelete)
             d.afterDelete();
-        if (Trigger.isUnDelete)
-            d.afterUnDelete();
+        if (Trigger.isUndelete)
+            d.afterUndelete();
     }
 }

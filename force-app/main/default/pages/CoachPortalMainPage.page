@@ -74,6 +74,7 @@
                         queryString="{!myStudentsQuery}"
                         proactiveRTID="{!coachCaseRTID}"
                         emailRTID="{!coachEmailRTID}"
+                        studentRTID="{!myStudentsRTID}"
                         mimicId="{!mimicId}"
                         showProactiveCases="false"
                         showReactiveCases="false"

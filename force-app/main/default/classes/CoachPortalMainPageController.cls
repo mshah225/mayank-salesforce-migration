@@ -176,7 +176,6 @@ public with sharing class CoachPortalMainPageController {
             if (coachStudentRTID == null) {
                 coachStudentRTID = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Coach');
             }
-
             return coachStudentRTID;
         }
         set;
@@ -187,7 +186,6 @@ public with sharing class CoachPortalMainPageController {
             if (faIntakeStudentRTID == null) {
                 faIntakeStudentRTID = RecordIdHelper.getRecordTypeId('Success_Student__c', 'FA_Intake');
             }
-
             return faIntakeStudentRTID;
         }
         set;
@@ -198,7 +196,6 @@ public with sharing class CoachPortalMainPageController {
             if (reEntryStudentRTID == null) {
                 reEntryStudentRTID = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Re_Entry');
             }
-
             return reEntryStudentRTID;
         }
         set;
@@ -212,7 +209,6 @@ public with sharing class CoachPortalMainPageController {
             if (coachCaseRTID == null) {
                 coachCaseRTID = RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach');
             }
-
             return coachCaseRTID;
         }
         set;
@@ -226,8 +222,21 @@ public with sharing class CoachPortalMainPageController {
             if (coachEmailRTID == null) {
                 coachEmailRTID = RecordIdHelper.getRecordTypeId('Portal_Email__c', 'Coach');
             }
-
             return coachEmailRTID;
+        }
+        set;
+    }
+
+    public Id myStudentsRTID {
+        get {
+            if (myStudentsRTID == null) {
+                myStudentsRTID = mySuccessRT == 'FA_Intake' ? faIntakeStudentRTID : null;
+                myStudentsRTID = mySuccessRT == 'Re_Entry' &&
+                    myStudentsRTID == null
+                    ? reEntryStudentRTID
+                    : coachStudentRTID;
+            }
+            return myStudentsRTID;
         }
         set;
     }
@@ -265,12 +274,6 @@ public with sharing class CoachPortalMainPageController {
     public String myStudentsQuery {
         get {
             if (ownerId != null) {
-                Id myStudentsRTID = mySuccessRT == 'FA_Intake' ? faIntakeStudentRTID : null;
-                myStudentsRTID = mySuccessRT == 'Re_Entry' &&
-                    myStudentsRTID == null
-                    ? reEntryStudentRTID
-                    : coachStudentRTID;
-
                 myStudentsQuery =
                     '' +
                     'SELECT Student_Name__c, EMPLID__c, Student__c, Success_Resource__r.Resource__c, ' +

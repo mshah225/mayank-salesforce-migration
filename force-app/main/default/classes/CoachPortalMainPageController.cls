@@ -230,11 +230,17 @@ public with sharing class CoachPortalMainPageController {
     public Id myStudentsRTID {
         get {
             if (myStudentsRTID == null) {
-                myStudentsRTID = mySuccessRT == 'FA_Intake' ? faIntakeStudentRTID : null;
-                myStudentsRTID = mySuccessRT == 'Re_Entry' &&
-                    myStudentsRTID == null
-                    ? reEntryStudentRTID
-                    : coachStudentRTID;
+                switch on mySuccessRT {
+                    when 'FA_Intake' {
+                        myStudentsRTID = faIntakeStudentRTID;
+                    }
+                    when 'Re_Entry' {
+                        myStudentsRTID = reEntryStudentRTID;
+                    }
+                    when else {
+                        myStudentsRTID = coachStudentRTID;
+                    }
+                }
             }
             return myStudentsRTID;
         }

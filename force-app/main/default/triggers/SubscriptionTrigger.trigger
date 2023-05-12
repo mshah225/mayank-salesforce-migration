@@ -30,8 +30,8 @@ trigger SubscriptionTrigger on Subscription__c(
         if (Trigger.isDelete) {
             d.afterDelete();
         }
-        if (Trigger.isUnDelete) {
-            d.afterUnDelete();
+        if (Trigger.isUndelete) {
+            d.afterUndelete();
         }
     }
 }

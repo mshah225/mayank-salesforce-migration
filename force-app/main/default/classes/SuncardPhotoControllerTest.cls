@@ -15,7 +15,12 @@ private class SuncardPhotoControllerTest {
 
         insert sunSetting;
 
-        SingleRequestMock fakeResponse = new SingleRequestMock(200, 'Complete', '[{"Name": "sForceTest1"}]', null);
+        SuncardPhotoCalloutMock fakeResponse = new SuncardPhotoCalloutMock(
+            200,
+            'Complete',
+            '[{"Name": "sForceTest1"}]',
+            null
+        );
 
         PageReference sunPage = Page.SuncardPhoto;
         Test.setCurrentPage(sunPage);

@@ -439,6 +439,20 @@
                                             <div class="modal-body">
                                                 <div id="modalError" style="color: red"></div>
                                                 <div class="form-group">
+                                                    <label for="comment">Functional Group:</label>
+                                                    <apex:form>
+                                                        <apex:selectList
+                                                            id="selectedVal"
+                                                            size="1"
+                                                            styleclass="chartBlock"
+                                                        >
+                                                            <apex:selectOptions
+                                                                value="{!caseFunctionaGroupPicklist}"
+                                                            ></apex:selectOptions>
+                                                        </apex:selectList>
+                                                    </apex:form>
+                                                </div>
+                                                <div class="form-group">
                                                     <label for="comment">Subject:</label>
                                                     <input type="text" class="form-control" id="usrSubject" />
                                                 </div>
@@ -3304,7 +3318,12 @@
         function submitCase() {
             var subject = document.getElementById('usrSubject').value;
             var description = document.getElementById('usrDescription').value;
-            if (subject.length <= 0 || description.length <= 0) {
+            var e = document.getElementsByClassName('chartBlock')[0];
+            var funcGroup = e.options[e.selectedIndex].value;
+            if (funcGroup == '') {
+                document.getElementById('modalError').innerHTML =
+                    'You must select a functional group';
+            } else if (subject.length <= 0 || description.length <= 0) {
                 document.getElementById('modalError').innerHTML =
                     'Please ensure that subject and description are not blank';
             } else {
@@ -3312,6 +3331,7 @@
                     '{!$RemoteAction.StudentProfileController.createCase}',
                     description,
                     subject,
+                    funcGroup,
                     '{!theContact.EMPLId__c}',
                     function (result, event) {
                         document.getElementById('usrSubject').value = '';

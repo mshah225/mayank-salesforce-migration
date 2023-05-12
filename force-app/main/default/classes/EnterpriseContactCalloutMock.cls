@@ -1,5 +1,5 @@
 @isTest
-public class MockHttpResponseGen_EnterpriseContact implements HttpCalloutMock {
+public class EnterpriseContactCalloutMock implements HttpCalloutMock {
     /**
      * Default interface method containing logic to handle GET, POST, etc.
      * @param The req request from the callout

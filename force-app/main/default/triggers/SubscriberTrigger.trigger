@@ -24,7 +24,7 @@ trigger SubscriberTrigger on Subscriber__c(
             d.afterInsert();
         if (Trigger.isDelete)
             d.afterDelete();
-        if (Trigger.isUnDelete)
-            d.afterUnDelete();
+        if (Trigger.isUndelete)
+            d.afterUndelete();
     }
 }

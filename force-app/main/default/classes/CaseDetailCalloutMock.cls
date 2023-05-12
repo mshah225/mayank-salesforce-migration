@@ -1,5 +1,5 @@
 @isTest
-global class CaseStatusHttpMockCallout implements HttpCalloutMock {
+global class CaseDetailCalloutMock implements HttpCalloutMock {
     global HTTPResponse respond(HTTPRequest req) {
         HttpResponse res = new HttpResponse();
         res.setHeader('Content-Type', 'application/json');

@@ -169,6 +169,9 @@ public without sharing class OpportunityHandler implements ITrigger {
      * any bulk operations for a BEFORE trigger.
      */
     public void beforeFinally() {
+        if (Trigger.isUpdate) {
+            OpportunityService.updateAccountIdFromContact(Trigger.new, Trigger.oldMap);
+        }
     }
 
     /**

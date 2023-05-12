@@ -3,7 +3,7 @@ private class HTTPRestService_InContactTest {
     @isTest
     static void testCallout() {
         // Set mock callout class
-        Test.setMock(HttpCalloutMock.class, new HTTPRestService_InContact_MockImpl());
+        Test.setMock(HttpCalloutMock.class, new InContactCalloutMock());
 
         HTTPResponse res = HTTPRestService_InContact.GETRestCallout(
             'https://api.incontact.com/InContactAuthorizationServer/Token'

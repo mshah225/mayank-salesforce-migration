@@ -77,7 +77,6 @@ public with sharing class CoachPortalMainPageController {
     private String mySuccessRT {
         get {
             if (mySuccessRT == null) {
-                mySuccessRT = myResource.DeveloperName;
                 mySuccessRT = [
                     SELECT Id, DeveloperName
                     FROM RecordType

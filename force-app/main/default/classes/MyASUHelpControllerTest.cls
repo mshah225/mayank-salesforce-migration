@@ -768,7 +768,7 @@ private class MyASUHelpControllerTest {
 
         ViewCaseController vcc;
 
-        Test.setMock(HttpCalloutMock.class, new EmailMessageSuccessMock());
+        Test.setMock(HttpCalloutMock.class, new EmailMessageCalloutMock());
         Test.startTest();
         System.runAs(testUser) {
             vcc = new ViewCaseController();
@@ -805,7 +805,9 @@ private class MyASUHelpControllerTest {
 
         ViewCaseController vcc;
 
-        Test.setMock(HttpCalloutMock.class, new EmailMessageFailureMock());
+        EmailMessageCalloutMock calloutMock = new EmailMessageCalloutMock();
+        calloutMock.shouldSucceed = false;
+        Test.setMock(HttpCalloutMock.class, calloutMock);
         Test.startTest();
         System.runAs(testUser) {
             vcc = new ViewCaseController();

@@ -1,5 +1,5 @@
 @isTest
-public class MockHttpBulkAPI implements HttpCalloutMock {
+public class BulkAPICalloutMock implements HttpCalloutMock {
     public HTTPResponse respond(HTTPRequest req) {
         HttpResponse res = new HttpResponse();
         res.setHeader('Content-Type', 'application/json');

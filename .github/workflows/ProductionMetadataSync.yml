@@ -10,7 +10,7 @@ jobs:
     production-metadata-sync:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
               with:
                   ref: main
                   fetch-depth: 0
@@ -21,7 +21,7 @@ jobs:
                   git fetch origin
                   git pull --no-edit origin sync
             - name: Create pull request
-              uses: peter-evans/create-pull-request@v3
+              uses: peter-evans/create-pull-request@v5
               with:
                   commit-message: 'Metadata sync from SF PROD to GitHub'
                   title: 'GITHUB-ACTIONS[BOT]: PRODUCTION METADATA SYNC'

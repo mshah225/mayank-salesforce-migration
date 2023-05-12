@@ -29,8 +29,8 @@ trigger IndividualEmailResultTrigger on et4ae5__IndividualEmailResult__c(
             dispatcher.afterInsert();
         } else if (Trigger.isDelete) {
             dispatcher.afterDelete();
-        } else if (Trigger.isUnDelete) {
-            dispatcher.afterUnDelete();
+        } else if (Trigger.isUndelete) {
+            dispatcher.afterUndelete();
         }
     }
 }

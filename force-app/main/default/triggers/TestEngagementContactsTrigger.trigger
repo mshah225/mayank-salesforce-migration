@@ -29,7 +29,7 @@ trigger TestEngagementContactsTrigger on Test_Engagement_Contacts__c(
             d.afterUpdate();
         if (Trigger.isDelete)
             d.afterDelete();
-        if (Trigger.isUnDelete)
-            d.afterUnDelete();
+        if (Trigger.isUndelete)
+            d.afterUndelete();
     }
 }

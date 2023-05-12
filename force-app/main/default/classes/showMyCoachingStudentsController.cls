@@ -9,7 +9,7 @@ public class showMyCoachingStudentsController {
     public Id proactiveCaseRTID { get; set; }
     private String oldQuery { get; set; } // Used to determine if the query changes
     public Id portalEmailRTID { get; set; }
-    public Id studentRTID { get; set; }
+    public Id successStudentRTID { get; set; }
     public Id ownerId { get; set; }
     public String searchString { get; set; }
     public List<studentWrapper> studentList { get; set; }
@@ -309,7 +309,7 @@ public class showMyCoachingStudentsController {
             ownerId +
             '\' ' +
             'AND RecordTypeId = \'' +
-            studentRTID +
+            successStudentRTID +
             '\' ' +
             'AND Is_Active__c = true ' +
             'AND Coaching_Student__c = true ' +

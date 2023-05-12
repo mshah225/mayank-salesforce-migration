@@ -10,7 +10,7 @@
     <apex:attribute name="mimicId" type="Id" description="" assignTo="{!ownerId}" />
     <apex:attribute name="proactiveRTID" type="Id" description="" assignTo="{!proactiveCaseRTID}" />
     <apex:attribute name="emailRTID" type="Id" description="" assignTo="{!portalEmailRTID}" />
-    <apex:attribute name="studentRTID" type="Id" description="" assignTo="{!studentRTID}" />
+    <apex:attribute name="studentRTID" type="Id" description="" assignTo="{!successStudentRTID}" />
 
     <apex:attribute name="showSelection" type="boolean" description="" default="false" />
     <apex:attribute name="showName" type="boolean" description="" default="false" />

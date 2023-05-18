@@ -9,11 +9,20 @@
     </targets>
     <targetConfigs>
         <targetConfig targets="lightning__RecordPage">
-            <property label="Component Header" name="componentName" type="String" default="Case Quick Close" />
-            <property label="Button Label" name="closeButtonLabel" type="String" default="Close Case" />
-            <property label="Button Variant" name="closeButtonVariant" type="String" datasource="brand,default,neutral,success" default="brand" />
-            <property label="Submit Button Label" name="recordSubmitButtonLabel" type="String" default="Submit" />
-            <property label="Submit Button Variant" name="recordSubmitButtonVariant" type="String" datasource="brand,default,neutral,success" default="brand" />
+            <property label="Component Header" name="componentName" type="String"
+                default="Case Quick Close" />
+            <property label="Button Label" name="closeButtonLabel" type="String"
+                default="Close Case" />
+            <property label="Button Variant" name="closeButtonVariant" type="String"
+                datasource="brand,default,neutral,success,destructive" default="brand" />
+            <property label="Spam Button Label" name="closeSpamButtonLabel" type="String"
+                default="Close Case" />
+            <property label="Spam Button Variant" name="closeSpamButtonVariant" type="String"
+                datasource="brand,default,neutral,success,destructive" default="destructive" />
+            <property label="Submit Button Label" name="recordSubmitButtonLabel" type="String"
+                default="Close Spam" />
+            <property label="Submit Button Variant" name="recordSubmitButtonVariant" type="String"
+                datasource="brand,default,neutral,success,destructive" default="brand" />
             <objects>
                 <object>Case</object>
             </objects>

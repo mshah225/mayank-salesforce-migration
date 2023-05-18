@@ -6,7 +6,7 @@
  *  CQC_RT_RECORD_TYPE_API_NAME (Examples: CQC_RT_ASU_Service, CQC_RT_ASU_Advisor_Outreach)
  */
 import {LightningElement, api, wire} from 'lwc';
-import {getRecord, getFieldValue} from 'lightning/uiRecordApi';
+import {getRecord, getFieldValue, updateRecord} from 'lightning/uiRecordApi';
 import {getPicklistValues} from 'lightning/uiObjectInfoApi';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import getFieldsFromFieldSet from '@salesforce/apex/FieldSetHelper.getFieldsFromFieldSet';
@@ -18,6 +18,7 @@ import RECORD_TYPE_DEVELOPER_NAME_FIELD from '@salesforce/schema/Case.RecordType
 import STATUS_FIELD from '@salesforce/schema/Case.Status';
 import CASE_NUMBER_FIELD from '@salesforce/schema/Case.CaseNumber';
 import IS_CLOSED_FIELD from '@salesforce/schema/Case.IsClosed';
+import ID_FIELD from '@salesforce/schema/Case.Id';
 
 // Vars
 const FIELDSET_PREFIX = 'CQC_RT_';
@@ -29,11 +30,14 @@ export default class CaseQuickClose extends LightningElement {
     @api closeButtonVariant = 'brand';
     @api recordSubmitButtonLabel = 'Submit';
     @api recordSubmitButtonVariant = 'brand';
+    @api closeSpamButtonLabel = 'Close Spam';
+    @api closeSpamButtonVariant = 'destructive';
     record;
     casesStatusOptions = [];
     isLoading = false;
     isFormVisible = false;
     isButtonVisible = true;
+    isSpamButtonVisible = true;
     errorDetail = '';
     errorContact = 'salesforce.support@asu.edu';
     selectedStatus = null;
@@ -90,6 +94,13 @@ export default class CaseQuickClose extends LightningElement {
         }
     }
 
+    // Can this case be closed as spam via button
+    get isRTAllowedClosedSpam() {
+        const allowedRTs = ['ASU_Service'];
+        const currentRT = getFieldValue(this.record, RECORD_TYPE_DEVELOPER_NAME_FIELD);
+        return allowedRTs.includes(currentRT);
+    }
+
     // Validation Error Override
     get hasValidationError() {
         return this.validationError ? true : false;
@@ -116,6 +127,16 @@ export default class CaseQuickClose extends LightningElement {
     // Submit Button Label
     get lwcRecordSubmitButtonLabel() {
         return this.recordSubmitButtonLabel;
+    }
+
+    // Button Label
+    get lwcCloseSpamButtonLabel() {
+        return this.closeSpamButtonLabel;
+    }
+
+    // Button Variant
+    get lwcCloseSpamButtonVariant() {
+        return this.closeSpamButtonVariant;
     }
 
     // Submit Button Variant
@@ -150,6 +171,14 @@ export default class CaseQuickClose extends LightningElement {
     }
     set buttonVisible(visible) {
         this.isButtonVisible = visible;
+    }
+
+    // Spam Button Visibility
+    get spamButtonVisible() {
+        return this.isSpamButtonVisible;
+    }
+    set spamButtonVisible(visible) {
+        this.isSpamButtonVisible = visible;
     }
 
     // Error
@@ -267,9 +296,47 @@ export default class CaseQuickClose extends LightningElement {
     handleOnCaseCloseButton() {
         this.loading = true;
         this.buttonVisible = false;
+        this.spamButtonVisible = false;
         setTimeout(() => {
             this.formVisible = true;
         }, 1200);
+    }
+
+    // Handle Close Spam Cases
+    handleOnCaseCloseSpamButton() {
+        setTimeout(() => {
+            this.handleCloseSpam();
+        }, 1200);
+    }
+
+    // Close Spam Logic
+    handleCloseSpam() {
+        const fields = {};
+        fields[ID_FIELD.fieldApiName] = this.recordId;
+        fields[STATUS_FIELD.fieldApiName] = 'Closed: SPAM';
+
+        // Vars
+        const currentSubject = getFieldValue(this.record, SUBJECT_FIELD);
+        const currentDescription = getFieldValue(this.record, DESCRIPTION_FIELD);
+
+        // Modify case details
+        if (!currentSubject.startsWith('SPAM:')) {
+            fields[SUBJECT_FIELD.fieldApiName] = 'SPAM: ' + currentSubject;
+        }
+        if (!currentDescription.startsWith('SPAM:')) {
+            fields[DESCRIPTION_FIELD.fieldApiName] = 'SPAM: ' + currentDescription;
+        }
+
+        const recordInput = {fields};
+
+        // Update the record
+        updateRecord(recordInput)
+            .then(() => {
+                this.handleOnCaseCloseSuccess();
+            })
+            .catch((error) => {
+                this.handleGlobalError(error);
+            });
     }
 
     // Override Submit
@@ -322,6 +389,7 @@ export default class CaseQuickClose extends LightningElement {
         this.loading = false;
         this.formVisible = false;
         this.buttonVisible = true;
+        this.spamButtonVisible = true;
         this.errorMessage = '';
         this.hasValidationError = null;
     }

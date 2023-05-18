@@ -46,6 +46,7 @@ export default class CaseQuickClose extends LightningElement {
     inputFieldsAfter = [];
     statusFieldLabel;
     validationError;
+    allowedCloseCaseSpamRTs = ['ASU_Service', 'ASU_Admissions_Services', 'ASU_Secure_Case'];
 
     // Case Record
     @wire(getRecord, {
@@ -96,9 +97,8 @@ export default class CaseQuickClose extends LightningElement {
 
     // Can this case be closed as spam via button
     get isRTAllowedClosedSpam() {
-        const allowedRTs = ['ASU_Service'];
         const currentRT = getFieldValue(this.record, RECORD_TYPE_DEVELOPER_NAME_FIELD);
-        return allowedRTs.includes(currentRT);
+        return this.allowedCloseCaseSpamRTs.includes(currentRT);
     }
 
     // Validation Error Override

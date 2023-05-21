@@ -4579,7 +4579,6 @@
                                                     '<td data-header="Participation">' +
                                                     result.droppedClasses[i].CONFIRMATION_OF_PARTICIPATION__c +
                                                     '</td>';
-                                                    '</td>';
                                                 if (
                                                     asrResponseTable.indexOf(
                                                         result.droppedClasses[i].STRM__c +

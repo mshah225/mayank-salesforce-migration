@@ -181,22 +181,22 @@ public with sharing class CoachPortalMainPageController {
         set;
     }
 
-    private Id faIntakeStudentRTID {
+    private Id financialIntakeStudentRTID {
         get {
-            if (faIntakeStudentRTID == null) {
-                faIntakeStudentRTID = RecordIdHelper.getRecordTypeId('Success_Student__c', 'FA_Intake');
+            if (financialIntakeStudentRTID == null) {
+                financialIntakeStudentRTID = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Financial_Intake');
             }
-            return faIntakeStudentRTID;
+            return financialIntakeStudentRTID;
         }
         set;
     }
 
-    private Id reEntryStudentRTID {
+    private Id reentryStudentRTID {
         get {
-            if (reEntryStudentRTID == null) {
-                reEntryStudentRTID = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Re_Entry');
+            if (reentryStudentRTID == null) {
+                reentryStudentRTID = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Reentry');
             }
-            return reEntryStudentRTID;
+            return reentryStudentRTID;
         }
         set;
     }
@@ -232,10 +232,10 @@ public with sharing class CoachPortalMainPageController {
             if (myStudentsRTID == null) {
                 switch on mySuccessRT {
                     when 'Financial_Intake' {
-                        myStudentsRTID = faIntakeStudentRTID;
+                        myStudentsRTID = financialIntakeStudentRTID;
                     }
                     when 'Reentry' {
-                        myStudentsRTID = reEntryStudentRTID;
+                        myStudentsRTID = reentryStudentRTID;
                     }
                     when else {
                         myStudentsRTID = coachStudentRTID;

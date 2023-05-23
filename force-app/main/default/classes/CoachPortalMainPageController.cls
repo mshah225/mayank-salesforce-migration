@@ -231,10 +231,10 @@ public with sharing class CoachPortalMainPageController {
         get {
             if (myStudentsRTID == null) {
                 switch on mySuccessRT {
-                    when 'FA_Intake' {
+                    when 'Financial_Intake' {
                         myStudentsRTID = faIntakeStudentRTID;
                     }
-                    when 'Re_Entry' {
+                    when 'Reentry' {
                         myStudentsRTID = reEntryStudentRTID;
                     }
                     when else {

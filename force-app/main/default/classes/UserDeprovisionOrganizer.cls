@@ -139,24 +139,10 @@ public without sharing class UserDeprovisionOrganizer {
     }
 
     private void populateUserToDeprovisionCaseMap() {
-        allUserCases = [
-            SELECT
-                Id,
-                OwnerId,
-                CC_Functional_Group__c,
-                CC_Functional_Group__r.Name,
-                CC_Functional_Group__r.Queue_Id__c,
-                CC_Functional_Group__r.Is_Functional_Group_Private__c
-            FROM Case
-            WHERE OwnerId IN :userToDeprovisionIds
-        ];
+        BatchDeprovisionUserCase batch = new BatchDeprovisionUserCase(this.userToDeprovisionIds, this.userToCaseMap);
+        Database.executeBatch(batch, 2000);
 
-        for (Case userCase : allUserCases) {
-            if (!userToCaseMap.containsKey(userCase.OwnerId)) {
-                userToCaseMap.put(userCase.OwnerId, new List<Case>());
-            }
-            userToCaseMap.get(userCase.OwnerId).add(userCase);
-        }
+        this.userToCaseMap = batch.getUpdatedUserToCaseMap();
     }
 
     private void populateUserToDeprovisionGroupMembershipMap() {

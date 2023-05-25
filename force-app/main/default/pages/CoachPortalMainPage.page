@@ -52,6 +52,16 @@
                 <apex:tab label="Success Tools" switchType="client" styleClass="wsTabContent" id="toolsTab" rendered="{!$UserRole.Name == SUCCESS_COACH_MANAGER || $UserRole.Name == SUCCESS_COACH_LEAD || $Profile.Name == SYS_ADMIN}">
                     <c:SuccessToolbelt />
                 </apex:tab>
+
+                <apex:tab
+                    label="Success Hub"
+                    switchType="client"
+                    styleClass="wsTabContent"
+                    id="hubTab"
+                    rendered="{!$UserRole.Name == SUCCESS_COACH_MANAGER || $UserRole.Name == SUCCESS_COACH_LEAD || $Profile.Name == SYS_ADMIN}"
+                >
+                    <c:CoachPortalSuccessHub />
+                </apex:tab>
             </apex:tabPanel>
         </apex:outputPanel>
     </c:coachPortalViewAsComponent>

@@ -229,11 +229,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 theCase.Description = '';
 
                 if (email.plainTextBody != null) {
-                    theCase.Description = limitLength(email.plainTextBody, 32000);
+                    theCase.Description = limitLength(email.plainTextBody, 31500);
                 } else if (email.htmlBody != null) {
                     theCase.Description =
                         'Note: This description was reformatted from the original email body. Please view the case feed to see the original email body.\n\n' +
-                        limitLength(email.htmlBody.replaceAll('<[^>]+>', ''), 32000);
+                        limitLength(email.htmlBody.replaceAll('<[^>]+>', ''), 31500);
                 }
 
                 String toAddressConcat = '';
@@ -288,17 +288,49 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
                 // Multiple matches - require further filtering using name
                 if (contacts.size() > 1) {
+
+                    theCase.Description =
+                            'Note: there is more than one Contact with this email address. ' + theCase.Description;
+
                     List<Contact> filteredContacts = new List<Contact>();
 
+                    // If there are no contacts that also match on first name and last name
+                    // then we will need to make a new Contact
                     for (Contact c : contacts) {
-                        if (
-                            (c.FirstName != null &&
-                            c.LastName != null) &&
-                            c.FirstName.toLowerCase() == fname.toLowerCase() &&
-                            c.LastName.toLowerCase() == lname.toLowerCase()
-                        ) {
-                            filteredContacts.add(c);
+                        /**
+                         * If both:
+                         *  1. First name of contact and fname from email are either:
+                         *     a. both are null/empty string (String.isEmpty)
+                         *     b. both the same (case insenstive)
+                         *  2. Lase name of contact and lname from email are either:
+                         *     a. both are null/empty string (String.isEmpty)
+                         *     b. both the same (case insenstive)
+                         */
+
+                        Boolean matchFirstName = false;
+                        Boolean matchLastName = false;
+
+                        if (String.isEmpty(c.FirstName)) {
+                            // First name is null/empty string
+                            // so fname should be too
+                            matchFirstName = String.isEmpty(fname);
+                        } else {
+                            // First name is set - so fname should match
+                            matchFirstName = c.FirstName.equalsIgnoreCase(fname);
                         }
+
+                        if (String.isEmpty(c.LastName)) {
+                            // Last name is null/empty string
+                            // so lname should be too
+                            matchLastName = String.isEmpty(lname);
+                        } else {
+                            // Last name is set - so lname should match
+                            matchLastName = c.LastName.equalsIgnoreCase(lname);
+                        }
+
+                        if (matchFirstName && matchLastName)
+                            // Then this contact ahould be used
+                            filteredContacts.add(c);
                     }
 
                     contacts.clear();
@@ -310,12 +342,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     theCase.ContactId = theContact.Id;
                     theCase.AccountId = theContact.AccountId;
                     emailContact = contacts[0];
-
-                    // How to handle multiple contacts? Addting a note to the Case description for now.
-                    if (contacts.size() > 1) {
-                        theCase.Description =
-                            'Note: there is more than one Contact with this email address. ' + theCase.Description;
-                    }
 
                     // If the sender's email does not match the primary Email field for this Contact, update that field and note why
                     if (theContact.Email == null || theContact.Email != cleanFromAddress) {
@@ -811,8 +837,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         insert lostEmail; // need to insert early since needs to be assigned an id for handleAttachments function
         lostEmail.Sender__c = limitLength(email.fromAddress, 255);
         lostEmail.Subject__c = limitLength(email.subject, 255);
-        lostEmail.PlainTextBody__c = limitLength(email.plainTextBody, 32000);
-        lostEmail.HtmlTextBody__c = limitLength(email.htmlBody, 32000);
+        lostEmail.PlainTextBody__c = limitLength(email.plainTextBody, 31500);
+        lostEmail.HtmlTextBody__c = limitLength(email.htmlBody, 31500);
         lostEmail.Cause__c = limitLength(error, 255);
 
         // Convert the List into a concatenated string
@@ -907,14 +933,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
     }
 
     private String filteredTermFound() {
-        Email_To_Case_Filter__c[] filteredTerms = [
+        Email_Case_Filter__c[] filteredTerms = [
             SELECT Name, Rejection_Count__c, Filter_Email_Body__c
-            FROM Email_To_Case_Filter__c
+            FROM Email_Case_Filter__c
             ORDER BY Filter_Email_Body__c ASC
         ];
 
-        List<Email_To_Case_Filter__c> filtersToUpdate = new List<Email_To_Case_Filter__c>();
-        for (Email_To_Case_Filter__c filter : filteredTerms) {
+        List<Email_Case_Filter__c> filtersToUpdate = new List<Email_Case_Filter__c>();
+        for (Email_Case_Filter__c filter : filteredTerms) {
             if (filter.Rejection_Count__c == null) {
                 filter.Rejection_Count__c = 0;
             }
@@ -943,9 +969,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             }
         }
         if (!filtersToUpdate.isEmpty()) {
-            /* Disabled by chussey1 on 3/22/23 due to row lock issue
-            update filtersToUpdate;
-            */
+
+            if (configMap.get('Filter Rejection Count On') != null && configMap.get('Filter Rejection Count On') == 'true') {
+                update filtersToUpdate;
+            }
+
             return filtersToUpdate.get(0).Name;
         }
         return null;

@@ -4205,6 +4205,7 @@
         var droppedWrapper;
         var examWrapper;
         var transferWrapper;
+        var asrResponseTable;
 
         // Method to get Enrolled Classes
         function getEnrolledClasses() {
@@ -4467,8 +4468,8 @@
                                                     '</td>' +
                                                     '<td data-header="Participation">' +
                                                     result.enrolledClasses[i].CONFIRMATION_OF_PARTICIPATION__c +
-                                                    '</td>';
-                                                "<td style='display:none'>" +
+                                                    '</td>' +
+                                                    "<td style='display:none'>" +
                                                     result.enrolledClasses[i].EARN_CREDIT__c +
                                                     '' +
                                                     result.enrolledClasses[i].VALID_ATTEMPT__c +
@@ -4512,8 +4513,8 @@
                                                 '<div>* in Location column in the table above means: No Scheduled Meetings/Locations</div>';
 
                                             document.getElementById('ps_enrolled_classes').innerHTML = html;
-                                            sortEnrolledClassList('Term', true);
                                             cleanUpUndefined('ps_enrolled_classes');
+                                            asrResponseTable = result.asrClasses;
                                         } else {
                                             document.getElementById('psEnrolledClassesErrors').innerHTML =
                                                 'No enrolled classes found.';
@@ -4577,11 +4578,25 @@
                                                     '</td>' +
                                                     '<td data-header="Participation">' +
                                                     result.droppedClasses[i].CONFIRMATION_OF_PARTICIPATION__c +
-                                                    '</td>' +
-                                                    '<td data-header="ASR">' +
-                                                    '--' +
-                                                    '</td>' +
-                                                    '</tr>';
+                                                    '</td>';
+                                                if (
+                                                    asrResponseTable.indexOf(
+                                                        result.droppedClasses[i].STRM__c +
+                                                            '|' +
+                                                            result.droppedClasses[i].SESSION_CODE__c +
+                                                            '|' +
+                                                            result.droppedClasses[i].CLASS_NBR__c
+                                                    ) > -1
+                                                ) {
+                                                    html +=
+                                                        '<td data-header="ASR">' +
+                                                        '<a href="#" onclick="document.getElementById(\x27ugIndicatorsLink\x27).click(); return false;">!</a>' +
+                                                        '</td>';
+                                                } else {
+                                                    html += '<td data-header="ASR">--</td>';
+                                                }
+
+                                                html += '</tr>';
                                             }
 
                                             html += '</tbody></table></div>';
@@ -4783,7 +4798,23 @@
                             "<td style='display:none'>" +
                             result[i].classInfo.STRM__c +
                             '</td>';
-                        html += '<td>--</td>';
+                        if (
+                            asrResponseTable.indexOf(
+                                result[i].classInfo.STRM__c +
+                                    '|' +
+                                    result[i].classInfo.SESSION_CODE__c +
+                                    '|' +
+                                    result[i].classInfo.CLASS_NBR__c
+                            ) > -1
+                        ) {
+                            // ASR link opens Undergraduate Indicators tab when clicked
+                            html +=
+                                '<td data-header="ASR">' +
+                                '<a href="#" onclick="document.getElementById(\x27ugIndicatorsLink\x27).click(); return false;">!</a>' +
+                                '</td>';
+                        } else {
+                            html += '<td data-header="ASR">--</td>';
+                        }
 
                         html += '</tr>';
                     }
@@ -4867,11 +4898,25 @@
                                 '</td>' +
                                 '<td>' +
                                 result[i].classInfo.CONFIRMATION_OF_PARTICIPATION__c +
-                                '</td>' +
-                                '<td>' +
-                                '--' +
-                                '</td>' +
-                                '</tr>';
+                                '</td>';
+                            if (
+                                asrResponseTable.indexOf(
+                                    result[i].classInfo.STRM__c +
+                                    '|' +
+                                    result[i].classInfo.SESSION_CODE__c +
+                                    '|' +
+                                    result[i].classInfo.CLASS_NBR__c
+                                ) > -1
+                            ) {
+                                html +=
+                                    '<td data-header="ASR">' +
+                                    '<a href="#" onclick="document.getElementById(\x27ugIndicatorsLink\x27).click(); return false;">!</a>' +
+                                    '</td>';
+                            } else {
+                                html += '<td data-header="ASR">--</td>';
+                            }
+
+                            html += '</tr>';
                         }
 
                         html += '</tbody></table></div>';

@@ -935,8 +935,8 @@
                                                     <tr>
                                                         <th>Age</th>
                                                         <td>
-                                                            {!IF(ISBLANK(theContact.Current_Age__c), '--',
-                                                            theContact.Current_Age__c)}
+                                                            {!IF(ISBLANK(theContact.Current_Age_Calc__c), '--',
+                                                            theContact.Current_Age_Calc__c)}
                                                         </td>
                                                     </tr>
                                                 </table>

@@ -161,10 +161,6 @@ public class CoachPortalCaseRecodingController extends ListViewController {
      * an action call instead.
      */
     public void clearSaveResults() {
-        emailInsertResults = null;
-        // Had to move this to the end of the execution order (was in mass email)
-        // because the page wasn't rerendering after mass email and the selections
-        // were being re-submitted.
         selectedCases = null;
     }
 

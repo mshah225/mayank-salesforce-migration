@@ -90,6 +90,18 @@ public with sharing class CoachPortalMainPageController {
         set;
     }
 
+    public Set<Id> allSuccessPodQueueIds {
+        get {
+            if (allSuccessPodQueueIds == null) {
+                String allSuccessPodsLabel = System.Label.ASU_Coach_Outreach_Success_Pods;
+                List<String> allSuccessPodsList = allSuccessPodsLabel.replaceAll('(\\s+)', '').split(',');
+                allSuccessPodQueueIds = [SELECT Id FROM Success_Pod__c WHERE Name IN :allSuccessPodsList];
+            }
+            return allSuccessPodQueueIds;
+        }
+        set;
+    }
+
     /*
      * A list of SelectOptions that the currently logged in user
      * has the permission to view as.
@@ -167,6 +179,48 @@ public with sharing class CoachPortalMainPageController {
             }
 
             return mySubordinates;
+        }
+        set;
+    }
+
+    public List<SelectOption> allCoachResourceOptions {
+        get {
+            if (allCoachResourceOptions == null) {
+                allCoachResourceOptions = new List<SelectOption>();
+
+                if (allCoachResources.size() > 0) {
+                    allCoachResourceOptions.add(new SelectOption('', '--Active Coaches--', true));
+
+                    for (Id i : allCoachResources.keySet()) {
+                        allCoachResourceOptions.add(new SelectOption(i, allCoachResources.get(i)));
+                    }
+                }
+            }
+
+            return allCoachResourceOptions;
+        }
+        set;
+    }
+
+    private Map<Id, String> allCoachResources {
+        get {
+            allCoachResources = new Map<Id, String>();
+
+            for (Success_Resource__c sr : [
+                SELECT Id, Name, Resource__r.Name, Resource_Name__c
+                FROM Success_Resource__c
+                WHERE
+                    (RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Coach')
+                    OR RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Financial_Intake')
+                    OR RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Reentry'))
+                    AND Resource__c != :ownerId
+                    AND isActive__c = TRUE
+                ORDER BY Name ASC
+            ]) {
+                allCoachResources.put(sr.Resource__c, sr.Resource_Name__c);
+            }
+
+            return allCoachResources;
         }
         set;
     }
@@ -323,6 +377,25 @@ public with sharing class CoachPortalMainPageController {
             }
 
             return myProactiveQuery;
+        }
+        set;
+    }
+
+    public String caseRecodingQuery {
+        get {
+            if (allSuccessPodQueueIds != null) {
+                caseRecodingQuery =
+                    '' +
+                    'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, ' +
+                    'Owner.Name, Success_Student__r.Coach__c, Success_Resource__r.Delegated_Resource__c ' +
+                    'FROM Case ' +
+                    'WHERE OwnerId IN :\'' +
+                    allSuccessPodQueueIds +
+                    '\' ' +
+                    'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 5000';
+            }
+
+            return caseRecodingQuery;
         }
         set;
     }

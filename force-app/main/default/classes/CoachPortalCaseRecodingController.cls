@@ -104,9 +104,7 @@ public class CoachPortalCaseRecodingController extends ListViewController {
 
         for (Case c : cases) {
             CaseWrapper cw = new CaseWrapper(c);
-            cw.successStudent = successStudent.containsKey(c.ContactId)
-                ? successStudents.get(c.ContactId)
-                : new Success_Student__c();
+            cw.successStudent = successStudents.containsKey(c.ContactId) ? successStudents.get(c.ContactId) : null;
             this.caseList.add(cw);
         }
     }

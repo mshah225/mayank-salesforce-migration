@@ -95,7 +95,10 @@ public with sharing class CoachPortalMainPageController {
             if (allSuccessPodQueueIds == null) {
                 String allSuccessPodsLabel = System.Label.ASU_Coach_Outreach_Success_Pods;
                 List<String> allSuccessPodsList = allSuccessPodsLabel.replaceAll('(\\s+)', '').split(',');
-                allSuccessPodQueueIds = [SELECT Id FROM Success_Pod__c WHERE Name IN :allSuccessPodsList];
+                Map<Id, Success_Pod__c> allSuccessPodsMap = new Map<Id, Success_Pod__c>(
+                    [SELECT Id FROM Success_Pod__c WHERE Name IN :allSuccessPodsList]
+                );
+                allSuccessPodQueueIds = allSuccessPodsMap.size() > 0 ? allSuccessPodsMap.keySet() : null;
             }
             return allSuccessPodQueueIds;
         }

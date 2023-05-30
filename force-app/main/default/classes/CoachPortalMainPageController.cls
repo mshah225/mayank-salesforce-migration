@@ -386,8 +386,7 @@ public with sharing class CoachPortalMainPageController {
             if (allSuccessPodQueueIds != null) {
                 caseRecodingQuery =
                     '' +
-                    'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, ' +
-                    'Owner.Name, Success_Student__r.Coach__c, Success_Resource__r.Delegated_Resource__c ' +
+                    'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Owner.Name, Status, Subject ' +
                     'FROM Case ' +
                     'WHERE OwnerId IN :\'' +
                     allSuccessPodQueueIds +

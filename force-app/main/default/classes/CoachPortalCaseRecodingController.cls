@@ -114,7 +114,13 @@ public class CoachPortalCaseRecodingController extends ListViewController {
     private Map<Id, Success_Student__c> getRelatedSuccessStudentData(List<Case> cases) {
         Map<Id, Success_Student__c> successStudents = new Map<Id, Success_Student__c>();
         for (Success_Student__c successStudent : [
-            SELECT Id, Student__c, Coach__c, Success_Resource__r.Delegated_Resource__c
+            SELECT
+                Id,
+                Student__c,
+                Success_Coach_Name__c,
+                Success_Resource__c,
+                Success_Resource__r.Delegated_Resource__c,
+                Success_Resource__r.Delegated_Resource__r.Name
             FROM Success_Student__c
             WHERE Student__c IN :getContactIds(cases)
         ]) {

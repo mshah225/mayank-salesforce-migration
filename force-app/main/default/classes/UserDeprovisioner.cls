@@ -22,6 +22,7 @@ public without sharing class UserDeprovisioner {
 
     private static Boolean debug = false;
     private static Boolean allowRepeatCases = true;
+    private Integer countTransferred = 0;
 
     public UserDeprovisioner(
         Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration,
@@ -96,8 +97,7 @@ public without sharing class UserDeprovisioner {
     }
 
     // Do the logic for each object type
-    private void transferCases() {
-        Integer countTransferred = 0;
+    public void transferCases() {
         try {
             if (cases != null && !cases.isEmpty()) {
                 for (Case userCase : cases) {
@@ -108,8 +108,6 @@ public without sharing class UserDeprovisioner {
                         countTransferred++;
                     }
                 }
-
-                addToProcessingNotes('Transferred ' + countTransferred + ' private cases to queue.');
             }
         } catch (Exception e) {
             addToProcessingNotes('Stopping transfer of cases.');

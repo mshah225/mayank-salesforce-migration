@@ -11,7 +11,14 @@ const FIELDS = [
     'Case.Description',
     'Case.CC_Category__c',
     'Case.CC_Sub_Category__c',
+    'Case.Case_Owner__c',
     'Case.CC_Functional_Group__c',
+    'Case.Needs_Attention__c',
+    'Case.Escalated_From__c',
+    'Case.Processing_Status__c',
+    'Case.Opportunity__c',
+    'Case.Case_Source__c',
+    'Case.Initial_Request_Sent_To_Addresses__c',
 ];
 
 export default class LightningCloneCaseModal extends NavigationMixin(LightningElement) {
@@ -30,11 +37,18 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
     selectedContact;
     selectedCategory = '';
     selectedSubCategory = '';
+    selectedOwner = '';
     selectedFunctionalGroup = '';
     selectedOrigin = 'Clone';
     selectedStatus = 'New';
     selectedSubject = '';
     selectedDescription = '';
+    selectedNeedsAttentionStatus = '';
+    selectedEscalationSource = '';
+    selectedProcessingStatus = '';
+    selectedOpportunity = '';
+    selectedCaseSource = '';
+    selectedInitialRequestAddress = '';
 
     @wire(getRecord, {recordId: '$recordId', fields: FIELDS})
     caseHandler({error, data}) {
@@ -64,8 +78,15 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
         this.selectedContact = getFieldValue(this.case, 'Case.ContactId');
         this.selectedCategory = getFieldValue(this.case, 'Case.CC_Category__c');
         this.selectedSubCategory = getFieldValue(this.case, 'Case.CC_Sub_Category__c');
+        this.selectedOwner = getFieldValue(this.case, 'Case.Case_Owner__c');
         this.selectedDescription = getFieldValue(this.case, 'Case.Description');
         this.selectedFunctionalGroup = getFieldValue(this.case, 'Case.CC_Functional_Group__c');
+        this.selectedNeedsAttentionStatus = getFieldValue(this.case, 'Case.Needs_Attention__c');
+        this.selectedEscalationSource = getFieldValue(this.case, 'Case.Escalated_From__c');
+        this.selectedProcessingStatus = getFieldValue(this.case, 'Case.Processing_Status__c');
+        this.selectedOpportunity = getFieldValue(this.case, 'Case.Opportunity__c');
+        this.selectedCaseSource = getFieldValue(this.case, 'Case.Case_Source__c');
+        this.selectedInitialRequestAddress = getFieldValue(this.case, 'Case.Initial_Request_Sent_To_Addresses__c');
     }
 
     get debug() {
@@ -109,8 +130,36 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
         return this.selectedSubCategory;
     }
 
+    get getOwner() {
+        return this.selectedOwner;
+    }
+
     get getDescription() {
         return this.selectedDescription;
+    }
+
+    get getNeedsAttentionStatus() {
+        return this.selectedNeedsAttentionStatus;
+    }
+
+    get getEscalationSource() {
+        return this.selectedEscalationSource;
+    }
+
+    get getProcessingStatus() {
+        return this.selectedProcessingStatus;
+    }
+
+    get getOpportunity() {
+        return this.selectedOpportunity;
+    }
+
+    get getCaseSource() {
+        return this.selectedCaseSource;
+    }
+
+    get getInitialRequestAddress() {
+        return this.selectedInitialRequestAddress;
     }
 
     get categoryDisabled() {

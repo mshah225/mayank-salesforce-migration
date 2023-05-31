@@ -1,6 +1,6 @@
 <template>
-    <lightning-quick-action-panel header="Clone Case">
-        <div class="slds-p-bottom_large slds-p-left_large slds-is-relative">
+    <lightning-quick-action-panel header="Clone Case" style="overflow-y: hidden">
+        <div class="slds-p-bottom_large slds-p-left_large slds-is-relative" style="max-length: 600px;">
             <!-- Form loader -->
             <template lwc:if={loading}>
                 <br />
@@ -61,11 +61,24 @@
                         disabled={subCategoryDisabled}
                         style="width: 99%; margin-left: 4.5px"
                     ></lightning-combobox>
-
+                    <lightning-input-field field-name="Case_Owner__c" value={getOwner}> </lightning-input-field>
                     <lightning-input-field field-name="Origin__c" value={getOrigin}> </lightning-input-field>
                     <lightning-input-field field-name="Status" value={getStatus}> </lightning-input-field>
                     <lightning-input-field field-name="Subject" value={getSubject}> </lightning-input-field>
                     <lightning-input-field field-name="Description" value={getDescription}> </lightning-input-field>
+                    <lightning-input-field field-name="Needs_Attention__c" value={getNeedsAttentionStatus}>
+                    </lightning-input-field>
+                    <lightning-input-field field-name="Escalated_From__c" value={getEscalationSource}>
+                    </lightning-input-field>
+                    <lightning-input-field field-name="Processing_Status__c" value={getProcessingStatus}>
+                    </lightning-input-field>
+                    <lightning-input-field field-name="Opportunity__c" value={getOpportunity}> </lightning-input-field>
+                    <lightning-input-field field-name="Case_Source__c" value={getCaseSource}> </lightning-input-field>
+                    <lightning-input-field
+                        field-name="Initial_Request_Sent_To_Addresses__c"
+                        value={getInitialRequestAddress}
+                    >
+                    </lightning-input-field>
 
                     <hr
                         style="

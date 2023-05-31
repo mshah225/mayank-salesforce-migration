@@ -6,14 +6,12 @@ public without sharing class UserDeprovisioner {
     private Map<Id, String> fieldIdToNameMap;
 
     // original data
-    private List<Case> cases;
     private UserLogin userLogin;
     private List<GroupMember> groupMemberships;
     private List<CollaborationGroupMember> chatterGroupMemberships;
     private List<PermissionSetAssignment> permissionSetAssignments;
     private List<UserPackageLicense> userPackageLicenses;
     // Data to delete/update data
-    private List<Case> toUpdateCases;
     private UserLogin toUpdateUserLogin;
     private List<GroupMember> toDeleteGroupMemberships;
     private List<CollaborationGroupMember> toDeleteChatterGroupMemberships;
@@ -34,7 +32,6 @@ public without sharing class UserDeprovisioner {
         this.deprovisionUserConfiguration = deprovisionUserConfiguration;
         this.fieldIdToNameMap = new Map<Id, String>();
 
-        toUpdateCases = new List<Case>();
         toUpdateUserLogin = null;
         toDeleteGroupMemberships = new List<GroupMember>();
         toDeleteChatterGroupMemberships = new List<CollaborationGroupMember>();
@@ -62,7 +59,6 @@ public without sharing class UserDeprovisioner {
             }
             changeUserField('ProfileId');
             changeUserField('UserRoleId');
-            transferCases();
             updateUserFields();
             updateUserLogin();
             removeGroupMemberships();
@@ -96,26 +92,6 @@ public without sharing class UserDeprovisioner {
         }
     }
 
-    // Do the logic for each object type
-    public void transferCases() {
-        try {
-            if (cases != null && !cases.isEmpty()) {
-                for (Case userCase : cases) {
-                    if (userCase.CC_Functional_Group__r.Is_Functional_Group_Private__c) {
-                        userCase.OwnerId = userCase.CC_Functional_Group__r.Queue_Id__c;
-                        toUpdateCases.add(userCase);
-
-                        countTransferred++;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            addToProcessingNotes('Stopping transfer of cases.');
-            throw new DeprovisionUserException(
-                'Could not transfer cases. QueueId on case\'s functional group may be invalid.'
-            );
-        }
-    }
     private void updateUserFields() {
         for (String deprovisionConfigurationName : deprovisionUserConfiguration.keySet()) {
             if (deprovisionConfigurationName.contains('SwitchToFalse')) {
@@ -289,9 +265,6 @@ public without sharing class UserDeprovisioner {
     }
 
     // Set optional attributes
-    public void setCases(List<Case> cases) {
-        this.cases = cases;
-    }
     public void setGroupMemberships(List<GroupMember> groupMemberships) {
         this.groupMemberships = groupMemberships;
     }
@@ -318,9 +291,6 @@ public without sharing class UserDeprovisioner {
     public User getDeprovisionedUserWithProcessingNotes() {
         deprovisionedUser.Processing_Notes__c = processingNotes;
         return deprovisionedUser;
-    }
-    public List<Case> getToUpdateUserCases() {
-        return toUpdateCases;
     }
     public UserLogin getToUpdateUserLogin() {
         return toUpdateUserLogin;

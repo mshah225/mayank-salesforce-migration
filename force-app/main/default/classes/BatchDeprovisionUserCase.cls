@@ -3,7 +3,7 @@ public class BatchDeprovisionUserCase implements Database.Batchable<SObject>, Da
     private Integer totalCasesTransferred;
     private Map<Id, Integer> countTransferredPerUser;
 
-    public BatchDeprovisionUserCase(List<Id> userToDeprovisionIds, List<UserDeprovisioner> userDeprovisionersList) {
+    public BatchDeprovisionUserCase(List<Id> userToDeprovisionIds) {
         this.userToDeprovisionIds = userToDeprovisionIds;
         this.totalCasesTransferred = 0;
         this.countTransferredPerUser = new Map<Id, Integer>();
@@ -18,7 +18,10 @@ public class BatchDeprovisionUserCase implements Database.Batchable<SObject>, Da
         List<Case> casesToUpdate = new List<Case>();
 
         for(Case userCase : scope) {
-            System.debug(userCase);
+
+            if(!countTransferredPerUser.keySet().contains(userCase.OwnerId)){
+                countTransferredPerUser.put(userCase.OwnerId, 0);
+            }
 
             try{
                 if(userCase!= null) {
@@ -28,9 +31,7 @@ public class BatchDeprovisionUserCase implements Database.Batchable<SObject>, Da
                         casesToUpdate.add(userCase);
 
                         totalCasesTransferred++;
-                        if(!countTransferredPerUser.keySet().contains(userCase.OwnerId)){
-                            countTransferredPerUser.put(userCase.OwnerId, 0);
-                        }
+                        
                         countTransferredPerUser.put(userCase.OwnerId, countTransferredPerUser.get(userCase.OwnerId) + 1);
                     }
                 }
@@ -53,7 +54,7 @@ public class BatchDeprovisionUserCase implements Database.Batchable<SObject>, Da
     }
 
     private void updateProcessingNotes(Id userId, String message) {
-        User deprovisionedUser = new User(Id = userId);
+        User deprovisionedUser = [SELECT Id, Processing_Notes__c FROM User WHERE Id = :userId];
         String processingNotes = deprovisionedUser.Processing_Notes__c + message + '\n';
         deprovisionedUser.Processing_Notes__c = processingNotes;
         update deprovisionedUser;

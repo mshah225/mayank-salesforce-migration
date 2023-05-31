@@ -2,6 +2,7 @@ public class BatchDeprovisionUserCase implements Database.Batchable<SObject>, Da
     private List<Id> userToDeprovisionIds;
     private Integer totalCasesTransferred;
     private Map<Id, Integer> countTransferredPerUser;
+    private Boolean errorOccurred = false;
 
     public BatchDeprovisionUserCase(List<Id> userToDeprovisionIds) {
         this.userToDeprovisionIds = userToDeprovisionIds;
@@ -23,20 +24,22 @@ public class BatchDeprovisionUserCase implements Database.Batchable<SObject>, Da
                 countTransferredPerUser.put(userCase.OwnerId, 0);
             }
 
+            String deprovisionedUserId = userCase.OwnerId;
             try{
                 if(userCase!= null) {
                     if(userCase.CC_Functional_Group__r.Is_Functional_Group_Private__c) {
                         userCase.OwnerId = userCase.CC_Functional_Group__r.Queue_Id__c;
-                        
+
                         casesToUpdate.add(userCase);
 
                         totalCasesTransferred++;
                         
-                        countTransferredPerUser.put(userCase.OwnerId, countTransferredPerUser.get(userCase.OwnerId) + 1);
+                        countTransferredPerUser.put(deprovisionedUserId, countTransferredPerUser.get(deprovisionedUserId) + 1);
                     }
                 }
             } catch (Exception e) {
-                updateProcessingNotes(userCase.OwnerId, 'Stopping transfer of cases.');
+                System.debug(e);
+                this.errorOccurred = true;
                 throw new DeprovisionUserException('Could not transfer cases. QueueId on case\'s functional group may be invalid.');
             }
         }
@@ -44,12 +47,14 @@ public class BatchDeprovisionUserCase implements Database.Batchable<SObject>, Da
     }
 
     public void finish(Database.BatchableContext context) {
-        System.debug('Successfully transferred ' + totalCasesTransferred + ' cases.');
-        for(Id userId : countTransferredPerUser.keySet()){
-            Integer countTransferred = countTransferredPerUser.get(userId);
+        if(errorOccurred == false){
+            System.debug('Successfully transferred ' + totalCasesTransferred + ' cases.');
+            for(Id userId : countTransferredPerUser.keySet()){
+                Integer countTransferred = countTransferredPerUser.get(userId);
 
-            String message = 'Successfully transferred ' + countTransferred + ' cases.';
-            updateProcessingNotes(userId, message);
+                String message = 'Successfully transferred ' + countTransferred + ' cases.';
+                updateProcessingNotes(userId, message);
+            }
         }
     }
 

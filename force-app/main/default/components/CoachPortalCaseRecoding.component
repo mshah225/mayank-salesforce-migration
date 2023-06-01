@@ -12,7 +12,7 @@
     <apex:attribute name="transferOptions" type="SelectOption[]" description="" />
     <apex:attribute name="rerenderList" type="String" description="" />
 
-    <apex:outputPanel id="caseRecodingContainer" styleClass="ASUFont">
+    <apex:outputPanel id="rerenderMe" styleClass="ASUFont">
         <apex:form id="alius-format77777">
             <div class="headerFooter">
                 <div class="toolbar">
@@ -27,7 +27,7 @@
                         <apex:commandLink
                             styleClass="btn btn-default btn-md asu-primary"
                             style="margin-top: 5px"
-                            reRender="caseRecodingContainer"
+                            reRender="rerenderMe"
                             status="ASUAjaxStatus"
                         >
                             <apex:param name="refreshList" value="true" assignTo="{!refreshList}" />
@@ -60,7 +60,7 @@
                         <apex:commandLink
                             id="searchStudentsBtn"
                             status="ASUAjaxStatus"
-                            reRender="caseRecodingContainer"
+                            reRender="rerenderMe"
                             style="color: #555"
                             oncomplete="focusSearch()"
                             styleClass="input-group-append btn btn-md btn-light m-0 rounded-0"
@@ -93,7 +93,7 @@
                         <apex:commandLink
                             action="{!resetSearch}"
                             status="ASUAjaxStatus"
-                            reRender="caseRecodingContainer"
+                            reRender="rerenderMe"
                             style="
                                 color: #555;
                                 border-radius: 0px;
@@ -120,14 +120,14 @@
                             rendered="{!setCon.HasPrevious}"
                             style="float: left"
                             styleClass="standardLink"
-                            reRender="caseRecodingContainer"
+                            reRender="rerenderMe"
                             status="ASUAjaxStatus"
                         />
                         <apex:outputText value="Page Size " />
                         <apex:selectList label="Page Size" value="{!pageSize}" size="1" styleClass="pageSizeField">
                             <apex:actionSupport
                                 event="onchange"
-                                reRender="caseRecodingContainer"
+                                reRender="rerenderMe"
                                 onsubmit="handlePageSizeField(this)"
                                 status="ASUAjaxStatus"
                             />
@@ -146,7 +146,7 @@
                             rendered="{!setCon.HasNext}"
                             style="float: right"
                             styleClass="standardLink"
-                            reRender="caseRecodingContainer"
+                            reRender="rerenderMe"
                             status="ASUAjaxStatus"
                         />
                     </apex:outputPanel>
@@ -154,10 +154,10 @@
             </div>
         </apex:form>
         <apex:form id="tableForm">
-            <apex:dataTable value="{!caseList}" var="case" styleClass="ASUTable">
+            <apex:dataTable value="{!caseWrapperList}" var="caseWrapper" styleClass="ASUTable">
                 <apex:column headerClass="ASUColumnHead centerText" styleClass="ASUColumn centerText">
                     <apex:inputCheckbox
-                        value="{!case.selected}"
+                        value="{!caseWrapper.selected}"
                         styleClass="selectBox"
                         onchange="handleSelectAll(this);"
                     />
@@ -168,9 +168,9 @@
 
                 <apex:column headerClass="ASUColumnHead" styleClass="ASUColumn">
                     <!-- There is a bug with apex:column that forces me to move this formula out of the value attribute -->
-                    {!case.obj.Contact.LastName & ', ' & case.obj.Contact.FirstName}
+                    {!caseWrapper.obj.Contact.LastName & ', ' & caseWrapper.obj.Contact.FirstName}
                     <apex:facet name="header">
-                        <apex:commandLink status="ASUAjaxStatus" reRender="caseRecodingContainer">
+                        <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="contactName" value="Contact.LastName" assignTo="{!sortField}" />
                             Name&nbsp;
                             <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Contact.LastName'}">
@@ -185,7 +185,7 @@
 
                 <apex:column headerValue="EMPLID" headerClass="ASUColumnHead" styleClass="ASUColumn">
                     <apex:facet name="header">
-                        <apex:commandLink status="ASUAjaxStatus" reRender="caseRecodingContainer">
+                        <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="contactEmplId" value="Contact.EMPLID__c" assignTo="{!sortField}" />
                             EMPLID&nbsp;
                             <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Contact.EMPLID__c'}">
@@ -199,15 +199,15 @@
 
                     <apex:outputLink
                         value="javascript:;"
-                        onclick="openStudentProfileLightning('{!case.obj.ContactId}', '{!case.obj.Contact.Name}', '{!case.obj.Contact.EMPLID__c}')"
+                        onclick="openStudentProfileLightning('{!caseWrapper.obj.ContactId}', '{!caseWrapper.obj.Contact.Name}', '{!caseWrapper.obj.Contact.EMPLID__c}')"
                         styleClass="standardLink"
-                        >{!case.obj.Contact.EMPLID__c}</apex:outputLink
+                        >{!caseWrapper.obj.Contact.EMPLID__c}</apex:outputLink
                     >
                 </apex:column>
 
                 <apex:column headerValue="Case (Details)" headerClass="ASUColumnHead" styleClass="ASUColumn">
                     <apex:facet name="header">
-                        <apex:commandLink status="ASUAjaxStatus" reRender="caseRecodingContainer">
+                        <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="subject" value="Subject" assignTo="{!sortField}" /> Case (Details)&nbsp;
                             <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Subject'}">
                                 <span style="font-size: 7pt" class="fa fa-chevron-down" aria-hidden="true"></span>
@@ -220,25 +220,86 @@
 
                     <apex:outputLink
                         value="javascript:;"
-                        onclick="openCaseLightning('{!case.obj.Id}', '{!case.obj.CaseNumber}')"
+                        onclick="openCaseLightning('{!caseWrapper.obj.Id}', '{!caseWrapper.obj.CaseNumber}')"
                         styleClass="standardLink"
-                        >{!case.obj.Subject}</apex:outputLink
+                        >{!caseWrapper.obj.Subject}</apex:outputLink
                     >
                 </apex:column>
 
                 <apex:column
                     headerValue="Status"
-                    value="{!case.obj.Status}"
+                    value="{!caseWrapper.obj.Status}"
                     headerClass="ASUColumnHead"
                     styleClass="ASUColumn"
                 >
                     <apex:facet name="header">
-                        <apex:commandLink status="ASUAjaxStatus" reRender="caseRecodingContainer">
+                        <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="status" value="Status" assignTo="{!sortField}" /> Status&nbsp;
                             <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Status'}">
                                 <span style="font-size: 7pt" class="fa fa-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
                             <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Status'}">
+                                <span style="font-size: 7pt" class="fa fa-chevron-up" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                        </apex:commandLink>
+                    </apex:facet>
+                </apex:column>
+
+                <apex:column headerValue="Case Owner" headerClass="ASUColumnHead" styleClass="ASUColumn">
+                    <apex:facet name="header">
+                        <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
+                            <apex:param name="caseOwner" value="Owner.Name" assignTo="{!sortField}" />
+                            Case Owner&nbsp;
+                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Owner.Name'}">
+                                <span style="font-size: 7pt" class="fa fa-chevron-down" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Owner.Name'}">
+                                <span style="font-size: 7pt" class="fa fa-chevron-up" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                        </apex:commandLink>
+                    </apex:facet>
+                </apex:column>
+
+                <apex:column headerValue="Coach" headerClass="ASUColumnHead" styleClass="ASUColumn">
+                    <apex:facet name="header">
+                        <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
+                            <apex:param
+                                name="successCoach"
+                                value="successStudent.Success_Coach_Name__c"
+                                assignTo="{!sortField}"
+                            />
+                            Coach&nbsp;
+                            <apex:outputPanel
+                                rendered="{!sortDir == 'ASC' && sortField == 'successStudent.Success_Coach_Name__c'}"
+                            >
+                                <span style="font-size: 7pt" class="fa fa-chevron-down" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                            <apex:outputPanel
+                                rendered="{!sortDir == 'DESC' && sortField == 'successStudent.Success_Coach_Name__c'}"
+                            >
+                                <span style="font-size: 7pt" class="fa fa-chevron-up" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                        </apex:commandLink>
+                    </apex:facet>
+                </apex:column>
+
+                <apex:column headerValue="Delegated Resource" headerClass="ASUColumnHead" styleClass="ASUColumn">
+                    <apex:facet name="header">
+                        <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
+                            <apex:param
+                                name="delegatedResource"
+                                value="successStudent.Delegated_Resource__r.Name"
+                                assignTo="{!sortField}"
+                            />
+                            Delegated Resource&nbsp;
+                            <apex:outputPanel
+                                rendered="{!sortDir == 'ASC' && sortField == 'successStudent.Delegated_Resource__r.Name'}"
+                            >
+                                <span style="font-size: 7pt" class="fa fa-chevron-down" aria-hidden="true"></span>
+                            </apex:outputPanel>
+                            <apex:outputPanel
+                                rendered="{!sortDir == 'DESC' && sortField == 'successStudent.Delegated_Resource__r.Name'}"
+                            >
                                 <span style="font-size: 7pt" class="fa fa-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>
@@ -269,7 +330,7 @@
                                 styleClass="btn btn-default btn-md asu-primary"
                                 action="{!transferCases}"
                                 status="ASUAjaxStatus"
-                                reRender="caseRecodingContainer,{!rerenderList}"
+                                reRender="rerenderMe,{!rerenderList}"
                                 value="Transfer"
                                 oncomplete="actionComplete()"
                                 onclick="toggleTransferModal(this)"
@@ -290,14 +351,14 @@
                     rendered="{!setCon.HasPrevious}"
                     style="float: left"
                     styleClass="standardLink"
-                    reRender="caseRecodingContainer"
+                    reRender="rerenderMe"
                     status="ASUAjaxStatus"
                 />
                 <apex:outputText value="Page Size " />
                 <apex:selectList label="Page Size" value="{!pageSize}" size="1" styleClass="pageSizeField">
                     <apex:actionSupport
                         event="onchange"
-                        reRender="caseRecodingContainer"
+                        reRender="rerenderMe"
                         onsubmit="handlePageSizeField(this)"
                         status="ASUAjaxStatus"
                     />
@@ -316,7 +377,7 @@
                     rendered="{!setCon.HasNext}"
                     style="float: right"
                     styleClass="standardLink"
-                    reRender="caseRecodingContainer"
+                    reRender="rerenderMe"
                     status="ASUAjaxStatus"
                 />
             </div>

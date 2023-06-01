@@ -2,7 +2,7 @@ public class CoachPortalCaseRecodingController extends ListViewController {
     private boolean debug = false;
 
     // Properties with standard getters/setters
-    public List<CaseWrapper> caseList { get; set; } // List of Case Wrappers (cases) to display on the page
+    public List<CaseWrapper> caseWrapperList { get; set; } // List of Case Wrappers (cases) to display on the page
     public Id ownerId { get; set; } // Stores the Id of the new owner of the selected cases
 
     /*
@@ -12,7 +12,7 @@ public class CoachPortalCaseRecodingController extends ListViewController {
         get {
             selectedCases = new List<Case>();
 
-            for (CaseWrapper cw : caseList) {
+            for (CaseWrapper cw : caseWrapperList) {
                 if (cw.selected) {
                     selectedCases.add(cw.obj);
                 }
@@ -24,7 +24,7 @@ public class CoachPortalCaseRecodingController extends ListViewController {
             selectedCases = value;
 
             if (selectedCases == null) {
-                for (CaseWrapper cw : caseList) {
+                for (CaseWrapper cw : caseWrapperList) {
                     cw.selected = false;
                 }
             }
@@ -86,7 +86,7 @@ public class CoachPortalCaseRecodingController extends ListViewController {
     // Methods
 
     /*
-     * Rebuild the caseList variable (what is actually displayed to the page).
+     * Rebuild the caseWrapperList variable (what is actually displayed to the page).
      *
      * <p>
      * This is primarily bound to the set con:
@@ -99,13 +99,13 @@ public class CoachPortalCaseRecodingController extends ListViewController {
      */
     public override void resetRecordList() {
         List<Case> cases = (List<Case>) setCon.getRecords();
-        this.caseList = new List<CaseWrapper>();
+        this.caseWrapperList = new List<CaseWrapper>();
         Map<Id, Success_Student__c> successStudents = getRelatedSuccessStudentData(cases);
 
         for (Case c : cases) {
             CaseWrapper cw = new CaseWrapper(c);
             cw.successStudent = successStudents.containsKey(c.ContactId) ? successStudents.get(c.ContactId) : null;
-            this.caseList.add(cw);
+            this.caseWrapperList.add(cw);
         }
     }
 

@@ -205,6 +205,7 @@ public with sharing class CoachPortalMainPageController {
         set;
     }
 
+    // NEED TO FIX THE QUERY BELOW - TRIGGERING TOO MANY SOQL QUERIES ISSUE SOMEHOW
     private Map<Id, String> allCoachResources {
         get {
             allCoachResources = new Map<Id, String>();
@@ -218,7 +219,8 @@ public with sharing class CoachPortalMainPageController {
                     OR RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Reentry'))
                     AND Resource__c != :ownerId
                     AND isActive__c = TRUE
-                ORDER BY Name ASC
+                ORDER BY Name DESC
+                LIMIT 50
             ]) {
                 allCoachResources.put(sr.Resource__c, sr.Resource_Name__c);
             }

@@ -164,8 +164,8 @@ public class CaseService {
         } catch (Exception e) {
             throw new CaseServiceException(
                 '!!!ERROR!!!: An error occurred trying to get the Contact\'s ' +
-                'closed visible cases\n' +
-                e.getStackTraceString()
+                    'closed visible cases\n' +
+                    e.getStackTraceString()
             );
         }
 
@@ -541,8 +541,32 @@ public class CaseService {
                 mapCCIdToName.get(caseRecord.CC_Category__c).equalsIgnoreCase('Outreach')
             ) {
                 caseRecord.RecordTypeId = RecordIDHelper.getRecordTypeId('Case', 'ASU_Student_Outreach');
-            } else if (mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Graduate Advisor Portal')) {
+            } else if (
+                mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('ASU Graduate Advisor Portal')
+            ) {
                 caseRecord.RecordTypeId = RecordIDHelper.getRecordTypeId('Case', 'ASU_Graduate_Advisor_Portal');
+            }
+        }
+    }
+
+    public static void updateAccountIdFromContact(List<Case> updatedCases, Map<Id, Case> previousCasesMap) {
+        Map<Id, Id> contactsToTrackMap = new Map<Id, Id>();
+        Map<Id, Id> casesToUpdateMap = new Map<Id, Id>();
+
+        for (Case updatedCase : updatedCases) {
+            Case previousCase = previousCasesMap.get(updatedCase.Id);
+            if (previousCase.ContactId != updatedCase.ContactId) {
+                contactsToTrackMap.put(updatedCase.ContactId, updatedCase.Id);
+            }
+        }
+
+        for (Contact contactToTrack : [SELECT Id, AccountId FROM Contact WHERE Id IN :contactsToTrackMap.keySet()]) {
+            casesToUpdateMap.put(contactsToTrackMap.get(contactToTrack.Id), contactToTrack.AccountId);
+        }
+
+        for (Case updatedCase : updatedCases) {
+            if (casesToUpdateMap.keySet().contains(updatedCase.Id)) {
+                updatedCase.AccountId = casesToUpdateMap.get(updatedCase.Id);
             }
         }
     }

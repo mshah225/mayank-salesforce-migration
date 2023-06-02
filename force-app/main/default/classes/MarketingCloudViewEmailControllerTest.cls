@@ -21,8 +21,8 @@ public with sharing class MarketingCloudViewEmailControllerTest {
 
         ExactTargetApiConfig__c config = new ExactTargetApiConfig__c(
             Name = 'dataext',
-            ClientId__c = MarketingCloudEmailLinkMockCallout.CLIENT_ID,
-            ClientSecret__c = MarketingCloudEmailLinkMockCallout.CLIENT_SECRET,
+            ClientId__c = MarketingCloudEmailLinkCalloutMock.CLIENT_ID,
+            ClientSecret__c = MarketingCloudEmailLinkCalloutMock.CLIENT_SECRET,
             Endpoint__c = 'TEST_ENDPOINT'
         );
         insert config;
@@ -34,7 +34,7 @@ public with sharing class MarketingCloudViewEmailControllerTest {
         emailResult.et4ae5__Lead__c = null;
         update emailResult;
 
-        Test.setMock(HttpCalloutMock.class, new MarketingCloudEmailLinkMockCallout());
+        Test.setMock(HttpCalloutMock.class, new MarketingCloudEmailLinkCalloutMock());
         Test.setCurrentPage(Page.MarketingCloudViewEmail);
         Test.startTest();
         MarketingCloudViewEmailController controller = new MarketingCloudViewEmailController(
@@ -53,7 +53,7 @@ public with sharing class MarketingCloudViewEmailControllerTest {
         emailResult.et4ae5__Contact__c = null;
         update emailResult;
 
-        Test.setMock(HttpCalloutMock.class, new MarketingCloudEmailLinkMockCallout());
+        Test.setMock(HttpCalloutMock.class, new MarketingCloudEmailLinkCalloutMock());
         Test.setCurrentPage(Page.MarketingCloudViewEmail);
         Test.startTest();
         MarketingCloudViewEmailController controller = new MarketingCloudViewEmailController(
@@ -70,8 +70,8 @@ public with sharing class MarketingCloudViewEmailControllerTest {
     private static void testDefaultUrl() {
         et4ae5__IndividualEmailResult__c emailResult = [SELECT Id FROM et4ae5__IndividualEmailResult__c LIMIT 1];
 
-        Test.setMock(HttpCalloutMock.class, new MarketingCloudEmailLinkMockCallout());
-        MarketingCloudEmailLinkMockCallout.VIEW_EMAIL_URL = '';
+        Test.setMock(HttpCalloutMock.class, new MarketingCloudEmailLinkCalloutMock());
+        MarketingCloudEmailLinkCalloutMock.VIEW_EMAIL_URL = '';
         Test.setCurrentPage(Page.MarketingCloudViewEmail);
         Test.startTest();
         MarketingCloudViewEmailController controller = new MarketingCloudViewEmailController(

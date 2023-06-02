@@ -1,12 +1,12 @@
 @isTest
-public class SingleRequestMock implements HttpCalloutMock {
+public class SuncardPhotoCalloutMock implements HttpCalloutMock {
     protected Integer code;
     protected String status;
     protected String bodyAsString;
     protected Blob bodyAsBlob;
     protected Map<String, String> responseHeaders;
 
-    public SingleRequestMock(Integer code, String status, String body, Map<String, String> responseHeaders) {
+    public SuncardPhotoCalloutMock(Integer code, String status, String body, Map<String, String> responseHeaders) {
         this.code = code;
         this.status = status;
         this.bodyAsString = body;
@@ -14,7 +14,7 @@ public class SingleRequestMock implements HttpCalloutMock {
         this.responseHeaders = responseHeaders;
     }
 
-    public SingleRequestMock(Integer code, String status, Blob body, Map<String, String> responseHeaders) {
+    public SuncardPhotoCalloutMock(Integer code, String status, Blob body, Map<String, String> responseHeaders) {
         this.code = code;
         this.status = status;
         this.bodyAsBlob = body;

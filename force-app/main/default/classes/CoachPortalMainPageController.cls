@@ -393,7 +393,7 @@ public with sharing class CoachPortalMainPageController {
                     '' +
                     'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Owner.Name, Status, Subject ' +
                     'FROM Case ' +
-                    'WHERE OwnerId IN :\'' +
+                    'WHERE Owner.Name IN :\'' +
                     allSuccessPodQueueIds +
                     '\' ' +
                     'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 5000';

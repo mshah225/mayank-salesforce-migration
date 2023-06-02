@@ -4,6 +4,8 @@ import {getRecord, getFieldValue} from 'lightning/uiRecordApi';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import {NavigationMixin} from 'lightning/navigation';
 import getClassifications from '@salesforce/apex/CaseClassificationLWCService.getClassifications';
+import Id from '@salesforce/user/Id';
+import Name from '@salesforce/schema/User.Name';
 
 const FIELDS = [
     'Case.ContactId',
@@ -11,7 +13,7 @@ const FIELDS = [
     'Case.Description',
     'Case.CC_Category__c',
     'Case.CC_Sub_Category__c',
-    'Case.Case_Owner__c',
+    'Case.OwnerId',
     'Case.CC_Functional_Group__c',
     'Case.Needs_Attention__c',
     'Case.Escalated_From__c',
@@ -23,6 +25,8 @@ const FIELDS = [
 
 export default class LightningCloneCaseModal extends NavigationMixin(LightningElement) {
     @api recordId;
+    currentUserId = Id;
+    currentUserName;
 
     categoryOptions = [];
     subCategoryOptions = [];
@@ -37,7 +41,6 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
     selectedContact;
     selectedCategory = '';
     selectedSubCategory = '';
-    selectedOwner = '';
     selectedFunctionalGroup = '';
     selectedOrigin = 'Clone';
     selectedStatus = 'New';
@@ -73,12 +76,31 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
         }
     }
 
+    @wire(getRecord, {recordId: Id, fields: [Name]})
+    currentUserHandler({error, data}) {
+        if (data) {
+            this.user = data;
+            this.error = undefined;
+
+            this.currentUserName = getFieldValue(this.user, Name);
+        } else if (error) {
+            this.error = error;
+
+            const event = new ShowToastEvent({
+                title: 'Error',
+                message: error.body.message,
+                variant: 'error',
+            });
+
+            this.dispatchEvent(event);
+        }
+    }
+
     setCloneData() {
         this.selectedSubject = 'Cloned: ' + getFieldValue(this.case, 'Case.Subject');
         this.selectedContact = getFieldValue(this.case, 'Case.ContactId');
         this.selectedCategory = getFieldValue(this.case, 'Case.CC_Category__c');
         this.selectedSubCategory = getFieldValue(this.case, 'Case.CC_Sub_Category__c');
-        this.selectedOwner = getFieldValue(this.case, 'Case.Case_Owner__c');
         this.selectedDescription = getFieldValue(this.case, 'Case.Description');
         this.selectedFunctionalGroup = getFieldValue(this.case, 'Case.CC_Functional_Group__c');
         this.selectedNeedsAttentionStatus = getFieldValue(this.case, 'Case.Needs_Attention__c');
@@ -100,6 +122,11 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
     closeModal() {
         this.isLoading = true;
         this.dispatchEvent(new CloseActionScreenEvent());
+    }
+
+    submitForm() {
+        console.log('submitting')
+        this.template.querySelector('lightning-record-edit-form').submit();
     }
 
     get getSubject() {
@@ -131,7 +158,7 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
     }
 
     get getOwner() {
-        return this.selectedOwner;
+        return this.currentUserName;
     }
 
     get getDescription() {

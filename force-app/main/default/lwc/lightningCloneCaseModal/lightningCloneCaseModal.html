@@ -1,6 +1,6 @@
 <template>
     <lightning-quick-action-panel header="Clone Case" style="overflow-y: hidden">
-        <div style="max-height: 400px">
+        <div style="max-height: 40vh">
             <!-- Form loader -->
             <template lwc:if={loading}>
                 <br />
@@ -61,7 +61,7 @@
                         disabled={subCategoryDisabled}
                         style="width: 99%; margin-left: 4.5px"
                     ></lightning-combobox>
-                    <lightning-input-field field-name="Case_Owner__c" value={getOwner}> </lightning-input-field>
+                    <lightning-input-field field-name="OwnerId" value={getOwner}> </lightning-input-field>
                     <lightning-input-field field-name="Origin__c" value={getOrigin}> </lightning-input-field>
                     <lightning-input-field field-name="Status" value={getStatus}> </lightning-input-field>
                     <lightning-input-field field-name="Subject" value={getSubject}> </lightning-input-field>
@@ -88,10 +88,8 @@
             <lightning-button
                 variant="brand"
                 class="slds-m-left_x-small"
-                label="Transfer"
-                type="submit"
-                onclick={transferCases}
-                disabled={disabled}
+                label="Submit"
+                onclick={submitForm}
             ></lightning-button>
         </div>
     </lightning-quick-action-panel>

@@ -4,8 +4,6 @@ import {getRecord, getFieldValue} from 'lightning/uiRecordApi';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import {NavigationMixin} from 'lightning/navigation';
 import getClassifications from '@salesforce/apex/CaseClassificationLWCService.getClassifications';
-import Id from '@salesforce/user/Id';
-import Name from '@salesforce/schema/User.Name';
 
 const FIELDS = [
     'Case.ContactId',
@@ -13,7 +11,6 @@ const FIELDS = [
     'Case.Description',
     'Case.CC_Category__c',
     'Case.CC_Sub_Category__c',
-    'Case.OwnerId',
     'Case.CC_Functional_Group__c',
     'Case.Needs_Attention__c',
     'Case.Escalated_From__c',
@@ -25,8 +22,6 @@ const FIELDS = [
 
 export default class LightningCloneCaseModal extends NavigationMixin(LightningElement) {
     @api recordId;
-    currentUserId = Id;
-    currentUserName;
 
     categoryOptions = [];
     subCategoryOptions = [];
@@ -73,26 +68,6 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
             this.dispatchEvent(event);
 
             this.loading = false;
-        }
-    }
-
-    @wire(getRecord, {recordId: Id, fields: [Name]})
-    currentUserHandler({error, data}) {
-        if (data) {
-            this.user = data;
-            this.error = undefined;
-
-            this.currentUserName = getFieldValue(this.user, Name);
-        } else if (error) {
-            this.error = error;
-
-            const event = new ShowToastEvent({
-                title: 'Error',
-                message: error.body.message,
-                variant: 'error',
-            });
-
-            this.dispatchEvent(event);
         }
     }
 
@@ -155,10 +130,6 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
 
     get getSubCategory() {
         return this.selectedSubCategory;
-    }
-
-    get getOwner() {
-        return this.currentUserName;
     }
 
     get getDescription() {

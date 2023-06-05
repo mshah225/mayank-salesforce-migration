@@ -14,17 +14,15 @@ export const notifyRecordUpdateAvailable = jest.fn().mockResolvedValue();
 
 export const getFieldValue = jest.fn((data, fieldReference) => {
     if (data) {
-        const objectName = data.apiName;
-        const passedObjectName = fieldReference.split('.')[0];
-        if (objectName !== passedObjectName) {
-            throw new Error('Invalid object name: Passed ${passedObjectName}, and data is of ${objectName}.');
+        const [passedObjectName, fieldName] = fieldReference.split('.');
+        const {apiName, fields} = data;
+
+        if (apiName !== passedObjectName) {
+            throw new Error(`Invalid object name: Passed ${passedObjectName}, and data is of ${apiName}.`);
         }
 
-        const fieldName = fieldReference.split('.')[1];
-        const fields = data.fields;
-        const fieldValue = fields[fieldName].value;
-        if (fieldValue) return fieldValue;
-        return null;
+        const fieldValue = fields[fieldName]?.value || null;
+        return fieldValue;
 
         /* -- default code by salesforce
         console.log('data: ', data);

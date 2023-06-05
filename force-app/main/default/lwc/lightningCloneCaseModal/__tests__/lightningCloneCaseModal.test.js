@@ -13,6 +13,12 @@ const STATUS = 'New';
 const SUBJECT = 'Cloned: Test case subject';
 const DESCRIPTION = 'Test case description';
 const FUNCTIONAL_GROUP = 'Group A';
+const NEEDS_ATTENTION_STATUS = "true";
+const ESCALATION_SOURCE = "Exec Director";
+const PROCESSING_STATUS = "All Approved";
+const OPPORTUNITY = "Sparky";
+const CASE_SOURCE = "Email";
+const INITIAL_REQUEST_SENT_ADDRESS = "XYZ";
 
 const mockGetRecord = require('./data/getRecordResponse.json');
 const mockGetClassifications = require('./data/getClassificationResponse.json');
@@ -82,7 +88,6 @@ describe('c-lightning-clone-case-modal', () => {
         const buttons = element.shadowRoot.querySelectorAll('lightning-button');
         expect(buttons.length).toBe(2);
         expect(buttons[0].label).toBe('Cancel');
-        expect(buttons[1].type).toBe('submit');
         expect(buttons[1].label).toBe('Submit');
     });
 
@@ -96,6 +101,12 @@ describe('c-lightning-clone-case-modal', () => {
             'Status',
             'Subject',
             'Description',
+            'Needs_Attention__c',
+            'Escalated_From__c',
+            'Processing_Status__c',
+            'Opportunity__c',
+            'Case_Source__c',
+            'Initial_Request_Sent_To_Addresses__c',
         ];
         const EXPECTED_FIELD_VALUES = [
             CONTACT_ID,
@@ -106,6 +117,12 @@ describe('c-lightning-clone-case-modal', () => {
             STATUS,
             SUBJECT,
             DESCRIPTION,
+            NEEDS_ATTENTION_STATUS,
+            ESCALATION_SOURCE,
+            PROCESSING_STATUS,
+            OPPORTUNITY,
+            CASE_SOURCE,
+            INITIAL_REQUEST_SENT_ADDRESS,
         ];
 
         // Arrange

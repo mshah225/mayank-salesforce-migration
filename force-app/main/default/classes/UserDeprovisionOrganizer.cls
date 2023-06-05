@@ -130,7 +130,7 @@ public without sharing class UserDeprovisionOrganizer {
     }
 
     private void batchTransferDeprovisionUserCases() {
-        BatchDeprovisionUserCase batch = new BatchDeprovisionUserCase(this.userToDeprovisionIds);
+        UserDeprovisionCaseTransferBatch batch = new UserDeprovisionCaseTransferBatch(this.userToDeprovisionIds);
         Database.executeBatch(batch, 200);
     }
 

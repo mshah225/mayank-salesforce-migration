@@ -170,19 +170,21 @@ public with sharing class CoachPortalMainPageController {
      */
     private Map<Id, String> mySubordinates {
         get {
-            mySubordinates = new Map<Id, String>();
+            if (mySubordinates == null) {
+                mySubordinates = new Map<Id, String>();
 
-            for (Success_Resource__c sr : [
-                SELECT Id, Name, Resource__r.Name, Resource_Name__c
-                FROM Success_Resource__c
-                WHERE
-                    RecordTypeId = :mySuccessRTID
-                    AND Success_POD__c = :mySuccessPod
-                    AND Resource__c != :ownerId
-                    AND isActive__c = TRUE
-                ORDER BY Name ASC
-            ]) {
-                mySubordinates.put(sr.Resource__c, sr.Resource_Name__c);
+                for (Success_Resource__c sr : [
+                    SELECT Id, Name, Resource__r.Name, Resource_Name__c
+                    FROM Success_Resource__c
+                    WHERE
+                        RecordTypeId = :mySuccessRTID
+                        AND Success_POD__c = :mySuccessPod
+                        AND Resource__c != :ownerId
+                        AND isActive__c = TRUE
+                    ORDER BY Resource_Name__c ASC
+                ]) {
+                    mySubordinates.put(sr.Resource__c, sr.Resource_Name__c);
+                }
             }
 
             return mySubordinates;
@@ -209,24 +211,24 @@ public with sharing class CoachPortalMainPageController {
         set;
     }
 
-    // NEED TO FIX THE QUERY BELOW - TRIGGERING TOO MANY SOQL QUERIES ISSUE SOMEHOW
     private Map<Id, String> allCoachResources {
         get {
-            allCoachResources = new Map<Id, String>();
+            if (allCoachResources == null) {
+                allCoachResources = new Map<Id, String>();
 
-            for (Success_Resource__c sr : [
-                SELECT Id, Name, Resource__r.Name, Resource_Name__c
-                FROM Success_Resource__c
-                WHERE
-                    (RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Coach')
-                    OR RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Financial_Intake')
-                    OR RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Reentry'))
-                    AND Resource__c != :ownerId
-                    AND isActive__c = TRUE
-                ORDER BY Name DESC
-                LIMIT 50
-            ]) {
-                allCoachResources.put(sr.Resource__c, sr.Resource_Name__c);
+                for (Success_Resource__c sr : [
+                    SELECT Id, Name, Resource__r.Name, Resource_Name__c
+                    FROM Success_Resource__c
+                    WHERE
+                        (RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Coach')
+                        OR RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Financial_Intake')
+                        OR RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Reentry'))
+                        AND Resource__c != :ownerId
+                        AND isActive__c = TRUE
+                    ORDER BY Resource_Name__c ASC
+                ]) {
+                    allCoachResources.put(sr.Resource__c, sr.Resource_Name__c);
+                }
             }
 
             return allCoachResources;

@@ -246,6 +246,7 @@
                 </apex:column>
 
                 <apex:column headerValue="Case Owner" headerClass="ASUColumnHead" styleClass="ASUColumn">
+                    {!caseWrapper.obj.Owner.Name}
                     <apex:facet name="header">
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param name="caseOwner" value="Owner.Name" assignTo="{!sortField}" />
@@ -261,6 +262,7 @@
                 </apex:column>
 
                 <apex:column headerValue="Coach" headerClass="ASUColumnHead" styleClass="ASUColumn">
+                    {!caseWrapper.successStudent.Success_Coach_Name__c}
                     <apex:facet name="header">
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param
@@ -284,6 +286,7 @@
                 </apex:column>
 
                 <apex:column headerValue="Delegated Resource" headerClass="ASUColumnHead" styleClass="ASUColumn">
+                    {!caseWrapper.successStudent.Success_Resource__r.Delegated_Resource__r.Name}
                     <apex:facet name="header">
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
                             <apex:param
@@ -291,7 +294,7 @@
                                 value="successStudent.Delegated_Resource__r.Name"
                                 assignTo="{!sortField}"
                             />
-                            Delegated Resource&nbsp;
+                            Coverage Coach&nbsp;
                             <apex:outputPanel
                                 rendered="{!sortDir == 'ASC' && sortField == 'successStudent.Delegated_Resource__r.Name'}"
                             >

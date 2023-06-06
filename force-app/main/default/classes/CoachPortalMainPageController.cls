@@ -90,17 +90,21 @@ public with sharing class CoachPortalMainPageController {
         set;
     }
 
-    public Set<Id> allSuccessPodQueueIds {
+    public String allSuccessPodsQueryFilter {
         get {
-            if (allSuccessPodQueueIds == null) {
-                String allSuccessPodsLabel = System.Label.ASU_Coach_Outreach_Success_Pods;
-                List<String> allSuccessPodsList = allSuccessPodsLabel.replaceAll('(\\s+)', '').split(',');
-                Map<Id, Success_Pod__c> allSuccessPodsMap = new Map<Id, Success_Pod__c>(
-                    [SELECT Id FROM Success_Pod__c WHERE Name IN :allSuccessPodsList]
-                );
-                allSuccessPodQueueIds = allSuccessPodsMap.size() > 0 ? allSuccessPodsMap.keySet() : null;
+            if (allSuccessPodsQueryFilter == null) {
+                allSuccessPodsQueryFilter = '';
+                for (
+                    String successPod : System.Label.ASU_Coach_Outreach_Success_Pods.replaceAll('(\\s+)', '').split(',')
+                ) {
+                    allSuccessPodsQueryFilter += '\'' + successPod + '\',';
+                }
+
+                allSuccessPodsQueryFilter = allSuccessPodsQueryFilter.lastIndexOf(',') > 0
+                    ? '(' + allSuccessPodsQueryFilter.substring(0, allSuccessPodsQueryFilter.lastIndexOf(',')) + ')'
+                    : allSuccessPodsQueryFilter;
             }
-            return allSuccessPodQueueIds;
+            return allSuccessPodsQueryFilter;
         }
         set;
     }
@@ -388,15 +392,14 @@ public with sharing class CoachPortalMainPageController {
 
     public String caseRecodingQuery {
         get {
-            if (allSuccessPodQueueIds != null) {
+            if (allSuccessPodsQueryFilter != null) {
                 caseRecodingQuery =
                     '' +
                     'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Owner.Name, Status, Subject ' +
                     'FROM Case ' +
-                    'WHERE Owner.Name IN :\'' +
-                    allSuccessPodQueueIds +
-                    '\' ' +
-                    'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 5000';
+                    'WHERE Owner.Name IN ' +
+                    allSuccessPodsQueryFilter +
+                    ' AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 5000';
             }
 
             return caseRecodingQuery;

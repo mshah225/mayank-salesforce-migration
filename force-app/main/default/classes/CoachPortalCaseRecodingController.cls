@@ -120,7 +120,7 @@ public class CoachPortalCaseRecodingController extends ListViewController {
                 Success_Resource__r.Delegated_Resource__c,
                 Success_Resource__r.Delegated_Resource__r.Name
             FROM Success_Student__c
-            WHERE Student__c IN :getContactIds(cases)
+            WHERE Student__c IN :getContactIds(cases) AND Is_Active__c = TRUE
         ]) {
             successStudents.put(successStudent.Student__c, successStudent);
         }

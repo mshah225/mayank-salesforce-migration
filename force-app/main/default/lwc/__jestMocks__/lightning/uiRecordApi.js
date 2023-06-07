@@ -23,24 +23,6 @@ export const getFieldValue = jest.fn((data, fieldReference) => {
 
         const fieldValue = fields[fieldName]?.value || null;
         return fieldValue;
-
-        /* -- default code by salesforce
-        console.log('data: ', data);
-        console.log('field: ', fieldReference);
-        // const fields = fieldReference.fieldApiName.split('.');
-        if (data.result) {
-            const fieldData = fields.reduce((o, i) => o[i], data.result.fields);
-            if (fieldData && fieldData.value) {
-                return fieldData.value;
-            }
-        } else {
-            const fieldData = fields.reduce((o, i) => o[i], data.fields);
-            if (fieldData && fieldData.value) {
-                return fieldData.value;
-            }
-        }
-        return null;
-        */
     }
 });
 export const getFieldDisplayValue = jest.fn();

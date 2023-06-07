@@ -276,9 +276,9 @@ public without sharing class ErrorLogger {
      * @param List<SObject> List of objects to be converted to JSON string
      * @return String JSON string from converted list
      */
-    public static string convertListToJSON(String varName, List<SObject> sObjectList) {
+    public static String convertListToJSON(String varName, List<SObject> sObjectList) {
         if (sObjectList != null && sObjectList.size() > 0) {
-            return '{' + varName + ':[' + string.valueOf(sObjectList) + ']}';
+            return '{' + varName + ':[' + String.valueOf(sObjectList) + ']}';
         } else if (sObjectList == null) {
             return '{' + varName + ':null}';
         } else {
@@ -293,9 +293,9 @@ public without sharing class ErrorLogger {
      * @param List<Id> List of objects to be converted to JSON string
      * @return String JSON string from converted list
      */
-    public static string convertListToJSON(String varName, List<Id> idList) {
+    public static String convertListToJSON(String varName, List<Id> idList) {
         if (idList != null && idList.size() > 0) {
-            return '{' + varName + ':[' + string.valueOf(idList) + ']}';
+            return '{' + varName + ':[' + String.valueOf(idList) + ']}';
         } else if (idList == null) {
             return '{' + varName + ':null}';
         } else {
@@ -310,9 +310,9 @@ public without sharing class ErrorLogger {
      * @param Set<Id> List of objects to be converted to JSON string
      * @return String JSON string from converted set
      */
-    public static string convertSetToJSON(String varName, Set<Id> idSet) {
+    public static String convertSetToJSON(String varName, Set<Id> idSet) {
         if (idSet != null && idSet.size() > 0) {
-            return '{' + varName + ':[' + string.valueOf(idSet) + ']}';
+            return '{' + varName + ':[' + String.valueOf(idSet) + ']}';
         } else if (idSet == null) {
             return '{' + varName + ':null}';
         } else {
@@ -327,9 +327,9 @@ public without sharing class ErrorLogger {
      * @param Set<String> List of objects to be converted to JSON string
      * @return String JSON string from converted set
      */
-    public static string convertSetToJSON(String varName, Set<String> stringSet) {
+    public static String convertSetToJSON(String varName, Set<String> stringSet) {
         if (stringSet != null && stringSet.size() > 0) {
-            return '{' + varName + ':[' + string.valueOf(stringSet) + ']}';
+            return '{' + varName + ':[' + String.valueOf(stringSet) + ']}';
         } else if (stringSet == null) {
             return '{' + varName + ':null}';
         } else {
@@ -344,9 +344,9 @@ public without sharing class ErrorLogger {
      * @param Map<Id,SObject> Map - Ids to sobjects - to be converted to JSON string
      * @return String JSON string from converted set
      */
-    public static string convertMapToJSON(String varName, Map<Id, SObject> sObjectMap) {
+    public static String convertMapToJSON(String varName, Map<Id, SObject> sObjectMap) {
         if (sObjectMap != null && sObjectMap.size() > 0) {
-            return '{' + varName + ':[' + string.valueOf(sObjectMap) + ']}';
+            return '{' + varName + ':[' + String.valueOf(sObjectMap) + ']}';
         } else if (sObjectMap == null) {
             return '{' + varName + ':null}';
         } else {
@@ -361,9 +361,9 @@ public without sharing class ErrorLogger {
      * @param Map<Id,Integer> Map - Ids to Integers - to be converted to JSON string
      * @return String JSON string from converted set
      */
-    public static string convertMapToJSON(String varName, Map<Id, Integer> idToIntMap) {
+    public static String convertMapToJSON(String varName, Map<Id, Integer> idToIntMap) {
         if (idToIntMap != null && idToIntMap.size() > 0) {
-            return '{' + varName + ':[' + string.valueOf(idToIntMap) + ']}';
+            return '{' + varName + ':[' + String.valueOf(idToIntMap) + ']}';
         } else if (idToIntMap == null) {
             return '{' + varName + ':null}';
         } else {
@@ -378,9 +378,9 @@ public without sharing class ErrorLogger {
      * @param Map<String,String> Map - String to String - to be converted to JSON string
      * @return String JSON string from converted set
      */
-    public static string convertMapToJSON(String varName, Map<String, String> stringToStringMap) {
+    public static String convertMapToJSON(String varName, Map<String, String> stringToStringMap) {
         if (stringToStringMap != null && stringToStringMap.size() > 0) {
-            return '{' + varName + ':[' + string.valueOf(stringToStringMap) + ']}';
+            return '{' + varName + ':[' + String.valueOf(stringToStringMap) + ']}';
         } else if (stringToStringMap == null) {
             return '{' + varName + ':null}';
         } else {
@@ -395,7 +395,7 @@ public without sharing class ErrorLogger {
      * @param Boolean Boolean Value to be converted to JSON string
      * @return String JSON string from converted set
      */
-    public static string convertBooleanToJSON(String varName, Boolean value) {
+    public static String convertBooleanToJSON(String varName, Boolean value) {
         return '{' + varName + ':' + String.valueOf(value) + '}';
     }
 
@@ -406,7 +406,7 @@ public without sharing class ErrorLogger {
      * @param Integer Integer Value to be converted to JSON string
      * @return String JSON string from converted set
      */
-    public static string convertIntegerToJSON(String varName, Integer value) {
+    public static String convertIntegerToJSON(String varName, Integer value) {
         return '{' + varName + ':' + String.valueOf(value) + '}';
     }
 
@@ -417,7 +417,7 @@ public without sharing class ErrorLogger {
      * @param String String Value to be converted to JSON string
      * @return String JSON string from converted set
      */
-    public static string convertStringToJSON(String varName, String value) {
+    public static String convertStringToJSON(String varName, String value) {
         return '{' + varName + ':' + value + '}';
     }
 
@@ -428,7 +428,7 @@ public without sharing class ErrorLogger {
      * @param Double Double Value to be converted to JSON string
      * @return String JSON string from converted set
      */
-    public static string convertDoubleToJSON(String varName, Double value) {
+    public static String convertDoubleToJSON(String varName, Double value) {
         return '{' + varName + ':' + String.valueOf(value) + '}';
     }
 
@@ -439,7 +439,7 @@ public without sharing class ErrorLogger {
      * @param Id Id Value to be converted to JSON string
      * @return String JSON string from converted set
      */
-    public static string convertIdToJSON(String varName, Id value) {
+    public static String convertIdToJSON(String varName, Id value) {
         return '{' + varName + ':' + String.valueOf(value) + '}';
     }
 
@@ -450,7 +450,15 @@ public without sharing class ErrorLogger {
      * @param SObject The SObject to be converted to JSON
      * @return String JSON string from converted SOBject
      */
-    public static string convertSObjectToJSON(String varName, SObject value) {
+    public static String convertSObjectToJSON(String varName, SObject value) {
+        return '{' + varName + ':{' + String.valueOf(value) + '}}';
+    }
+
+    public static string convertInboundEmailToJSON(String varName, Messaging.InboundEmail value) {
+        return '{' + varName + ':{' + String.valueOf(value) + '}}';
+    }
+
+    public static string convertSingleEmailMessageToJSON(String varName, Messaging.SingleEmailMessage value) {
         return '{' + varName + ':{' + String.valueOf(value) + '}}';
     }
 

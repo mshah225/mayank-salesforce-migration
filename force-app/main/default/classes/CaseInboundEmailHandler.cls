@@ -10,7 +10,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
     }
 
     global Messaging.InboundEmailResult handleInboundEmail(
-        Messaging.inboundEmail email,
+        Messaging.InboundEmail email,
         Messaging.InboundEnvelope env
     ) {
         Messaging.InboundEmailResult result = new Messaging.InboundEmailResult();
@@ -105,12 +105,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                             Group groupToReopen;
 
                             // Case will reopen to the currently associated user if no group can be found
-                            try {
-                                groupToReopen = GroupService.getGroupDetails(groupName);
-
-                                this.theCase.OwnerId = groupToReopen.Id;
-                            } catch (Exception e) {
-                                // Option to do something else
+                            if (GroupService.getGroupDetails(groupName).Id != null) {
+                                this.theCase.OwnerId = GroupService.getGroupDetails(groupName).Id;
                             }
 
                             if (this.theCase.CC_Most_Recent_Functional_Group__c == null) {
@@ -288,9 +284,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
                 // Multiple matches - require further filtering using name
                 if (contacts.size() > 1) {
-
                     theCase.Description =
-                            'Note: there is more than one Contact with this email address. ' + theCase.Description;
+                        'Note: there is more than one Contact with this email address. ' + theCase.Description;
 
                     List<Contact> filteredContacts = new List<Contact>();
 
@@ -401,16 +396,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     this.theCase.Subject = 'Email Received From: ' + email.fromAddress.trim();
                 }
 
-                // Check to make sure we are not about to spawn an auto reply loop
-                try {
-                    recentCase = [
-                        SELECT Id, Description, Subject, OwnerId
-                        FROM Case
-                        WHERE ContactId = :emailContact.Id
-                        ORDER BY CreatedDate DESC
-                        LIMIT 1
-                    ];
-
+                for (Case recentCaseFromEmail : [
+                    SELECT Id, Description, Subject, OwnerId
+                    FROM Case
+                    WHERE ContactId = :emailContact.Id
+                    ORDER BY CreatedDate DESC
+                    LIMIT 1
+                ]) {
+                    recentCase = recentCaseFromEmail;
                     if (recentCase.Description == null) {
                         recentCase.Description = '';
                     }
@@ -441,9 +434,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                             }
                         }
                     }
-                } catch (QueryException e) {
                 }
-
                 insert this.theCase;
             } else {
                 // Grab the contact record from the existing case
@@ -505,8 +496,12 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 sendAutoReply(theCase, emailContact, caseAssignmentInfo.templateId, caseAssignmentInfo);
             }
         } catch (Exception e) {
-            // Catch any exceptions and create a lost email.
             String error = e.getMessage() + '\n' + e.getStackTraceString();
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertInboundEmailToJSON('email', email));
+            vars.add(ErrorLogger.convertSObjectToJSON('case', theCase));
+            vars.add(ErrorLogger.convertStringToJSON('error', error));
+            ErrorLogger.log(e, vars, false);
             generateLostEmail(email, theCase, error);
         }
         return result;
@@ -751,14 +746,27 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             } else {
                 mail.setOrgWideEmailAddressId(defaultOwea.Id);
             }
+
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertSingleEmailMessageToJSON('email', mail));
+            vars.add(ErrorLogger.convertSObjectToJSON('case', emailCase));
+            vars.add(ErrorLogger.convertSObjectToJSON('contact', emailContact));
+            vars.add(ErrorLogger.convertStringToJSON('emailTemplate', emailTemplateId));
+            ErrorLogger.log(e, vars, false);
         }
 
-        //Send the email
+        // Send the email
         try {
             Messaging.reserveSingleEmailCapacity(1);
             Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ mail });
         } catch (Exception e) {
-            //Most likely SINGLE_EMAIL_LIMIT_EXCEEDED; catching so the transaction will continue
+            // Most likely SINGLE_EMAIL_LIMIT_EXCEEDED; catching so the transaction will continue
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertSingleEmailMessageToJSON('email', mail));
+            vars.add(ErrorLogger.convertSObjectToJSON('case', emailCase));
+            vars.add(ErrorLogger.convertSObjectToJSON('contact', emailContact));
+            vars.add(ErrorLogger.convertStringToJSON('emailTemplate', emailTemplateId));
+            ErrorLogger.log(e, vars, false);
         }
     }
 
@@ -820,6 +828,13 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             } else {
                 mail.setOrgWideEmailAddressId(defaultOwea.Id);
             }
+
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertSingleEmailMessageToJSON('email', mail));
+            vars.add(ErrorLogger.convertSObjectToJSON('case', emailCase));
+            vars.add(ErrorLogger.convertSObjectToJSON('contact', emailContact));
+            vars.add(ErrorLogger.convertStringToJSON('emailTemplate', emailTemplateId));
+            ErrorLogger.log(e, vars, false);
         }
 
         //Send the email
@@ -828,6 +843,12 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ mail });
         } catch (Exception e) {
             //Most likely SINGLE_EMAIL_LIMIT_EXCEEDED; catching so the transaction will continue
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertSingleEmailMessageToJSON('email', mail));
+            vars.add(ErrorLogger.convertSObjectToJSON('case', emailCase));
+            vars.add(ErrorLogger.convertSObjectToJSON('contact', emailContact));
+            vars.add(ErrorLogger.convertStringToJSON('emailTemplate', emailTemplateId));
+            ErrorLogger.log(e, vars, false);
         }
     }
 
@@ -857,7 +878,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         Boolean attachSuccess = handleAttachments(lostEmail, email).success;
         lostEmail.RejectedAttachments__c = !attachSuccess;
         if (!attachSuccess) {
-            String attachmentInfo = '\n**********\nCase ID: ' + (theCase != null ? String.valueOf(theCase.Id) : 'SPAM: Not Created') + '\n\n*****List of Attachments*****\n';
+            String attachmentInfo =
+                '\n**********\nCase ID: ' +
+                (theCase != null ? String.valueOf(theCase.Id) : 'SPAM: Not Created') +
+                '\n\n*****List of Attachments*****\n';
             if (email.binaryAttachments != null) {
                 for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments) {
                     attachmentInfo +=
@@ -906,6 +930,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             try {
                 caseId = Cases.getCaseIdFromEmailThreadId(caseReference);
             } catch (Exception e) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertStringToJSON('caseReference', caseReference));
+                vars.add(ErrorLogger.convertStringToJSON('searchText', searchText));
+                ErrorLogger.log(e, vars, false);
                 return null;
             }
             return caseId;
@@ -969,8 +997,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             }
         }
         if (!filtersToUpdate.isEmpty()) {
-
-            if (configMap.get('Filter Rejection Count On') != null && configMap.get('Filter Rejection Count On') == 'true') {
+            if (
+                configMap.get('Filter Rejection Count On') != null &&
+                configMap.get('Filter Rejection Count On') == 'true'
+            ) {
                 update filtersToUpdate;
             }
 

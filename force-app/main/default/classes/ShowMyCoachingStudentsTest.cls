@@ -138,6 +138,7 @@ private class ShowMyCoachingStudentsTest {
         // Act
         smcsc.ownerId = testUser.Id;
         smcsc.searchString = '0, Mister';
+        smcsc.successStudentRTID = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Coach');
         smcsc.myStudentsSearch();
 
         // Assert

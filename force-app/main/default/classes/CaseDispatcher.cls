@@ -24,10 +24,10 @@ public class CaseDispatcher implements TriggerDispatcherInterface {
     public void beforeDelete() {
     }
     public void afterInsert() {
-        CaseService.forwardInsertedCaseEmail(newList);
+        CaseService.forwardInsertedCaseEmail(newList, oldMap);
     }
     public void afterUpdate() {
-        CaseService.forwardInsertedCaseEmail(newList);
+        CaseService.forwardInsertedCaseEmail(newList, oldMap);
     }
     public void afterDelete() {
     }

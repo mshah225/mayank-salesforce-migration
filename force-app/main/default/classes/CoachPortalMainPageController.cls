@@ -15,7 +15,6 @@ public with sharing class CoachPortalMainPageController {
             if (ownerId == null) {
                 ownerId = UserInfo.getUserId();
             }
-
             return ownerId;
         }
         set;
@@ -28,13 +27,12 @@ public with sharing class CoachPortalMainPageController {
         get {
             if (myResource == null) {
                 myResource = [
-                    SELECT Id, Role__c, Success_Pod__c
+                    SELECT Id, Role__c, Success_Pod__c, RecordTypeId
                     FROM Success_Resource__c
                     WHERE Resource__c = :ownerId
                     LIMIT 1
                 ];
             }
-
             return myResource;
         }
         set;
@@ -48,7 +46,6 @@ public with sharing class CoachPortalMainPageController {
             if (mySuccessRole == null) {
                 mySuccessRole = myResource.Role__c;
             }
-
             return mySuccessRole;
         }
         set;
@@ -62,8 +59,33 @@ public with sharing class CoachPortalMainPageController {
             if (mySuccessPod == null) {
                 mySuccessPod = myResource.Success_Pod__c;
             }
-
             return mySuccessPod;
+        }
+        set;
+    }
+
+    private Id mySuccessRTID {
+        get {
+            if (mySuccessRTID == null) {
+                mySuccessRTID = myResource.RecordTypeId;
+            }
+            return mySuccessRTID;
+        }
+        set;
+    }
+
+    private String mySuccessRT {
+        get {
+            if (mySuccessRT == null) {
+                mySuccessRT = [
+                    SELECT Id, DeveloperName
+                    FROM RecordType
+                    WHERE Id = :mySuccessRTID
+                    LIMIT 1
+                ]
+                .DeveloperName;
+            }
+            return mySuccessRT;
         }
         set;
     }
@@ -135,7 +157,7 @@ public with sharing class CoachPortalMainPageController {
                 SELECT Id, Name, Resource__r.Name, Resource_Name__c
                 FROM Success_Resource__c
                 WHERE
-                    RecordTypeId = :CoachResourceRTID
+                    RecordTypeId = :mySuccessRTID
                     AND Success_POD__c = :mySuccessPod
                     AND Resource__c != :ownerId
                     AND isActive__c = TRUE
@@ -149,16 +171,32 @@ public with sharing class CoachPortalMainPageController {
         set;
     }
 
-    /*
-     * Coach Success_Resource__c Record Type Id
-     */
-    private Id CoachResourceRTID {
+    private Id coachStudentRTID {
         get {
-            if (CoachResourceRTID == null) {
-                CoachResourceRTID = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Coach');
+            if (coachStudentRTID == null) {
+                coachStudentRTID = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Coach');
             }
+            return coachStudentRTID;
+        }
+        set;
+    }
 
-            return CoachResourceRTID;
+    private Id financialIntakeStudentRTID {
+        get {
+            if (financialIntakeStudentRTID == null) {
+                financialIntakeStudentRTID = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Financial_Intake');
+            }
+            return financialIntakeStudentRTID;
+        }
+        set;
+    }
+
+    private Id reentryStudentRTID {
+        get {
+            if (reentryStudentRTID == null) {
+                reentryStudentRTID = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Reentry');
+            }
+            return reentryStudentRTID;
         }
         set;
     }
@@ -166,13 +204,12 @@ public with sharing class CoachPortalMainPageController {
     /*
      * ASU Coach Outreach Case Record Type Id
      */
-    public Id CoachCaseRTID {
+    public Id coachCaseRTID {
         get {
-            if (CoachCaseRTID == null) {
-                CoachCaseRTID = RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach');
+            if (coachCaseRTID == null) {
+                coachCaseRTID = RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach');
             }
-
-            return CoachCaseRTID;
+            return coachCaseRTID;
         }
         set;
     }
@@ -180,65 +217,59 @@ public with sharing class CoachPortalMainPageController {
     /*
      * Coach Email record Type Id
      */
-    public Id CoachEmailRTID {
+    public Id coachEmailRTID {
         get {
-            if (CoachEmailRTID == null) {
-                CoachEmailRTID = RecordIdHelper.getRecordTypeId('Portal_Email__c', 'Coach');
+            if (coachEmailRTID == null) {
+                coachEmailRTID = RecordIdHelper.getRecordTypeId('Portal_Email__c', 'Coach');
             }
+            return coachEmailRTID;
+        }
+        set;
+    }
 
-            return CoachEmailRTID;
+    public Id myStudentsRTID {
+        get {
+            if (myStudentsRTID == null) {
+                switch on mySuccessRT {
+                    when 'Financial_Intake' {
+                        myStudentsRTID = financialIntakeStudentRTID;
+                    }
+                    when 'Reentry' {
+                        myStudentsRTID = reentryStudentRTID;
+                    }
+                    when else {
+                        myStudentsRTID = coachStudentRTID;
+                    }
+                }
+            }
+            return myStudentsRTID;
         }
         set;
     }
 
     /*
-     * The query used to retrieve all proactive cases for the current resource.
+     * The query used to generate the summary list for the current resource
      */
-    public String myProactiveQuery {
+    public String mySummaryListQuery {
         get {
             if (ownerId != null) {
-                myProactiveQuery =
+                mySummaryListQuery =
                     '' +
-                    'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.tz__Local_Time_Short__c, ' +
-                    'Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c, STRM__c, Session__c ' +
+                    'SELECT COUNT(Id) total, Subject ' +
                     'FROM Case ' +
                     'WHERE OwnerId = \'' +
                     ownerId +
                     '\' ' +
+                    'AND RecordTypeId = \'' +
+                    coachCaseRTID +
+                    '\' ' +
+                    'AND IsClosed = false ' +
                     'AND Category__c != \'Watchlist\' ' +
-                    'AND recordTypeId = \'' +
-                    CoachCaseRTID +
-                    '\' ' +
-                    'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 5000';
+                    'GROUP BY Subject ' +
+                    'ORDER BY Subject ASC NULLS LAST LIMIT 1000';
             }
 
-            return myProactiveQuery;
-        }
-        set;
-    }
-
-    /*
-     * The query used to retrieve the watchlistCases for the current resource
-     */
-    public String myWatchlistQuery {
-        get {
-            if (ownerId != null) {
-                myWatchlistQuery =
-                    '' +
-                    'SELECT CaseNumber, ContactId, Contact.Name, Contact.EMPLID__c, Contact.FirstName, Contact.LastName, Contact.tz__Local_Time_Short__c, ' +
-                    'Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c ' +
-                    'FROM Case ' +
-                    'WHERE OwnerId = \'' +
-                    ownerId +
-                    '\' ' +
-                    'AND Category__c = \'Watchlist\' ' +
-                    'AND recordTypeId = \'' +
-                    CoachCaseRTID +
-                    '\' ' +
-                    'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 5000';
-            }
-
-            return myWatchlistQuery;
+            return mySummaryListQuery;
         }
         set;
     }
@@ -258,7 +289,11 @@ public with sharing class CoachPortalMainPageController {
                     ownerId +
                     '\' ' +
                     'AND Is_Active__c = true ' +
-                    'AND Coaching_Student__c = true ORDER BY Student_Name__c ASC LIMIT 5000';
+                    'AND Coaching_Student__c = true ' +
+                    'AND RecordTypeId = \'' +
+                    myStudentsRTID +
+                    '\' ' +
+                    'ORDER BY Student_Name__c ASC LIMIT 5000';
             }
 
             return myStudentsQuery;
@@ -267,28 +302,27 @@ public with sharing class CoachPortalMainPageController {
     }
 
     /*
-     * The query used to generate the summary list for the current resource
+     * The query used to retrieve all proactive cases for the current resource.
      */
-    public String mySummaryListQuery {
+    public String myProactiveQuery {
         get {
             if (ownerId != null) {
-                mySummaryListQuery =
+                myProactiveQuery =
                     '' +
-                    'SELECT count(Id) total, Subject ' +
+                    'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Contact.tz__Local_Time_Short__c, ' +
+                    'Subject, Description, Status, FollowUp_Date__c, Curr_Cont_Prediction_Level__c, Most_Recent_Outlook_Change_Direction__c, Prev_Cont_Prediction_Level__c, Change_Date__c, STRM__c, Session__c ' +
                     'FROM Case ' +
                     'WHERE OwnerId = \'' +
                     ownerId +
                     '\' ' +
-                    'AND recordTypeId = \'' +
-                    CoachCaseRTID +
-                    '\' ' +
-                    'AND IsClosed = false ' +
                     'AND Category__c != \'Watchlist\' ' +
-                    'GROUP BY Subject ' +
-                    'ORDER BY Subject ASC NULLS LAST LIMIT 1000';
+                    'AND RecordTypeId = \'' +
+                    coachCaseRTID +
+                    '\' ' +
+                    'AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 5000';
             }
 
-            return mySummaryListQuery;
+            return myProactiveQuery;
         }
         set;
     }

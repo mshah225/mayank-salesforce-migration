@@ -25,23 +25,19 @@
             <div class="headerFooter">
                 <div class="toolbar">
                     <apex:outputPanel layout="inline" styleClass="button-group">
-                        <apex:outputLink
-                            styleClass="btn btn-default asu-primary btn-md"
+                        <apex:outputLink styleClass="btn btn-default asu-primary btn-md"
                             value="javascript:;"
                             style="margin-right: 10px"
                             onclick="toggleEmailModal(this)"
                             rendered="{! showMassEmail}"
-                            >Mass Email</apex:outputLink
-                        >
+                            >Mass Email</apex:outputLink>
                     </apex:outputPanel>
-                    <apex:outputPanel
-                        layout="block"
+                    <apex:outputPanel layout="block"
                         styleClass="input-group"
                         style="width: 100%; max-width: 250px; margin-top: 5px"
                         rendered="{! showSearch}"
                     >
-                        <apex:inputText
-                            id="myStudentsInput"
+                        <apex:inputText id="myStudentsInput"
                             value="{!searchString}"
                             html-placeholder="Filter Students"
                             onkeypress="return noenter(event);"
@@ -58,8 +54,7 @@
                             "
                             styleClass="form-control"
                         />
-                        <apex:commandLink
-                            id="searchStudentsBtn"
+                        <apex:commandLink id="searchStudentsBtn"
                             action="{!myStudentsSearch}"
                             status="ASUAjaxStatus"
                             reRender="rerenderMe"
@@ -103,8 +98,7 @@
                             focusSearch();
                         </script>
 
-                        <apex:commandLink
-                            action="{!resetMyStudentsSearch}"
+                        <apex:commandLink action="{!resetMyStudentsSearch}"
                             status="ASUAjaxStatus"
                             reRender="rerenderMe"
                             style="
@@ -121,8 +115,7 @@
                 </div>
 
                 <apex:outputPanel layout="block" styleClass="pageSizeSection" style="width: 100%" html-align="center">
-                    <apex:commandLink
-                        action="{!setConPrev}"
+                    <apex:commandLink action="{!setConPrev}"
                         value="<< Prev"
                         rendered="{!setCon.HasPrevious}"
                         style="float: left"
@@ -132,8 +125,7 @@
                     />
                     <apex:outputText value="Page Size " />
                     <apex:selectList label="Page Size" value="{!pageSize}" size="1" styleClass="pageSizeField">
-                        <apex:actionSupport
-                            event="onchange"
+                        <apex:actionSupport event="onchange"
                             reRender="rerenderMe"
                             onsubmit="handlePageSizeField(this)"
                             status="ASUAjaxStatus"
@@ -143,12 +135,10 @@
                         <apex:selectOption itemValue="100" itemLabel="100" />
                     </apex:selectList>
                     <apex:outputText value=" Showing {!(setCon.PageSize * (setCon.PageNumber - 1)) + 1} - " />
-                    <apex:outputText
-                        value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of "
+                    <apex:outputText value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of "
                     />
                     <apex:outputText value="{!setCon.ResultSize} Records" />
-                    <apex:commandLink
-                        action="{!setConNext}"
+                    <apex:commandLink action="{!setConNext}"
                         value="Next >>"
                         rendered="{!setCon.HasNext}"
                         style="float: right"
@@ -173,15 +163,13 @@
                             <h5>Select Email Template:</h5>
                             <apex:inputField value="{!tempEmail.Email_Template_Name__c}" />
                             <h5>Additional Text:</h5>
-                            <apex:inputField
-                                value="{!tempEmail.Additional_Message_Text__c}"
+                            <apex:inputField value="{!tempEmail.Additional_Message_Text__c}"
                                 style="width: 100%; height: 200px"
                             />
                         </div>
 
                         <div class="modal-footer">
-                            <apex:commandLink
-                                type="button"
+                            <apex:commandLink type="button"
                                 action="{!massEmail}"
                                 reRender="tableForm"
                                 styleClass="btn btn-default btn-md asu-primary"
@@ -198,13 +186,11 @@
                 </div>
             </div>
             <apex:dataTable id="myStudentsTable" value="{!studentList}" var="c" styleClass="ASUTable">
-                <apex:column
-                    headerClass="ASUColumnHead centerText"
+                <apex:column headerClass="ASUColumnHead centerText"
                     styleClass="ASUColumn centerText"
                     rendered="{! showSelection}"
                 >
-                    <apex:inputCheckbox
-                        value="{!c.selected}"
+                    <apex:inputCheckbox value="{!c.selected}"
                         styleClass="selectBox"
                         onchange="handleSelectAll(this);"
                     />
@@ -213,8 +199,7 @@
                     </apex:facet>
                 </apex:column>
 
-                <apex:column
-                    headerValue="Name"
+                <apex:column headerValue="Name"
                     value="{!c.obj.Student_Name__c}"
                     rendered="{! showName}"
                     headerClass="ASUColumnHead"
@@ -233,8 +218,7 @@
                     </apex:facet>
                 </apex:column>
 
-                <apex:column
-                    headerValue="EMPLID"
+                <apex:column headerValue="EMPLID"
                     rendered="{! showEMPLID}"
                     headerClass="ASUColumnHead"
                     styleClass="ASUColumn"
@@ -251,24 +235,21 @@
                         </apex:commandLink>
                     </apex:facet>
 
-                    <apex:outputLink
-                        value="javascript:;"
+                    <apex:outputLink value="javascript:;"
                         onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.EMPLID__c}', 'Profile')"
                         styleClass="standardLink"
                     >
                         {!c.obj.EMPLID__c}
                     </apex:outputLink>
                 </apex:column>
-                <apex:column
-                    headerValue="Proactive"
+                <apex:column headerValue="Proactive"
                     rendered="{! showProactiveCases}"
                     headerClass="ASUColumnHead"
                     styleClass="ASUColumn"
                 >
                     {!caseCountMap[c.obj.Student__c].proactiveCount}
                 </apex:column>
-                <apex:column
-                    headerValue="Reactive"
+                <apex:column headerValue="Reactive"
                     rendered="{! showReactiveCases}"
                     headerClass="ASUColumnHead"
                     styleClass="ASUColumn"
@@ -276,15 +257,12 @@
                     {!caseCountMap[c.obj.Student__c].reactiveCount}
                 </apex:column>
                 <apex:column headerValue="Action" headerClass="ASUColumnHead" styleClass="ASUColumn">
-                    <apex:outputLink
-                        value="javascript:;"
+                    <apex:outputLink value="javascript:;"
                         onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.ASURiteID__c}', 'Case')"
                         title="New Case"
                     >
-                        <apex:image value="{!$Resource.RedCase}" style="width: 20px; height: 20px" /> </apex:outputLink
-                    >&nbsp;&nbsp;
-                    <apex:outputLink
-                        value="javascript:;"
+                        <apex:image value="{!$Resource.RedCase}" style="width: 20px; height: 20px" /> </apex:outputLink>&nbsp;&nbsp;
+                    <apex:outputLink value="javascript:;"
                         onclick="openActionLink('{!c.obj.Student__c}', '{!c.obj.Student_Name__c}', '{!c.obj.ASURiteID__c}', 'All Cases')"
                         title="All Cases"
                     >
@@ -327,8 +305,7 @@
 
         <apex:form id="alius-format931">
             <div class="headerFooter">
-                <apex:commandLink
-                    action="{!setConPrev}"
+                <apex:commandLink action="{!setConPrev}"
                     value="<< Prev"
                     rendered="{!setCon.HasPrevious}"
                     style="float: left"
@@ -338,8 +315,7 @@
                 />
                 <apex:outputText value="Page Size " />
                 <apex:selectList label="Page Size" value="{!pageSize}" size="1" styleClass="pageSizeField">
-                    <apex:actionSupport
-                        event="onchange"
+                    <apex:actionSupport event="onchange"
                         reRender="rerenderMe"
                         onsubmit="handlePageSizeField(this)"
                         status="ASUAjaxStatus"
@@ -349,12 +325,10 @@
                     <apex:selectOption itemValue="100" itemLabel="100" />
                 </apex:selectList>
                 <apex:outputText value=" Showing {!(setCon.PageSize * (setCon.PageNumber - 1)) + 1} - " />
-                <apex:outputText
-                    value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of "
+                <apex:outputText value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of "
                 />
                 <apex:outputText value="{!setCon.ResultSize} Records" />
-                <apex:commandLink
-                    action="{!setConNext}"
+                <apex:commandLink action="{!setConNext}"
                     value="Next >>"
                     rendered="{!setCon.HasNext}"
                     style="float: right"

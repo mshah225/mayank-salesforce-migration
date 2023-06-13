@@ -776,6 +776,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             vars.add(ErrorLogger.convertSObjectToJSON('case', emailCase));
             vars.add(ErrorLogger.convertSObjectToJSON('contact', emailContact));
             vars.add(ErrorLogger.convertStringToJSON('emailTemplate', emailTemplateId));
+            vars.add(ErrorLogger.convertStringToJSON('note', 'Most likely SINGLE_EMAIL_LIMIT_EXCEEDED'));
             ErrorLogger.log(e, vars, false);
         }
     }

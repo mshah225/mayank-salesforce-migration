@@ -105,8 +105,18 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                             Group groupToReopen;
 
                             // Case will reopen to the currently associated user if no group can be found
-                            if (GroupService.getGroupDetails(groupName).Id != null) {
+                            try {
                                 this.theCase.OwnerId = GroupService.getGroupDetails(groupName).Id;
+                            } catch (Exception e) {
+                                List<String> vars = new List<String>();
+                                vars.add(ErrorLogger.convertSObjectToJSON('case', theCase));
+                                vars.add(
+                                    ErrorLogger.convertStringToJSON(
+                                        'error',
+                                        'Could not assign group as case owner: ' + groupName
+                                    )
+                                );
+                                ErrorLogger.log(e, vars, false);
                             }
 
                             if (this.theCase.CC_Most_Recent_Functional_Group__c == null) {

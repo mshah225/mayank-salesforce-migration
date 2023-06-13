@@ -554,6 +554,7 @@ public with sharing class CaseInboundEmailHandlerTest {
 
     @isTest
     static void existingContactDefaultRule() {
+        Test.startTest();
         Contact c = new Contact(
             FirstName = 'First',
             LastName = 'Last',
@@ -578,7 +579,6 @@ public with sharing class CaseInboundEmailHandlerTest {
         CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
         emailServiceObj.handleInboundEmail(email, env);
         email.subject = 'Test 2';
-        Test.startTest();
         emailServiceObj.handleInboundEmail(email, env);
         Test.stopTest();
 

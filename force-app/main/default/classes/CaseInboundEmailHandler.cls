@@ -787,7 +787,12 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             vars.add(ErrorLogger.convertSObjectToJSON('case', emailCase));
             vars.add(ErrorLogger.convertSObjectToJSON('contact', emailContact));
             vars.add(ErrorLogger.convertStringToJSON('emailTemplate', emailTemplateId));
-            vars.add(ErrorLogger.convertStringToJSON('note', 'Most likely SINGLE_EMAIL_LIMIT_EXCEEDED'));
+            vars.add(
+                ErrorLogger.convertStringToJSON(
+                    'note',
+                    'Potentially due to SINGLE_EMAIL_LIMIT_EXCEEDED; may need investigation'
+                )
+            );
             ErrorLogger.log(e, vars, false);
         }
     }
@@ -864,13 +869,17 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             Messaging.reserveSingleEmailCapacity(1);
             Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ mail });
         } catch (Exception e) {
-            //Most likely SINGLE_EMAIL_LIMIT_EXCEEDED; catching so the transaction will continue
             List<String> vars = new List<String>();
             vars.add(ErrorLogger.convertSingleEmailMessageToJSON('email', mail));
             vars.add(ErrorLogger.convertSObjectToJSON('case', emailCase));
             vars.add(ErrorLogger.convertSObjectToJSON('contact', emailContact));
             vars.add(ErrorLogger.convertStringToJSON('emailTemplate', emailTemplateId));
-            vars.add(ErrorLogger.convertStringToJSON('note', 'Most likely SINGLE_EMAIL_LIMIT_EXCEEDED'));
+            vars.add(
+                ErrorLogger.convertStringToJSON(
+                    'note',
+                    'Potentially due to SINGLE_EMAIL_LIMIT_EXCEEDED; may need investigation'
+                )
+            );
             ErrorLogger.log(e, vars, false);
         }
     }

@@ -886,8 +886,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
     @TestVisible
     private LostEmail__c generateLostEmail(Messaging.InboundEmail email, Case theCase, String error) {
+        LostEmail__c lostEmail = new LostEmail__c();
         try {
-            LostEmail__c lostEmail = new LostEmail__c();
             insert lostEmail; // need to insert early since needs to be assigned an id for handleAttachments function
             lostEmail.Sender__c = limitLength(email.fromAddress, 255);
             lostEmail.Subject__c = limitLength(email.subject, 255);
@@ -945,7 +945,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             }
 
             update lostEmail;
-            return lostEmail;
         } catch (Exception e) {
             List<String> vars = new List<String>();
             vars.add(ErrorLogger.convertSingleEmailMessageToJSON('email', email));
@@ -953,8 +952,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             vars.add(ErrorLogger.convertStringToJSON('error', error));
             vars.add(ErrorLogger.convertSObjectToJSON('lostEmail', lostEmail));
             ErrorLogger.log(e, vars, false);
-            return null;
         }
+        return lostEmail;
     }
 
     private String extractIdRefNew(String searchText) {

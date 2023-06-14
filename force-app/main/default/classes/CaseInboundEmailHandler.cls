@@ -947,7 +947,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             update lostEmail;
         } catch (Exception e) {
             List<String> vars = new List<String>();
-            vars.add(ErrorLogger.convertSingleEmailMessageToJSON('email', email));
+            vars.add(ErrorLogger.convertInboundEmailToJSON('email', email));
             vars.add(ErrorLogger.convertSObjectToJSON('case', theCase));
             vars.add(ErrorLogger.convertStringToJSON('error', error));
             vars.add(ErrorLogger.convertSObjectToJSON('lostEmail', lostEmail));

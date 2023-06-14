@@ -110,12 +110,22 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                             } catch (Exception e) {
                                 List<String> vars = new List<String>();
                                 vars.add(ErrorLogger.convertSObjectToJSON('case', theCase));
-                                vars.add(
-                                    ErrorLogger.convertStringToJSON(
-                                        'error',
-                                        'Could not assign group as case owner: ' + groupName
-                                    )
-                                );
+
+                                if (groupName != null) {
+                                    vars.add(
+                                        ErrorLogger.convertStringToJSON(
+                                            'error',
+                                            'Could not assign group as case owner: ' + groupName
+                                        )
+                                    );
+                                } else {
+                                    vars.add(
+                                        ErrorLogger.convertStringToJSON(
+                                            'error',
+                                            'Could not assign null group as case owner'
+                                        )
+                                    );
+                                }
                                 ErrorLogger.log(e, vars, false);
                             }
 
@@ -508,7 +518,9 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         } catch (Exception e) {
             String error = e.getMessage() + '\n' + e.getStackTraceString();
             List<String> vars = new List<String>();
-            vars.add(ErrorLogger.convertInboundEmailToJSON('email', email));
+            if (email != null) {
+                vars.add(ErrorLogger.convertInboundEmailToJSON('email', email));
+            }
             vars.add(ErrorLogger.convertSObjectToJSON('case', theCase));
             vars.add(ErrorLogger.convertStringToJSON('error', error));
             ErrorLogger.log(e, vars, false);
@@ -770,7 +782,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             Messaging.reserveSingleEmailCapacity(1);
             Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ mail });
         } catch (Exception e) {
-            // Most likely SINGLE_EMAIL_LIMIT_EXCEEDED; catching so the transaction will continue
             List<String> vars = new List<String>();
             vars.add(ErrorLogger.convertSingleEmailMessageToJSON('email', mail));
             vars.add(ErrorLogger.convertSObjectToJSON('case', emailCase));
@@ -865,67 +876,76 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
     }
 
     @TestVisible
-    private LostEmail__C generateLostEmail(Messaging.InboundEmail email, Case theCase, String error) {
-        LostEmail__c lostEmail = new LostEmail__c();
-        insert lostEmail; // need to insert early since needs to be assigned an id for handleAttachments function
-        lostEmail.Sender__c = limitLength(email.fromAddress, 255);
-        lostEmail.Subject__c = limitLength(email.subject, 255);
-        lostEmail.PlainTextBody__c = limitLength(email.plainTextBody, 31500);
-        lostEmail.HtmlTextBody__c = limitLength(email.htmlBody, 31500);
-        lostEmail.Cause__c = limitLength(error, 255);
+    private LostEmail__c generateLostEmail(Messaging.InboundEmail email, Case theCase, String error) {
+        try {
+            LostEmail__c lostEmail = new LostEmail__c();
+            insert lostEmail; // need to insert early since needs to be assigned an id for handleAttachments function
+            lostEmail.Sender__c = limitLength(email.fromAddress, 255);
+            lostEmail.Subject__c = limitLength(email.subject, 255);
+            lostEmail.PlainTextBody__c = limitLength(email.plainTextBody, 31500);
+            lostEmail.HtmlTextBody__c = limitLength(email.htmlBody, 31500);
+            lostEmail.Cause__c = limitLength(error, 255);
 
-        // Convert the List into a concatenated string
-        String recipientsString = '';
-        if (email.toAddresses != null) {
-            recipientsString = String.join(email.toAddresses, ', ');
-        }
-        lostEmail.Recipient__c = recipientsString;
+            // Convert the List into a concatenated string
+            String recipientsString = '';
+            if (email.toAddresses != null) {
+                recipientsString = String.join(email.toAddresses, ', ');
+            }
+            lostEmail.Recipient__c = recipientsString;
 
-        String carbonCopiesString = '';
-        if (email.ccAddresses != null) {
-            carbonCopiesString = String.join(email.CCAddresses, ', ');
-        }
-        lostEmail.CarbonCopies__c = carbonCopiesString;
+            String carbonCopiesString = '';
+            if (email.ccAddresses != null) {
+                carbonCopiesString = String.join(email.CCAddresses, ', ');
+            }
+            lostEmail.CarbonCopies__c = carbonCopiesString;
 
-        Boolean attachSuccess = handleAttachments(lostEmail, email).success;
-        lostEmail.RejectedAttachments__c = !attachSuccess;
-        if (!attachSuccess) {
-            String attachmentInfo =
-                '\n**********\nCase ID: ' +
-                (theCase != null ? String.valueOf(theCase.Id) : 'SPAM: Not Created') +
-                '\n\n*****List of Attachments*****\n';
-            if (email.binaryAttachments != null) {
-                for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments) {
-                    attachmentInfo +=
-                        'FileName: ' +
-                        bAttachment.fileName +
-                        ' File Size: ' +
-                        bAttachment.body.size() / 1000.00 +
-                        ' kB\n';
+            Boolean attachSuccess = handleAttachments(lostEmail, email).success;
+            lostEmail.RejectedAttachments__c = !attachSuccess;
+            if (!attachSuccess) {
+                String attachmentInfo =
+                    '\n**********\nCase ID: ' +
+                    (theCase != null ? String.valueOf(theCase.Id) : 'SPAM: Not Created') +
+                    '\n\n*****List of Attachments*****\n';
+                if (email.binaryAttachments != null) {
+                    for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments) {
+                        attachmentInfo +=
+                            'FileName: ' +
+                            bAttachment.fileName +
+                            ' File Size: ' +
+                            bAttachment.body.size() / 1000.00 +
+                            ' kB\n';
+                    }
+                }
+                if (email.textAttachments != null) {
+                    for (Messaging.Inboundemail.TextAttachment tAttachment : email.textAttachments) {
+                        attachmentInfo +=
+                            'FileName: ' +
+                            tAttachment.fileName +
+                            ' File Size: ' +
+                            tAttachment.body.length() / 1000.00 +
+                            ' kB\n';
+                    }
+                }
+                lostEmail.PlainTextBody__c += attachmentInfo;
+            }
+
+            if (loggingSettings.Header_Logging__c) {
+                if (email.headers != null) {
+                    lostEmail.Headers__c = parseHeaders(email);
                 }
             }
-            if (email.textAttachments != null) {
-                for (Messaging.Inboundemail.TextAttachment tAttachment : email.textAttachments) {
-                    attachmentInfo +=
-                        'FileName: ' +
-                        tAttachment.fileName +
-                        ' File Size: ' +
-                        tAttachment.body.length() / 1000.00 +
-                        ' kB\n';
-                }
-            }
-            lostEmail.PlainTextBody__c += attachmentInfo;
+
+            update lostEmail;
+            return lostEmail;
+        } catch (Exception e) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertSingleEmailMessageToJSON('email', email));
+            vars.add(ErrorLogger.convertSObjectToJSON('case', theCase));
+            vars.add(ErrorLogger.convertStringToJSON('error', error));
+            vars.add(ErrorLogger.convertSObjectToJSON('lostEmail', lostEmail));
+            ErrorLogger.log(e, vars, false);
+            return null;
         }
-
-        if (loggingSettings.Header_Logging__c) {
-            if (email.headers != null) {
-                lostEmail.Headers__c = parseHeaders(email);
-            }
-        }
-
-        update lostEmail;
-
-        return lostEmail;
     }
 
     private String extractIdRefNew(String searchText) {

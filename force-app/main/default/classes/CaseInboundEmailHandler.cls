@@ -590,7 +590,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         AttachmentResult response = new AttachmentResult();
         response.success = true;
         List<String> validFileExtensionList = getConfigurationSetting('Valid Attachment Types').split(',');
+        Integer attachmentLimit = Integer.valueOf(getConfigurationSetting('Attachment Limit'));
         Set<String> validFileExtensionSet = new Set<String>(validFileExtensionList);
+
+        Integer attachmentsOnCase = [SELECT COUNT() FROM Attachment WHERE ParentId =: parentObject.Id];
+
+        if (loggingSettings.Attachment_Limit_Logging__c && attachmentsOnCase >= attachmentLimit) {
+            response.success = false;
+        }
 
         if (email.textAttachments != null && email.textAttachments.size() > 0) {
             for (Messaging.Inboundemail.TextAttachment tAttachment : email.textAttachments) {

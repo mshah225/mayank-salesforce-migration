@@ -597,6 +597,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
         if (loggingSettings.Attachment_Limit_Logging__c && attachmentsOnCase >= attachmentLimit) {
             response.success = false;
+            generateLostEmail(email, theCase, 'This case currently has too many attachments.');
+            return response;
         }
 
         if (email.textAttachments != null && email.textAttachments.size() > 0) {

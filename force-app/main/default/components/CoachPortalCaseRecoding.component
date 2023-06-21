@@ -42,7 +42,7 @@
                         <apex:inputText
                             id="myStudentsInput"
                             value="{!searchString}"
-                            html-placeholder="Filter Students"
+                            html-placeholder="Filter Results"
                             onkeypress="return noenter(event);"
                             style="
                                 padding: 6px 12px;

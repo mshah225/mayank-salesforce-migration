@@ -74,7 +74,10 @@ public class CoachPortalCaseRecodingController extends ListViewController {
                     '%\' ' +
                     'OR Contact.EMPLID__c LIKE \'%' +
                     String.escapeSingleQuotes(searchCon) +
-                    '%\'' +
+                    '%\' ' +
+                    'OR Owner.Name = \'' +
+                    String.escapeSingleQuotes(searchCon) +
+                    '\'' +
                     ') AND ' +
                     tempQueryRight;
 

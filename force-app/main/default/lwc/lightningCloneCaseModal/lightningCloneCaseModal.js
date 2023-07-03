@@ -1,10 +1,16 @@
+/*
+Author: Vignesh Iyer
+Last Updated: 07/03/2023
+*/
 import {LightningElement, api, wire} from 'lwc';
 import {CloseActionScreenEvent} from 'lightning/actions';
-import {getRecord, getFieldValue} from 'lightning/uiRecordApi';
+import {getRecord, getFieldValue, getFieldDisplayValue} from 'lightning/uiRecordApi';
+import Id from '@salesforce/user/Id'
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import {NavigationMixin} from 'lightning/navigation';
 import getClassifications from '@salesforce/apex/CaseClassificationLWCService.getClassifications';
 
+// Case fields to obtain
 const FIELDS = [
     'Case.ContactId',
     'Case.Subject',
@@ -20,9 +26,15 @@ const FIELDS = [
     'Case.Initial_Request_Sent_To_Addresses__c',
 ];
 
+// User fields to obtain
+const USER_FIELDS = [
+    'User.Name',
+    'User.Profile'
+]
+
 export default class LightningCloneCaseModal extends NavigationMixin(LightningElement) {
     @api recordId;
-
+    
     categoryOptions = [];
     subCategoryOptions = [];
     isLoading = true;
@@ -30,6 +42,11 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
     error;
     categoryFieldDisabled = true;
     subCategoryFieldDisabled = true;
+
+    /* User data */
+
+    currentUserName = '';
+    currentUserProfile = '';
 
     /* Cloned data */
 
@@ -48,6 +65,29 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
     selectedCaseSource = '';
     selectedInitialRequestAddress = '';
 
+    // retrieve logged in user data
+    @wire(getRecord, {recordId: Id, fields: USER_FIELDS})
+    userHandler({error, data}) {
+        if(data) {
+            this.user = data;
+            this.error = undefined
+
+            this.setUserData();
+        } else if(error) {
+            this.error = error;
+            this.user = undefined;
+            const event = new ShowToastEvent({
+                title: 'Error',
+                message: error.body.message,
+                variant: 'error',
+            });
+            this.dispatchEvent(event);
+
+            this.loading = false;
+        }
+    }
+
+    // retrieve opened case data
     @wire(getRecord, {recordId: '$recordId', fields: FIELDS})
     caseHandler({error, data}) {
         if (data) {
@@ -62,13 +102,20 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
             this.case = undefined;
             const event = new ShowToastEvent({
                 title: 'Error',
+                
                 message: error.body.message,
                 variant: 'error',
             });
             this.dispatchEvent(event);
-
             this.loading = false;
         }
+    }
+    
+    /* Getters & Setters */
+
+    setUserData() {
+        this.currentUserName = getFieldValue(this.user, 'User.Name');
+        this.currentUserProfile = getFieldDisplayValue(this.user, 'User.Profile');
     }
 
     setCloneData() {
@@ -90,18 +137,9 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
         console.log('loader status: ', this.isLoading);
         console.log('record id: ', this.recordId);
         console.log('case: ', this.case);
+        console.log('user: ', this.user);
 
         return 'test: v3';
-    }
-
-    closeModal() {
-        this.isLoading = true;
-        this.dispatchEvent(new CloseActionScreenEvent());
-    }
-
-    submitForm() {
-        console.log('submitting')
-        this.template.querySelector('lightning-record-edit-form').submit();
     }
 
     get getSubject() {
@@ -184,11 +222,13 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
         this.isLoading = status;
     }
 
+    // clear category fields
     clearSubCategory() {
         this.selectedSubCategory = '';
         this.subCategoryDisabled = true;
     }
 
+    // get classification data
     loadClassifications() {
         getClassifications()
             .then((result) => {
@@ -203,6 +243,7 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
             });
     }
 
+    // render dropdown options
     renderDropdowns() {
         this.renderCategories();
         this.renderSubCategories();
@@ -253,10 +294,22 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
         }
     }
 
+    // close
+    closeModal() {
+        this.isLoading = true;
+        this.dispatchEvent(new CloseActionScreenEvent());
+    }
+
+    // submit
+    submitForm() {
+        this.template.querySelector('lightning-record-edit-form').submit();
+    }
+
     handleLoad() {
         this.isLoading = false;
     }
 
+    // onchange event for category options
     handleCategoryChange(event) {
         // Reset the sub-category selection
         this.clearSubCategory();
@@ -267,11 +320,13 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
         this.renderSubCategories();
     }
 
+    // handle dependent field
     handleSubCategoryChange(event) {
         const selectedSubCategory = event.target.value;
         this.selectedSubCategory = selectedSubCategory;
     }
 
+    // on successful case creation
     handleSuccess(event) {
         var newRecordId = event.detail.id;
         const evt = new ShowToastEvent({
@@ -282,6 +337,7 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
 
         this.dispatchEvent(evt);
 
+        // redirect to newly created case record
         this.redirectToClonedCase(newRecordId);
 
         this.closeModal();

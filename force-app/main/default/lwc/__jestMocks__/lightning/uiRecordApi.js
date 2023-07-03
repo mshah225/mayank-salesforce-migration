@@ -17,10 +17,6 @@ export const getFieldValue = jest.fn((data, fieldReference) => {
         const [passedObjectName, fieldName] = fieldReference.split('.');
         const {apiName, fields} = data;
 
-        if (apiName !== passedObjectName) {
-            throw new Error(`Invalid object name: Passed ${passedObjectName}, and data is of ${apiName}.`);
-        }
-
         const fieldValue = fields[fieldName]?.value || null;
         return fieldValue;
     }

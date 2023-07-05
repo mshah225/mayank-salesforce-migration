@@ -2,10 +2,9 @@
 Author: Vignesh Iyer
 Last Updated: 07/03/2023
 */
-import {LightningElement, api, track, wire} from 'lwc';
+import {LightningElement, api, wire} from 'lwc';
 import {CloseActionScreenEvent} from 'lightning/actions';
 import {getRecord, getFieldValue, getFieldDisplayValue} from 'lightning/uiRecordApi';
-import Id from '@salesforce/user/Id'
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import {NavigationMixin} from 'lightning/navigation';
 import getClassifications from '@salesforce/apex/CaseClassificationLWCService.getClassifications';
@@ -27,12 +26,6 @@ const FIELDS = [
     'Case.Initial_Request_Sent_To_Addresses__c',
 ];
 
-// User fields to obtain
-const USER_FIELDS = [
-    'User.Name',
-    'User.Profile'
-]
-
 export default class LightningCloneCaseModal extends NavigationMixin(LightningElement) {
     @api recordId;
     
@@ -44,36 +37,9 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
     categoryFieldDisabled = true;
     subCategoryFieldDisabled = true;
 
-    /* User data */
-
-    currentUserName = '';
-    currentUserProfile = '';
-
     /* Cloned data */
 
     selectedCase = {}
-
-    // retrieve logged in user data
-    @wire(getRecord, {recordId: Id, fields: USER_FIELDS})
-    userHandler({error, data}) {
-        if(data) {
-            this.user = data;
-            this.error = undefined
-
-            this.setUserData();
-        } else if(error) {
-            this.error = error;
-            this.user = undefined;
-            const event = new ShowToastEvent({
-                title: 'Error',
-                message: error.body.message,
-                variant: 'error',
-            });
-            this.dispatchEvent(event);
-
-            this.loading = false;
-        }
-    }
 
     // retrieving field level permission for current user
     @wire(getObjectInfo, { objectApiName: 'Case' })
@@ -92,7 +58,6 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
             });
         } else if (error) {
             this.error = error;
-            this.user = undefined;
             const event = new ShowToastEvent({
                 title: 'Error',
                 message: error.body.message,
@@ -130,11 +95,6 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
     
     /* Getters & Setters */
 
-    setUserData() {
-        this.currentUserName = getFieldValue(this.user, 'User.Name');
-        this.currentUserProfile = getFieldDisplayValue(this.user, 'User.Profile');
-    }
-
     setCloneData() {
         this.selectedCase.Subject = 'Cloned: ' + getFieldValue(this.case, 'Case.Subject');
         this.selectedCase.Contact = getFieldValue(this.case, 'Case.ContactId');
@@ -156,9 +116,8 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
         console.log('loader status: ', this.isLoading);
         console.log('record id: ', this.recordId);
         console.log('case: ', this.case);
-        console.log('user: ', this.user);
 
-        return 'test: v3';
+        return 'test: v1';
     }
 
     get getSubject() {

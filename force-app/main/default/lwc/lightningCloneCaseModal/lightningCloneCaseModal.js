@@ -2,13 +2,14 @@
 Author: Vignesh Iyer
 Last Updated: 07/03/2023
 */
-import {LightningElement, api, wire} from 'lwc';
+import {LightningElement, api, track, wire} from 'lwc';
 import {CloseActionScreenEvent} from 'lightning/actions';
 import {getRecord, getFieldValue, getFieldDisplayValue} from 'lightning/uiRecordApi';
 import Id from '@salesforce/user/Id'
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import {NavigationMixin} from 'lightning/navigation';
 import getClassifications from '@salesforce/apex/CaseClassificationLWCService.getClassifications';
+import { getObjectInfo } from 'lightning/uiObjectInfoApi';
 
 // Case fields to obtain
 const FIELDS = [
@@ -50,20 +51,7 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
 
     /* Cloned data */
 
-    selectedContact;
-    selectedCategory = '';
-    selectedSubCategory = '';
-    selectedFunctionalGroup = '';
-    selectedOrigin = 'Clone';
-    selectedStatus = 'New';
-    selectedSubject = '';
-    selectedDescription = '';
-    selectedNeedsAttentionStatus = '';
-    selectedEscalationSource = '';
-    selectedProcessingStatus = '';
-    selectedOpportunity = '';
-    selectedCaseSource = '';
-    selectedInitialRequestAddress = '';
+    selectedCase = {}
 
     // retrieve logged in user data
     @wire(getRecord, {recordId: Id, fields: USER_FIELDS})
@@ -74,6 +62,35 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
 
             this.setUserData();
         } else if(error) {
+            this.error = error;
+            this.user = undefined;
+            const event = new ShowToastEvent({
+                title: 'Error',
+                message: error.body.message,
+                variant: 'error',
+            });
+            this.dispatchEvent(event);
+
+            this.loading = false;
+        }
+    }
+
+    // retrieving field level permission for current user
+    @wire(getObjectInfo, { objectApiName: 'Case' })
+    objectInfo({ error, data }) {
+        if(data) {
+            FIELDS.forEach(f => {
+                let field = f.split('.')[1];
+                
+                // checking field visibility
+                if (this.checkFieldVisibility(data, field)) {
+                    this.selectedCase[`${field}Visibility`] = true;
+                    this.selectedCase[`${field}Disabled`] = !data.fields[field].updateable;
+                } else {
+                    this.selectedCase[`${field}Visibility`] = false;
+                }
+            });
+        } else if (error) {
             this.error = error;
             this.user = undefined;
             const event = new ShowToastEvent({
@@ -119,18 +136,20 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
     }
 
     setCloneData() {
-        this.selectedSubject = 'Cloned: ' + getFieldValue(this.case, 'Case.Subject');
-        this.selectedContact = getFieldValue(this.case, 'Case.ContactId');
-        this.selectedCategory = getFieldValue(this.case, 'Case.CC_Category__c');
-        this.selectedSubCategory = getFieldValue(this.case, 'Case.CC_Sub_Category__c');
-        this.selectedDescription = getFieldValue(this.case, 'Case.Description');
-        this.selectedFunctionalGroup = getFieldValue(this.case, 'Case.CC_Functional_Group__c');
-        this.selectedNeedsAttentionStatus = getFieldValue(this.case, 'Case.Needs_Attention__c');
-        this.selectedEscalationSource = getFieldValue(this.case, 'Case.Escalated_From__c');
-        this.selectedProcessingStatus = getFieldValue(this.case, 'Case.Processing_Status__c');
-        this.selectedOpportunity = getFieldValue(this.case, 'Case.Opportunity__c');
-        this.selectedCaseSource = getFieldValue(this.case, 'Case.Case_Source__c');
-        this.selectedInitialRequestAddress = getFieldValue(this.case, 'Case.Initial_Request_Sent_To_Addresses__c');
+        this.selectedCase.Subject = 'Cloned: ' + getFieldValue(this.case, 'Case.Subject');
+        this.selectedCase.Contact = getFieldValue(this.case, 'Case.ContactId');
+        this.selectedCase.Category = getFieldValue(this.case, 'Case.CC_Category__c');
+        this.selectedCase.Sub_Category = getFieldValue(this.case, 'Case.CC_Sub_Category__c');
+        this.selectedCase.Description = getFieldValue(this.case, 'Case.Description');
+        this.selectedCase.Functional_Group = getFieldValue(this.case, 'Case.CC_Functional_Group__c');
+        this.selectedCase.Needs_Attention_Status = getFieldValue(this.case, 'Case.Needs_Attention__c');
+        this.selectedCase.Escalation_Source = getFieldValue(this.case, 'Case.Escalated_From__c');
+        this.selectedCase.Processing_Status = getFieldValue(this.case, 'Case.Processing_Status__c');
+        this.selectedCase.Opportunity = getFieldValue(this.case, 'Case.Opportunity__c');
+        this.selectedCase.Case_Source = getFieldValue(this.case, 'Case.Case_Source__c');
+        this.selectedCase.Initial_Address_Source = getFieldValue(this.case, 'Case.Initial_Request_Sent_To_Addresses__c');
+        this.selectedCase.Origin = 'Clone';
+        this.selectedCase.Status = 'New';
     }
 
     get debug() {
@@ -143,59 +162,59 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
     }
 
     get getSubject() {
-        return this.selectedSubject;
+        return this.selectedCase.Subject;
     }
 
     get getOrigin() {
-        return this.selectedOrigin;
+        return this.selectedCase.Origin;
     }
 
     get getStatus() {
-        return this.selectedStatus;
+        return this.selectedCase.Status;
     }
 
     get getContact() {
-        return this.selectedContact;
+        return this.selectedCase.Contact;
     }
 
     get getFunctionalGroup() {
-        return this.selectedFunctionalGroup;
+        return this.selectedCase.Functional_Group;
     }
 
     get getCategory() {
-        return this.selectedCategory;
+        return this.selectedCase.Category;
     }
 
     get getSubCategory() {
-        return this.selectedSubCategory;
+        return this.selectedCase.Sub_Category;
     }
 
     get getDescription() {
-        return this.selectedDescription;
+        return this.selectedCase.Description;
     }
 
     get getNeedsAttentionStatus() {
-        return this.selectedNeedsAttentionStatus;
+        return this.selectedCase.Needs_Attention_Status;
     }
 
     get getEscalationSource() {
-        return this.selectedEscalationSource;
+        return this.selectedCase.Escalation_Source;
     }
 
     get getProcessingStatus() {
-        return this.selectedProcessingStatus;
+        return this.selectedCase.Processing_Status;
     }
 
     get getOpportunity() {
-        return this.selectedOpportunity;
+        return this.selectedCase.Opportunity;
     }
 
     get getCaseSource() {
-        return this.selectedCaseSource;
+        return this.selectedCase.Case_Source;
     }
 
     get getInitialRequestAddress() {
-        return this.selectedInitialRequestAddress;
+        return this.selectedCase.Initial_Address_Source;
     }
 
     get categoryDisabled() {
@@ -224,8 +243,16 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
 
     // clear category fields
     clearSubCategory() {
-        this.selectedSubCategory = '';
+        this.selectedCase.Sub_Category = '';
         this.subCategoryDisabled = true;
+    }
+
+    // Function to check the visibility of the fields
+    checkFieldVisibility(data, fieldName) {
+        if (data.fields[fieldName] != undefined) {
+            return true;
+        } 
+        return false;
     }
 
     // get classification data
@@ -250,12 +277,12 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
     }
 
     renderCategories() {
-        if (this.selectedFunctionalGroup) {
+        if (this.selectedCase.Functional_Group) {
             if (this.rawClassificationData) {
                 // set options
                 this.categoryOptions = this.rawClassificationData
                     // filter options by selected fuctional group
-                    .filter((f) => f.Parent__c === this.selectedFunctionalGroup)
+                    .filter((f) => f.Parent__c === this.selectedCase.Functional_Group)
                     .map((element) => {
                         return {
                             label: element.Name,
@@ -273,12 +300,12 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
 
     renderSubCategories() {
         // Show appropriate subcategories based on selected category option
-        if (this.selectedCategory) {
+        if (this.selectedCase.Category) {
             if (this.rawClassificationData) {
                 // set options
                 this.subCategoryOptions = this.rawClassificationData
                     // filter options by selected category
-                    .filter((f) => f.Parent__c === this.selectedCategory)
+                    .filter((f) => f.Parent__c === this.selectedCase.Category)
                     .map((element) => {
                         return {
                             label: element.Name,
@@ -316,14 +343,14 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
 
         // Set category
         const selectedCategory = event.target.value;
-        this.selectedCategory = selectedCategory;
+        this.selectedCase.Category = selectedCategory;
         this.renderSubCategories();
     }
 
     // handle dependent field
     handleSubCategoryChange(event) {
         const selectedSubCategory = event.target.value;
-        this.selectedSubCategory = selectedSubCategory;
+        this.selectedCase.Sub_Category = selectedSubCategory;
     }
 
     // on successful case creation

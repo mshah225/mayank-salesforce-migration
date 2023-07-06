@@ -155,10 +155,16 @@ public without sharing class AdvisorCaseTransferService {
         // Add these committees to the map
         if (!committeesAsAManagerInSortedOrder.isEmpty()) {
             // Add header
-            if (managerType == 'Department')
-                labelValueMap.put('--Department Committees--', '002xa000003DIlo');
-            else if (managerType == 'College')
-                labelValueMap.put('--College Committees--', '003xa000003DIlo');
+            if (grad) {
+                // Grad header
+                labelValueMap.put('--School Name or Advising Team--', '002xa000003DIlo');
+            } else {
+                // UGrad header depends on manager type
+                if (managerType == 'Department')
+                    labelValueMap.put('--Department Committees--', '002xa000003DIlo');
+                else if (managerType == 'College')
+                    labelValueMap.put('--College Committees--', '003xa000003DIlo');
+            }
 
             // Add options
             for (String eachCommittee : committeesAsAManagerInSortedOrder)
@@ -193,11 +199,16 @@ public without sharing class AdvisorCaseTransferService {
         // Add these committees to the map
         if (!subordinateUsersInSortedOrder.isEmpty()) {
             // Add header
-            if (managerType == 'Department')
-                labelValueMap.put('--Department Advisors--', '004xa000003DIlo');
-            else if (managerType == 'College')
-                labelValueMap.put('--College Advisors--', '005xa000003DIlo');
-
+            if (grad) {
+                // Grad header
+                labelValueMap.put('--Program Advisors--', '004xa000003DIlo');
+            } else {
+                // UGrad header depends on manager type
+                if (managerType == 'Department')
+                    labelValueMap.put('--Department Advisors--', '004xa000003DIlo');
+                else if (managerType == 'College')
+                    labelValueMap.put('--College Advisors--', '005xa000003DIlo');
+            }
             // Add options
             for (String eachUser : subordinateUsersInSortedOrder)
                 labelValueMap.put(eachUser, subordinateUsers.get(eachUser));

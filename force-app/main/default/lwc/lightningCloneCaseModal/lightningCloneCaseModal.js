@@ -15,6 +15,8 @@ const FIELDS = [
     'Case.ContactId',
     'Case.Subject',
     'Case.Description',
+    'Case.Origin__c',
+    'Case.Status',
     'Case.CC_Category__c',
     'Case.CC_Sub_Category__c',
     'Case.CC_Functional_Group__c',
@@ -131,7 +133,7 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
     }
 
     get getOrigin() {
-        return !this.selectedCase.Origin_isDisabled ? this.selectedCase.Origin : '';
+        return 'Clone';
     }
 
     get getStatus() {

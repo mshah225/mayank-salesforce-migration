@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?><CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
-    <labels>
-        <fullName>ASU_Coach_Outreach_Success_Pods</fullName>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>ASU Coach Outreach Success Pods</shortDescription>
-        <value>SH1, SH2, SH3, SH4, SH5, SH6, SH7, SH8, SH9, SH10, SH11, SH12, SH13, SH99</value>
-    </labels>
-</CustomLabels>

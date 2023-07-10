@@ -119,6 +119,20 @@
                 >
                     <c:SuccessToolbelt />
                 </apex:tab>
+
+                <apex:tab
+                    label="Case Recoding"
+                    switchType="client"
+                    styleClass="wsTabContent"
+                    id="caseRecodingTab"
+                    rendered="{!$UserRole.Name == SUCCESS_COACH_MANAGER || $UserRole.Name == SUCCESS_COACH_LEAD || $Profile.Name == SYS_ADMIN}"
+                >
+                    <c:CoachPortalCaseRecoding
+                        id="caseRecodingList"
+                        queryString="{!caseRecodingQuery}"
+                        transferOptions="{!allCoachResourceOptions}"
+                    />
+                </apex:tab>
             </apex:tabPanel>
         </apex:outputPanel>
     </c:coachPortalViewAsComponent>

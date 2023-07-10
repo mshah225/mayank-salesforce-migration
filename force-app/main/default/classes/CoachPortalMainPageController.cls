@@ -90,6 +90,25 @@ public with sharing class CoachPortalMainPageController {
         set;
     }
 
+    public String allSuccessPodsQueryFilter {
+        get {
+            if (allSuccessPodsQueryFilter == null) {
+                allSuccessPodsQueryFilter = '';
+                for (
+                    String successPod : System.Label.ASU_Coach_Outreach_Success_Pods.replaceAll('(\\s+)', '').split(',')
+                ) {
+                    allSuccessPodsQueryFilter += '\'' + successPod + '\',';
+                }
+
+                allSuccessPodsQueryFilter = allSuccessPodsQueryFilter.lastIndexOf(',') > 0
+                    ? '(' + allSuccessPodsQueryFilter.substring(0, allSuccessPodsQueryFilter.lastIndexOf(',')) + ')'
+                    : allSuccessPodsQueryFilter;
+            }
+            return allSuccessPodsQueryFilter;
+        }
+        set;
+    }
+
     /*
      * A list of SelectOptions that the currently logged in user
      * has the permission to view as.
@@ -151,22 +170,68 @@ public with sharing class CoachPortalMainPageController {
      */
     private Map<Id, String> mySubordinates {
         get {
-            mySubordinates = new Map<Id, String>();
+            if (mySubordinates == null) {
+                mySubordinates = new Map<Id, String>();
 
-            for (Success_Resource__c sr : [
-                SELECT Id, Name, Resource__r.Name, Resource_Name__c
-                FROM Success_Resource__c
-                WHERE
-                    RecordTypeId = :mySuccessRTID
-                    AND Success_POD__c = :mySuccessPod
-                    AND Resource__c != :ownerId
-                    AND isActive__c = TRUE
-                ORDER BY Name ASC
-            ]) {
-                mySubordinates.put(sr.Resource__c, sr.Resource_Name__c);
+                for (Success_Resource__c sr : [
+                    SELECT Id, Name, Resource__r.Name, Resource_Name__c
+                    FROM Success_Resource__c
+                    WHERE
+                        RecordTypeId = :mySuccessRTID
+                        AND Success_POD__c = :mySuccessPod
+                        AND Resource__c != :ownerId
+                        AND isActive__c = TRUE
+                    ORDER BY Resource_Name__c ASC
+                ]) {
+                    mySubordinates.put(sr.Resource__c, sr.Resource_Name__c);
+                }
             }
 
             return mySubordinates;
+        }
+        set;
+    }
+
+    public List<SelectOption> allCoachResourceOptions {
+        get {
+            if (allCoachResourceOptions == null) {
+                allCoachResourceOptions = new List<SelectOption>();
+
+                if (allCoachResources.size() > 0) {
+                    allCoachResourceOptions.add(new SelectOption('', '--Active Coaches--', true));
+
+                    for (Id i : allCoachResources.keySet()) {
+                        allCoachResourceOptions.add(new SelectOption(i, allCoachResources.get(i)));
+                    }
+                }
+            }
+
+            return allCoachResourceOptions;
+        }
+        set;
+    }
+
+    private Map<Id, String> allCoachResources {
+        get {
+            if (allCoachResources == null) {
+                allCoachResources = new Map<Id, String>();
+
+                for (Success_Resource__c sr : [
+                    SELECT Id, Name, Resource__r.Name, Resource_Name__c
+                    FROM Success_Resource__c
+                    WHERE
+                        (RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Coach')
+                        OR RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Financial_Intake')
+                        OR RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Reentry'))
+                        AND Resource__c != :ownerId
+                        AND isActive__c = TRUE
+                    ORDER BY Resource_Name__c ASC
+                ]) {
+                    allCoachResources.put(sr.Resource__c, sr.Resource_Name__c);
+                }
+            }
+
+            return allCoachResources;
         }
         set;
     }
@@ -323,6 +388,23 @@ public with sharing class CoachPortalMainPageController {
             }
 
             return myProactiveQuery;
+        }
+        set;
+    }
+
+    public String caseRecodingQuery {
+        get {
+            if (allSuccessPodsQueryFilter != null) {
+                caseRecodingQuery =
+                    '' +
+                    'SELECT CaseNumber, ContactId, Contact.Name, Contact.FirstName, Contact.LastName, Contact.EMPLID__c, Owner.Name, Status, Subject ' +
+                    'FROM Case ' +
+                    'WHERE Owner.Name IN ' +
+                    allSuccessPodsQueryFilter +
+                    ' AND isClosed = false ORDER BY Contact.LastName ASC LIMIT 5000';
+            }
+
+            return caseRecodingQuery;
         }
         set;
     }

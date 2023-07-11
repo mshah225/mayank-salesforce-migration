@@ -3,7 +3,7 @@
     <fullName>Tag_Icon_URL__c</fullName>
     <description>This field provides the tag icons</description>
     <externalId>false</externalId>
-    <formula>$CustomMetadata.Tag_Icon_URL__mdt.Tag_Icon.Tag_Icon_URL__c  +  Tag_Api_Name__c</formula>
+    <formula></formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Tag_Icon</label>
     <required>false</required>

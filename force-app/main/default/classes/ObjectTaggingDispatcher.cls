@@ -12,7 +12,8 @@ public class ObjectTaggingDispatcher implements TriggerDispatcherInterface {
     }
 
     public void beforeInsert() {
-        ObjectTaggingService.createName();
+        ObjectTaggingService.initData(newList);
+        ObjectTaggingService.createName(newList);
     }
 
     public void beforeUpdate() {

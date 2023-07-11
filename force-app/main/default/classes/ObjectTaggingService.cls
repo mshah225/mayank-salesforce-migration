@@ -1,15 +1,18 @@
 public with sharing class ObjectTaggingService {
 
-    private Map<Id, Contact> contactNameMap {
+    private static Set<Id> objectTagId = new Set<Id>();
+    private static Set<Id> tagId = new Set<Id>();
+
+    private static Map<Id, Contact> contactNameMap {
         get {
             if (contactNameMap == null) {
                 contactNameMap = new Map<Id, Contact>();
                 
-                if (!contactTagId.isEmpty()) {
+                if (!objectTagId.isEmpty()) {
                     for (Contact ct : [
                         SELECT Id, FirstName, LastName
                         FROM Contact
-                        WHERE Id IN :contactTagId
+                        WHERE Id IN :objectTagId
                     ]) {
                         contactNameMap.put(ct.Id, ct);
                     }
@@ -22,12 +25,12 @@ public with sharing class ObjectTaggingService {
         set;
     }
 
-    private Map<Id, Tag__c> tagMap {
+    private static Map<Id, Tag__c> tagMap {
         get {
             if (tagMap == null) {
                 tagMap = new Map<Id, Tag__c>();
                 
-                if (!contactTagId.isEmpty()) {
+                if (!objectTagId.isEmpty()) {
                     for (Tag__c t : [
                         SELECT Id,Name
                         FROM Tag__c
@@ -44,26 +47,33 @@ public with sharing class ObjectTaggingService {
         set;
     }
 
+    public static void initData (List<Object_Tag__c> obTagList) {
 
-    public ObjectTaggingService() {
-
+        for (Object_Tag__c obTag : obTagList) {
+            if (obTag.Contact__c != null) objectTagId.add(obTag.Contact__c);
+            if(obTag.Tag__c != null) tagId.add(obTag.Tag__c);
+        }
     }
 
+    public static void updateName(List<Object_Tag__c> obTagList) {
+        
+        for (Object_Tag__c obTag : obTagList) {
+            String objectTagName = ((!contactNameMap.isEmpty() && (!String.isBlank(obTag.Contact__c) && contactNameMap.containsKey(obTag.Contact__c) && !String.isBlank(contactNameMap.get(obTag.Contact__c).FirstName))? contactNameMap.get(obTag.Contact__c).FirstName : '')
+                    +''
+                    +(!contactNameMap.isEmpty() && (!String.isBlank(obTag.Contact__c) && contactNameMap.containsKey(obTag.Contact__c) && !String.isBlank(contactNameMap.get(obTag.Contact__c).LastName)) ? contactNameMap.get(obTag.Contact__c).LastName : '')
+                    +' - '
+                    +(!tagMap.isEmpty() && (!String.isBlank(obTag.Tag__c) && tagMap.containsKey(obTag.Tag__c))? tagMap.get(obTag.Tag__c).Name: '')
+                    +' - '
+                    +datetime.now());
+            
+            if (obTag != null) {
+                obTag.Name = objectTagName.length() >= 80 ? objectTagName.substring(0,80):objectTagName;
+            }
 
-    private void updateName(Contact_Tag__c con) {
-        
-        String contactTagName = ((!contactNameMap.isEmpty() && (!String.isBlank(con.Contact__c) && contactNameMap.containsKey(con.Contact__c) && !String.isBlank(contactNameMap.get(con.Contact__c).FirstName))? contactNameMap.get(con.Contact__c).FirstName : '')
-                +''
-                +(!contactNameMap.isEmpty() && (!String.isBlank(con.Contact__c) && contactNameMap.containsKey(con.Contact__c) && !String.isBlank(contactNameMap.get(con.Contact__c).LastName)) ? contactNameMap.get(con.Contact__c).LastName : '')
-                +' - '
-                +(!tagMap.isEmpty() && (!String.isBlank(con.Tag__c) && tagMap.containsKey(con.Tag__c))? tagMap.get(con.Tag__c).Name: '')
-                +' - '
-                +datetime.now());
-        
-        if(con != null)
-        {
-            con.Name = contactTagName.length() >= 80 ? contactTagName.substring(0,80):contactTagName;
-        }
+            if (obTag.Contact_Tag_Key__c == null && obTag.Contact__c != null && obTag.Tag__c != null ) {
+                obTag.Contact_Tag_Key__c = obTag.Contact__c +''+ obTag.Tag__c;
+            }
+        }   
         
     }
 }

@@ -9,7 +9,7 @@ public class TaggingComponentController {
      
        
         List<Object_Tag__c> contactTagList = [
-            SELECT Contact__r.Name, Tag__r.Name, Tag__r.Color__c, isActive__c,isVerified__c, Tag__r.Tag_Api_Name__c,Tag__r.Tag_Label_Color__c, Contact__r.Verified_CP__c, Tag__r.Priority__c, Tag__r.Tag_Description__c, Tag__r.Removeable__c,Tag__r.Tag_Icon_URL__c, CP_Stage__c,Verified_Image__c,Verification__c 
+            SELECT Contact__r.Name, Tag__r.Name, Tag__r.Color__c, isActive__c,isVerified__c, Tag__r.Tag_Api_Name__c,Tag__r.Tag_Label_Color__c, Tag__r.Priority__c, Tag__r.Tag_Description__c, Tag__r.Removeable__c,Tag__r.Tag_Icon_URL__c, CP_Stage__c,Verified_Image__c,Verification__c 
             FROM Object_Tag__c 
             WHERE Contact__r.Id =:recordId 
             AND isActive__c=true ORDER 

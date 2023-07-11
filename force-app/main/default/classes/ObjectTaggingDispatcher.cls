@@ -12,17 +12,24 @@ public class ObjectTaggingDispatcher implements TriggerDispatcherInterface {
     }
 
     public void beforeInsert() {
+        ObjectTaggingService.createName();
     }
+
     public void beforeUpdate() {
     }
+
     public void beforeDelete() {
     }
+
     public void afterInsert() {
     }
+
     public void afterUpdate() {
     }
+
     public void afterDelete() {
     }
+
     public void afterUndelete() {
     }
 }

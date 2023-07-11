@@ -102,7 +102,7 @@ public class TaggingComponentControllerTest
             
             
         	//Create Contact Tags
-            Contact_Tag__c c1 = new Contact_Tag__c(Contact__c = cons1.Id,
+            Object_Tag__c c1 = new Object_Tag__c(Contact__c = cons1.Id,
                                                    Name = 'test_con_tag1',
                                                    CP_Stage__c = 'CP Verified',
                                                    OwnerId = testUser.Id,
@@ -110,7 +110,7 @@ public class TaggingComponentControllerTest
                                                    Tag__c = tag1.Id);
             Insert c1;
             
-            Contact_Tag__c c2 = new Contact_Tag__c(Contact__c = cons1.Id,
+            Object_Tag__c c2 = new Object_Tag__c(Contact__c = cons1.Id,
                                                    Name = 'test_con_tag2',
                                                    CP_Stage__c = 'CP Eligible',
                                                    OwnerId = testUser.Id,
@@ -118,7 +118,7 @@ public class TaggingComponentControllerTest
                                                    Tag__c = tag2.Id);
             Insert c2;
             
-            Contact_Tag__c c3 = new Contact_Tag__c(Contact__c = cons1.Id,
+            Object_Tag__c c3 = new Object_Tag__c(Contact__c = cons1.Id,
                                                    Name = 'test_con_tag3',
                                                    CP_Stage__c = 'Benefit Ready',
                                                    OwnerId = testUser.Id,
@@ -126,7 +126,7 @@ public class TaggingComponentControllerTest
                                                    Tag__c = tag3.Id);
             Insert c3;
             
-            Contact_Tag__c c4 = new Contact_Tag__c(Contact__c = cons1.Id,
+            Object_Tag__c c4 = new Object_Tag__c(Contact__c = cons1.Id,
                                                    Name = 'test_con_tag4',
                                                    CP_Stage__c = 'Benefit Applied',
                                                    OwnerId = testUser.Id,

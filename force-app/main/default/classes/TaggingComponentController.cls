@@ -3,20 +3,20 @@ public class TaggingComponentController {
     
     /*This method fetches all the tags which are a part of contacts in a Map on page load by taking the recordId as parameter*/
     @AuraEnabled
-    public static Map<String,Contact_Tag__c> contactTags(Id recordId) {
+    public static Map<String,Object_Tag__c> contactTags(Id recordId) {
         
-        Map<String,Contact_Tag__c> conTagMap = new Map<String,Contact_Tag__c>();
+        Map<String,Object_Tag__c> conTagMap = new Map<String,Object_Tag__c>();
      
        
-        List<Contact_Tag__c> contactTagList = [
+        List<Object_Tag__c> contactTagList = [
             SELECT Contact__r.Name, Tag__r.Name, Tag__r.Color__c, isActive__c,isVerified__c, Tag__r.Tag_Api_Name__c,Tag__r.Tag_Label_Color__c, Contact__r.Verified_CP__c, Tag__r.Priority__c, Tag__r.Tag_Description__c, Tag__r.Removeable__c,Tag__r.Tag_Icon_URL__c, CP_Stage__c,Verified_Image__c,Verification__c 
-            FROM Contact_Tag__c 
+            FROM Object_Tag__c 
             WHERE Contact__r.Id =:recordId 
             AND isActive__c=true ORDER 
             BY Tag__r.Priority__c ASC ,Tag__r.Name ASC
         ];
         
-        for(Contact_Tag__c conList:contactTagList){
+        for(Object_Tag__c conList:contactTagList){
                 conTagMap.put(conList.Tag__r.Name,conList);
         }
         
@@ -51,16 +51,16 @@ public class TaggingComponentController {
         for(Tag__c t:[SELECT Id,Name,Searchable__c FROM Tag__c WHERE Name Like:tag]){
             tagId =t.Id;
         }
-        List<Contact_Tag__c> contactTaggedList = [
-            SELECT Contact__r.Name,Tag__r.Name,isActive__c FROM Contact_Tag__c WHERE Contact__r.Id =:recordId AND Tag__r.Name =:tag
+        List<Object_Tag__c> contactTaggedList = [
+            SELECT Contact__r.Name,Tag__r.Name,isActive__c FROM Object_Tag__c WHERE Contact__r.Id =:recordId AND Tag__r.Name =:tag
         ];
         
         system.debug('contactTaggedList'+contactTaggedList);
-        list<Contact_Tag__c> updateTag = new List<Contact_Tag__c>();
+        list<Object_Tag__c> updateTag = new List<Object_Tag__c>();
         
         if(!contactTaggedList.isEmpty()){
             
-            for(Contact_Tag__c cc: contactTaggedList){
+            for(Object_Tag__c cc: contactTaggedList){
                 if(cc.isActive__c == false){
                     cc.isActive__c = true;
                     cc.Effective_Date__c = datetime.now();
@@ -72,7 +72,7 @@ public class TaggingComponentController {
         }
         else{
             
-            Contact_Tag__c addtag = new Contact_Tag__c();
+            Object_Tag__c addtag = new Object_Tag__c();
             addtag.Contact__c = recordId;
             addtag.Tag__c = tagId;
             addtag.isActive__c = true;
@@ -99,9 +99,9 @@ public class TaggingComponentController {
         
         String returnResult; 
         
-        list<Contact_Tag__c> removeTag = new List<Contact_Tag__c>();
-        for(Contact_Tag__c cc: [
-            SELECT Contact__r.Name,Tag__r.Name,isActive__c FROM Contact_Tag__c WHERE Contact__r.Id =:recordId AND Tag__r.Name =:tag AND Tag__r.Removeable__c = true
+        list<Object_Tag__c> removeTag = new List<Object_Tag__c>();
+        for(Object_Tag__c cc: [
+            SELECT Contact__r.Name,Tag__r.Name,isActive__c FROM Object_Tag__c WHERE Contact__r.Id =:recordId AND Tag__r.Name =:tag AND Tag__r.Removeable__c = true
         ]){
             cc.isActive__c = false;
             cc.Tag_Removal_Reason__c = tagRemovalReason;
@@ -126,7 +126,7 @@ public class TaggingComponentController {
     public static String tagRemovalReason(){
         Map<String,String> pickListValues = new Map<String,String>();
         
-        Schema.DescribeFieldResult fieldResult = Contact_Tag__c.Tag_Removal_Reason__c.getDescribe();
+        Schema.DescribeFieldResult fieldResult = Object_Tag__c.Tag_Removal_Reason__c.getDescribe();
         List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
         for( Schema.PicklistEntry pickListVal : ple){
             pickListValues.put(pickListVal.getLabel(),pickListVal.getValue());

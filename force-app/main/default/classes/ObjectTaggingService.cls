@@ -55,7 +55,7 @@ public with sharing class ObjectTaggingService {
         }
     }
 
-    public static void updateName(List<Object_Tag__c> obTagList) {
+    public static void createName(List<Object_Tag__c> obTagList) {
         
         for (Object_Tag__c obTag : obTagList) {
             String objectTagName = ((!contactNameMap.isEmpty() && (!String.isBlank(obTag.Contact__c) && contactNameMap.containsKey(obTag.Contact__c) && !String.isBlank(contactNameMap.get(obTag.Contact__c).FirstName))? contactNameMap.get(obTag.Contact__c).FirstName : '')

@@ -1,0 +1,135 @@
+.inline {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    margin: 0;
+    padding: 0;
+}
+
+.removableTextColor {
+    position: relative;
+    display: inline-block;
+    background-color: white;
+    color: black;
+    text-align: center;
+    border-radius: 6px;
+    width: 120px;
+    padding: 0px 0;
+    border: black;
+}
+
+.widthClass {
+    width: 350px !important;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: white;
+    color: #000;
+    text-align: center;
+    padding: 0px 0;
+    border-style: none;
+    border-width: 0px;
+    border-color: black;
+
+
+    position: absolute;
+    top: 30px;
+    right: -10px;
+}
+
+.tooltip:active .tooltiptext {
+    visibility: visible;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 6px;
+    z-index: 1;
+}
+
+.width {
+    width: 500px;
+}
+
+.slds-slds-card__header .slds-grid {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.my-brand {
+    --sds-c-button-brand-color-background: yellow;
+
+}
+
+.leftAllign {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    position: relative;
+}
+
+.test {
+    border-radius: 4px;
+    padding: 5px;
+    color: white;
+    margin: 4px 6px;
+    border: none;
+    font-weight: 600;
+}
+
+.customIcon {
+    margin-left: 5px;
+}
+
+/* .cancelPosition{
+    position: absolute;
+    top: -10px;
+    right: -10px;
+} */
+
+.x-icon {
+    position: relative;
+    display: inline-block;
+}
+
+.x-icon:hover .close-button {
+    display: block;
+}
+
+.close-button {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    display: none;
+}
+
+.close-button a {
+    color: #000;
+}
+
+.slds-form-element__label {
+    float: left;
+}
+
+.slds-modal__content {
+    overflow: visible;
+    overflow-y: scroll;
+    height: 50% !important;
+
+}
+
+.modalsmall {
+    overflow: visible;
+    overflow-y: scroll;
+}
+
+.slds-button_icon-border {
+    border: 0 !important;
+}

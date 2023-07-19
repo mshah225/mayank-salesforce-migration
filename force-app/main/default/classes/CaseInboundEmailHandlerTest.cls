@@ -225,11 +225,16 @@ public with sharing class CaseInboundEmailHandlerTest {
             Name = 'Default Org Wide Email Address',
             Value__c = 'default@test.test'
         );
+        Email_To_Case_Configuration__c etcc5 = new Email_To_Case_Configuration__c(
+            Name = 'Attachment Limit',
+            Value__c = '50'
+        );
 
         insert etcc1;
         insert etcc2;
         insert etcc3;
         insert etcc4;
+        insert etcc5;
 
         Email_Logging__c logging = new Email_Logging__c(
             Name = 'Current_Settings',

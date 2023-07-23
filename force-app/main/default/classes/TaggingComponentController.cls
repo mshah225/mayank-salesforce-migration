@@ -5,22 +5,22 @@ public class TaggingComponentController {
     @AuraEnabled
     public static Map<String,Object_Tag__c> contactTags(Id recordId) {
         
-        Map<String,Object_Tag__c> conTagMap = new Map<String,Object_Tag__c>();
+        Map<String,Object_Tag__c> objTagMap = new Map<String,Object_Tag__c>();
      
        
-        List<Object_Tag__c> contactTagList = [
+        List<Object_Tag__c> objectTagList = [
             SELECT Contact__r.Name, Tag__r.Name, Tag__r.Color__c, isActive__c,isVerified__c, Tag__r.Tag_Api_Name__c,Tag__r.Tag_Label_Color__c, Tag__r.Priority__c, Tag__r.Tag_Description__c, Tag__r.Removeable__c,Tag__r.Tag_Icon_URL__c, CP_Stage__c,Verified_Image__c,Verification__c 
             FROM Object_Tag__c 
-            WHERE Contact__r.Id =:recordId 
+            WHERE Related_Object_Id__c =: recordId 
             AND isActive__c=true ORDER 
             BY Tag__r.Priority__c ASC ,Tag__r.Name ASC
         ];
         
-        for(Object_Tag__c conList:contactTagList){
-                conTagMap.put(conList.Tag__r.Name,conList);
+        for (Object_Tag__c obListItem : objectTagList) {
+            objTagMap.put(obListItem.Tag__r.Name, obListItem);
         }
         
-        return conTagMap;
+        return objTagMap;
     }
     
     /*This method fetches all the tags which can be serached on the UI and takes the tagSearch String as the parameter*/

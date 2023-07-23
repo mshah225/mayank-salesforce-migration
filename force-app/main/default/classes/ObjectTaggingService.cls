@@ -76,4 +76,20 @@ public with sharing class ObjectTaggingService {
         }   
         
     }
+
+    public static void applyRelatedObject(List<Object_Tag__c> obTagList) {
+        Map<String, Object_Tag_Mapping__mdt> relatedObjectMap = Object_Tag_Mapping__mdt.getAll();
+
+        
+        for (Object_Tag__c obTag : obTagList) {
+            String firstThreeOfId = obTag.Related_Object_Id__c.left(3);
+            for (Object_Tag_Mapping__mdt otm : relatedObjectMap.values()) {
+                if (otm.Object_Prefix__c == firstThreeOfId) {
+                    obTag.put(otm.Related_Field_Name__c, obTag.Related_Object_Id__c);
+                } else {
+                    obTag.put(otm.Related_Field_Name__c, null);
+                }
+            }
+        }        
+    }
 }

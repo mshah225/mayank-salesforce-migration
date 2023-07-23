@@ -73,7 +73,7 @@ public class TaggingComponentController {
         else{
             
             Object_Tag__c addtag = new Object_Tag__c();
-            addtag.Contact__c = recordId;
+            addtag.Related_Object_Id__c = recordId;
             addtag.Tag__c = tagId;
             addtag.isActive__c = true;
             addtag.Effective_Date__c = datetime.now();

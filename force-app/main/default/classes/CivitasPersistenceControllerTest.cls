@@ -90,7 +90,7 @@ public with sharing class CivitasPersistenceControllerTest {
         ];
         Contact c = [SELECT Id FROM Contact LIMIT 1];
 
-        PageReference pageRef = Page.StudentProfile;
+        PageReference pageRef = Page.Student360Profile;
         pageRef.getParameters().put('contactId', c.Id.to15());
         Test.setCurrentPage(pageRef);
         Test.startTest();
@@ -131,7 +131,7 @@ public with sharing class CivitasPersistenceControllerTest {
 
         Contact c = [SELECT Id FROM Contact LIMIT 1];
 
-        PageReference pageRef = Page.StudentProfile;
+        PageReference pageRef = Page.Student360Profile;
         pageRef.getParameters().put('contactId', c.Id.to15());
         Test.setCurrentPage(pageRef);
         Test.startTest();
@@ -171,7 +171,7 @@ public with sharing class CivitasPersistenceControllerTest {
 
         Contact c = [SELECT Id FROM Contact LIMIT 1];
 
-        PageReference pageRef = Page.StudentProfile;
+        PageReference pageRef = Page.Student360Profile;
         pageRef.getParameters().put('contactId', c.Id.to15());
         Test.setCurrentPage(pageRef);
         Test.startTest();
@@ -193,7 +193,7 @@ public with sharing class CivitasPersistenceControllerTest {
     private static void testGetInfoByContactId() {
         Contact c = [SELECT Id, FirstName, LastName, EMPLID__c FROM Contact LIMIT 1];
 
-        PageReference pageRef = Page.StudentProfile;
+        PageReference pageRef = Page.Student360Profile;
         pageRef.getParameters().put('contactId', c.Id.to15());
         Test.setCurrentPage(pageRef);
         Test.startTest();
@@ -209,7 +209,7 @@ public with sharing class CivitasPersistenceControllerTest {
     private static void testGetInfoByEmplId() {
         Contact c = [SELECT Id, FirstName, LastName, EMPLID__c FROM Contact LIMIT 1];
 
-        PageReference pageRef = Page.StudentProfile;
+        PageReference pageRef = Page.Student360Profile;
         pageRef.getParameters().put('contactId', c.EMPLID__c);
         Test.setCurrentPage(pageRef);
         Test.startTest();
@@ -223,7 +223,7 @@ public with sharing class CivitasPersistenceControllerTest {
 
     @isTest
     private static void testGetInfoErrorUnsetId() {
-        Test.setCurrentPage(Page.StudentProfile);
+        Test.setCurrentPage(Page.Student360Profile);
         Test.startTest();
         CivitasPersistenceController controller = new CivitasPersistenceController();
         Test.stopTest();
@@ -235,7 +235,7 @@ public with sharing class CivitasPersistenceControllerTest {
     private static void testGetInfoErrorInvalidId() {
         Contact c = [SELECT Id, FirstName, LastName, EMPLID__c FROM Contact LIMIT 1];
 
-        PageReference pageRef = Page.StudentProfile;
+        PageReference pageRef = Page.Student360Profile;
         pageRef.getParameters().put('contactId', 'INVALID_ID');
         Test.setCurrentPage(pageRef);
         Test.startTest();

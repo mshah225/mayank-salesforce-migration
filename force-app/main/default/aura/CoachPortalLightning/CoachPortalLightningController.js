@@ -17,12 +17,12 @@
                     (event.data.includes('/500/e?retURL=%2F0036300000AU5YZ&def_contact_id=') ||
                         event.data.includes('/lightning/r/Case/') ||
                         event.data.includes('/apex/successRecoding') ||
-                        event.data.includes('/apex/StudentProfile?contactId='))
+                        event.data.includes('/apex/Student360Profile?contactId='))
                 ) {
                     messageValid = true;
                 }
                 if (validOrigin && messageValid) {
-                    if (event.data.includes('/apex/StudentProfile?contactId=')) {
+                    if (event.data.includes('/apex/Student360Profile?contactId=')) {
                         // Pull contactId off of message, use to open primary toab for Contact
                         var contactId = event.data.substring(0, 18);
                         workspaceAPI
@@ -31,7 +31,7 @@
                                 focus: true,
                             })
                             .then(function (response) {
-                                // Use rest of StudentProfile message to open StudentProfile
+                                // Use rest of Student360Profile message to open Student360Profile
                                 workspaceAPI.openSubtab({
                                     parentTabId: response,
                                     url: event.data.substring(18, event.length),

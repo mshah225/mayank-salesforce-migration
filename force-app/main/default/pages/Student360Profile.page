@@ -1,6 +1,6 @@
 <apex:page
-    id="studentProfile"
-    controller="StudentProfileController"
+    id="Student360Profile"
+    controller="Student360ProfileController"
     cache="true"
     showHeader="false"
     sideBar="false"
@@ -26,7 +26,7 @@
         <apex:stylesheet
             value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"
         />
-        <c:StudentProfileStyles />
+        <c:Student360ProfileStyles />
         <style>
             .gradTable {
                 font-family: arial, sans-serif;
@@ -3410,7 +3410,7 @@
                     'Please ensure that subject and description are not blank';
             } else {
                 Visualforce.remoting.Manager.invokeAction(
-                    '{!$RemoteAction.StudentProfileController.createCase}',
+                    '{!$RemoteAction.Student360ProfileController.createCase}',
                     description,
                     subject,
                     funcGroup,
@@ -3481,7 +3481,7 @@
 
         function loadRemoteSunCardPhoto() {
             Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.getSunCardPhotoRA}',
+                '{!$RemoteAction.Student360ProfileController.getSunCardPhotoRA}',
                 '{!theContact.ASURite_ID__c}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
@@ -4029,7 +4029,7 @@
                             });
                             noteResponse = JSON.stringify(noteResponse);
                             Visualforce.remoting.Manager.invokeAction(
-                                '{!$RemoteAction.StudentProfileController.getPSAdvisorNotes}',
+                                '{!$RemoteAction.Student360ProfileController.getPSAdvisorNotes}',
                                 '{!theContact.EMPLID__c}',
                                 noteResponse,
                                 function (result, event) {
@@ -4141,7 +4141,7 @@
                         });
                         commentResponse = JSON.stringify(commentResponse);
                         Visualforce.remoting.Manager.invokeAction(
-                            '{!$RemoteAction.StudentProfileController.getComments}',
+                            '{!$RemoteAction.Student360ProfileController.getComments}',
                             '{!theContact.EMPLID__c}',
                             commentResponse,
                             function (result, event) {
@@ -4477,7 +4477,7 @@
                             classResponse = JSON.stringify(classResponse);
                             asrResponse = JSON.stringify(asrResponse);
                             Visualforce.remoting.Manager.invokeAction(
-                                '{!$RemoteAction.StudentProfileController.getClassesData}',
+                                '{!$RemoteAction.Student360ProfileController.getClassesData}',
                                 classResponse,
                                 asrResponse,
                                 function (result, event) {
@@ -4838,7 +4838,7 @@
         function sortEnrolledClassList(paramToSort, direction) {
             var enrolledWrapperJson = JSON.stringify(enrolledWrapper);
             Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.sortClasses}',
+                '{!$RemoteAction.Student360ProfileController.sortClasses}',
                 paramToSort,
                 enrolledWrapperJson,
                 direction,
@@ -4974,7 +4974,7 @@
         function sortDroppedClassList(paramToSort, direction) {
             var droppedWrapperJson = JSON.stringify(droppedWrapper);
             Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.sortClasses}',
+                '{!$RemoteAction.Student360ProfileController.sortClasses}',
                 paramToSort,
                 droppedWrapperJson,
                 direction,
@@ -5143,7 +5143,7 @@
         //Method to Sort Exam List
         function sortExamList(paramToSort, direction) {
             Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.sortExams}',
+                '{!$RemoteAction.Student360ProfileController.sortExams}',
                 paramToSort,
                 examWrapper,
                 direction,
@@ -5303,7 +5303,7 @@
 
         function loadServiceIndicators() {
             Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.getServiceIndicatorsForStudent}',
+                '{!$RemoteAction.Student360ProfileController.getServiceIndicatorsForStudent}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
                     if (result.length > 0) {
@@ -5363,7 +5363,7 @@
 
         function loadFinancialAidChecklist() {
             Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.getFinancialAidChecklist}',
+                '{!$RemoteAction.Student360ProfileController.getFinancialAidChecklist}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
                     if (result.length > 0) {
@@ -5437,7 +5437,7 @@
 
         function loadUnresolvedFinancialAidChecklist(checklists) {
             Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.getUnresolvedFinancialAidChecklist}',
+                '{!$RemoteAction.Student360ProfileController.getUnresolvedFinancialAidChecklist}',
                 checklists,
                 function (result, event) {
                     if (result.length > 0) {
@@ -5498,7 +5498,7 @@
 
         function loadFinancialAidEditMessages() {
             Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.getEditMessages}',
+                '{!$RemoteAction.Student360ProfileController.getEditMessages}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
                     var keySet = Object.keys(result);
@@ -5579,7 +5579,7 @@
 
         function loadFinancialAidAwards() {
             Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.getAwardStatusMap}',
+                '{!$RemoteAction.Student360ProfileController.getAwardStatusMap}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
                     var keySet = Object.keys(result);
@@ -5689,7 +5689,7 @@
 
         function loadFinancialAidChargeHistory() {
             Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.getChargeHistoryMap}',
+                '{!$RemoteAction.Student360ProfileController.getChargeHistoryMap}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
                     var keySet = Object.keys(result);
@@ -5789,7 +5789,7 @@
         //Account Balance
         function loadAccountBalance() {
             Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.getFinancialAidAccountBalance}',
+                '{!$RemoteAction.Student360ProfileController.getFinancialAidAccountBalance}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
                     var html = '';
@@ -5854,7 +5854,7 @@
         //Refunds
         function loadRefunds() {
             Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.getFinancialAidRefunds}',
+                '{!$RemoteAction.Student360ProfileController.getFinancialAidRefunds}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
                     if (Object.keys(result).length != 0) {
@@ -5914,7 +5914,7 @@
 
         function loadDepositStatus() {
             Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.getDepositStatus}',
+                '{!$RemoteAction.Student360ProfileController.getDepositStatus}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
                     if (Object.keys(result).length != 0) {
@@ -5966,7 +5966,7 @@
         //Renewable Aid
         function loadRenewableAid() {
             Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.getRenewableAid}',
+                '{!$RemoteAction.Student360ProfileController.getRenewableAid}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
                     if (result.emplid != null) {
@@ -6034,7 +6034,7 @@
         //Book Payments
         function loadBookPayment() {
             Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.getBookPayments}',
+                '{!$RemoteAction.Student360ProfileController.getBookPayments}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
                     if (result.emplid != null) {
@@ -6098,7 +6098,7 @@
 
         function loadResidencyStatus() {
             Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.getTuitionResidencyStatus}',
+                '{!$RemoteAction.Student360ProfileController.getTuitionResidencyStatus}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
                     if (result != null && result.tuition_residency.length > 0) {
@@ -6134,7 +6134,7 @@
 
         function loadAcademicProgress() {
             Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.getAcademicProgress}',
+                '{!$RemoteAction.Student360ProfileController.getAcademicProgress}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
                     var keySet = Object.keys(result);

@@ -3,10 +3,5 @@
     <apiVersion>36.0</apiVersion>
     <availableInTouch>false</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
-    <label>studentProfile</label>
-    <packageVersions>
-        <majorNumber>242</majorNumber>
-        <minorNumber>43</minorNumber>
-        <namespace>et4ae5</namespace>
-    </packageVersions>
+    <label>Student 360 Profile</label>
 </ApexPage>

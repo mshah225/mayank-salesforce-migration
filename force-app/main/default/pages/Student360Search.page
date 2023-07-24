@@ -1,9 +1,9 @@
 <apex:page showHeader="false" sidebar="false">
     <apex:includeLightning />
-    <div id="student360-search" />
+    <div id="student-360-search" />
     <script>
         $Lightning.use('c:Student360SearchApp', function () {
-            $Lightning.createComponent('c:student360Search', {}, 'student360-search', function (cmp) {
+            $Lightning.createComponent('c:student360Search', {}, 'student-360-search', function (cmp) {
                 console.log('LWC Componenet added in VF page');
             });
         });

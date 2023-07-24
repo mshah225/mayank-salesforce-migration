@@ -23,11 +23,11 @@
             }
         }
 
-        function openStudentProfile(emplId, contactName) {
+        function openStudent360Profile(emplId, contactName) {
             if (sforce.console.isInConsole()) {
-                sforce.console.openPrimaryTab(null, '/apex/studentProfile?contactId=' + emplId, true, contactName);
+                sforce.console.openPrimaryTab(null, '/apex/Student360Profile?contactId=' + emplId, true, contactName);
             } else {
-                window.open('/apex/studentProfile?contactId=' + emplId);
+                window.open('/apex/Student360Profile?contactId=' + emplId);
             }
         }
 
@@ -560,8 +560,8 @@
                                 />
 
                                 <apex:commandButton
-                                    id="studentProfileButton"
-                                    onclick="openStudentProfile('{!contactsrch.EMPLID__c}', '{!contactName}'); return false;"
+                                    id="Student360ProfileButton"
+                                    onclick="openStudent360Profile('{!contactsrch.EMPLID__c}', '{!contactName}'); return false;"
                                     value="Student Profile"
                                     disabled="{!NOT(isContactSet && NOT(ISNULL(contactsrch.EMPLID__c) || contactsrch.EMPLID__c == ''))}"
                                     reRender="innersecond"
@@ -805,8 +805,8 @@
                                 />
 
                                 <apex:commandButton
-                                    id="studentProfileButtonCase"
-                                    onclick="openStudentProfile('{!contactsrch.EMPLID__c}', '{!contactName}'); return false;"
+                                    id="Student360ProfileButtonCase"
+                                    onclick="openStudent360Profile('{!contactsrch.EMPLID__c}', '{!contactName}'); return false;"
                                     value="Student Profile"
                                     disabled="{!ISNULL(contactsrch.EMPLID__c) || contactsrch.EMPLID__c == ''}"
                                     reRender="innersecond"

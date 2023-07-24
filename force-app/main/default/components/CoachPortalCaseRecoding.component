@@ -4,7 +4,8 @@
     <apex:includeScript value="{! URLFOR($Resource.showMyCasesResources, 'showMyCasesResources/showMyCases.js') }" />
     <apex:stylesheet value="{! URLFOR($Resource.showMyCasesResources, 'showMyCasesResources/showMyCases.css') }" />
     <apex:stylesheet value="{! URLFOR($Resource.ASUTable, 'ASUTable.css')}" />
-    <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"
+    <apex:stylesheet
+        value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"
     />
 
     <apex:attribute name="queryString" type="String" description="" assignTo="{!queryAttr}" />
@@ -16,12 +17,15 @@
             <div class="headerFooter">
                 <div class="toolbar">
                     <apex:outputPanel layout="inline" styleClass="button-group">
-                        <apex:outputLink styleClass="btn btn-default btn-md asu-primary"
+                        <apex:outputLink
+                            styleClass="btn btn-default btn-md asu-primary"
                             value="javascript:;"
                             style="margin-right: 10px; margin-top: 5px"
                             onclick="toggleTransferModal(this)"
-                            >Mass Transfer</apex:outputLink>
-                        <apex:commandLink styleClass="btn btn-default btn-md asu-primary"
+                            >Mass Transfer</apex:outputLink
+                        >
+                        <apex:commandLink
+                            styleClass="btn btn-default btn-md asu-primary"
                             style="margin-top: 5px"
                             reRender="rerenderMe"
                             status="ASUAjaxStatus"
@@ -30,11 +34,13 @@
                             <i style="padding-bottom: 3px; padding-top: 4px" class="fa fa-refresh fa-lg"></i>
                         </apex:commandLink>
                     </apex:outputPanel>
-                    <apex:outputPanel layout="block"
+                    <apex:outputPanel
+                        layout="block"
                         styleClass="input-group"
                         style="width: 100%; max-width: 250px; margin-top: 5px"
                     >
-                        <apex:inputText id="myStudentsInput"
+                        <apex:inputText
+                            id="myStudentsInput"
                             value="{!searchString}"
                             html-placeholder="Filter Results"
                             onkeypress="return noenter(event);"
@@ -51,7 +57,8 @@
                             "
                             styleClass="form-control"
                         />
-                        <apex:commandLink id="searchStudentsBtn"
+                        <apex:commandLink
+                            id="searchStudentsBtn"
                             status="ASUAjaxStatus"
                             reRender="rerenderMe"
                             style="color: #555"
@@ -83,7 +90,8 @@
                             });
                         </script>
 
-                        <apex:commandLink action="{!resetSearch}"
+                        <apex:commandLink
+                            action="{!resetSearch}"
                             status="ASUAjaxStatus"
                             reRender="rerenderMe"
                             style="
@@ -100,12 +108,14 @@
                 </div>
                 <div style="height: 1px; width = 100%"></div>
                 <div>
-                    <apex:outputPanel layout="block"
+                    <apex:outputPanel
+                        layout="block"
                         styleClass="pageSizeSection"
                         style="width: 100%"
                         html-align="center"
                     >
-                        <apex:commandLink action="{!setConPrev}"
+                        <apex:commandLink
+                            action="{!setConPrev}"
                             value="<< Prev"
                             rendered="{!setCon.HasPrevious}"
                             style="float: left"
@@ -115,7 +125,8 @@
                         />
                         <apex:outputText value="Page Size " />
                         <apex:selectList label="Page Size" value="{!pageSize}" size="1" styleClass="pageSizeField">
-                            <apex:actionSupport event="onchange"
+                            <apex:actionSupport
+                                event="onchange"
                                 reRender="rerenderMe"
                                 onsubmit="handlePageSizeField(this)"
                                 status="ASUAjaxStatus"
@@ -125,10 +136,12 @@
                             <apex:selectOption itemValue="100" itemLabel="100" />
                         </apex:selectList>
                         <apex:outputText value=" Showing {!(setCon.PageSize * (setCon.PageNumber - 1)) + 1} - " />
-                        <apex:outputText value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of "
+                        <apex:outputText
+                            value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of "
                         />
                         <apex:outputText value="{!setCon.ResultSize} Records" />
-                        <apex:commandLink action="{!setConNext}"
+                        <apex:commandLink
+                            action="{!setConNext}"
                             value="Next >>"
                             rendered="{!setCon.HasNext}"
                             style="float: right"
@@ -143,7 +156,8 @@
         <apex:form id="tableForm">
             <apex:dataTable value="{!caseWrapperList}" var="caseWrapper" styleClass="ASUTable">
                 <apex:column headerClass="ASUColumnHead centerText" styleClass="ASUColumn centerText">
-                    <apex:inputCheckbox value="{!caseWrapper.selected}"
+                    <apex:inputCheckbox
+                        value="{!caseWrapper.selected}"
                         styleClass="selectBox"
                         onchange="handleSelectAll(this);"
                     />
@@ -183,10 +197,12 @@
                         </apex:commandLink>
                     </apex:facet>
 
-                    <apex:outputLink value="javascript:;"
-                        onclick="openStudentProfileLightning('{!caseWrapper.obj.ContactId}', '{!caseWrapper.obj.Contact.Name}', '{!caseWrapper.obj.Contact.EMPLID__c}')"
+                    <apex:outputLink
+                        value="javascript:;"
+                        onclick="openStudent360ProfileLightning('{!caseWrapper.obj.ContactId}', '{!caseWrapper.obj.Contact.Name}', '{!caseWrapper.obj.Contact.EMPLID__c}')"
                         styleClass="standardLink"
-                        >{!caseWrapper.obj.Contact.EMPLID__c}</apex:outputLink>
+                        >{!caseWrapper.obj.Contact.EMPLID__c}</apex:outputLink
+                    >
                 </apex:column>
 
                 <apex:column headerValue="Case (Details)" headerClass="ASUColumnHead" styleClass="ASUColumn">
@@ -202,13 +218,16 @@
                         </apex:commandLink>
                     </apex:facet>
 
-                    <apex:outputLink value="javascript:;"
+                    <apex:outputLink
+                        value="javascript:;"
                         onclick="openCaseLightning('{!caseWrapper.obj.Id}', '{!caseWrapper.obj.CaseNumber}')"
                         styleClass="standardLink"
-                        >{!caseWrapper.obj.Subject}</apex:outputLink>
+                        >{!caseWrapper.obj.Subject}</apex:outputLink
+                    >
                 </apex:column>
 
-                <apex:column headerValue="Status"
+                <apex:column
+                    headerValue="Status"
                     value="{!caseWrapper.obj.Status}"
                     headerClass="ASUColumnHead"
                     styleClass="ASUColumn"
@@ -246,16 +265,19 @@
                     {!caseWrapper.successStudent.Success_Coach_Name__c}
                     <apex:facet name="header">
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
-                            <apex:param name="successCoach"
+                            <apex:param
+                                name="successCoach"
                                 value="successStudent.Success_Coach_Name__c"
                                 assignTo="{!sortField}"
                             />
                             Coach&nbsp;
-                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'successStudent.Success_Coach_Name__c'}"
+                            <apex:outputPanel
+                                rendered="{!sortDir == 'ASC' && sortField == 'successStudent.Success_Coach_Name__c'}"
                             >
                                 <span style="font-size: 7pt" class="fa fa-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
-                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'successStudent.Success_Coach_Name__c'}"
+                            <apex:outputPanel
+                                rendered="{!sortDir == 'DESC' && sortField == 'successStudent.Success_Coach_Name__c'}"
                             >
                                 <span style="font-size: 7pt" class="fa fa-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
@@ -267,16 +289,19 @@
                     {!caseWrapper.successStudent.Success_Resource__r.Delegated_Resource__r.Name}
                     <apex:facet name="header">
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
-                            <apex:param name="delegatedResource"
+                            <apex:param
+                                name="delegatedResource"
                                 value="successStudent.Delegated_Resource__r.Name"
                                 assignTo="{!sortField}"
                             />
                             Coverage Coach&nbsp;
-                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'successStudent.Delegated_Resource__r.Name'}"
+                            <apex:outputPanel
+                                rendered="{!sortDir == 'ASC' && sortField == 'successStudent.Delegated_Resource__r.Name'}"
                             >
                                 <span style="font-size: 7pt" class="fa fa-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
-                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'successStudent.Delegated_Resource__r.Name'}"
+                            <apex:outputPanel
+                                rendered="{!sortDir == 'DESC' && sortField == 'successStudent.Delegated_Resource__r.Name'}"
                             >
                                 <span style="font-size: 7pt" class="fa fa-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
@@ -303,7 +328,8 @@
                         </div>
 
                         <div class="modal-footer">
-                            <apex:commandLink type="button"
+                            <apex:commandLink
+                                type="button"
                                 styleClass="btn btn-default btn-md asu-primary"
                                 action="{!transferCases}"
                                 status="ASUAjaxStatus"
@@ -322,7 +348,8 @@
         </apex:form>
         <apex:form id="alius-format77778">
             <div class="headerFooter">
-                <apex:commandLink action="{!setConPrev}"
+                <apex:commandLink
+                    action="{!setConPrev}"
                     value="<< Prev"
                     rendered="{!setCon.HasPrevious}"
                     style="float: left"
@@ -332,7 +359,8 @@
                 />
                 <apex:outputText value="Page Size " />
                 <apex:selectList label="Page Size" value="{!pageSize}" size="1" styleClass="pageSizeField">
-                    <apex:actionSupport event="onchange"
+                    <apex:actionSupport
+                        event="onchange"
                         reRender="rerenderMe"
                         onsubmit="handlePageSizeField(this)"
                         status="ASUAjaxStatus"
@@ -342,10 +370,12 @@
                     <apex:selectOption itemValue="100" itemLabel="100" />
                 </apex:selectList>
                 <apex:outputText value=" Showing {!(setCon.PageSize * (setCon.PageNumber - 1)) + 1} - " />
-                <apex:outputText value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of "
+                <apex:outputText
+                    value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of "
                 />
                 <apex:outputText value="{!setCon.ResultSize} Records" />
-                <apex:commandLink action="{!setConNext}"
+                <apex:commandLink
+                    action="{!setConNext}"
                     value="Next >>"
                     rendered="{!setCon.HasNext}"
                     style="float: right"
@@ -362,14 +392,14 @@
             return typeof sforce != 'undefined' && sforce && !!sforce.one;
         }
 
-        function openStudentProfileLightning(contactId, contactName, contactEmplid) {
+        function openStudent360ProfileLightning(contactId, contactName, contactEmplid) {
             var isFound = false;
             if (sforce.console.isInConsole()) {
                 sforce.console.openPrimaryTab(null, '/' + contactId, true, contactName, function (result) {
                     if (result.success) {
                         sforce.console.openSubtab(
                             result.id,
-                            '/apex/studentProfile?contactId=' + contactId,
+                            '/apex/Student360Profile?contactId=' + contactId,
                             true,
                             contactName + ' Student Profile',
                             null
@@ -388,7 +418,7 @@
                                             // contactId is 18 digit, ObjectId is 15
                                             sforce.console.openSubtab(
                                                 parentTabId,
-                                                '/apex/studentProfile?contactId=' + contactId,
+                                                '/apex/Student360Profile?contactId=' + contactId,
                                                 true,
                                                 contactName + ' Student Profile',
                                                 null
@@ -402,7 +432,7 @@
                 });
             } else if (isLightningExperienceOrSalesforce1()) {
                 // contactId is to be parsed out in the listener, pre-appension is to pass the value in a single message
-                var message = contactId + '/apex/StudentProfile?contactId=' + contactEmplid;
+                var message = contactId + '/apex/Student360Profile?contactId=' + contactEmplid;
                 parent.postMessage(message, '*');
             }
         }

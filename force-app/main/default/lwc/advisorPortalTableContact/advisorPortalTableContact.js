@@ -69,8 +69,8 @@ export default class AdvisorPortalTableContact extends LightningElement {
         this.sendOpenToggleEvent(true);
     }
 
-    openStudentProfile() {
-        this.sendNavigateEvent('studentprofile', {
+    openStudent360Profile() {
+        this.sendNavigateEvent('Student360Profile', {
             contactId: this.contactWrapper.portalContact.Id,
             contactName: this.contactWrapper.portalContact.Name,
         });

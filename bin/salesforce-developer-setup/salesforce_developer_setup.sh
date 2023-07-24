@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Ensure that ASU is set as a remote
-git remote add ASU https://github.com/ASU/crm-salesforce-enterprise
+git remote add origin https://github.com/ASU/crm-salesforce-enterprise
 
 # Keep Homebrew up-to-date
 if [ "$(uname)" == "Darwin" ]; then

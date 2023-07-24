@@ -71,9 +71,8 @@ public without sharing class UserDeprovisionOrganizer {
             List<CollaborationGroupMember> toDeleteChatterGroupMemberships = new List<CollaborationGroupMember>();
             List<PermissionSetAssignment> toDeletePermissionSetAssignments = new List<PermissionSetAssignment>();
             List<UserPackageLicense> toDeleteUserPackageLicense = new List<UserPackageLicense>();
-
-            // deprovision cases asynchronously
-            batchTransferDeprovisionUserCases();
+            List<Id> userIdsToTransferCases = new List<Id>();
+            Map<User, Boolean> userDeprovisionCapabilityMap = new Map<User, Boolean>();
 
             for (UserDeprovisioner userDeprovisioner : userDeprovisionersList) {
                 // Setup deprovision
@@ -84,8 +83,10 @@ public without sharing class UserDeprovisionOrganizer {
                 userDeprovisioner.setUserPackageLicenses(userToPackageLicenseMap.get(userId));
                 userDeprovisioner.setUserLogin(userToUserLoginMap.get(userId));
                 userDeprovisioner.setFieldIdToNameMap(fieldIdToNameMap);
+                
                 // Deprovision
-                userDeprovisioner.deprovisionUser(); // async
+                Boolean canDeprovision = userIdsToTransferCases.add(userId)) userIdsToTransferCases.add(userId);
+                
                 // Get all updated and deleted data
                 UserLogin needToUpdateUserLogin = userDeprovisioner.getToUpdateUserLogin();
                 if (needToUpdateUserLogin != null) {
@@ -98,6 +99,7 @@ public without sharing class UserDeprovisionOrganizer {
 
                 User userWithProcessingNotes = userDeprovisioner.getDeprovisionedUserWithProcessingNotes();
                 toUpdateUsers.add(userWithProcessingNotes);
+                userDeprovisionCapabilityMap.put(userWithProcessingNotes, canDeprovision);
                 userToProcessingNotesMap.put(userId, userWithProcessingNotes.Processing_Notes__c);
             }
 
@@ -113,12 +115,12 @@ public without sharing class UserDeprovisionOrganizer {
                 deleteSobjectRecords('UserId', toDeleteUserPackageLicense, userToProcessingNotesMap);
             }
 
-            if (!toUpdateUsers.isEmpty()) {
-                updateSobjectRecords('Id', toUpdateUsers, userToProcessingNotesMap);
-            }
+            // if (!toUpdateUsers.isEmpty()) {
+            //     updateSobjectRecords('Id', toUpdateUsers, userToProcessingNotesMap);
+            // }
 
             // And handle all non-setup objects here
-            if(toDeleteChatterGroupMemberships.size() > 0 || toUpdateUserLogins.size() > 0){
+            if (toDeleteChatterGroupMemberships.size() > 0 || toUpdateUserLogins.size() > 0) {
                 UserDeprovisionQueue userDeprovisionQueue = new UserDeprovisionQueue();
                 userDeprovisionQueue.setAllUserChatterGroupMemberships(toDeleteChatterGroupMemberships);
                 userDeprovisionQueue.setUpdatedUserLogins(toUpdateUserLogins);
@@ -126,11 +128,15 @@ public without sharing class UserDeprovisionOrganizer {
                 userDeprovisionQueue.setUserToProcessingNotesMap(userToProcessingNotesMap);
                 System.enqueueJob(userDeprovisionQueue);
             }
+
+            if (!userDeprovisionCapabilityMap.isEmpty()) {
+                batchTransferDeprovisionUserCases(userDeprovisionCapabilityMap);
+            }
         }
     }
 
-    private void batchTransferDeprovisionUserCases() {
-        UserDeprovisionCaseTransferBatch batch = new UserDeprovisionCaseTransferBatch(this.userToDeprovisionIds);
+    private void batchTransferDeprovisionUserCases(Map<User, Boolean> userDeprovisionCapabilityMap) {
+        UserDeprovisionCaseTransferBatch batch = new UserDeprovisionCaseTransferBatch(userDeprovisionCapabilityMap);
         Database.executeBatch(batch, 200);
     }
 

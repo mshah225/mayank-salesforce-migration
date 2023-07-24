@@ -40,7 +40,7 @@ public without sharing class UserDeprovisioner {
     }
 
     // Wraps together all the logic
-    public void deprovisionUser() {
+    public Boolean deprovisionUser() {
         try {
             if (userToDeprovision.Processing_Notes__c != null) {
                 addToProcessingNotes(
@@ -67,6 +67,8 @@ public without sharing class UserDeprovisioner {
             removeUserPackageLicenses();
             deprovisionedUser.Deprovision_User__c = false;
             deprovisionedUser.IsActive = false;
+
+            return true; // User is allowed to be deprovisioned
         } catch (Exception e) {
             if (e.getTypeName().equals('System.SObjectException')) {
                 // If this is the type - one of the custom setting details might be wrong - add which to check
@@ -89,6 +91,8 @@ public without sharing class UserDeprovisioner {
 
             ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(e, vars, debug, allowRepeatCases);
             System.enqueueJob(logQueue);
+
+            return false; // unexpected error: user cannot be deprovisioned at this moment
         }
     }
 

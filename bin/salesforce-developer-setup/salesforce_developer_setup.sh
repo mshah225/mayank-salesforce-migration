@@ -1,25 +1,5 @@
 #!/bin/bash
 
-# Create progress spinner when waiting on a task
-start_spinner() {
-    echo -n "[SALESFORCE DEVELOPER SETUP] IN PROGRESS "
-    spinner="/|\\-/|\\-"
-    while :; do
-        for i in $(seq 0 7); do
-            echo -n "${spinner:$i:1}"
-            echo -en "\010"
-            sleep 1
-        done
-    done
-}
-
-reset && reset
-
-# Start spinner while waiting for tasks to finish
-start_spinner &
-SPIN_PID=$!
-trap "kill -9 $SPIN_PID" $(seq 0 15)
-
 # Ensure that ASU is set as a remote
 git remote add ASU https://github.com/ASU/crm-salesforce-enterprise
 

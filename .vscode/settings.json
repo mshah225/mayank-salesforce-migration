@@ -59,7 +59,7 @@
     "python.formatting.provider": "black",
     "salesforcedx-vscode-apex.advanced.enable-completion-statistics": false,
     "salesforcedx-vscode-apex.enable-semantic-errors": false,
-    "salesforcedx-vscode-apex.java.home": "/opt/homebrew/Cellar/openjdk@11/11.0.16/libexec/openjdk.jdk/Contents/Home",
+    "salesforcedx-vscode-apex.java.home": "",
     "salesforcedx-vscode-core.push-or-deploy-on-save.enabled": false,
     "salesforcedx-vscode-core.retrieve-test-code-coverage": true,
     "search.exclude": {

@@ -51,7 +51,6 @@
     "prettier.documentSelectors": ["**/*.page", "**/*.component", "**/*.cmp"],
     "prettier.ignorePath": ".prettierignore",
     "prettier.jsxSingleQuote": true,
-    "prettier.prettierPath": "/opt/homebrew/lib/node_modules/prettier",
     "prettier.printWidth": 120,
     "prettier.requireConfig": true,
     "prettier.singleQuote": true,

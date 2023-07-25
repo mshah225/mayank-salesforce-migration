@@ -349,7 +349,7 @@ public class UserDeprovisionOrganizerTest {
         User theUserPostDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id = :theUser.Id][0];
         System.assert(
             theUserPostDeprovision.Processing_Notes__c.contains(
-                'Transferred ' +
+                'Successfully transferred ' +
                 numberOfCases +
                 ' private cases to queue.'
             ),

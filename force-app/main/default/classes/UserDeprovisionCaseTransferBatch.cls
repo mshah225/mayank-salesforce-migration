@@ -65,7 +65,7 @@ public class UserDeprovisionCaseTransferBatch implements Database.Batchable<SObj
         for (Id userId : countTransferredPerUser.keySet()) {
             Integer countTransferred = countTransferredPerUser.get(userId);
 
-            String message = 'Successfully transferred ' + countTransferred + ' cases.';
+            String message = 'Successfully transferred ' + countTransferred + ' private cases to queue.';
             addToProcessingNotes(userId, message);
         }
 

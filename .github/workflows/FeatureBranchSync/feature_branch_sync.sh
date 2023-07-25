@@ -87,7 +87,7 @@ if [ ${#deletedBranchArray[@]} -gt 0 ]; then
 
     for index in "${!deletedBranchArray[@]}"; do
         branch="${deletedBranchArray[$index]}"
-        deletedBranchBlocks=''"$deletedBranchBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":'"$branch"'}]},'
+        deletedBranchBlocks=''"$deletedBranchBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":"'"$branch"'"}]},'
     done
 
     deletedBranchBlocks=''"$deletedBranchBlocks"'
@@ -105,7 +105,7 @@ else
 				{
 					"type": "mrkdwn",
 					"text": ":x: *deletes:* '"$deletedBranchCount"'"
-				}
+				},
 			]
 		},
         {
@@ -113,14 +113,11 @@ else
 			"fields": [
                 {
                     "type": "mrkdwn",
-                    "text": "No branches to list."
+                    "text": "&nbsp;&nbsp;→ No branches to list."
                 }
             ]
         },'
 fi
-echo '----'
-echo $deletedBranchBlocks
-echo '----'
 blocks="$blocks$deletedBranchBlocks"
 
 abortedMergeBlocks=''
@@ -144,7 +141,7 @@ if [ ${#abortedMergeArray[@]} -gt 0 ]; then
 
     for index in "${!abortedMergeArray[@]}"; do
         branch="${abortedMergeArray[$index]}"
-        abortedMergeBlocks=''"$abortedMergeBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":'"$branch"'}]},'
+        abortedMergeBlocks=''"$abortedMergeBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":"'"$branch"'"}]},'
     done
 
     abortedMergeBlocks=''"$abortedMergeBlocks"'
@@ -170,14 +167,11 @@ else
 			"fields": [
                 {
                     "type": "mrkdwn",
-                    "text": "No branches to list."
+                    "text": "&nbsp;&nbsp;→ No branches to list."
                 }
             ]
         },'
 fi
-echo '----'
-echo $abortedMergeBlocks
-echo '----'
 blocks="$blocks$abortedMergeBlocks"
 
 cleanMergeBlocks=''
@@ -201,7 +195,7 @@ if [ ${#cleanMergeArray[@]} -gt 0 ]; then
 
     for index in "${!cleanMergeArray[@]}"; do
         branch="${cleanMergeArray[$index]}"
-        cleanMergeBlocks=''"$cleanMergeBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":'"$branch"'}]},'
+        cleanMergeBlocks=''"$cleanMergeBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":"'"$branch"'"}]},'
     done
 
     cleanMergeBlocks=''"$cleanMergeBlocks"'
@@ -227,14 +221,11 @@ else
 			"fields": [
                 {
                     "type": "mrkdwn",
-                    "text": "No branches to list."
+                    "text": "&nbsp;&nbsp;→ No branches to list."
                 }
             ]
         },'
 fi
-echo '----'
-echo $cleanMergeBlocks
-echo '----'
 blocks="$blocks$cleanMergeBlocks"
 
 blocks=''"$blocks"'

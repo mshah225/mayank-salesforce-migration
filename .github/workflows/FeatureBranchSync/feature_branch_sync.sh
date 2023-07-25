@@ -73,6 +73,14 @@ for index in "${!abortedMergeArray[@]}"; do
     abortedMergeText="$abortedMergeText- $branch\n"
 done
 
+echo $deletedBranchCount + '\n'
+echo $deletedBranchText + '\n'
+echo $cleanMergeCount + '\n' 
+echo $abortedMergeCount + '\n'
+echo $cleanMergeText + '\n'
+echo $abortedMergeText + '\n'
+
+
 blocks='{
             "blocks": [
                 {
@@ -123,5 +131,7 @@ blocks='{
                 }
             ]
         }'
+
+echo $blocks
 
 curl -X POST -H "Content-type: application/json" --data "$blocks" https://hooks.slack.com/services/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

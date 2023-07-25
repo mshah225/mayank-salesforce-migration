@@ -8,9 +8,6 @@ abortedMergeCount=0
 deletedBranchArray=()
 cleanMergeArray=()
 abortedMergeArray=()
-deletedBranchText="No branches to list."
-cleanMergeText="No branches to list."
-abortedMergeText="No branches to list."
 
 for remote in $(git branch -r); do
     if [[ "$remote" != "origin/HEAD" ]] && [[ "$remote" != "->" ]] && [[ "$remote" != "origin/main" ]]; then
@@ -49,94 +46,200 @@ for remote in $(git branch -r); do
     fi
 done
 
-for index in "${!deletedBranchArray[@]}"; do
-    if [[ "$index" == 0 ]]; then
-        deletedBranchText=""
-    fi
-    branch="${deletedBranchArray[$index]}"
-    deletedBranchText="$deletedBranchText- $branch\n"
-done
-
-for index in "${!cleanMergeArray[@]}"; do
-    if [[ "$index" == 0 ]]; then
-        cleanMergeText=""
-    fi
-    branch="${cleanMergeArray[$index]}"
-    cleanMergeText="$cleanMergeText- $branch\n"
-done
-
-for index in "${!abortedMergeArray[@]}"; do
-    if [[ "$index" == 0 ]]; then
-        abortedMergeText=""
-    fi
-    branch="${abortedMergeArray[$index]}"
-    abortedMergeText="$abortedMergeText- $branch\n"
-done
-
-echo $deletedBranchCount
-echo "\n"
-echo $deletedBranchText
-echo "\n"
-echo $cleanMergeCount
-echo "\n"
-echo $abortedMergeCount
-echo "\n"
-echo $cleanMergeText
-echo "\n"
-echo $abortedMergeText
-echo "\n"
-
-
 blocks='{
-            "blocks": [
+	"blocks": [
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": ":partywizard: Syncing Feature Branches [DONE]",
+				"emoji": true
+			}
+		},
+		{
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": "<!here|here>"
+				}
+			]
+		},'
+
+deletedBranchBlocks=''
+if [ ${#deletedBranchArray[@]} -gt 0 ]; then
+    deletedBranchBlocks='
+        {
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": ":x: *deletes:* '"$deletedBranchCount"'"
+				}
+			]
+		},
+        {
+            "type": "rich_text",
+            "elements": [
                 {
-                    "type": "header",
-                    "text": {
-                        "type": "plain_text",
-                        "text": ":partywizard: Syncing Feature Branches [DONE]",
-                        "emoji": true
-                    }
-                },
-                {
-                    "type": "section",
-                    "fields": [
-                        {
-                            "type": "mrkdwn",
-                            "text": ":x: *deletes:* '"$deletedBranchCount"'"
-                        },
-                        {
-                            "type": "mrkdwn",
-                            "text": "<!here|here>"
-                        },
-                        {
-                            "type": "mrkdwn",
-                            "text": "'"$deletedBranchText"'"
-                        }
-                    ]
-                },
-                {
-                    "type": "section",
-                    "fields": [
-                        {
-                            "type": "mrkdwn",
-                            "text": ":canvas-check: *clean merges:* '"$cleanMergeCount"'"
-                        },
-                        {
-                            "type": "mrkdwn",
-                            "text": ":exclamation: *aborted merges:* '"$abortedMergeCount"'"
-                        },
-                        {
-                            "type": "mrkdwn",
-                            "text": "'"$cleanMergeText"'"
-                        },
-                        {
-                            "type": "mrkdwn",
-                            "text": "'"$abortedMergeText"'"
-                        }
-                    ]
+                    "type": "rich_text_list",
+                    "elements": ['
+
+    for index in "${!deletedBranchArray[@]}"; do
+        branch="${deletedBranchArray[$index]}"
+        deletedBranchBlocks=''"$deletedBranchBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":'"$branch"'}]},'
+    done
+
+    deletedBranchBlocks=''"$deletedBranchBlocks"'
+                    ],
+                    "style": "bullet",
+                    "indent": 1
                 }
             ]
-        }'
+        },'
+else
+    deletedBranchBlocks='
+        {
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": ":x: *deletes:* '"$deletedBranchCount"'"
+				}
+			]
+		},
+        {
+			"type": "section",
+			"fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": "No branches to list."
+                }
+            ]
+        },'
+fi
+echo '----'
+echo $deletedBranchBlocks
+echo '----'
+blocks="$blocks$deletedBranchBlocks"
+
+abortedMergeBlocks=''
+if [ ${#abortedMergeArray[@]} -gt 0 ]; then
+    abortedMergeBlocks='
+        {
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": ":exclamation: *aborted merges:* '"$abortedMergeCount"'"
+				}
+			]
+		},
+        {
+            "type": "rich_text",
+            "elements": [
+                {
+                    "type": "rich_text_list",
+                    "elements": ['
+
+    for index in "${!abortedMergeArray[@]}"; do
+        branch="${abortedMergeArray[$index]}"
+        abortedMergeBlocks=''"$abortedMergeBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":'"$branch"'}]},'
+    done
+
+    abortedMergeBlocks=''"$abortedMergeBlocks"'
+                    ],
+                    "style": "bullet",
+                    "indent": 1
+                }
+            ]
+        },'
+else
+    abortedMergeBlocks='
+        {
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": ":exclamation: *aborted merges:* '"$abortedMergeCount"'"
+				}
+			]
+		},
+        {
+			"type": "section",
+			"fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": "No branches to list."
+                }
+            ]
+        },'
+fi
+echo '----'
+echo $abortedMergeBlocks
+echo '----'
+blocks="$blocks$abortedMergeBlocks"
+
+cleanMergeBlocks=''
+if [ ${#cleanMergeArray[@]} -gt 0 ]; then
+    cleanMergeBlocks='
+        {
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": ":canvas-check: *clean merges:* '"$cleanMergeCount"'"
+				}
+			]
+		},
+        {
+            "type": "rich_text",
+            "elements": [
+                {
+                    "type": "rich_text_list",
+                    "elements": ['
+
+    for index in "${!cleanMergeArray[@]}"; do
+        branch="${cleanMergeArray[$index]}"
+        cleanMergeBlocks=''"$cleanMergeBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":'"$branch"'}]},'
+    done
+
+    cleanMergeBlocks=''"$cleanMergeBlocks"'
+                    ],
+                    "style": "bullet",
+                    "indent": 1
+                }
+            ]
+        },'
+else
+    cleanMergeBlocks='
+        {
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": ":canvas-check: *clean merges:* '"$cleanMergeCount"'"
+				},
+			]
+		},
+        {
+			"type": "section",
+			"fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": "No branches to list."
+                }
+            ]
+        },'
+fi
+echo '----'
+echo $cleanMergeBlocks
+echo '----'
+blocks="$blocks$cleanMergeBlocks"
+
+blocks=''"$blocks"'
+    ]
+}'
 
 echo $blocks
 

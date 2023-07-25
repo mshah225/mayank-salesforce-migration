@@ -15,7 +15,7 @@ public class UserDeprovisionCaseTransferBatch implements Database.Batchable<SObj
         this.totalCasesTransferred = 0;
 
         for (User userToDeprovision : userDeprovisionCapabilityMap.keySet()) {
-            if (userDeprovisionCapabilityMap.get(userDeprovisioner) == true) {
+            if (userDeprovisionCapabilityMap.get(userToDeprovision) == true) {
                 this.userToDeprovisionIds.add(userToDeprovision.Id);
             }
             this.userIdToUserMap.put(userToDeprovision.Id, userToDeprovision);
@@ -47,7 +47,7 @@ public class UserDeprovisionCaseTransferBatch implements Database.Batchable<SObj
                 }
             } catch (Exception e) {
                 String message = 'Exception Thrown for case ID (' + userCase.Id + ') : ' + e.getMessage();
-                addToProcessingNotes(userCase.OwnerId, message)
+                addToProcessingNotes(userCase.OwnerId, message);
                 addToProcessingNotes(userCase.OwnerId, e.getStackTraceString());
 
                 List<String> vars = new List<String>();
@@ -73,7 +73,7 @@ public class UserDeprovisionCaseTransferBatch implements Database.Batchable<SObj
             userToProcessingNotesMap.put(userId, userIdToUserMap.get(userId).Processing_Notes__c);
         }
 
-        UserDeprovisionerOrganizer.updateSobjectRecords('Id', userIdToUserMap.values(), userToProcessingNotes);
+        UserDeprovisionOrganizer.updateSobjectRecords('Id', userIdToUserMap.values(), userToProcessingNotesMap);
     }
 
     public void addToProcessingNotes(Id userId, String message) {

@@ -65,7 +65,6 @@ public without sharing class UserDeprovisionOrganizer {
 
     public void deprovisionUsersAfterUpdate() {
         if (!userDeprovisionersList.isEmpty()) {
-            List<User> toUpdateUsers = new List<User>();
             List<UserLogin> toUpdateUserLogins = new List<UserLogin>();
             List<GroupMember> toDeletePublicGroupMemberships = new List<GroupMember>();
             List<CollaborationGroupMember> toDeleteChatterGroupMemberships = new List<CollaborationGroupMember>();
@@ -85,7 +84,7 @@ public without sharing class UserDeprovisionOrganizer {
                 userDeprovisioner.setFieldIdToNameMap(fieldIdToNameMap);
                 
                 // Deprovision
-                Boolean canDeprovision = userIdsToTransferCases.add(userId)) userIdsToTransferCases.add(userId);
+                Boolean canDeprovision = userDeprovisioner.deprovisionUser();
                 
                 // Get all updated and deleted data
                 UserLogin needToUpdateUserLogin = userDeprovisioner.getToUpdateUserLogin();
@@ -98,7 +97,6 @@ public without sharing class UserDeprovisionOrganizer {
                 toDeleteUserPackageLicense.addAll(userDeprovisioner.getToDeleteUserPackageLicenses());
 
                 User userWithProcessingNotes = userDeprovisioner.getDeprovisionedUserWithProcessingNotes();
-                toUpdateUsers.add(userWithProcessingNotes);
                 userDeprovisionCapabilityMap.put(userWithProcessingNotes, canDeprovision);
                 userToProcessingNotesMap.put(userId, userWithProcessingNotes.Processing_Notes__c);
             }
@@ -114,10 +112,6 @@ public without sharing class UserDeprovisionOrganizer {
             if (!toDeleteUserPackageLicense.isEmpty()) {
                 deleteSobjectRecords('UserId', toDeleteUserPackageLicense, userToProcessingNotesMap);
             }
-
-            // if (!toUpdateUsers.isEmpty()) {
-            //     updateSobjectRecords('Id', toUpdateUsers, userToProcessingNotesMap);
-            // }
 
             // And handle all non-setup objects here
             if (toDeleteChatterGroupMemberships.size() > 0 || toUpdateUserLogins.size() > 0) {

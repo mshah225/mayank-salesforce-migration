@@ -5,20 +5,21 @@ public class UserDeprovisionCaseTransferBatch implements Database.Batchable<SObj
     Map<Id, String> userToProcessingNotesMap;
     private Integer totalCasesTransferred;
     private Map<Id, Integer> countTransferredPerUser;
-    private Boolean errorOccurred = false;
 
     public UserDeprovisionCaseTransferBatch(Map<User, Boolean> userDeprovisionCapabilityMap) {
         this.userDeprovisionCapabilityMap = userDeprovisionCapabilityMap;
         this.userIdToUserMap = new Map<Id, User>();
+        this.userToDeprovisionIds = new List<Id>();
         this.userToProcessingNotesMap = new Map<Id, String>();
+        this.countTransferredPerUser = new Map<Id, Integer>();
+        this.totalCasesTransferred = 0;
+
         for (User userToDeprovision : userDeprovisionCapabilityMap.keySet()) {
             if (userDeprovisionCapabilityMap.get(userDeprovisioner) == true) {
                 this.userToDeprovisionIds.add(userToDeprovision.Id);
             }
             this.userIdToUserMap.put(userToDeprovision.Id, userToDeprovision);
         }
-        this.totalCasesTransferred = 0;
-        this.countTransferredPerUser = new Map<Id, Integer>();
     }
 
     public Database.Querylocator start(Database.BatchableContext context) {
@@ -45,42 +46,42 @@ public class UserDeprovisionCaseTransferBatch implements Database.Batchable<SObj
                     }
                 }
             } catch (Exception e) {
-                System.debug(e);
-                this.errorOccurred = true;
-                throw new DeprovisionUserException('Could not transfer cases. QueueId on case\'s functional group may be invalid.');
+                String message = 'Exception Thrown for case ID (' + userCase.Id + ') : ' + e.getMessage();
+                addToProcessingNotes(userCase.OwnerId, message)
+                addToProcessingNotes(userCase.OwnerId, e.getStackTraceString());
+
+                List<String> vars = new List<String>();
+
+                vars.add(ErrorLogger.convertIdToJSON('deprovisionedUser.Id', userCase.OwnerId));
+                ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(e, vars, false, true);
+                System.enqueueJob(logQueue);
             }
         }
         Database.update(casesToUpdate, false);
     }
 
     public void finish(Database.BatchableContext context) {
-        if (errorOccurred == false) {
-            System.debug('Successfully transferred ' + totalCasesTransferred + ' cases.');
-            for (Id userId : countTransferredPerUser.keySet()) {
-                Integer countTransferred = countTransferredPerUser.get(userId);
+        System.debug('Successfully transferred ' + totalCasesTransferred + ' cases.');
+        for (Id userId : countTransferredPerUser.keySet()) {
+            Integer countTransferred = countTransferredPerUser.get(userId);
 
-                String message = 'Successfully transferred ' + countTransferred + ' cases.';
-                if (userIdToUserMap.containsKey(userId)){
-                    User userToUpdate = userIdToUserMap.get(userId);
-                    String processingNotes = userToUpdate.Processing_Notes__c + message + '\n';
-                    userToUpdate.Processing_Notes__c = processingNotes;
-                }
-            }
-
-            for(Id userId : userIdToUserMap.keySet()) {
-                userToProcessingNotesMap.put(userId, userIdToUserMap.get(userId).Processing_Notes__c);
-            }
-
-            UserDeprovisionerOrganizer.updateSobjectRecords('Id', userIdToUserMap.values(), userToProcessingNotes);
+            String message = 'Successfully transferred ' + countTransferred + ' cases.';
+            addToProcessingNotes(userId, message);
         }
+
+        for(Id userId : userIdToUserMap.keySet()) {
+            userToProcessingNotesMap.put(userId, userIdToUserMap.get(userId).Processing_Notes__c);
+        }
+
+        UserDeprovisionerOrganizer.updateSobjectRecords('Id', userIdToUserMap.values(), userToProcessingNotes);
     }
 
-    private void updateProcessingNotes(Id userId, String message) {
-        // for every single user id got, check in usertodeprovisionmap - update processing notes - later prepare userid to processing notes map
-        User deprovisionedUser = [SELECT Id, Processing_Notes__c FROM User WHERE Id = :userId];
-        String processingNotes = deprovisionedUser.Processing_Notes__c + message + '\n';
-        deprovisionedUser.Processing_Notes__c = processingNotes;
-        update deprovisionedUser;
+    public void addToProcessingNotes(Id userId, String message) {
+        if (userIdToUserMap.containsKey(userId)){
+            User userToUpdate = userIdToUserMap.get(userId);
+            String updatedProcessingNotes = userToUpdate.Processing_Notes__c + message + '\n';
+            userToUpdate.Processing_Notes__c = updatedProcessingNotes;
+        }
     }
 
     public class DeprovisionUserException extends Exception {

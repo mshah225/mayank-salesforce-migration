@@ -73,12 +73,18 @@ for index in "${!abortedMergeArray[@]}"; do
     abortedMergeText="$abortedMergeText- $branch\n"
 done
 
-echo $deletedBranchCount + '\n'
-echo $deletedBranchText + '\n'
-echo $cleanMergeCount + '\n' 
-echo $abortedMergeCount + '\n'
-echo $cleanMergeText + '\n'
-echo $abortedMergeText + '\n'
+echo $deletedBranchCount
+echo "\n"
+echo $deletedBranchText
+echo "\n"
+echo $cleanMergeCount
+echo "\n"
+echo $abortedMergeCount
+echo "\n"
+echo $cleanMergeText
+echo "\n"
+echo $abortedMergeText
+echo "\n"
 
 
 blocks='{

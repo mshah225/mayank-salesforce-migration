@@ -90,7 +90,7 @@ if [ ${#deletedBranchArray[@]} -gt 0 ]; then
         deletedBranchBlocks=''"$deletedBranchBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":'"$branch"'}]},'
     done
 
-    deletedBranchBlocks='
+    deletedBranchBlocks=''"$deletedBranchBlocks"'
                     ],
                     "style": "bullet",
                     "indent": 1
@@ -147,7 +147,7 @@ if [ ${#abortedMergeArray[@]} -gt 0 ]; then
         abortedMergeBlocks=''"$abortedMergeBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":'"$branch"'}]},'
     done
 
-    abortedMergeBlocks='
+    abortedMergeBlocks=''"$abortedMergeBlocks"'
                     ],
                     "style": "bullet",
                     "indent": 1
@@ -204,7 +204,7 @@ if [ ${#cleanMergeArray[@]} -gt 0 ]; then
         cleanMergeBlocks=''"$cleanMergeBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":'"$branch"'}]},'
     done
 
-    cleanMergeBlocks='
+    cleanMergeBlocks=''"$cleanMergeBlocks"'
                     ],
                     "style": "bullet",
                     "indent": 1

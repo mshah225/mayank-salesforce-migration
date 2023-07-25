@@ -219,7 +219,7 @@ else
 				{
 					"type": "mrkdwn",
 					"text": ":canvas-check: *clean merges:* '"$cleanMergeCount"'"
-				}
+				},
 			]
 		},
         {
@@ -236,6 +236,10 @@ echo '----'
 echo $cleanMergeBlocks
 echo '----'
 blocks="$blocks$cleanMergeBlocks"
+
+blocks=''"$blocks"'
+    ]
+}'
 
 echo $blocks
 

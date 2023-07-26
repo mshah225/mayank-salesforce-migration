@@ -1,4 +1,6 @@
 public class LeadService {
+    public static boolean ranLeadConversion = false;
+
     /**
      * Creates a Lead with all required fields, usually for unit testing
      * @return testLead A lead with all required fields
@@ -303,5 +305,119 @@ public class LeadService {
         if (!me3ToAddContact.isEmpty()) {
             update me3ToAddContact;
         }
+    }
+
+    public static void setLeadAssignmentNumber(List<Lead> newLeads) {
+        for (Lead newLead : newLeads) {
+            newLead.Lead_Assignment_Number__c = OpportunityService.generateOpportunityAssignmentNumber();
+        }
+    }
+
+    public static void queueHashIdAssignment(Map<Id, Lead> updatedLeadsMap) {
+        setHashId(updatedLeadsMap.keySet());
+    }
+
+    @future
+    static void setHashId(Set<Id> leadIds) {
+        List<Lead> leadsToUpdate = new List<Lead>();
+        for (Id leadId : leadIds) {
+            Lead leadToUpdate = new Lead(Id = leadId, HashLeadID__c = Hasher.hashId(leadId));
+            leadsToUpdate.add(leadToUpdate);
+        }
+        update leadsToUpdate;
+    }
+
+    public static void determineLeadsToConvert(List<Lead> newLeads, Map<Id, Lead> oldLeadsMap) {
+        List<Lead> leadsToConvert = new List<Lead>();
+        if (oldLeadsMap == null) {
+            for (Lead newLead : newLeads) {
+                if (newLead.Convert_Perform_Conversion__c) {
+                    leadsToConvert.add(newLead);
+                }
+            }
+            if (leadsToConvert.size() > 0) {
+                convertLeads(leadsToConvert);
+            }
+        } else {
+            for (Lead newLead : newLeads) {
+                Lead previousLead = oldLeadsMap.get(newLead.Id);
+                if (newLead.Convert_Perform_Conversion__c && previousLead.Convert_Perform_Conversion__c == false) {
+                    leadsToConvert.add(newLead);
+                }
+            }
+            if (leadsToConvert.size() > 0 && !ranLeadConversion) {
+                ranLeadConversion = true;
+                convertLeads(leadsToConvert);
+                ranLeadConversion = false;
+            }
+        }
+    }
+
+    public static void convertLeads(List<Lead> leadsToConvert) {
+        if (leadsToConvert.size() == 0) {
+            return;
+        }
+
+        /*
+         * Primary lead conversion logic
+         */
+        LeadStatus convertedStatus = [SELECT Id, MasterLabel FROM LeadStatus WHERE IsConverted = TRUE LIMIT 1];
+        List<Database.LeadConvertResult> leadConversionResults = new List<Database.LeadConvertResult>();
+        Set<Id> leadsNeedingPreviousEducation = new Set<Id>();
+        Integer count = 0;
+
+        Map<Integer, List<Database.LeadConvert>> leadConvertBatchMap = LeadService.generateLeadConvertBatches(
+            leadsToConvert,
+            convertedStatus.MasterLabel
+        );
+
+        for (List<Database.LeadConvert> lcBatch : leadConvertBatchMap.values()) {
+            List<Database.LeadConvertResult> lcResultList = Database.convertLead(lcBatch, false);
+            leadConversionResults.addAll(lcResultList);
+        }
+
+        Set<Id> convertedLeadIds = new Set<Id>();
+        List<String> vars = new List<String>();
+        for (Database.LeadConvertResult lcr : leadConversionResults) {
+            try {
+                if (lcr.isSuccess()) {
+                    convertedLeadIds.add(lcr.getLeadId());
+                } else
+                    throw new LeadConversionException('Failed Lead Conversion');
+            } catch (Exception e) {
+                vars.add(ErrorLogger.convertIdToJSON('Lead Id', lcr.getLeadId()));
+            }
+        }
+        if (vars != null && vars.size() > 0) {
+            Exception e = new LeadConversionException('Failed Lead Conversion');
+            ErrorLogger.log(e, vars, false);
+        }
+
+        // Map convert lead data to associated opportunities, if any
+        if (convertedLeadIds.size() > 0) {
+            List<Opportunity> oppsToUpdate = OpportunityService.mapLeadDataToOpportunity(convertedLeadIds);
+            update oppsToUpdate;
+
+            /*
+             * Create necessary records and perform data processing as a result of lead conversion
+             */
+            for (Lead l : leadsToConvert) {
+                // If Leads has Last Institution Attended populated, add to the List that
+                // needs a Previous Education entry added
+                if (l.Last_Institution_Attended__c != null) {
+                    leadsNeedingPreviousEducation.add(l.Id);
+                }
+            }
+
+            if (leadsNeedingPreviousEducation.size() > 0) {
+                List<Previous_Education__c> previousEducationList = LeadService.createConvertedPreviousEducation(
+                    leadsNeedingPreviousEducation
+                );
+                insert previousEducationList;
+            }
+        }
+    }
+
+    class LeadConversionException extends Exception {
     }
 }

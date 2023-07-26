@@ -118,6 +118,7 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
         this.selectedCase.Initial_Address_Source = getFieldValue(this.case, 'Case.Initial_Request_Sent_To_Addresses__c');
         this.selectedCase.Origin = 'Clone';
         this.selectedCase.Status = 'New';
+        this.selectedCase.Parent = this.recordId;
     }
 
     get debug() {
@@ -154,6 +155,10 @@ export default class LightningCloneCaseModal extends NavigationMixin(LightningEl
 
     get getSubCategory() {
         return this.selectedSubCategory;
+    }
+
+    get getParentCase() {
+        return this.selectedCase.Parent;
     }
 
     get getDescription() {

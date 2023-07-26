@@ -39,6 +39,13 @@
                         class="slds-hidden"
                         style="display: none"
                     ></lightning-input-field>
+
+                    <lightning-input-field
+                        field-name="ParentId"
+                        value={getParentCase}
+                        class="slds-hidden"
+                        style="display: none;"
+                    ></lightning-input-field>
                     <!-- Hidden fields end here -->
 
                     <template if:true={selectedCase.ContactId_Visibility}>

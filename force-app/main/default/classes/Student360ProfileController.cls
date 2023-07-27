@@ -57,6 +57,14 @@ global with sharing class Student360ProfileController {
     public List<String> graduateIndicatorsMessages { get; set; }
     public List<String> studentCareAndConcernMessages { get; set; }
 
+    public Boolean hasStudentCareAndConcernAccess {
+        get {
+            return PermissionsHelper.userHasProfile('System Administrator') ||
+                PermissionsHelper.userHasPermissionSet('Student 360');
+        }
+        set;
+    }
+
     public Student_Program_Plan__c ugStudentProgram {
         get {
             return ugProgramPlans.isEmpty() ? new Student_Program_Plan__c() : ugProgramPlans[0];

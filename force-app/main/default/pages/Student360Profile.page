@@ -817,7 +817,10 @@
                                 Graduate Indicators
                             </a>
                         </li>
-                        <li role="presentation">
+                        <li
+                            role="presentation"
+                            style="{!IF(hasStudentCareAndConcernAccess == TRUE,'display:block;','display:none')}"
+                        >
                             <a
                                 href="#StudentCareAndConcern"
                                 aria-controls="StudentCareAndConcern"

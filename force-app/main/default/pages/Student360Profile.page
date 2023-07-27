@@ -256,6 +256,8 @@
 
     <body>
         <div class="mainCont">
+            <h1>Student 360</h1>
+            <hr />
             <div class="row intro">
                 <div class="col-xs-4 col-md-2 intro" style="margin-bottom: 20px">
                     <apex:outputPanel id="photoRerenderPanel" layout="none">
@@ -3293,7 +3295,7 @@
                                 <div class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
-                                        <span id="enrolled_classes_header">&nbsp;Enrolled Classes</span>
+                                        <span id="enrolled_classes_header">&nbsp;Conduct</span>
                                     </h4>
                                 </div>
 
@@ -3305,7 +3307,7 @@
                                 <div class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
-                                        <span id="dropped_classes_header">&nbsp;Dropped/Withdrawn Classes</span>
+                                        <span id="dropped_classes_header">&nbsp;Student Care</span>
                                     </h4>
                                 </div>
 
@@ -3318,7 +3320,7 @@
                                 <div class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
-                                        &nbsp;Credit by Exam
+                                        &nbsp;Academic Integrity
                                     </h4>
                                 </div>
 
@@ -3331,7 +3333,7 @@
                                 <div class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
-                                        &nbsp;Transfer Work
+                                        &nbsp;Emergency Contacts
                                     </h4>
                                 </div>
 

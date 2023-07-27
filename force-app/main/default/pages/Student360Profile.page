@@ -256,6 +256,8 @@
 
     <body>
         <div class="mainCont">
+            <h1>Student 360</h1>
+            <hr />
             <div class="row intro">
                 <div class="col-xs-4 col-md-2 intro" style="margin-bottom: 20px">
                     <apex:outputPanel id="photoRerenderPanel" layout="none">

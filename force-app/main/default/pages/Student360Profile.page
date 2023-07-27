@@ -255,9 +255,18 @@
     </head>
 
     <body>
-        <div class="mainCont">
-            <h1>Student 360</h1>
-            <hr />
+        <div class="student-360-profile-container">
+            <div class="student-360-profile-title">
+                <h1 style="float: left">Student 360</h1>
+                <a
+                    class="student-360-search-button"
+                    style="{!IF(hasStudentCareAndConcernAccess == TRUE, '', 'display:none')}"
+                    href="/apex/Student360Search"
+                >
+                    Go to Student Search
+                </a>
+                <hr />
+            </div>
             <div class="row intro">
                 <div class="col-xs-4 col-md-2 intro" style="margin-bottom: 20px">
                     <apex:outputPanel id="photoRerenderPanel" layout="none">
@@ -492,25 +501,6 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <style>
-                                        .feedbackButton {
-                                            position: relative;
-                                            border: 1px solid transparent;
-                                            border-radius: 4px;
-                                            margin: 0px;
-                                            padding-left: 24px;
-                                            padding-right: 24px;
-                                            padding-top: 12px;
-                                            padding-bottom: 12px;
-                                            color: white;
-                                            background-color: RGB(140, 29, 64);
-                                            transition: all 0.25s ease-in-out 0s;
-                                            word-wrap: break-word;
-                                            font-size: 20px;
-                                            text-align: center;
-                                            text-decoration: none;
-                                        }
-                                    </style>
                                     <a
                                         style="
                                             border-radius: 4px;

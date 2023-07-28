@@ -87,7 +87,7 @@ blocks='{
 			"fields": [
 				{
 					"type": "mrkdwn",
-					"text": ":git-push: *core branch status:* '"$cleanMergeCoreCount"' of 3"
+					"text": ":git-push: *CORE BRANCHES PASSING:* '"$cleanMergeCoreCount"' of 3"
 				}
 			]
 		},'
@@ -238,7 +238,7 @@ if [ ${#deletedBranchArray[@]} -gt 0 ]; then
 			"fields": [
 				{
 					"type": "mrkdwn",
-					"text": ":x: *deletes:* '"$deletedBranchCount"'"
+					"text": ":x: *DELETES:* '"$deletedBranchCount"'"
 				}
 			]
 		},
@@ -271,7 +271,7 @@ else
 			"fields": [
 				{
 					"type": "mrkdwn",
-					"text": ":x: *deletes:* '"$deletedBranchCount"'"
+					"text": ":x: *DELETES:* '"$deletedBranchCount"'"
 				},
 			]
 		},
@@ -298,7 +298,7 @@ if [ ${#abortedMergeArray[@]} -gt 0 ]; then
 			"fields": [
 				{
 					"type": "mrkdwn",
-					"text": ":exclamation: *aborted merges:* '"$abortedMergeCount"'"
+					"text": ":exclamation: *ABORTED MERGES:* '"$abortedMergeCount"'"
 				}
 			]
 		},
@@ -331,7 +331,7 @@ else
 			"fields": [
 				{
 					"type": "mrkdwn",
-					"text": ":exclamation: *aborted merges:* '"$abortedMergeCount"'"
+					"text": ":exclamation: *ABORTED MERGES:* '"$abortedMergeCount"'"
 				}
 			]
 		},
@@ -358,7 +358,7 @@ if [ ${#cleanMergeArray[@]} -gt 0 ]; then
 			"fields": [
 				{
 					"type": "mrkdwn",
-					"text": ":canvas-check: *clean merges:* '"$cleanMergeCount"'"
+					"text": ":canvas-check: *CLEAN MERGES:* '"$cleanMergeCount"'"
 				}
 			]
 		},
@@ -380,10 +380,7 @@ if [ ${#cleanMergeArray[@]} -gt 0 ]; then
                     "indent": 1
                 }
             ]
-        },
-        {
-			"type": "divider"
-		},'
+        },'
 else
     cleanMergeBlocks='
         {
@@ -391,7 +388,7 @@ else
 			"fields": [
 				{
 					"type": "mrkdwn",
-					"text": ":canvas-check: *clean merges:* '"$cleanMergeCount"'"
+					"text": ":canvas-check: *CLEAN MERGES:* '"$cleanMergeCount"'"
 				},
 			]
 		},
@@ -403,10 +400,7 @@ else
                     "text": "&nbsp;&nbsp;→ No branches to list."
                 }
             ]
-        },
-        {
-			"type": "divider"
-		},'
+        },'
 fi
 blocks="$blocks$cleanMergeBlocks"
 

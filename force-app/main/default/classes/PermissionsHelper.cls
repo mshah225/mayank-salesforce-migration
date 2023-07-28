@@ -1,7 +1,7 @@
 public class PermissionsHelper {
     public static Boolean userHasProfile(String profileName) {
         if (profileName != null) {
-            return [SELECT Id, Name FROM Profile WHERE Id = :UserInfo.getProfileId() LIMIT 1].Name == profileName
+            return [SELECT Name FROM Profile WHERE Id = :UserInfo.getProfileId() LIMIT 1].Name == profileName
                 ? true
                 : false;
         }

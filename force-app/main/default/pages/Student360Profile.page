@@ -29,7 +29,7 @@
         <c:Student360ProfileStyles />
         <style>
             .gradTable {
-                font-family: arial, sans-serif;
+                font-family: Arial, Helvetica, 'Nimbus Sans L', 'Liberation Sans', FreeSans, sans-serif !important;
                 border-collapse: collapse;
                 width: 100%;
             }
@@ -247,7 +247,7 @@
             .alert {
                 margin-top: 20px;
                 color: white;
-                font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+                font-family: Arial, Helvetica, 'Nimbus Sans L', 'Liberation Sans', FreeSans, sans-serif !important;
                 font-size: 14px;
                 background: #9f2b50;
             }
@@ -347,7 +347,17 @@
 
                 <div class="col-xs-12 col-md-6">
                     <div class="sideBox" style="padding: 15px 15px 0 15px">
-                        <h4 class="page-header-smaller" style="padding-bottom: 10px">Quick Reference Links</h4>
+                        <div class="student-360-profile-quick-ref-links">
+                            <h4 style="float: left">Quick Reference Links</h4>
+                            <a
+                                class="student-360-profile-feedback-button"
+                                href="./dynamicfeedback?carName=Student Profile&misc={!theContact.FirstName} {!theContact.lastName} Id:{!theContact.EMPLID__c}"
+                                target="_blank"
+                            >
+                                Feedback
+                            </a>
+                            <hr />
+                        </div>
                         <table class="table table-borderless">
                             <tr>
                                 <td>
@@ -367,17 +377,10 @@
                                     </a>
                                 </td>
                                 <td>
-                                    AppXtender
                                     <a
                                         href="https://appx.asu.edu/AppXtender/DataSources/AX-SFA/ISubmitQuery?AutoLogoutOnClose=False&DocNavBlocked=True&DispMode=11&AppName=STUDENT&SearchAllRevisions=True&PublicQuery=False&UpdateAvlFieldsOnly=True&EMPLID={!theContact.EMPLID__c}"
                                         target="_blank"
-                                        >(SFA)</a
-                                    >
-                                    -
-                                    <a
-                                        href="https://appx.asu.edu/AppXtender/DataSources/AX-GRAD/ISubmitQuery?AppName=GRADADM&EMPL+ID={!theContact.EMPLID__c}"
-                                        target="_blank"
-                                        >(GRAD)</a
+                                        >AppXtender SFA</a
                                     >
                                 </td>
                             </tr>
@@ -395,7 +398,11 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="https://webapp4.asu.edu/gradapprev/" target="_blank"> GAR </a>
+                                    <a
+                                        href="https://appx.asu.edu/AppXtender/DataSources/AX-GRAD/ISubmitQuery?AppName=GRADADM&EMPL+ID={!theContact.EMPLID__c}"
+                                        target="_blank"
+                                        >AppXtender GRAD</a
+                                    >
                                 </td>
                             </tr>
 
@@ -417,12 +424,7 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a
-                                        href="https://cs.oasis.asu.edu/asucsprd/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSPRD/c/ASU_ADMISSIONS.ASU_GPORTAL_SEARCH.GBL%3FEMPLID={!theContact.EMPLID__c}"
-                                        target="_blank"
-                                    >
-                                        Gportal
-                                    </a>
+                                    <a href="https://webapp4.asu.edu/gradapprev/" target="_blank"> GAR </a>
                                 </td>
                             </tr>
 
@@ -502,22 +504,10 @@
                                 </td>
                                 <td>
                                     <a
-                                        style="
-                                            border-radius: 4px;
-                                            margin-left: -7px;
-                                            padding-left: 6px;
-                                            padding-right: 6px;
-                                            padding-top: 4px;
-                                            padding-bottom: 4px;
-                                            color: white;
-                                            background-color: RGB(140, 29, 64);
-                                            font-size: 16px;
-                                            text-align: center;
-                                        "
-                                        href="./dynamicfeedback?carName=Student Profile&misc={!theContact.FirstName} {!theContact.lastName} Id:{!theContact.EMPLID__c}"
+                                        href="https://cs.oasis.asu.edu/asucsprd/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSPRD/c/ASU_ADMISSIONS.ASU_GPORTAL_SEARCH.GBL%3FEMPLID={!theContact.EMPLID__c}"
                                         target="_blank"
                                     >
-                                        Feedback
+                                        Gportal
                                     </a>
                                 </td>
                             </tr>
@@ -603,7 +593,7 @@
                                 </apex:dataTable>
 
                                 <apex:outputText rendered="{!openCases.size == 0}">
-                                    No active/open cases found for {!theContact.Preferred_First_Name__c}.
+                                    No active or open cases found for {!theContact.Preferred_First_Name__c}.
                                 </apex:outputText>
                             </div>
                         </div>
@@ -616,7 +606,9 @@
                             <div class="page-header-smaller" style="margin: 0 0 -5px 0; border: none">
                                 <h4 style="display: inline-block; margin-top: 5px">
                                     <i class="fa fa-caret-right"></i>
-                                    <a id="serviceIndicatorHeader"> &nbsp;Service Indicators </a>
+                                    <a id="serviceIndicatorHeader" style="font-size: 16px">
+                                        &nbsp;Service Indicators
+                                    </a>
                                 </h4>
 
                                 <div class="pull-right">
@@ -819,7 +811,7 @@
                                 style="padding: 5px; text-align: center"
                                 class="tabLink"
                             >
-                                Student Care &amp; Concern
+                                Student Care and Concern
                             </a>
                         </li>
                     </ul>
@@ -1450,7 +1442,7 @@
 
                                     <apex:outputText
                                         rendered="{!IF(emailsForContact.size > 0, false, true)}"
-                                        value="No IER Email Send records are available for this student"
+                                        value="No IER Email Send records found for {!theContact.Preferred_First_Name__c}."
                                     />
                                 </div>
 
@@ -1566,7 +1558,7 @@
                                     layout="block"
                                     rendered="{!ISNULL(me3Results.Test_Completed_Date__c)}"
                                 >
-                                    No me3 results found.
+                                    No me3 results found for {!theContact.Preferred_First_Name__c}.
                                 </apex:outputPanel>
                                 <div id="Me3Results" style="width: 100%">
                                     <apex:outputPanel
@@ -1717,7 +1709,7 @@
                                     layout="block"
                                     rendered="{!ISNULL(me3HighSchoolResults.Test_Completed_Date__c)}"
                                 >
-                                    No me3 high school results found.
+                                    No me3 high school results found for {!theContact.Preferred_First_Name__c}.
                                 </apex:outputPanel>
                                 <div id="Me3HighSschoolResults" style="width: 100%">
                                     <apex:outputPanel
@@ -1920,7 +1912,7 @@
 
                                     <apex:outputText
                                         rendered="{!IF(ugProgramPlans.size > 0, false, true)}"
-                                        value="No undergraduate programs/plans found."
+                                        value="No undergraduate programs/plans found for {!theContact.Preferred_First_Name__c}."
                                     />
 
                                     <div class="page-header-smaller">
@@ -2035,7 +2027,10 @@
                                                     <apex:outputPanel
                                                         rendered="{!IF(testUndergradScoreList.size > 0, false, true)}"
                                                     >
-                                                        <div>No undergraduate test scores found.</div>
+                                                        <div>
+                                                            No undergraduate test scores found for
+                                                            {!theContact.Preferred_First_Name__c}.
+                                                        </div>
                                                     </apex:outputPanel>
                                                 </tbody>
                                             </table>
@@ -2138,14 +2133,17 @@
                                                                 </tr>
                                                             </apex:repeat>
                                                         </apex:outputPanel>
-                                                        <apex:outputPanel
-                                                            rendered="{!IF(studentMilestonesUGrad.size > 0, false, true)}"
-                                                        >
-                                                            <div>No undergraduate milestones found.</div>
-                                                        </apex:outputPanel>
                                                     </tbody>
                                                 </table>
                                             </div>
+                                            <apex:outputPanel
+                                                rendered="{!IF(studentMilestonesUGrad.size > 0, false, true)}"
+                                            >
+                                                <div>
+                                                    No undergraduate milestones found for
+                                                    {!theContact.Preferred_First_Name__c}.
+                                                </div>
+                                            </apex:outputPanel>
                                         </div>
                                     </div>
 
@@ -2227,7 +2225,7 @@
                                         <a
                                             class="fa fa-question-circle"
                                             data-html="true"
-                                            title='<span>Persistence Outlook Level represents the calculated likelihood of students like this one persisting or graduating in the following fall or spring term based on similarities to this student’s performance to date, current enrollment pattern, academic readiness, demographic data and learning management system engagement relative to peers (if applicable). <a href="#" onclick="openNewSubtab("/articles/FAQ/What-is-a-Persistence-Outlook/p","Details");return false">Visit knowledge article.</a>.</span>'
+                                            title='<span>Persistence Outlook Level represents the calculated likelihood of students like this one persisting or graduating in the following fall or spring term based on similarities to {!theContact.Preferred_First_Name__c}’s performance to date, current enrollment pattern, academic readiness, demographic data and learning management system engagement relative to peers (if applicable). <a href="#" onclick="openNewSubtab("/articles/FAQ/What-is-a-Persistence-Outlook/p","Details");return false">Visit knowledge article.</a>.</span>'
                                             data-placement="right"
                                             data-trigger="manual"
                                         ></a>
@@ -2435,7 +2433,10 @@
                                     class="activeGradTable"
                                     rendered="{!IF(activeGraduatePrograms.size > 0, true, false)}"
                                 >
-                                    <table class="gradTable">
+                                    <table
+                                        class="gradTable"
+                                        style="{!IF(activeGraduatePrograms.size > 0, '', 'display:none;')}"
+                                    >
                                         <tr>
                                             <th class="gradTH" style="border-left: 1px solid #ddd; width: 25%">
                                                 Program
@@ -2986,7 +2987,7 @@
 
                                 <apex:outputText
                                     rendered="{!IF(activeGraduatePrograms.size > 0, false, true)}"
-                                    value="No active graduate programs/plans found."
+                                    value="No active graduate programs/plans found for {!theContact.Preferred_First_Name__c}."
                                 />
 
                                 <div class="page-header-smaller">
@@ -3000,7 +3001,10 @@
                                     class="completedGradTable"
                                     rendered="{!IF(completedGraduatePrograms.size > 0, true, false)}"
                                 >
-                                    <table class="gradTable">
+                                    <table
+                                        class="gradTable"
+                                        style="{!IF(completedGraduatePrograms.size > 0, '', 'display:none;')}"
+                                    >
                                         <tr>
                                             <th class="gradTH" style="border-left: 1px solid #ddd; width: 25%">
                                                 Program
@@ -3034,7 +3038,7 @@
 
                                 <apex:outputText
                                     rendered="{!IF(completedGraduatePrograms.size > 0, false, true)}"
-                                    value="No completed graduate programs/plans found."
+                                    value="No completed graduate programs/plans found for {!theContact.Preferred_First_Name__c}."
                                 />
 
                                 <div class="page-header-smaller">
@@ -3045,8 +3049,14 @@
                                 </div>
 
                                 <div id="ps_test_score_section_grad">
-                                    <div class="table-responsive">
-                                        <table class="table table-striped table-bordered">
+                                    <div
+                                        class="table-responsive"
+                                        style="{!IF(testGradScoreList.size > 0, '', 'display:none;')}"
+                                    >
+                                        <table
+                                            class="table table-striped table-bordered"
+                                            style="{!IF(testGradScoreList.size > 0, '', 'display:none;')}"
+                                        >
                                             <thead>
                                                 <tr>
                                                     <th>Id</th>
@@ -3074,14 +3084,14 @@
                                                         </td>
                                                     </tr>
                                                 </apex:repeat>
-                                                <apex:outputPanel
-                                                    rendered="{!IF(testGradScoreList.size > 0, false, true)}"
-                                                >
-                                                    <div>No graduate test scores found.</div>
-                                                </apex:outputPanel>
                                             </tbody>
                                         </table>
                                     </div>
+                                    <apex:outputPanel rendered="{!IF(testGradScoreList.size > 0, false, true)}">
+                                        <div>
+                                            No graduate test scores found for {!theContact.Preferred_First_Name__c}.
+                                        </div>
+                                    </apex:outputPanel>
                                 </div>
 
                                 <div id="psTestScoreErrorsGrad"></div>
@@ -3987,9 +3997,11 @@
                                 cleanUpUndefined('gr_psTranscript');
                                 transcriptsLoaded = true;
                             } else {
-                                document.getElementById('ps_transcript').innerHTML = 'No transcripts found.';
+                                document.getElementById('ps_transcript').innerHTML =
+                                    'No transcripts found for {!theContact.Preferred_First_Name__c}.';
                                 document.getElementById('ps_transcript').style.display = 'initial';
-                                document.getElementById('gr_psTranscript').innerHTML = 'No transcripts found.';
+                                document.getElementById('gr_psTranscript').innerHTML =
+                                    'No transcripts found for {!theContact.Preferred_First_Name__c}.';
                                 document.getElementById('gr_psTranscript').style.display = 'initial';
                                 transcriptsLoaded = true;
                             }
@@ -4080,7 +4092,7 @@
                                             advisorNotesLoaded = true;
                                         } else {
                                             document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
-                                                'No advising notes found.';
+                                                'No advising notes found for {!theContact.Preferred_First_Name__c}.';
                                             advisorNotesLoaded = true;
                                         }
                                     } else if (event.type === 'exception') {
@@ -4095,7 +4107,7 @@
                             );
                         } else {
                             document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
-                                'No advising notes found.';
+                                'No advising notes found for {!theContact.Preferred_First_Name__c}.';
                             advisorNotesLoaded = true;
                         }
                     }
@@ -4189,7 +4201,7 @@
                                         commentsLoaded = true;
                                     } else {
                                         document.getElementById('psCommentsResponseErrors').innerHTML =
-                                            'No comments found.';
+                                            'No comments found for {!theContact.Preferred_First_Name__c}.';
                                         commentsLoaded = true;
                                     }
                                 } else if (event.type === 'exception') {
@@ -4269,7 +4281,7 @@
                                 guestAccessLoaded = true;
                             } else {
                                 document.getElementById('psGuestAccessResponseErrors').innerHTML =
-                                    'No guest access data found.';
+                                    'No guest access data found for {!theContact.Preferred_First_Name__c}.';
                                 guestAccessLoaded = true;
                             }
                         }
@@ -4650,7 +4662,7 @@
                                             asrResponseTable = result.asrClasses;
                                         } else {
                                             document.getElementById('psEnrolledClassesErrors').innerHTML =
-                                                'No enrolled classes found.';
+                                                'No enrolled classes found for {!theContact.Preferred_First_Name__c}.';
                                         }
 
                                         if (!Object.getOwnPropertyNames(result.droppedClasses).length == 0) {
@@ -4738,7 +4750,7 @@
                                             cleanUpUndefined('ps_dropped_withdrawn_classes');
                                         } else {
                                             document.getElementById('psDroppedWithdrawnClassesErrors').innerHTML =
-                                                'No dropped or withdrawn classes found.';
+                                                'No dropped or withdrawn classes found for {!theContact.Preferred_First_Name__c}.';
                                         }
 
                                         filterClasses();
@@ -5058,7 +5070,7 @@
                         cleanUpUndefined('ps_dropped_withdrawn_classes');
                     } else {
                         document.getElementById('psDroppedWithdrawnClassesErrors').innerHTML =
-                            'No dropped or withdrawn classes found.';
+                            'No dropped or withdrawn classes found for {!theContact.Preferred_First_Name__c}.';
                     }
                     filterClasses();
                 },
@@ -5127,7 +5139,8 @@
                             document.getElementById('ps_credit_by_exam_work').innerHTML = html;
                             cleanUpUndefined('ps_credit_by_exam_work');
                         } else {
-                            document.getElementById('psCreditByExamErrors').innerHTML = 'No credit by exam found.';
+                            document.getElementById('psCreditByExamErrors').innerHTML =
+                                'No credit by exam found for {!theContact.Preferred_First_Name__c}.';
                         }
                     }
                 },
@@ -5184,7 +5197,8 @@
                         document.getElementById('ps_credit_by_exam_work').innerHTML = html;
                         cleanUpUndefined('ps_credit_by_exam_work');
                     } else {
-                        document.getElementById('psCreditByExamErrors').innerHTML = 'No credit by exam found.';
+                        document.getElementById('psCreditByExamErrors').innerHTML =
+                            'No credit by exam found for {!theContact.Preferred_First_Name__c}.';
                     }
                 },
                 {buffer: false, escape: true, timeout: 120000}
@@ -5280,7 +5294,8 @@
                             document.getElementById('ps_transfer_work').innerHTML = html;
                             cleanUpUndefined('ps_transfer_work');
                         } else {
-                            document.getElementById('psTransferWorkErrors').innerHTML = 'No transfer work found.';
+                            document.getElementById('psTransferWorkErrors').innerHTML =
+                                'No transfer work found for {!theContact.Preferred_First_Name__c}.';
                         }
                     }
                 },
@@ -5348,7 +5363,7 @@
                             '&nbsp;Service Indicators (' + result.length + ')';
                     } else {
                         document.getElementById('serviceIndicatorTable').innerHTML =
-                            'There are no service indicators available for this student.';
+                            'No service indicators found for {!theContact.Preferred_First_Name__c}.';
                         document.getElementById('serviceIndicatorHeader').innerHTML = '&nbsp;Service Indicators (0)';
                     }
                 },
@@ -5422,7 +5437,7 @@
                         loadUnresolvedFinancialAidChecklist(result);
                     } else {
                         document.getElementById('financialAidChecklistTable').innerHTML =
-                            'There are no financial aid checklist items for this student.';
+                            'No financial aid checklist items found for {!theContact.Preferred_First_Name__c}.';
                         document.getElementById('finAidUnresolvedItemSection').style.display = 'none';
                     }
                 },
@@ -5500,7 +5515,8 @@
                     var valueSet = Object.values(result);
 
                     if (keySet.length == null || keySet.length == 0) {
-                        document.getElementById('selectListForEditMessages').innerHTML = 'No FA Edit Msgs found';
+                        document.getElementById('selectListForEditMessages').innerHTML =
+                            'No financial aid user edit message found for {!theContact.Preferred_First_Name__c}.';
                         return;
                     }
 
@@ -5582,7 +5598,7 @@
 
                     if (keySet.length == null || keySet.length == 0) {
                         document.getElementById('selectListForAwards').innerHTML =
-                            'There is currently no Financial Aid / Scholarship Award information available for this student';
+                            'No financial aid or scholarship awards information found for {!theContact.Preferred_First_Name__c}.';
                         return;
                     }
 
@@ -5692,7 +5708,7 @@
 
                     if (keySet.length == null || keySet.length == 0) {
                         document.getElementById('selectListForChargeHistory').innerHTML =
-                            'There is currently no Charge History information available for this student';
+                            'No charge history found for {!theContact.Preferred_First_Name__c}.';
                         return;
                     }
 
@@ -5900,7 +5916,7 @@
                         document.getElementById('refundTable').innerHTML = html;
                     } else {
                         document.getElementById('refundTable').innerHTML =
-                            'There is no Refund data available for this student.';
+                            'No refunds found for {!theContact.Preferred_First_Name__c}.';
                     }
                 },
                 {buffer: false, escape: true, timeout: 120000}
@@ -5951,7 +5967,7 @@
                         document.getElementById('depositTable').innerHTML = html;
                     } else {
                         document.getElementById('depositTable').innerHTML =
-                            'There is no Deposit Status data available for this student.';
+                            'No deposit status found for {!theContact.Preferred_First_Name__c}.';
                     }
                 },
                 {buffer: false, escape: true, timeout: 120000}
@@ -6137,7 +6153,7 @@
 
                     if (keySet.length == null || keySet.length == 0) {
                         document.getElementById('selectListForSAP').innerHTML =
-                            'There is currently no Satisfactory Academic Progress information available for this student';
+                            'No satisfactory academic progress found for {!theContact.Preferred_First_Name__c}.';
                         return;
                     }
 

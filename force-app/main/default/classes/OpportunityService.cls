@@ -179,6 +179,91 @@ public class OpportunityService {
         return opportunitiesToUpdate;
     }
 
+    public static void populateNullContactsFromAccounts(List<Opportunity> newOpportunities) {
+        Set<Id> accountIds = new Set<Id>();
+        Map<Id, Account> accountMap = new Map<Id, Account>();
+
+        for (Opportunity newOpportunity : newOpportunities) {
+            if (newOpportunity.AccountId != null && newOpportunity.Contact__c == null) {
+                accountIds.add(newOpportunity.AccountId);
+            }
+        }
+
+        if (accountIds.size() > 0) {
+            accountMap = new Map<Id, Account>([SELECT Id, Contact__c FROM Account WHERE Id IN :accountIds]);
+        }
+
+        for (Opportunity newOpportunity : newOpportunities) {
+            newOpportunity.Opportunity_Assignment_Number_Rand__c = generateOpportunityAssignmentNumber();
+            if (newOpportunity.Contact__c == null) {
+                Account oppsAccount = accountMap.get(newOpportunity.AccountId);
+                newOpportunity.Contact__c = oppsAccount.Contact__c;
+            }
+        }
+    }
+
+    public static void insertCollegePlan(List<Opportunity> newOpportunities) {
+        List<Id> planIds = new List<Id>();
+        Map<Id, Id> programColleges = new Map<Id, Id>();
+        for (Opportunity newOpportunity : newOpportunities) {
+            if (newOpportunity.Academic_Plan__c != null) {
+                planIds.add(newOpportunity.Academic_Plan__c);
+            }
+            if (newOpportunity.Admitted_Plan__c != null) {
+                planIds.add(newOpportunity.Admitted_Plan__c);
+            }
+        }
+
+        for (Plan__c plan : [SELECT Id, Program__c FROM Plan__c WHERE Id IN :planIds]) {
+            programColleges.put(plan.Id, plan.Program__c);
+        }
+
+        for (Opportunity newOpportunity : newOpportunities) {
+            if (newOpportunity.Admitted_Plan__c != null) {
+                newOpportunity.College__c = programColleges.get(newOpportunity.Admitted_Plan__c);
+            } else if (newOpportunity.Academic_Plan__c != null) {
+                newOpportunity.College__c = programColleges.get(newOpportunity.Academic_Plan__c);
+            }
+        }
+    }
+
+    public static void updateCollegeIfPlanChanged(
+        List<Opportunity> updatedOpportunities,
+        Map<Id, Opportunity> previousOpportunitiesMap
+    ) {
+        List<Id> planIds = new List<Id>();
+        Map<Id, Id> programColleges = new Map<Id, Id>();
+
+        for (Opportunity updatedOpportunity : updatedOpportunities) {
+            Opportunity previousOpportunity = previousOpportunitiesMap.get(updatedOpportunity.Id);
+            if (updatedOpportunity.Academic_Plan__c != previousOpportunity.Academic_Plan__c) {
+                planIds.add(updatedOpportunity.Academic_Plan__c);
+            }
+            if (updatedOpportunity.Admitted_Plan__c != previousOpportunity.Admitted_Plan__c) {
+                planIds.add(updatedOpportunity.Admitted_Plan__c);
+            }
+        }
+
+        for (Plan__c plan : [SELECT Id, Program__c FROM Plan__c WHERE Id IN :planIds]) {
+            programColleges.put(plan.Id, plan.Program__c);
+        }
+
+        for (Opportunity updatedOpportunity : updatedOpportunities) {
+            Opportunity previousOpportunity = previousOpportunitiesMap.get(updatedOpportunity.Id);
+            if (
+                updatedOpportunity.Admitted_Plan__c != null &&
+                updatedOpportunity.Admitted_Plan__c != previousOpportunity.Admitted_Plan__c
+            ) {
+                updatedOpportunity.College__c = programColleges.get(updatedOpportunity.Admitted_Plan__c);
+            } else if (
+                updatedOpportunity.Academic_Plan__c != null &&
+                updatedOpportunity.Academic_Plan__c != previousOpportunity.Academic_Plan__c
+            ) {
+                updatedOpportunity.College__c = programColleges.get(updatedOpportunity.Academic_Plan__c);
+            }
+        }
+    }
+
     public static void updateAccountIdFromContact(
         List<SObject> updatedOpportunities,
         Map<Id, SObject> previousOpportunitiesMap

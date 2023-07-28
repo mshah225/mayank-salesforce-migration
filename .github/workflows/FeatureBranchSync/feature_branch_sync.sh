@@ -4,10 +4,14 @@ git config pull.rebase false && git config user.name "GitHub Actions" && git con
 
 deletedBranchCount=0
 cleanMergeCount=0
+cleanMergeCoreCount=0
 abortedMergeCount=0
+abortedMergeCoreCount=0
 deletedBranchArray=()
 cleanMergeArray=()
+cleanMergeCoreArray=()
 abortedMergeArray=()
+abortedMergeCoreArray=()
 
 for remote in $(git branch -r); do
     if [[ "$remote" != "origin/HEAD" ]] && [[ "$remote" != "->" ]] && [[ "$remote" != "origin/main" ]]; then
@@ -35,12 +39,22 @@ for remote in $(git branch -r); do
         git pull --no-edit origin main
         if [ $? -eq 0 ]; then
             git push origin $branch
-            cleanMergeArray+=("$branch")
-            cleanMergeCount=$((cleanMergeCount + 1))
+            if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]]; then
+                cleanMergeCoreArray+=("$branch")
+                cleanMergeCoreCount=$((cleanMergeCoreCount + 1))
+            else
+                cleanMergeArray+=("$branch")
+                cleanMergeCount=$((cleanMergeCount + 1))
+            fi
         else
             git merge --abort
-            abortedMergeArray+=("$branch")
-            abortedMergeCount=$((abortedMergeCount + 1))
+            if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]]; then
+                abortedMergeCoreArray+=("$branch")
+                abortedMergeCoreCount=$((abortedMergeCoreCount + 1))
+            else
+                abortedMergeArray+=("$branch")
+                abortedMergeCount=$((abortedMergeCount + 1))
+            fi
         fi
 
     fi
@@ -64,7 +78,157 @@ blocks='{
 					"text": "<!here|here>"
 				}
 			]
+		},
+        {
+			"type": "divider"
+		},
+		{
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": ":git-push: *core branch status:* '"$cleanMergeCoreCount"' of 3"
+				}
+			]
 		},'
+
+devBranchBlocks=''
+if [[ "${cleanMergeCoreArray[*]}" =~ "${dev}" ]]; then
+    devBranchBlocks='
+        {
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "→ *dev*"
+			},
+			"accessory": {
+				"type": "button",
+				"text": {
+					"type": "plain_text",
+					"text": ":canvas-check: PASSING",
+					"emoji": true
+				},
+				"value": "dev",
+				"url": "https://github.com/ASU/crm-salesforce-enterprise/tree/dev",
+				"action_id": "button-action"
+			}
+		},'
+else
+    devBranchBlocks='
+        {
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "→ *dev*"
+			},
+			"accessory": {
+				"type": "button",
+				"text": {
+					"type": "plain_text",
+					"text": ":exclamation: FAILING",
+					"emoji": true
+				},
+				"value": "dev",
+				"url": "https://github.com/ASU/crm-salesforce-enterprise/tree/dev",
+				"action_id": "button-action"
+			}
+		},'
+fi
+blocks="$blocks$devBranchBlocks"
+
+qaBranchBlocks=''
+if [[ "${cleanMergeCoreArray[*]}" =~ "${qa}" ]]; then
+    qaBranchBlocks='
+        {
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "→ *qa*"
+			},
+			"accessory": {
+				"type": "button",
+				"text": {
+					"type": "plain_text",
+					"text": ":canvas-check: PASSING",
+					"emoji": true
+				},
+				"value": "qa",
+				"url": "https://github.com/ASU/crm-salesforce-enterprise/tree/qa",
+				"action_id": "button-action"
+			}
+		},'
+else
+    qaBranchBlocks='
+        {
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "→ *qa*"
+			},
+			"accessory": {
+				"type": "button",
+				"text": {
+					"type": "plain_text",
+					"text": ":exclamation: FAILING",
+					"emoji": true
+				},
+				"value": "qa",
+				"url": "https://github.com/ASU/crm-salesforce-enterprise/tree/qa",
+				"action_id": "button-action"
+			}
+		},'
+fi
+blocks="$blocks$qaBranchBlocks"
+
+uatBranchBlocks=''
+if [[ "${cleanMergeCoreArray[*]}" =~ "${uat}" ]]; then
+    uatBranchBlocks='
+        {
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "→ *uat*"
+			},
+			"accessory": {
+				"type": "button",
+				"text": {
+					"type": "plain_text",
+					"text": ":canvas-check: PASSING",
+					"emoji": true
+				},
+				"value": "uat",
+				"url": "https://github.com/ASU/crm-salesforce-enterprise/tree/uat",
+				"action_id": "button-action"
+			}
+		},
+        {
+			"type": "divider"
+		},'
+else
+    uatBranchBlocks='
+        {
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "→ *uat*"
+			},
+			"accessory": {
+				"type": "button",
+				"text": {
+					"type": "plain_text",
+					"text": ":exclamation: FAILING",
+					"emoji": true
+				},
+				"value": "uat",
+				"url": "https://github.com/ASU/crm-salesforce-enterprise/tree/uat",
+				"action_id": "button-action"
+			}
+		},
+        {
+			"type": "divider"
+		},'
+fi
+blocks="$blocks$uatBranchBlocks"
 
 deletedBranchBlocks=''
 if [ ${#deletedBranchArray[@]} -gt 0 ]; then
@@ -96,7 +260,10 @@ if [ ${#deletedBranchArray[@]} -gt 0 ]; then
                     "indent": 1
                 }
             ]
-        },'
+        },
+        {
+			"type": "divider"
+		},'
 else
     deletedBranchBlocks='
         {
@@ -116,7 +283,10 @@ else
                     "text": "&nbsp;&nbsp;→ No branches to list."
                 }
             ]
-        },'
+        },
+        {
+			"type": "divider"
+		},'
 fi
 blocks="$blocks$deletedBranchBlocks"
 
@@ -150,7 +320,10 @@ if [ ${#abortedMergeArray[@]} -gt 0 ]; then
                     "indent": 1
                 }
             ]
-        },'
+        },
+        {
+			"type": "divider"
+		},'
 else
     abortedMergeBlocks='
         {
@@ -170,7 +343,10 @@ else
                     "text": "&nbsp;&nbsp;→ No branches to list."
                 }
             ]
-        },'
+        },
+        {
+			"type": "divider"
+		},'
 fi
 blocks="$blocks$abortedMergeBlocks"
 
@@ -204,7 +380,10 @@ if [ ${#cleanMergeArray[@]} -gt 0 ]; then
                     "indent": 1
                 }
             ]
-        },'
+        },
+        {
+			"type": "divider"
+		},'
 else
     cleanMergeBlocks='
         {
@@ -224,7 +403,10 @@ else
                     "text": "&nbsp;&nbsp;→ No branches to list."
                 }
             ]
-        },'
+        },
+        {
+			"type": "divider"
+		},'
 fi
 blocks="$blocks$cleanMergeBlocks"
 

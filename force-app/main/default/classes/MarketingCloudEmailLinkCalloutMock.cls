@@ -1,5 +1,5 @@
 @isTest
-public class MarketingCloudEmailLinkMockCallout implements HttpCalloutMock {
+public class MarketingCloudEmailLinkCalloutMock implements HttpCalloutMock {
     private HttpRequest request;
     public static final String CLIENT_ID = 'testClientId';
     public static final String CLIENT_SECRET = 'testClientSecret';

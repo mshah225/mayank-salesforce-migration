@@ -23,7 +23,7 @@ private class HTTPRestService_EnterpriseContactTest {
             '"FirstName",' +
             '"Email"],"contact": []}';
 
-        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGen_EnterpriseContact());
+        Test.setMock(HttpCalloutMock.class, new EnterpriseContactCalloutMock());
         createTestData();
 
         HTTPRestService_EnterpriseContact contactService = new HTTPRestService_EnterpriseContact();
@@ -37,7 +37,7 @@ private class HTTPRestService_EnterpriseContactTest {
 
     @isTest
     private static void testGetCalloutFailure() {
-        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGen_EnterpriseContact());
+        Test.setMock(HttpCalloutMock.class, new EnterpriseContactCalloutMock());
 
         createTestData();
         Contact contASURecord = TestDataFactory.createContact('ASU');
@@ -68,7 +68,7 @@ private class HTTPRestService_EnterpriseContactTest {
             '"message": null' +
             '}]' +
             '}';
-        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGen_EnterpriseContact());
+        Test.setMock(HttpCalloutMock.class, new EnterpriseContactCalloutMock());
         createTestData();
         HTTPRestService_EnterpriseContact contactService = new HTTPRestService_EnterpriseContact();
 
@@ -81,7 +81,7 @@ private class HTTPRestService_EnterpriseContactTest {
 
     @isTest
     private static void testPostCalloutFailure() {
-        Test.setMock(HttpCalloutMock.class, new MockHttpResponseGen_EnterpriseContact());
+        Test.setMock(HttpCalloutMock.class, new EnterpriseContactCalloutMock());
         createTestData();
         Contact contASURecord = TestDataFactory.createContact('ASU');
         insert contASURecord;

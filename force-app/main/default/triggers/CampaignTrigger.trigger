@@ -24,8 +24,8 @@ trigger CampaignTrigger on Campaign(
             dispatcher.afterInsert();
         } else if (Trigger.isDelete) {
             dispatcher.afterDelete();
-        } else if (Trigger.isUnDelete) {
-            dispatcher.afterUnDelete();
+        } else if (Trigger.isUndelete) {
+            dispatcher.afterUndelete();
         }
     }
 }

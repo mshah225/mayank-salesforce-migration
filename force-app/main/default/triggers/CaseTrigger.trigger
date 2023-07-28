@@ -24,7 +24,7 @@ trigger CaseTrigger on Case(
             dispatcher.afterUpdate();
         if (Trigger.isDelete)
             dispatcher.afterDelete();
-        if (Trigger.isUnDelete)
-            dispatcher.afterUnDelete();
+        if (Trigger.isUndelete)
+            dispatcher.afterUndelete();
     }
 }

@@ -4,7 +4,7 @@ private class MyASUHelpViewAsServiceTest {
     private static MyASUHelpViewAsService viewAsService;
 
     private static void setUpUser() {
-        Test.setMock(HttpCalloutMock.class, new MyASUHelpViewAsServiceMock());
+        Test.setMock(HttpCalloutMock.class, new EffectiveIdentityCalloutMock());
         String uniqueUserName = 'standarduser' + DateTime.now().getTime() + '@testorg.com';
         Profile profileSettings = [SELECT Id FROM Profile WHERE Name = 'ASU Chatter User'];
         userToUse = new User(

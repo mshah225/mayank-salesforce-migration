@@ -13,7 +13,7 @@ private class CaseDetailWithClassificationTest {
 
     @IsTest
     private static void caseUpdate() {
-        Test.setMock(HttpCalloutMock.class, new CaseStatusHttpMockCallout());
+        Test.setMock(HttpCalloutMock.class, new CaseDetailCalloutMock());
         Case createdCase = [SELECT Id, Status FROM Case LIMIT 1];
         List<Case_Classification__c> listOfCreatedCaseClassifications = [SELECT Id FROM Case_Classification__c];
         ApexPages.currentPage().getParameters().put('id', createdCase.Id);

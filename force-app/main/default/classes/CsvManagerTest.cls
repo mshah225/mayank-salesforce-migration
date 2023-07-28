@@ -2,7 +2,7 @@
 private class CsvManagerTest {
     @isTest
     private static void addRowSuccess() {
-        Test.setMock(HttpCalloutMock.class, new MockHttpBulkAPI());
+        Test.setMock(HttpCalloutMock.class, new BulkAPICalloutMock());
         CsvManager manager = new CsvManager('Id\n', 10, ObjectScrambleService.objectTypes.CONTACT);
         System.assertEquals('Id\n', manager.getCsvFile());
 
@@ -19,7 +19,7 @@ private class CsvManagerTest {
 
     @isTest
     private static void addRowAtMaxSizeSuccess() {
-        Test.setMock(HttpCalloutMock.class, new MockHttpBulkAPI());
+        Test.setMock(HttpCalloutMock.class, new BulkAPICalloutMock());
         CsvManager manager = new CsvManager('Id\n', 1, ObjectScrambleService.objectTypes.CONTACT);
         System.assertEquals('Id\n', manager.getCsvFile());
 

@@ -41,7 +41,7 @@ public with sharing class OpportunityTriggerTest {
     }
 
     //Convert Leads and create Opportunities
-    static testMethod void testOpportunityHandler() {
+    static testMethod void testOpportunityTrigger() {
         List<Contact> contacts = ContactService.createTestContacts(TRIGGERLOAD);
         insert contacts;
 

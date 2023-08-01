@@ -92,7 +92,6 @@ public class CaseUtilities {
         List<Messaging.SingleEmailMessage> lstMsgsToSend = new List<Messaging.SingleEmailMessage>();
         for (Messaging.SingleEmailMessage email : lstMsgs) {
             Messaging.SingleEmailMessage emailToSend = new Messaging.SingleEmailMessage();
-            // emailToSend.setToAddresses(email.getToAddresses());
             emailToSend.setToAddresses(new List<String>{ recipientEmailAddress });
             emailToSend.setWhatId(caseId);
             emailToSend.setPlainTextBody(email.getPlainTextBody());
@@ -101,7 +100,6 @@ public class CaseUtilities {
             if (attachmentList.size() > 0)
                 emailToSend.setFileAttachments(attachmentList);
             lstMsgsToSend.add(emailToSend);
-            createEmailMessage(caseId, emailToSend, recipientEmailAddress);
         }
 
         try {
@@ -120,26 +118,6 @@ public class CaseUtilities {
         else
             results = input;
         return results;
-    }
-
-    private static void createEmailMessage(Id caseId, Messaging.SingleEmailMessage email, String toEmailAddress) {
-        String value;
-        Integer maxlength;
-        EmailMessage theEmail = new EmailMessage();
-        theEmail.ParentId = caseId;
-        theEmail.Incoming = false;
-        Schema.DescribeFieldResult F = EmailMessage.HtmlBody.getDescribe();
-        maxlength = F.getLength();
-        theEmail.Subject = limitLength(email.Subject, EmailMessage.Subject.getDescribe().getLength());
-        theEmail.MessageDate = datetime.now();
-        theEmail.HtmlBody = limitLength(email.htmlBody, EmailMessage.HtmlBody.getDescribe().getLength());
-        theEmail.TextBody = limitLength(email.plainTextBody, EmailMessage.TextBody.getDescribe().getLength());
-
-        theEmail.ToAddress = toEmailAddress;
-
-        theEmail.FromName = email.getSenderDisplayName();
-
-        insert theEmail;
     }
 
     public static String getForwardToUnit(String unitApiName) {

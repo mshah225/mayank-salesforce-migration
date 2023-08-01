@@ -1,4 +1,4 @@
-public class ObjectTaggingNightlyJob implements Schedulable  {
+global class ObjectTaggingNightlyJob implements Schedulable  {
 
     global void execute(SchedulableContext SC) {
 

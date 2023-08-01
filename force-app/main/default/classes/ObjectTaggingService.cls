@@ -58,12 +58,22 @@ public with sharing class ObjectTaggingService {
     public static void createName(List<Object_Tag__c> obTagList) {
         
         for (Object_Tag__c obTag : obTagList) {
-            String objectTagName = 
-                obTag.Derived_Name__c
-                + ' - '
-                + (!tagMap.isEmpty() && (!String.isBlank(obTag.Tag__c) && tagMap.containsKey(obTag.Tag__c))? tagMap.get(obTag.Tag__c).Name: '')
-                + ' - '
-                + datetime.now();
+            String objectTagName;
+            if (obTag.Derived_Name__c == null) {
+                objectTagName = 
+                    'PLACEHOLDER'
+                    + ' - '
+                    + (!tagMap.isEmpty() && (!String.isBlank(obTag.Tag__c) && tagMap.containsKey(obTag.Tag__c))? tagMap.get(obTag.Tag__c).Name: '')
+                    + ' - '
+                    + datetime.now();
+            } else {
+                objectTagName = 
+                    obTag.Derived_Name__c
+                    + ' - '
+                    + (!tagMap.isEmpty() && (!String.isBlank(obTag.Tag__c) && tagMap.containsKey(obTag.Tag__c))? tagMap.get(obTag.Tag__c).Name: '')
+                    + ' - '
+                    + datetime.now();
+            }            
             
             if (obTag != null) {
                 obTag.Name = objectTagName.length() >= 80 ? objectTagName.substring(0,80):objectTagName;
@@ -72,8 +82,21 @@ public with sharing class ObjectTaggingService {
             if (obTag.Contact_Tag_Key__c == null && obTag.Contact__c != null && obTag.Tag__c != null ) {
                 obTag.Contact_Tag_Key__c = obTag.Contact__c +''+ obTag.Tag__c;
             }
-        }   
+        }
         
+    }
+
+    public static void fixName(List<Object_Tag__c> obTagList) {
+        
+        List<Object_Tag__c> namesToFix = new List<Object_Tag__c>();
+
+        for (Object_Tag__c obTag : obTagList) {
+            if (obTag.Name.indexOf('PLACEHOLDER') > -1) {
+                namesToFix.add(obTag);
+            }
+        }
+        
+        createName(namesToFix);        
     }
 
     public static void applyRelatedObject(List<Object_Tag__c> obTagList) {

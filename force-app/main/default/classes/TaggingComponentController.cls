@@ -81,6 +81,7 @@ public class TaggingComponentController {
         
         if(!updateTag.isEmpty()) {
             upsert updateTag;
+            update updateTag;
             returnResult ='Success';
         } else {
             returnResult = 'Error';

@@ -58,9 +58,9 @@ public class TaggingComponentController {
         system.debug('contactTaggedList'+contactTaggedList);
         list<Object_Tag__c> updateTag = new List<Object_Tag__c>();
         
-        if(!contactTaggedList.isEmpty()){
+        if(!contactTaggedList.isEmpty()) {
             
-            for(Object_Tag__c cc: contactTaggedList){
+            for(Object_Tag__c cc: contactTaggedList) {
                 if(cc.isActive__c == false){
                     cc.isActive__c = true;
                     cc.Effective_Date__c = datetime.now();
@@ -69,23 +69,20 @@ public class TaggingComponentController {
                 }
                 updateTag.add(cc);
             }
-        }
-        else{
+        } else {
             
             Object_Tag__c addtag = new Object_Tag__c();
             addtag.Related_Object_Id__c = recordId;
             addtag.Tag__c = tagId;
             addtag.isActive__c = true;
             addtag.Effective_Date__c = datetime.now();
-            updateTag.add(addtag);
-            
+            updateTag.add(addtag);            
         }
         
-        if(!updateTag.isEmpty()){
+        if(!updateTag.isEmpty()) {
             upsert updateTag;
             returnResult ='Success';
-        }
-        else{
+        } else {
             returnResult = 'Error';
         }
         
@@ -95,26 +92,27 @@ public class TaggingComponentController {
     
     /*Method is used to uncheck the checkbox on ContactTag__c Object when a tag is removed on the UI. It takes 3 parameters tag label,recordId and tagRemovalReason*/
     @AuraEnabled
-    public static String removeTag(String tag,Id recordId ,String tagRemovalReason){
+    public static String removeTag(String tag, Id recordId, String tagRemovalReason) {
         
         String returnResult; 
         
-        list<Object_Tag__c> removeTag = new List<Object_Tag__c>();
-        for(Object_Tag__c cc: [
-            SELECT Contact__r.Name,Tag__r.Name,isActive__c FROM Object_Tag__c WHERE Contact__r.Id =:recordId AND Tag__r.Name =:tag AND Tag__r.Removeable__c = true
-        ]){
+        List<Object_Tag__c> removeTag = new List<Object_Tag__c>();
+        for (Object_Tag__c cc: [
+            SELECT Tag__r.Name, isActive__c 
+            FROM Object_Tag__c 
+            WHERE Related_Object_Id__c =: recordId AND Tag__r.Name =: tag AND Tag__r.Removeable__c = true
+        ]) {
             cc.isActive__c = false;
             cc.Tag_Removal_Reason__c = tagRemovalReason;
             cc.InEffective_Date__c = datetime.now();
             removeTag.add(cc);
         }
         
-        if(!removeTag.isEmpty()){
-            system.debug('removeTag'+removeTag);
+        if (!removeTag.isEmpty()) {
             update removeTag;
             returnResult ='Success';
         }
-        else{
+        else {
             returnResult = 'Error';
         }
         
@@ -123,14 +121,16 @@ public class TaggingComponentController {
     
     /*This method is used to get all the tagRemovalReason onto the picklist filed on the frontEnds*/
     @AuraEnabled
-    public static String tagRemovalReason(){
+    public static String tagRemovalReason() {
         Map<String,String> pickListValues = new Map<String,String>();
         
         Schema.DescribeFieldResult fieldResult = Object_Tag__c.Tag_Removal_Reason__c.getDescribe();
         List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
-        for( Schema.PicklistEntry pickListVal : ple){
+
+        for (Schema.PicklistEntry pickListVal : ple) {
             pickListValues.put(pickListVal.getLabel(),pickListVal.getValue());
-        }     
+        } 
+
         return SYSTEM.JSON.serialize(pickListValues);
     } 
     

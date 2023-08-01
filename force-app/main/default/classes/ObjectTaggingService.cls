@@ -58,13 +58,12 @@ public with sharing class ObjectTaggingService {
     public static void createName(List<Object_Tag__c> obTagList) {
         
         for (Object_Tag__c obTag : obTagList) {
-            String objectTagName = ((!contactNameMap.isEmpty() && (!String.isBlank(obTag.Contact__c) && contactNameMap.containsKey(obTag.Contact__c) && !String.isBlank(contactNameMap.get(obTag.Contact__c).FirstName))? contactNameMap.get(obTag.Contact__c).FirstName : '')
-                    +''
-                    +(!contactNameMap.isEmpty() && (!String.isBlank(obTag.Contact__c) && contactNameMap.containsKey(obTag.Contact__c) && !String.isBlank(contactNameMap.get(obTag.Contact__c).LastName)) ? contactNameMap.get(obTag.Contact__c).LastName : '')
-                    +' - '
-                    +(!tagMap.isEmpty() && (!String.isBlank(obTag.Tag__c) && tagMap.containsKey(obTag.Tag__c))? tagMap.get(obTag.Tag__c).Name: '')
-                    +' - '
-                    +datetime.now());
+            String objectTagName = 
+                obTag.Derived_Name__c
+                + ' - '
+                + (!tagMap.isEmpty() && (!String.isBlank(obTag.Tag__c) && tagMap.containsKey(obTag.Tag__c))? tagMap.get(obTag.Tag__c).Name: '')
+                + ' - '
+                + datetime.now();
             
             if (obTag != null) {
                 obTag.Name = objectTagName.length() >= 80 ? objectTagName.substring(0,80):objectTagName;

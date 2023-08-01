@@ -19,6 +19,7 @@ public class UserDeprovisionCaseTransferBatch implements Database.Batchable<SObj
                 this.userToDeprovisionIds.add(userToDeprovision.Id);
             }
             this.userIdToUserMap.put(userToDeprovision.Id, userToDeprovision);
+            this.countTransferredPerUser.put(userToDeprovision.Id, 0);
         }
     }
 
@@ -29,12 +30,8 @@ public class UserDeprovisionCaseTransferBatch implements Database.Batchable<SObj
 
     public void execute(Database.BatchableContext context, List<Case> scope) {
         List<Case> casesToUpdate = new List<Case>();
-
+        
         for (Case userCase : scope) {
-            if (!countTransferredPerUser.keySet().contains(userCase.OwnerId)) {
-                countTransferredPerUser.put(userCase.OwnerId, 0);
-            }
-
             String deprovisionedUserId = userCase.OwnerId;
             try {
                 if (userCase != null) {
@@ -61,7 +58,6 @@ public class UserDeprovisionCaseTransferBatch implements Database.Batchable<SObj
     }
 
     public void finish(Database.BatchableContext context) {
-        System.debug('Successfully transferred ' + totalCasesTransferred + ' cases.');
         for (Id userId : countTransferredPerUser.keySet()) {
             Integer countTransferred = countTransferredPerUser.get(userId);
 

@@ -123,9 +123,7 @@ public without sharing class UserDeprovisionOrganizer {
                 System.enqueueJob(userDeprovisionQueue);
             }
 
-            if (!userDeprovisionCapabilityMap.isEmpty()) {
-                batchTransferDeprovisionUserCases(userDeprovisionCapabilityMap);
-            }
+            batchTransferDeprovisionUserCases(userDeprovisionCapabilityMap);
         }
     }
 

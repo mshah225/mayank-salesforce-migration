@@ -47,7 +47,7 @@ export default class TaggingComponent extends LightningElement {
                                     console.log('Inside records which has affiliations');
                                     var tempJson = {
                                         label: key ? key : '',
-                                        color: "background-color:" + obj[key].Tag__r.Color__c + ";" + "color:" + obj[key].Tag__r.Tag_Label_Color__c ? "background-color:" + obj[key].Tag__r.Color__c + ";" + "color:" + obj[key].Tag__r.Tag_Label_Color__c : '',
+                                        color: "background-color:" + obj[key].Tag__r.Background_Color__c + ";" + "color:" + obj[key].Tag__r.Tag_Label_Color__c ? "background-color:" + obj[key].Tag__r.Background_Color__c + ";" + "color:" + obj[key].Tag__r.Tag_Label_Color__c : '',
                                         image: obj[key].Tag__r.Tag_Icon_URL__c ? obj[key].Tag__r.Tag_Icon_URL__c : '',
                                         title: obj[key].Tag__r.Tag_Description__c ? obj[key].Tag__r.Tag_Description__c : '',
                                         isVerified: obj[key].isVerified__c ? obj[key].isVerified__c : false,

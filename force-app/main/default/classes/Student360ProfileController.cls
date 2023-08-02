@@ -59,8 +59,8 @@ global with sharing class Student360ProfileController {
 
     public Boolean hasStudentCareAndConcernAccess {
         get {
-            return PermissionsHelper.userHasProfile('System Administrator') ||
-                PermissionsHelper.userHasPermissionSet('Student_360');
+            return PermissionsHelper.currentUserHasProfile('System Administrator') ||
+                PermissionsHelper.currentUserHasPermissionSet('Student_360');
         }
         set;
     }
@@ -1149,6 +1149,38 @@ global with sharing class Student360ProfileController {
         return classesData;
     }
 
+    @RemoteAction
+    global static AcademicIntegrityWrapper getAcademicIntegrityData(
+        String academicIntegrityListJson,
+        String asrListJson
+    ) {
+        List<PS_ASU_SP_CLASS_V__x> academicIntegrityList = (List<PS_ASU_SP_CLASS_V__x>) JSON.deserialize(
+            academicIntegrityListJson,
+            List<PS_ASU_SP_CLASS_V__x>.class
+        );
+        List<PS_ASU_SP_ASR_CLSV__x> asrList = (List<PS_ASU_SP_ASR_CLSV__x>) JSON.deserialize(
+            asrListJson,
+            List<PS_ASU_SP_ASR_CLSV__x>.class
+        );
+
+        AcademicIntegrityWrapper academicIntegrityData = new AcademicIntegrityWrapper();
+        for (PS_ASU_SP_ASR_CLSV__x asr : asrList) {
+            academicIntegrityData.asrClasses.add(asr.STRM__c + '|' + asr.SESSION_CODE__c + '|' + asr.CLASS_NBR__c);
+        }
+
+        for (PS_ASU_SP_CLASS_V__x course : academicIntegrityList) {
+            academicIntegrityData.academicIntegrityData.add(course);
+            academicIntegrityData.classTerms.add(course.STRM__c + '|' + course.TERM_DESCR30__c);
+            academicIntegrityData.classSessions.add(course.SESSION_CODE__c);
+        }
+
+        if (!academicIntegrityList.isEmpty()) {
+            academicIntegrityData.classTerms.add('All|All');
+            academicIntegrityData.classSessions.add('All');
+        }
+        return academicIntegrityData;
+    }
+
     public String getAidYear() {
         return aidYear;
     }
@@ -1360,6 +1392,13 @@ global with sharing class Student360ProfileController {
         public Set<String> asrClasses = new Set<String>();
         public List<PS_ASU_SP_CLASS_V__x> enrolledClasses = new List<PS_ASU_SP_CLASS_V__x>();
         public List<PS_ASU_SP_CLASS_V__x> droppedClasses = new List<PS_ASU_SP_CLASS_V__x>();
+    }
+
+    global class AcademicIntegrityWrapper {
+        public Set<String> classTerms = new Set<String>();
+        public Set<String> classSessions = new Set<String>();
+        public Set<String> asrClasses = new Set<String>();
+        public List<PS_ASU_SP_CLASS_V__x> academicIntegrityData = new List<PS_ASU_SP_CLASS_V__x>();
     }
 
     global class CommentWrapper {

@@ -3328,9 +3328,8 @@
                                 </div>
 
                                 <div style="overflow: auto; max-height: 400px">
-                                    <div id="ps_credit_by_exam_work" style="display: none"></div>
-
-                                    <div id="psCreditByExamErrors"></div>
+                                    <div id="academic-integrity-container" style="display: none"></div>
+                                    <div id="academic-integrity-errors"></div>
                                 </div>
 
                                 <div class="page-header-smaller">
@@ -6273,7 +6272,7 @@
 
         function getAcademicIntegrityData() {
             if (academicIntegrityData != null) return;
-            document.getElementById('academicIntegrityErrors').innerHTML =
+            document.getElementById('academic-integrity-errors').innerHTML =
                 "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
 
             var academicIntegrityQuery =
@@ -6407,7 +6406,7 @@
                                 asrResponse,
                                 function (result, event) {
                                     if (event.status) {
-                                        document.getElementById('academicIntegrityErrors').innerHTML = '';
+                                        document.getElementById('academic-integrity-errors').innerHTML = '';
                                         academicIntegrityData = result;
                                         academicIntegrityWrapper = result.academicIntegrityData;
                                         var selectHtml = '';
@@ -6476,12 +6475,6 @@
                                                 '<tbody>';
                                             for (var i = 0; i < result.academicIntegrityData.length; i++) {
                                                 var asrValue = '--';
-
-                                                //if (result.asrClasses.indexOf(result.enrolledClasses[i].STRM__c + '|' +
-                                                //                              result.enrolledClasses[i].SESSION_CODE__c + '|' +
-                                                //                              result.enrolledClasses[i].CLASS_NBR__c) > -1) {
-                                                //    asrValue = '&lt;a href=&quot;#&quot; onclick=&quot;eventFire(document.getElementById(&quot;ugIndicators&quot;), &quot;click&quot;);return false;&quot;&gt;!&lt;/a&gt;';
-                                                //}
 
                                                 html +=
                                                     '' +
@@ -6573,20 +6566,20 @@
                                             html +=
                                                 '<div>* in Location column in the table above means: No Scheduled Meetings/Locations</div>';
 
-                                            document.getElementById('ps_enrolled_classes').innerHTML = html;
-                                            cleanUpUndefined('ps_enrolled_classes');
+                                            document.getElementById('academic-integrity-container').innerHTML = html;
+                                            cleanUpUndefined('academic-integrity-container');
                                             asrResponseTable = result.asrClasses;
                                         } else {
-                                            document.getElementById('academicIntegrityErrors').innerHTML =
+                                            document.getElementById('academic-integrity-errors').innerHTML =
                                                 'No academic integrity data found for {!theContact.Preferred_First_Name__c}.';
                                         }
 
                                         filterClasses();
                                     } else if (event.type === 'exception') {
-                                        document.getElementById('academicIntegrityErrors').innerHTML =
+                                        document.getElementById('academic-integrity-errors').innerHTML =
                                             event.message + '<br/>\n<pre>' + event.where + '</pre>';
                                     } else {
-                                        document.getElementById('academicIntegrityErrors').innerHTML = event.message;
+                                        document.getElementById('academic-integrity-errors').innerHTML = event.message;
                                     }
                                 },
                                 {buffer: false, escape: true, timeout: 120000}

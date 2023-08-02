@@ -4,17 +4,16 @@ public class PermissionsHelper {
     }
 
     public static Boolean userHasProfile(String profileName, Id userId) {
-        if (profileName != null && profileName != '') {
-            return [
-                    SELECT Profile.Name
-                    FROM User
-                    WHERE Id = :userId
-                ]
-                .Profile.Name == profileName
-                ? true
-                : false;
-        }
-        return false;
+        return (profileName != null &&
+            profileName != '' &&
+            ([
+                SELECT Profile.Name
+                FROM User
+                WHERE Id = :userId
+            ]
+            .Profile.Name == profileName))
+            ? true
+            : false;
     }
 
     public static Boolean currentUserHasPermissionSet(String permissionSetName) {
@@ -22,16 +21,15 @@ public class PermissionsHelper {
     }
 
     public static Boolean userHasPermissionSet(String permissionSetName, Id userId) {
-        if (permissionSetName != null && permissionSetName != '') {
-            return [
-                    SELECT COUNT()
-                    FROM PermissionSetAssignment
-                    WHERE PermissionSet.Name = :permissionSetName AND AssigneeId = :userId
-                    LIMIT 1
-                ] == 1
-                ? true
-                : false;
-        }
-        return false;
+        return (permissionSetName != null &&
+            permissionSetName != '' &&
+            ([
+                SELECT COUNT()
+                FROM PermissionSetAssignment
+                WHERE PermissionSet.Name = :permissionSetName AND AssigneeId = :userId
+                LIMIT 1
+            ] == 1))
+            ? true
+            : false;
     }
 }

@@ -6,12 +6,33 @@ public class PermissionsHelper {
     public static Boolean userHasProfile(String profileName, Id userId) {
         return (profileName != null &&
             profileName != '' &&
+            userId != null &&
+            userId != '' &&
             ([
                 SELECT Profile.Name
                 FROM User
                 WHERE Id = :userId
             ]
             .Profile.Name == profileName))
+            ? true
+            : false;
+    }
+
+    public static Boolean currentUserHasProfileId(Id profileId) {
+        return userHasProfileId(profileId, UserInfo.getUserId());
+    }
+
+    public static Boolean userHasProfileId(Id profileId, Id userId) {
+        return (profileId != null &&
+            profileId != '' &&
+            userId != null &&
+            userId != '' &&
+            ([
+                SELECT Profile.Id
+                FROM User
+                WHERE Id = :userId
+            ]
+            .Profile.Id == profileId))
             ? true
             : false;
     }
@@ -23,10 +44,31 @@ public class PermissionsHelper {
     public static Boolean userHasPermissionSet(String permissionSetName, Id userId) {
         return (permissionSetName != null &&
             permissionSetName != '' &&
+            userId != null &&
+            userId != '' &&
             ([
                 SELECT COUNT()
                 FROM PermissionSetAssignment
                 WHERE PermissionSet.Name = :permissionSetName AND AssigneeId = :userId
+                LIMIT 1
+            ] == 1))
+            ? true
+            : false;
+    }
+
+    public static Boolean currentUserHasPermissionSetId(Id permissionSetId) {
+        return userHasPermissionSetId(permissionSetId, UserInfo.getUserId());
+    }
+
+    public static Boolean userHasPermissionSetId(Id permissionSetId, Id userId) {
+        return (permissionSetId != null &&
+            permissionSetId != '' &&
+            userId != null &&
+            userId != '' &&
+            ([
+                SELECT COUNT()
+                FROM PermissionSetAssignment
+                WHERE PermissionSet.Id = :permissionSetId AND AssigneeId = :userId
                 LIMIT 1
             ] == 1))
             ? true

@@ -1,9 +1,6 @@
 public class PermissionsHelper {
     public static Boolean currentUserHasProfile(String profileName) {
-        if (profileName != null && profileName != '') {
-            return userHasProfile(profileName, UserInfo.getUserId());
-        }
-        return false;
+        return userHasProfile(profileName, UserInfo.getUserId());
     }
 
     public static Boolean userHasProfile(String profileName, Id userId) {
@@ -21,10 +18,7 @@ public class PermissionsHelper {
     }
 
     public static Boolean currentUserHasPermissionSet(String permissionSetName) {
-        if (permissionSetName != null && permissionSetName != '') {
-            return userHasPermissionSet(permissionSetName, UserInfo.getUserId());
-        }
-        return false;
+        return userHasPermissionSet(permissionSetName, UserInfo.getUserId());
     }
 
     public static Boolean userHasPermissionSet(String permissionSetName, Id userId) {

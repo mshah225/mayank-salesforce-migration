@@ -63,8 +63,8 @@ public class TaggingComponentController {
             for(Object_Tag__c cc: contactTaggedList) {
                 if(cc.isActive__c == false){
                     cc.isActive__c = true;
-                    cc.Effective_Date__c = datetime.now();
-                    cc.InEffective_Date__c = null;
+                    cc.Tag_Added_Date__c = datetime.now();
+                    cc.Tag_Removal_Date__c = null;
                     cc.Tag_Removal_Reason__c = null;
                 }
                 updateTag.add(cc);
@@ -75,7 +75,7 @@ public class TaggingComponentController {
             addtag.Related_Object_Id__c = recordId;
             addtag.Tag__c = tagId;
             addtag.isActive__c = true;
-            addtag.Effective_Date__c = datetime.now();
+            addtag.Tag_Added_Date__c = datetime.now();
             updateTag.add(addtag);            
         }
         
@@ -105,7 +105,7 @@ public class TaggingComponentController {
         ]) {
             cc.isActive__c = false;
             cc.Tag_Removal_Reason__c = tagRemovalReason;
-            cc.InEffective_Date__c = datetime.now();
+            cc.Tag_Removal_Date__c = datetime.now();
             removeTag.add(cc);
         }
         

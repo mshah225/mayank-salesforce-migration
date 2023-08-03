@@ -7,7 +7,6 @@ public class PermissionsHelper {
         return (profileName != null &&
             profileName != '' &&
             userId != null &&
-            userId != '' &&
             ([
                 SELECT Profile.Name
                 FROM User
@@ -24,9 +23,7 @@ public class PermissionsHelper {
 
     public static Boolean userHasProfileId(Id profileId, Id userId) {
         return (profileId != null &&
-            profileId != '' &&
             userId != null &&
-            userId != '' &&
             ([
                 SELECT Profile.Id
                 FROM User
@@ -45,7 +42,6 @@ public class PermissionsHelper {
         return (permissionSetName != null &&
             permissionSetName != '' &&
             userId != null &&
-            userId != '' &&
             ([
                 SELECT COUNT()
                 FROM PermissionSetAssignment
@@ -62,9 +58,7 @@ public class PermissionsHelper {
 
     public static Boolean userHasPermissionSetId(Id permissionSetId, Id userId) {
         return (permissionSetId != null &&
-            permissionSetId != '' &&
             userId != null &&
-            userId != '' &&
             ([
                 SELECT COUNT()
                 FROM PermissionSetAssignment

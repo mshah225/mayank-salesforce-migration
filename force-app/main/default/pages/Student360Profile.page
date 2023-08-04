@@ -5269,55 +5269,56 @@
                         '<tbody>';
 
                     for (var i = 0; i < result.length; i++) {
+                        console.log(result[i]);
                         var asrValue = '--';
                         html +=
                             '' +
                             '<tr>' +
                             '<td data-header="Term">' +
-                            result.academicIntegrityData[i].TERM_DESCR30__c +
+                            result[i].academicIntegrityDataItem.TERM_DESCR30__c +
                             '</td>' +
                             '<td data-header="Class">' +
-                            Math.floor(result.academicIntegrityData[i].CLASS_NBR__c) +
+                            Math.floor(result[i].academicIntegrityDataItem.CLASS_NBR__c) +
                             '</td>' +
                             '<td data-header="Course">' +
-                            result.academicIntegrityData[i].SUBJECT__c +
+                            result[i].academicIntegrityDataItem.SUBJECT__c +
                             ' ' +
-                            result.academicIntegrityData[i].CATALOG_NBR__c +
+                            result[i].academicIntegrityDataItem.CATALOG_NBR__c +
                             '</td>' +
                             '<td data-header="Title">' +
-                            result.academicIntegrityData[i].CLASS_DESCR__c +
+                            result[i].academicIntegrityDataItem.CLASS_DESCR__c +
                             '</td>' +
                             '<td data-header="Units">' +
-                            result.academicIntegrityData[i].UNT_TAKEN__c +
+                            result[i].academicIntegrityDataItem.UNT_TAKEN__c +
                             '</td>' +
                             '<td data-header="Instructor(s)">' +
-                            result.academicIntegrityData[i].FT_FULL_NAME__c +
+                            result[i].academicIntegrityDataItem.FT_FULL_NAME__c +
                             '</td>' +
                             '<td data-header="Days">' +
-                            result.academicIntegrityData[i].SCH_HTML_DAY1__c +
+                            result[i].academicIntegrityDataItem.SCH_HTML_DAY1__c +
                             '</td>' +
                             '<td data-header="Times">' +
-                            result.academicIntegrityData[i].SCH_DAILY_TIME__c +
+                            result[i].academicIntegrityDataItem.SCH_DAILY_TIME__c +
                             '</td>' +
                             '<td data-header="Dates">' +
-                            result.academicIntegrityData[i].ASU_SCH_DATES__c +
+                            result[i].academicIntegrityDataItem.ASU_SCH_DATES__c +
                             '</td>' +
                             '<td data-header="Location">' +
-                            result.academicIntegrityData[i].SSR_MTG_LOC_LONG__c +
+                            result[i].academicIntegrityDataItem.SSR_MTG_LOC_LONG__c +
                             '</td>' +
                             '<td data-header="Transcript Grade">' +
-                            result.academicIntegrityData[i].CRSE_GRADE_OFF__c +
+                            result[i].academicIntegrityDataItem.CRSE_GRADE_OFF__c +
                             '</td>' +
                             '<td data-header="Academic Integrity Grade">' +
-                            result.academicIntegrityData[i].CRSE_GRADE_INPUT__c +
+                            result[i].academicIntegrityDataItem.CRSE_GRADE_INPUT__c +
                             '</td>';
                         if (
-                            result.asrClasses.indexOf(
-                                result.academicIntegrityData[i].STRM__c +
+                            asrResponseTable.indexOf(
+                                result[i].academicIntegrityDataItem.STRM__c +
                                     '|' +
-                                    result.academicIntegrityData[i].SESSION_CODE__c +
+                                    result[i].academicIntegrityDataItem.SESSION_CODE__c +
                                     '|' +
-                                    result.academicIntegrityData[i].CLASS_NBR__c
+                                    result[i].academicIntegrityDataItem.CLASS_NBR__c
                             ) > -1
                         ) {
                             // ASR link opens Undergraduate Indicators tab when clicked

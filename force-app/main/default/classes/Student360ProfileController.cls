@@ -1138,11 +1138,11 @@ global with sharing class Student360ProfileController {
         academicIntegrityListToSort.sort();
         if (!sortDirection) {
             List<SortableAcademicIntegrityData> reversedList = new List<SortableAcademicIntegrityData>();
-            for (SortableAcademicIntegrityData sc : academicIntegrityListToSort) {
+            for (SortableAcademicIntegrityData listItem : academicIntegrityListToSort) {
                 if (reversedList.size() == 0) {
-                    reversedList.add(sc);
+                    reversedList.add(listItem);
                 } else {
-                    reversedList.add(0, sc);
+                    reversedList.add(0, listItem);
                 }
             }
             return reversedList;

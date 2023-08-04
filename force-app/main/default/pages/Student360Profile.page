@@ -6419,7 +6419,6 @@
                 'FROM PS_ASU_SP_CLASS_V__x  ' +
                 "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
                 "AND AUDIT_GRADE_BASIS__c != 'Y' " +
-                // "AND CRSE_GRADE_INPUT__c LIKE 'W' " +
                 "AND CRSE_GRADE_INPUT__c LIKE '%X%' " +
                 'ORDER BY STRM__c DESC, CLASS_NBR__c ASC';
             var asrQuery =

@@ -3303,8 +3303,8 @@
                                 </div>
 
                                 <div style="overflow: auto; max-height: 400px">
-                                    <div id="ps_enrolled_classes" style="display: none"></div>
-                                    <div id="psEnrolledClassesErrors"></div>
+                                    <!-- <div id="ps_enrolled_classes" style="display: none"></div>
+                                    <div id="psEnrolledClassesErrors"></div> -->
                                 </div>
 
                                 <div class="page-header-smaller">
@@ -3315,9 +3315,9 @@
                                 </div>
 
                                 <div style="overflow: auto; max-height: 400px">
-                                    <div id="ps_dropped_withdrawn_classes" style="display: none"></div>
+                                    <!-- <div id="ps_dropped_withdrawn_classes" style="display: none"></div>
 
-                                    <div id="psDroppedWithdrawnClassesErrors"></div>
+                                    <div id="psDroppedWithdrawnClassesErrors"></div> -->
                                 </div>
 
                                 <div class="page-header-smaller">
@@ -3340,9 +3340,9 @@
                                 </div>
 
                                 <div style="overflow: auto; max-height: 400px">
-                                    <div id="ps_transfer_work" style="display: none"></div>
+                                    <!-- <div id="ps_transfer_work" style="display: none"></div>
 
-                                    <div id="psTransferWorkErrors"></div>
+                                    <div id="psTransferWorkErrors"></div> -->
                                 </div>
                             </apex:pageBlock>
                         </div>
@@ -3460,12 +3460,12 @@
 
         $j(document).ready(function () {
             maskPhoneNumbers();
-
             loadRemoteSunCardPhoto();
             loadFinancialAidIndicators();
             loadCommentsTab();
             loadUGIndicatorTab();
             loadClassesTab();
+            loadStudentCareAndConcernTab();
         });
 
         function loadFinancialAidIndicators() {
@@ -3660,6 +3660,7 @@
         var transcriptsLoaded = false;
         var classesData;
         var financialAidData;
+        var academicIntegrityData;
 
         function loadClassesTab() {
             getEnrolledClasses();
@@ -3677,6 +3678,10 @@
                     0.7 * '{!theContact.Average_MyASU_Cohort__c}'
                 );
             }
+        }
+
+        function loadStudentCareAndConcernTab() {
+            getAcademicIntegrityData();
         }
 
         function loadCommentsTab() {
@@ -4345,6 +4350,19 @@
             }
         }
 
+        var ascDirAcademicIntegrityData = true;
+        var currSortAcademicIntegrityData = 'Term';
+
+        function sortAcademicIntegrityDataOnClick(name) {
+            if (name == currSortAcademicIntegrityData) {
+                ascDirAcademicIntegrityData = !ascDirAcademicIntegrityData;
+            } else {
+                ascDirAcademicIntegrityData = true;
+                currSortAcademicIntegrityData = name;
+            }
+            sortAcademicIntegrityDataList(name, ascDirAcademicIntegrityData);
+        }
+
         var enrolledWrapper;
         var droppedWrapper;
         var examWrapper;
@@ -4495,7 +4513,10 @@
                                         enrolledWrapper = result.enrolledClasses;
                                         droppedWrapper = result.droppedClasses;
                                         var selectHtml = '';
-                                        if (!Object.getOwnPropertyNames(classesData.classSessions).length == 0) {
+                                        if (
+                                            !Object.getOwnPropertyNames(classesData.classSessions).length == 0 &&
+                                            classesData.classSessions.length > 0
+                                        ) {
                                             selectHtml +=
                                                 "<label for='ps_classes_session_select'>Session:&nbsp;</label><select id='ps_classes_session_select' onchange='filterClasses()'>";
                                             for (var i = 0; i < classesData.classSessions.length; i++) {
@@ -4513,7 +4534,10 @@
                                             selectHtml += '</select>&nbsp;&nbsp;';
                                         }
 
-                                        if (!Object.getOwnPropertyNames(classesData.classTerms).length == 0) {
+                                        if (
+                                            !Object.getOwnPropertyNames(classesData.classTerms).length == 0 &&
+                                            classesData.classTerms.length > 0
+                                        ) {
                                             selectHtml +=
                                                 "<label for='ps_classes_term_select'>Term:&nbsp;</label><select id='ps_classes_term_select' onchange='filterClasses()'>";
                                             for (var i = 0; i < classesData.classTerms.length; i++) {
@@ -4529,7 +4553,10 @@
                                         }
                                         document.getElementById('ps_classes_term_picklist').innerHTML = selectHtml;
 
-                                        if (!Object.getOwnPropertyNames(result.enrolledClasses).length == 0) {
+                                        if (
+                                            !Object.getOwnPropertyNames(result.enrolledClasses).length == 0 &&
+                                            result.enrolledClasses.length > 0
+                                        ) {
                                             document.getElementById('ps_enrolled_classes').style.display = 'initial';
 
                                             var html =
@@ -4665,7 +4692,10 @@
                                                 'No enrolled classes found for {!theContact.Preferred_First_Name__c}.';
                                         }
 
-                                        if (!Object.getOwnPropertyNames(result.droppedClasses).length == 0) {
+                                        if (
+                                            !Object.getOwnPropertyNames(result.droppedClasses).length == 0 &&
+                                            result.droppedClasses.length > 0
+                                        ) {
                                             document.getElementById('ps_dropped_withdrawn_classes').style.display =
                                                 'initial';
 
@@ -5200,6 +5230,110 @@
                         document.getElementById('psCreditByExamErrors').innerHTML =
                             'No credit by exam found for {!theContact.Preferred_First_Name__c}.';
                     }
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+
+        function sortAcademicIntegrityDataList(paramToSort, direction) {
+            var academicIntegrityWrapperJson = JSON.stringify(academicIntegrityWrapper);
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.Student360ProfileController.sortAcademicIntegrityData}',
+                paramToSort,
+                academicIntegrityWrapperJson,
+                direction,
+                function (result, event) {
+                    document.getElementById('academic-integrity-container').style.display = 'initial';
+
+                    var html =
+                        '' +
+                        "<div class='table-responsive'>" +
+                        "<table id='academic_integrity_data_table' class='table table-striped table-bordered'> " +
+                        '<thead>' +
+                        '<tr style="cursor:pointer">' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Term\')">Term</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Class\')">Class</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Course\')">Course</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Title\')">Title</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Units\')">Units</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Instructor\')">Instructor(s)</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Days\')">Days</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Times\')">Times</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Dates\')">Dates</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Location\')">Location</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Transcript Grade\')">Transcript Grade</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Academic Integrity Grade\')">Academic Integrity Grade</th>' +
+                        '<th scope="col">ASR</th>' +
+                        '</tr>' +
+                        '</thead>' +
+                        '<tbody>';
+
+                    for (var i = 0; i < result.length; i++) {
+                        var asrValue = '--';
+                        html +=
+                            '' +
+                            '<tr>' +
+                            '<td data-header="Term">' +
+                            result.academicIntegrityData[i].TERM_DESCR30__c +
+                            '</td>' +
+                            '<td data-header="Class">' +
+                            Math.floor(result.academicIntegrityData[i].CLASS_NBR__c) +
+                            '</td>' +
+                            '<td data-header="Course">' +
+                            result.academicIntegrityData[i].SUBJECT__c +
+                            ' ' +
+                            result.academicIntegrityData[i].CATALOG_NBR__c +
+                            '</td>' +
+                            '<td data-header="Title">' +
+                            result.academicIntegrityData[i].CLASS_DESCR__c +
+                            '</td>' +
+                            '<td data-header="Units">' +
+                            result.academicIntegrityData[i].UNT_TAKEN__c +
+                            '</td>' +
+                            '<td data-header="Instructor(s)">' +
+                            result.academicIntegrityData[i].FT_FULL_NAME__c +
+                            '</td>' +
+                            '<td data-header="Days">' +
+                            result.academicIntegrityData[i].SCH_HTML_DAY1__c +
+                            '</td>' +
+                            '<td data-header="Times">' +
+                            result.academicIntegrityData[i].SCH_DAILY_TIME__c +
+                            '</td>' +
+                            '<td data-header="Dates">' +
+                            result.academicIntegrityData[i].ASU_SCH_DATES__c +
+                            '</td>' +
+                            '<td data-header="Location">' +
+                            result.academicIntegrityData[i].SSR_MTG_LOC_LONG__c +
+                            '</td>' +
+                            '<td data-header="Transcript Grade">' +
+                            result.academicIntegrityData[i].CRSE_GRADE_OFF__c +
+                            '</td>' +
+                            '<td data-header="Academic Integrity Grade">' +
+                            result.academicIntegrityData[i].CRSE_GRADE_INPUT__c +
+                            '</td>';
+                        if (
+                            result.asrClasses.indexOf(
+                                result.academicIntegrityData[i].STRM__c +
+                                    '|' +
+                                    result.academicIntegrityData[i].SESSION_CODE__c +
+                                    '|' +
+                                    result.academicIntegrityData[i].CLASS_NBR__c
+                            ) > -1
+                        ) {
+                            // ASR link opens Undergraduate Indicators tab when clicked
+                            html +=
+                                '<td data-header="ASR">' +
+                                '<a href="#" onclick="document.getElementById(\x27ugIndicatorsLink\x27).click(); return false;">Y</a>' +
+                                '</td>';
+                        } else {
+                            html += '<td data-header="ASR">--</td>';
+                        }
+                        html += '</tr>';
+                    }
+                    html += '</tbody></table></div>';
+
+                    document.getElementById('academic-integrity-container').innerHTML = html;
+                    cleanUpUndefined('academic-integrity-container');
                 },
                 {buffer: false, escape: true, timeout: 120000}
             );
@@ -6285,121 +6419,36 @@
                 'FROM PS_ASU_SP_CLASS_V__x  ' +
                 "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
                 "AND AUDIT_GRADE_BASIS__c != 'Y' " +
-                "AND CRSE_GRADE_INPUT__c LIKE 'XC' " +
+                // "AND CRSE_GRADE_INPUT__c LIKE 'W' " +
+                "AND CRSE_GRADE_INPUT__c LIKE '%X%' " +
                 'ORDER BY STRM__c DESC, CLASS_NBR__c ASC';
             var asrQuery =
                 'SELECT CLASS_NBR__c, SESSION_CODE__c, STRM__c ' +
                 'FROM PS_ASU_SP_ASR_CLSV__x ' +
-                "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
-                "AND STRM__c = '{!currentTerm}'";
+                "WHERE EMPLID__c = '{!theContact.EMPLID__c}'";
+            // "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
+            // "AND STRM__c = '{!currentTerm}'";
             var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
             conn.query(academicIntegrityQuery, function (err, response) {
                 if (err) {
-                    document.getElementById('psAdvisingNotesResponseErrors').innerHTML = err;
+                    document.getElementById('academic-integrity-errors').innerHTML = err;
                 } else {
                     conn.query(asrQuery, function (errorAsr, responseAsr) {
                         if (errorAsr) {
-                            document.getElementById('psAdvisingNotesResponseErrors').innerHTML = errorAsr;
+                            document.getElementById('academic-integrity-errors').innerHTML = errorAsr;
                         } else {
                             let academicIntegrityResponse = response.records;
-                            let asrResponse = responseAsr.records;
-                            let currentTermClassSessionMap = new Map();
-                            let currentTermEnrolled = 0;
-                            let nextTermClassSessionMap = new Map();
-                            let nextTermEnrolled = 0;
-                            let futureTermClassSessionMap = new Map();
-                            let futureTermEnrolled = 0;
-
                             academicIntegrityResponse.forEach(function (record) {
-                                delete record.attributes;
-
-                                if (record.STDNT_ENRL_STATUS__c === 'E' && record.ENRL_STATUS_REASON__c === 'ENRL') {
-                                    if (record.STRM__c === '{!currentTerm}') {
-                                        currentTermEnrolled += record.UNT_TAKEN__c;
-                                        if (!currentTermClassSessionMap.has(record.SESSION_CODE__c)) {
-                                            currentTermClassSessionMap.set(record.SESSION_CODE__c, record.UNT_TAKEN__c);
-                                        } else {
-                                            currentTermClassSessionMap.set(
-                                                record.SESSION_CODE__c,
-                                                currentTermClassSessionMap.get(record.SESSION_CODE__c) +
-                                                    record.UNT_TAKEN__c
-                                            );
-                                        }
-                                    } else if (record.STRM__c === '{!nextTerm}') {
-                                        nextTermEnrolled += record.UNT_TAKEN__c;
-                                        if (!nextTermClassSessionMap.has(record.SESSION_CODE__c)) {
-                                            nextTermClassSessionMap.set(record.SESSION_CODE__c, record.UNT_TAKEN__c);
-                                        } else {
-                                            nextTermClassSessionMap.set(
-                                                record.SESSION_CODE__c,
-                                                nextTermClassSessionMap.get(record.SESSION_CODE__c) +
-                                                    record.UNT_TAKEN__c
-                                            );
-                                        }
-                                    } else if (record.STRM__c === '{!futureTerm}') {
-                                        futureTermEnrolled += record.UNT_TAKEN__c;
-                                        if (!futureTermClassSessionMap.has(record.SESSION_CODE__c)) {
-                                            futureTermClassSessionMap.set(record.SESSION_CODE__c, record.UNT_TAKEN__c);
-                                        } else {
-                                            futureTermClassSessionMap.set(
-                                                record.SESSION_CODE__c,
-                                                futureTermClassSessionMap.get(record.SESSION_CODE__c) +
-                                                    record.UNT_TAKEN__c
-                                            );
-                                        }
-                                    }
-                                }
-                            });
-
-                            buildSessionRows(
-                                currentTermClassSessionMap,
-                                '#currentTermEnrolledHours',
-                                '#currentTermEnrolled',
-                                currentTermEnrolled
-                            );
-                            buildSessionRows(
-                                nextTermClassSessionMap,
-                                '#nextTermEnrolledHours',
-                                '#nextTermEnrolled',
-                                nextTermEnrolled
-                            );
-                            buildSessionRows(
-                                futureTermClassSessionMap,
-                                '#futureEnrolledHours',
-                                '#futureTermEnrolled',
-                                futureTermEnrolled
-                            );
-
-                            function buildSessionRows(sessionMap, termHoursId, termEnrolledId, termEnrolledHours) {
-                                let termRowHTML = '';
-                                new Map([...sessionMap.entries()].sort()).forEach(function (value, key) {
-                                    termRowHTML +=
-                                        '' +
-                                        '<tr class="gradExtraInfo hide">\n' +
-                                        '<th class="gradTD" style="border-right:none;">\n' +
-                                        '<span style="margin-left:3rem;">Session ' +
-                                        key +
-                                        '</span>\n' +
-                                        '</th>\n' +
-                                        '<td class="gradTD" style="border-left:none;">\n' +
-                                        '' +
-                                        value +
-                                        '\n' +
-                                        '</td>\n' +
-                                        '</tr>';
-                                });
-
-                                if (termEnrolledHours > 0) {
-                                    $j(termHoursId).after(termRowHTML).find('span.hide').removeClass('hide');
-                                }
-                                $j(termEnrolledId).html(termEnrolledHours);
-                            }
-
-                            asrResponse.forEach(function (record) {
                                 delete record.attributes;
                             });
                             academicIntegrityResponse = JSON.stringify(academicIntegrityResponse);
+
+                            let asrResponse = responseAsr.records;
+                            asrResponse.forEach(function (record) {
+                                delete record.attributes;
+                            });
                             asrResponse = JSON.stringify(asrResponse);
+
                             Visualforce.remoting.Manager.invokeAction(
                                 '{!$RemoteAction.Student360ProfileController.getAcademicIntegrityData}',
                                 academicIntegrityResponse,
@@ -6409,81 +6458,43 @@
                                         document.getElementById('academic-integrity-errors').innerHTML = '';
                                         academicIntegrityData = result;
                                         academicIntegrityWrapper = result.academicIntegrityData;
-                                        var selectHtml = '';
+
                                         if (
-                                            !Object.getOwnPropertyNames(academicIntegrityData.classSessions).length == 0
+                                            !Object.getOwnPropertyNames(result.academicIntegrityData).length == 0 &&
+                                            result.academicIntegrityData.length > 0
                                         ) {
-                                            selectHtml +=
-                                                "<label for='ps_classes_session_select'>Session:&nbsp;</label><select id='ps_classes_session_select' onchange='filterClasses()'>";
-                                            for (var i = 0; i < academicIntegrityData.classSessions.length; i++) {
-                                                selectHtml += '<option ';
-                                                if (academicIntegrityData.classSessions[i] == 'All') {
-                                                    selectHtml += " selected='selected' ";
-                                                }
-                                                selectHtml +=
-                                                    " value='" +
-                                                    academicIntegrityData.classSessions[i] +
-                                                    "'>" +
-                                                    academicIntegrityData.classSessions[i] +
-                                                    '</option>';
-                                            }
-                                            selectHtml += '</select>&nbsp;&nbsp;';
-                                        }
-
-                                        if (!Object.getOwnPropertyNames(academicIntegrityData.classTerms).length == 0) {
-                                            selectHtml +=
-                                                "<label for='ps_classes_term_select'>Term:&nbsp;</label><select id='ps_classes_term_select' onchange='filterClasses()'>";
-                                            for (var i = 0; i < academicIntegrityData.classTerms.length; i++) {
-                                                var parsedTerms = academicIntegrityData.classTerms[i].split('|');
-                                                selectHtml +=
-                                                    "<option value='" +
-                                                    parsedTerms[0] +
-                                                    "'>" +
-                                                    parsedTerms[1] +
-                                                    '</option>';
-                                            }
-                                            selectHtml += '</select>';
-                                        }
-                                        document.getElementById('ps_classes_term_picklist').innerHTML = selectHtml;
-
-                                        if (!Object.getOwnPropertyNames(result.enrolledClasses).length == 0) {
-                                            document.getElementById('ps_enrolled_classes').style.display = 'initial';
-
+                                            document.getElementById('academic-integrity-container').style.display =
+                                                'initial';
                                             var html =
                                                 '' +
                                                 "<div class='table-responsive'>" +
-                                                "<table id='enrolled_classes_table' class='table table-striped table-bordered'> " +
+                                                "<table id='academic_integrity_data_table' class='table table-striped table-bordered'> " +
                                                 '<thead>' +
                                                 '<tr style="cursor:pointer">' +
-                                                '<th scope="row" onclick="sortEnrolledOnClick(\'Term\')">Term</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Session\')">Session</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Class\')">Class</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Course\')">Course</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Title\')">Title</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Topic\')">Topic</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Units\')">Units</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Instructor\')">Instructor(s)</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Days\')">Days</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Times\')">Times</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Dates\')">Dates</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Location\')">Location</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Transcript Grade\')"Transcript Grade</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Academic Integrity Grade\')">Academic Integrity Grade</th>' +
+                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Term\')">Term</th>' +
+                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Class\')">Class</th>' +
+                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Course\')">Course</th>' +
+                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Title\')">Title</th>' +
+                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Units\')">Units</th>' +
+                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Instructor\')">Instructor(s)</th>' +
+                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Days\')">Days</th>' +
+                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Times\')">Times</th>' +
+                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Dates\')">Dates</th>' +
+                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Location\')">Location</th>' +
+                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Transcript Grade\')">Transcript Grade</th>' +
+                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Academic Integrity Grade\')">Academic Integrity Grade</th>' +
                                                 '<th scope="col">ASR</th>' +
                                                 '</tr>' +
                                                 '</thead>' +
                                                 '<tbody>';
+
                                             for (var i = 0; i < result.academicIntegrityData.length; i++) {
                                                 var asrValue = '--';
-
                                                 html +=
                                                     '' +
                                                     '<tr>' +
-                                                    '<th scope="row">' +
+                                                    '<td data-header="Term">' +
                                                     result.academicIntegrityData[i].TERM_DESCR30__c +
-                                                    '</td>' +
-                                                    '<td data-header="Session">' +
-                                                    result.academicIntegrityData[i].SESSION_CODE__c +
                                                     '</td>' +
                                                     '<td data-header="Class">' +
                                                     Math.floor(result.academicIntegrityData[i].CLASS_NBR__c) +
@@ -6495,9 +6506,6 @@
                                                     '</td>' +
                                                     '<td data-header="Title">' +
                                                     result.academicIntegrityData[i].CLASS_DESCR__c +
-                                                    '</td>' +
-                                                    '<td data-header="Topic">' +
-                                                    result.academicIntegrityData[i].SSR_CLSTOPIC_DESCR__c +
                                                     '</td>' +
                                                     '<td data-header="Units">' +
                                                     result.academicIntegrityData[i].UNT_TAKEN__c +
@@ -6522,22 +6530,7 @@
                                                     '</td>' +
                                                     '<td data-header="Academic Integrity Grade">' +
                                                     result.academicIntegrityData[i].CRSE_GRADE_INPUT__c +
-                                                    '</td>' +
-                                                    "<td style='display:none'>" +
-                                                    result.academicIntegrityData[i].EARN_CREDIT__c +
-                                                    '' +
-                                                    result.academicIntegrityData[i].VALID_ATTEMPT__c +
-                                                    '</td>' +
-                                                    "<td style='display:none'>" +
-                                                    result.academicIntegrityData[i].CUR_GPA__c +
-                                                    '</td>' +
-                                                    "<td style='display:none'>" +
-                                                    result.academicIntegrityData[i].CUM_GPA__c +
-                                                    '</td>' +
-                                                    "<td style='display:none'>" +
-                                                    result.academicIntegrityData[i].STRM__c +
                                                     '</td>';
-
                                                 if (
                                                     result.asrClasses.indexOf(
                                                         result.academicIntegrityData[i].STRM__c +
@@ -6550,21 +6543,14 @@
                                                     // ASR link opens Undergraduate Indicators tab when clicked
                                                     html +=
                                                         '<td data-header="ASR">' +
-                                                        '<a href="#" onclick="document.getElementById(\x27ugIndicatorsLink\x27).click(); return false;">!</a>' +
+                                                        '<a href="#" onclick="document.getElementById(\x27ugIndicatorsLink\x27).click(); return false;">Y</a>' +
                                                         '</td>';
                                                 } else {
                                                     html += '<td data-header="ASR">--</td>';
                                                 }
-
                                                 html += '</tr>';
                                             }
-
                                             html += '</tbody></table></div>';
-
-                                            html +=
-                                                "<div style='float:right; font-weight:bold;' id='ps_enrolled_classes_summary'/><br/>";
-                                            html +=
-                                                '<div>* in Location column in the table above means: No Scheduled Meetings/Locations</div>';
 
                                             document.getElementById('academic-integrity-container').innerHTML = html;
                                             cleanUpUndefined('academic-integrity-container');
@@ -6573,8 +6559,7 @@
                                             document.getElementById('academic-integrity-errors').innerHTML =
                                                 'No academic integrity data found for {!theContact.Preferred_First_Name__c}.';
                                         }
-
-                                        filterClasses();
+                                        // filterClasses();
                                     } else if (event.type === 'exception') {
                                         document.getElementById('academic-integrity-errors').innerHTML =
                                             event.message + '<br/>\n<pre>' + event.where + '</pre>';

@@ -314,6 +314,7 @@ global with sharing class Student360ProfileController {
         undergraduateIndicatorsMessages = new List<String>();
         graduateAcademicsMessages = new List<String>();
         graduateIndicatorsMessages = new List<String>();
+        studentCareAndConcernMessages = new List<String>();
 
         List<Student_Profile_Message__mdt> messages = [
             SELECT Message_to_Display__c, Student_Profile_Tab__c
@@ -340,6 +341,8 @@ global with sharing class Student360ProfileController {
                 graduateAcademicsMessages.add(message.Message_to_Display__c);
             } else if (message.Student_Profile_Tab__c == 'Graduate Indicators') {
                 graduateIndicatorsMessages.add(message.Message_to_Display__c);
+            } else if (message.Student_Profile_Tab__c == 'Student Care and Concern') {
+                studentCareAndConcernMessages.add(message.Message_to_Display__c);
             }
         }
     }
@@ -1118,6 +1121,36 @@ global with sharing class Student360ProfileController {
     }
 
     @RemoteAction
+    global static List<SortableAcademicIntegrityData> sortAcademicIntegrityData(
+        String paramToSortBy,
+        String academicIntegrityListJson,
+        Boolean sortDirection
+    ) {
+        List<SortableAcademicIntegrityData> academicIntegrityListToSort = new List<SortableAcademicIntegrityData>();
+        List<PS_ASU_SP_CLASS_V__x> academicIntegrityList = (List<PS_ASU_SP_CLASS_V__x>) JSON.deserialize(
+            academicIntegrityListJson,
+            List<PS_ASU_SP_CLASS_V__x>.class
+        );
+        for (PS_ASU_SP_CLASS_V__x academicIntegrityItem : academicIntegrityList) {
+            academicIntegrityListToSort.add(new SortableAcademicIntegrityData(academicIntegrityItem, paramToSortBy));
+        }
+
+        academicIntegrityListToSort.sort();
+        if (!sortDirection) {
+            List<SortableAcademicIntegrityData> reversedList = new List<SortableAcademicIntegrityData>();
+            for (SortableAcademicIntegrityData sc : academicIntegrityListToSort) {
+                if (reversedList.size() == 0) {
+                    reversedList.add(sc);
+                } else {
+                    reversedList.add(0, sc);
+                }
+            }
+            return reversedList;
+        }
+        return academicIntegrityListToSort;
+    }
+
+    @RemoteAction
     global static ClassesWrapper getClassesData(String classListJson, String asrListJson) {
         List<PS_ASU_SP_CLASS_V__x> classList = (List<PS_ASU_SP_CLASS_V__x>) JSON.deserialize(
             classListJson,
@@ -1170,14 +1203,8 @@ global with sharing class Student360ProfileController {
 
         for (PS_ASU_SP_CLASS_V__x course : academicIntegrityList) {
             academicIntegrityData.academicIntegrityData.add(course);
-            academicIntegrityData.classTerms.add(course.STRM__c + '|' + course.TERM_DESCR30__c);
-            academicIntegrityData.classSessions.add(course.SESSION_CODE__c);
         }
 
-        if (!academicIntegrityList.isEmpty()) {
-            academicIntegrityData.classTerms.add('All|All');
-            academicIntegrityData.classSessions.add('All');
-        }
         return academicIntegrityData;
     }
 
@@ -1395,8 +1422,6 @@ global with sharing class Student360ProfileController {
     }
 
     global class AcademicIntegrityWrapper {
-        public Set<String> classTerms = new Set<String>();
-        public Set<String> classSessions = new Set<String>();
         public Set<String> asrClasses = new Set<String>();
         public List<PS_ASU_SP_CLASS_V__x> academicIntegrityData = new List<PS_ASU_SP_CLASS_V__x>();
     }

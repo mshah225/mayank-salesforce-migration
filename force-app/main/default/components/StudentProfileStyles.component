@@ -51,7 +51,7 @@
             margin-bottom: -76px;
         }
 
-        .student-360-profile-container {
+        .student-profile-container-container {
             max-width: 1200px;
             margin: auto;
             /* Adjust for tabbable view in coach portal */
@@ -62,7 +62,7 @@
             }
         }
 
-        .student-360-profile-title hr {
+        .student-profile-container-title hr {
             display: block;
             width: 100%;
             border-top: 0;
@@ -72,7 +72,7 @@
             opacity: 1;
         }
 
-        .student-360-profile-quick-ref-links hr {
+        .student-profile-container-quick-ref-links hr {
             display: block;
             width: 100%;
             border-top: 0;
@@ -82,8 +82,8 @@
             opacity: 1;
         }
 
-        .student-360-search-button,
-        .student-360-profile-feedback-button {
+        .student-search-button,
+        .student-profile-container-feedback-button {
             padding-left: 2rem;
             padding-right: 2rem;
             padding-top: 1rem;
@@ -99,17 +99,17 @@
             float: right;
         }
 
-        .student-360-search-button {
+        .student-search-button {
             margin-top: 1em;
         }
 
-        .student-360-profile-feedback-button {
+        .student-profile-container-feedback-button {
             margin-bottom: 0.5em;
             margin-top: -0.5em;
         }
 
-        .student-360-search-button:hover,
-        .student-360-profile-feedback-button:hover {
+        .student-search-button:hover,
+        .student-profile-container-feedback-button:hover {
             transform: scale(1.05) !important;
             color: white;
             text-decoration: none !important;
@@ -452,7 +452,7 @@
         }
 
         @media screen and (max-width: 1170px) {
-            .student-360-profile-container {
+            .student-profile-container-container {
                 padding: 24px 35px 20px 35px !important;
             }
         }
@@ -494,7 +494,7 @@
                 display: none;
             }
 
-            .student-360-profile-container {
+            .student-profile-container-container {
                 padding: 76px 10px 20px 10px !important;
             }
 
@@ -514,7 +514,7 @@
                 margin-top: 10px;
             }
 
-            .student-360-profile-container {
+            .student-profile-container-container {
                 padding: 76px 0px 20px 0px;
             }
 

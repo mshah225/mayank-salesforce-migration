@@ -12,7 +12,7 @@
     <apex:includeScript value="{!URLFOR($Resource.jsForce)}" />
 
     <head>
-        <title>{!theContact.Preferred_First_Name__c}'s Student 360</title>
+        <title>{!theContact.Preferred_First_Name__c}'s Student Profile</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <!-- Latest compiled and minified CSS -->
@@ -255,16 +255,26 @@
     </head>
 
     <body>
-        <div class="student-360-profile-container">
-            <div class="student-360-profile-title">
+        <div class="student-profile-container-container">
+            <div
+                class="student-profile-container-title"
+                style="{!IF(hasStudentCareAndConcernAccess == TRUE, '', 'display:none')}"
+            >
                 <h1 style="float: left">Student 360</h1>
                 <a
-                    class="student-360-search-button"
+                    class="student-search-button"
                     style="{!IF(hasStudentCareAndConcernAccess == TRUE, '', 'display:none')}"
                     href="/apex/StudentSearch"
                 >
                     Go to Student Search
                 </a>
+                <hr />
+            </div>
+            <div
+                class="student-profile-container-title"
+                style="{!IF(hasStudentCareAndConcernAccess == FALSE, '', 'display:none')}"
+            >
+                <h1 style="float: left">Student Profile</h1>
                 <hr />
             </div>
             <div class="row intro">
@@ -347,10 +357,10 @@
 
                 <div class="col-xs-12 col-md-6">
                     <div class="sideBox" style="padding: 15px 15px 0 15px">
-                        <div class="student-360-profile-quick-ref-links">
+                        <div class="student-profile-container-quick-ref-links">
                             <h4 style="float: left">Quick Reference Links</h4>
                             <a
-                                class="student-360-profile-feedback-button"
+                                class="student-profile-container-feedback-button"
                                 href="./dynamicfeedback?carName=Student Profile&misc={!theContact.FirstName} {!theContact.lastName} Id:{!theContact.EMPLID__c}"
                                 target="_blank"
                             >

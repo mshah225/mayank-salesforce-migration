@@ -1064,24 +1064,24 @@ global with sharing class StudentProfileController {
     }
 
     @RemoteAction
-    global static List<StudentProfileClassSortable> sortClasses(
+    global static List<StudentProfileSortClasses> sortClasses(
         String paramToSortBy,
         String listOfClassesJSON,
         Boolean sortDirection
     ) {
-        List<StudentProfileClassSortable> classList = new List<StudentProfileClassSortable>();
+        List<StudentProfileSortClasses> classList = new List<StudentProfileSortClasses>();
         List<PS_ASU_SP_CLASS_V__x> listOfClasses = (List<PS_ASU_SP_CLASS_V__x>) JSON.deserialize(
             listOfClassesJSON,
             List<PS_ASU_SP_CLASS_V__x>.class
         );
         for (PS_ASU_SP_CLASS_V__x asuClass : listOfClasses) {
-            classList.add(new StudentProfileClassSortable(asuClass, paramToSortBy));
+            classList.add(new StudentProfileSortClasses(asuClass, paramToSortBy));
         }
 
         classList.sort();
         if (!sortDirection) {
-            List<StudentProfileClassSortable> reversedList = new List<StudentProfileClassSortable>();
-            for (StudentProfileClassSortable sc : classList) {
+            List<StudentProfileSortClasses> reversedList = new List<StudentProfileSortClasses>();
+            for (StudentProfileSortClasses sc : classList) {
                 if (reversedList.size() == 0) {
                     reversedList.add(sc);
                 } else {
@@ -1094,14 +1094,14 @@ global with sharing class StudentProfileController {
     }
 
     @RemoteAction
-    global static List<StudentProfileExamSortable> sortExams(
+    global static List<StudentProfileSortExams> sortExams(
         String paramToSortBy,
         List<PS_ASU_SP_TRNSFR_V__x> listOfExams,
         Boolean sortDirection
     ) {
-        List<StudentProfileExamSortable> examList = new List<StudentProfileExamSortable>();
+        List<StudentProfileSortExams> examList = new List<StudentProfileSortExams>();
         for (PS_ASU_SP_TRNSFR_V__x exam : listOfExams) {
-            examList.add(new StudentProfileExamSortable(exam, paramToSortBy));
+            examList.add(new StudentProfileSortExams(exam, paramToSortBy));
         }
 
         examList.sort();
@@ -1109,8 +1109,8 @@ global with sharing class StudentProfileController {
             return examList;
         }
 
-        List<StudentProfileExamSortable> reversedList = new List<StudentProfileExamSortable>();
-        for (StudentProfileExamSortable sc : examList) {
+        List<StudentProfileSortExams> reversedList = new List<StudentProfileSortExams>();
+        for (StudentProfileSortExams sc : examList) {
             if (reversedList.size() == 0) {
                 reversedList.add(sc);
             } else {
@@ -1121,26 +1121,26 @@ global with sharing class StudentProfileController {
     }
 
     @RemoteAction
-    global static List<StudentProfileAcademicIntegritySortable> sortAcademicIntegrityData(
+    global static List<StudentProfileSortAcademicIntegrity> sortAcademicIntegrityData(
         String paramToSortBy,
         String academicIntegrityListJson,
         Boolean sortDirection
     ) {
-        List<StudentProfileAcademicIntegritySortable> academicIntegrityListToSort = new List<StudentProfileAcademicIntegritySortable>();
+        List<StudentProfileSortAcademicIntegrity> academicIntegrityListToSort = new List<StudentProfileSortAcademicIntegrity>();
         List<PS_ASU_SP_CLASS_V__x> academicIntegrityList = (List<PS_ASU_SP_CLASS_V__x>) JSON.deserialize(
             academicIntegrityListJson,
             List<PS_ASU_SP_CLASS_V__x>.class
         );
         for (PS_ASU_SP_CLASS_V__x academicIntegrityItem : academicIntegrityList) {
             academicIntegrityListToSort.add(
-                new StudentProfileAcademicIntegritySortable(academicIntegrityItem, paramToSortBy)
+                new StudentProfileSortAcademicIntegrity(academicIntegrityItem, paramToSortBy)
             );
         }
 
         academicIntegrityListToSort.sort();
         if (!sortDirection) {
-            List<StudentProfileAcademicIntegritySortable> reversedList = new List<StudentProfileAcademicIntegritySortable>();
-            for (StudentProfileAcademicIntegritySortable listItem : academicIntegrityListToSort) {
+            List<StudentProfileSortAcademicIntegrity> reversedList = new List<StudentProfileSortAcademicIntegrity>();
+            for (StudentProfileSortAcademicIntegrity listItem : academicIntegrityListToSort) {
                 if (reversedList.size() == 0) {
                     reversedList.add(listItem);
                 } else {

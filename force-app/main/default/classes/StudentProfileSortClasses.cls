@@ -1,14 +1,14 @@
-global class StudentProfileClassSortable implements Comparable {
+global class StudentProfileSortClasses implements Comparable {
     public PS_ASU_SP_CLASS_V__x classInfo { get; private set; }
     private String classParamSort;
 
-    global StudentProfileClassSortable(PS_ASU_SP_CLASS_V__x classInfo, String sortBy) {
+    global StudentProfileSortClasses(PS_ASU_SP_CLASS_V__x classInfo, String sortBy) {
         this.classInfo = classInfo;
         this.classParamSort = sortBy;
     }
 
     global Integer compareTo(Object compareTo) {
-        StudentProfileClassSortable compareToClass = (StudentProfileClassSortable) compareTo;
+        StudentProfileSortClasses compareToClass = (StudentProfileSortClasses) compareTo;
         Integer sortDir = 0;
         if (classParamSort.equals('Session')) {
             sortDir = compareToClass.classInfo.SESSION_CODE__c.compareTo(this.classInfo.SESSION_CODE__c);

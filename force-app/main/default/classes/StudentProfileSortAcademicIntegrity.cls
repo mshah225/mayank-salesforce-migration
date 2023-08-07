@@ -1,14 +1,14 @@
-global class StudentProfileAcademicIntegritySortable implements Comparable {
+global class StudentProfileSortAcademicIntegrity implements Comparable {
     public PS_ASU_SP_CLASS_V__x academicIntegrityDataItem { get; private set; }
     private String academicIntegrityDataParamSort;
 
-    global StudentProfileAcademicIntegritySortable(PS_ASU_SP_CLASS_V__x academicIntegrityDataItem, String sortBy) {
+    global StudentProfileSortAcademicIntegrity(PS_ASU_SP_CLASS_V__x academicIntegrityDataItem, String sortBy) {
         this.academicIntegrityDataItem = academicIntegrityDataItem;
         this.academicIntegrityDataParamSort = sortBy;
     }
 
     global Integer compareTo(Object compareTo) {
-        StudentProfileAcademicIntegritySortable compareToItem = (StudentProfileAcademicIntegritySortable) compareTo;
+        StudentProfileSortAcademicIntegrity compareToItem = (StudentProfileSortAcademicIntegrity) compareTo;
         Integer sortDir = 0;
         if (academicIntegrityDataParamSort.equals('Term')) {
             String thatTerm = String.valueOf(compareToItem.academicIntegrityDataItem.TERM_DESCR30__c);

@@ -255,7 +255,7 @@
     </head>
 
     <body>
-        <div class="student-profile-container-container">
+        <div class="student-profile-container">
             <div
                 class="student-profile-container-title"
                 style="{!IF(hasStudentCareAndConcernAccess == FALSE, '', 'display:none')}"

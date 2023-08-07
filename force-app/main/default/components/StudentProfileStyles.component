@@ -51,7 +51,7 @@
             margin-bottom: -76px;
         }
 
-        .student-profile-container-container {
+        .student-profile-container {
             max-width: 1200px;
             margin: auto;
             /* Adjust for tabbable view in coach portal */
@@ -452,7 +452,7 @@
         }
 
         @media screen and (max-width: 1170px) {
-            .student-profile-container-container {
+            .student-profile-container {
                 padding: 24px 35px 20px 35px !important;
             }
         }
@@ -494,7 +494,7 @@
                 display: none;
             }
 
-            .student-profile-container-container {
+            .student-profile-container {
                 padding: 76px 10px 20px 10px !important;
             }
 
@@ -514,7 +514,7 @@
                 margin-top: 10px;
             }
 
-            .student-profile-container-container {
+            .student-profile-container {
                 padding: 76px 0px 20px 0px;
             }
 

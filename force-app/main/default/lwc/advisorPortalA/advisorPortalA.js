@@ -408,10 +408,10 @@ export default class AdvisorPortalA extends LightningElement {
                     false
                 );
                 break;
-            case 'Student360Profile':
+            case 'StudentProfile':
                 contactId = detail.params.contactId;
                 contactName = detail.params.contactName;
-                profileURL = '/apex/Student360Profile?contactId=' + contactId;
+                profileURL = '/apex/StudentProfile?contactId=' + contactId;
                 this.openPrimaryAndSubTab(
                     contactId,
                     contactName,

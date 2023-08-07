@@ -199,7 +199,7 @@
 
                     <apex:outputLink
                         value="javascript:;"
-                        onclick="openStudent360ProfileLightning('{!caseWrapper.obj.ContactId}', '{!caseWrapper.obj.Contact.Name}', '{!caseWrapper.obj.Contact.EMPLID__c}')"
+                        onclick="openStudentProfileLightning('{!caseWrapper.obj.ContactId}', '{!caseWrapper.obj.Contact.Name}', '{!caseWrapper.obj.Contact.EMPLID__c}')"
                         styleClass="standardLink"
                         >{!caseWrapper.obj.Contact.EMPLID__c}</apex:outputLink
                     >
@@ -392,14 +392,14 @@
             return typeof sforce != 'undefined' && sforce && !!sforce.one;
         }
 
-        function openStudent360ProfileLightning(contactId, contactName, contactEmplid) {
+        function openStudentProfileLightning(contactId, contactName, contactEmplid) {
             var isFound = false;
             if (sforce.console.isInConsole()) {
                 sforce.console.openPrimaryTab(null, '/' + contactId, true, contactName, function (result) {
                     if (result.success) {
                         sforce.console.openSubtab(
                             result.id,
-                            '/apex/Student360Profile?contactId=' + contactId,
+                            '/apex/StudentProfile?contactId=' + contactId,
                             true,
                             contactName + ' Student Profile',
                             null
@@ -418,7 +418,7 @@
                                             // contactId is 18 digit, ObjectId is 15
                                             sforce.console.openSubtab(
                                                 parentTabId,
-                                                '/apex/Student360Profile?contactId=' + contactId,
+                                                '/apex/StudentProfile?contactId=' + contactId,
                                                 true,
                                                 contactName + ' Student Profile',
                                                 null
@@ -432,7 +432,7 @@
                 });
             } else if (isLightningExperienceOrSalesforce1()) {
                 // contactId is to be parsed out in the listener, pre-appension is to pass the value in a single message
-                var message = contactId + '/apex/Student360Profile?contactId=' + contactEmplid;
+                var message = contactId + '/apex/StudentProfile?contactId=' + contactEmplid;
                 parent.postMessage(message, '*');
             }
         }

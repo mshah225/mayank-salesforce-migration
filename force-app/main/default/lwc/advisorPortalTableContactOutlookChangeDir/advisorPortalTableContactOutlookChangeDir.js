@@ -69,8 +69,8 @@ export default class AdvisorPortalTableContactOutlookChangeDir extends Lightning
         this.sendOpenToggleEvent(true);
     }
 
-    openStudent360Profile() {
-        this.sendNavigateEvent('Student360Profile', {
+    openStudentProfile() {
+        this.sendNavigateEvent('StudentProfile', {
             contactId: this.contactWrapper.portalContact.Id,
             contactName: this.contactWrapper.portalContact.Name,
         });

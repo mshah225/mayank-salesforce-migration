@@ -1,5 +1,5 @@
 @isTest
-global class Student360ProfileCalloutMock implements HttpCalloutMock {
+global class StudentProfileCalloutMock implements HttpCalloutMock {
     global HTTPResponse respond(HTTPRequest req) {
         if (req.getEndpoint().contains('/serviceindicators')) {
             return getServiceIndicators();

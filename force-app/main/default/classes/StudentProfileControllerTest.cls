@@ -1,12 +1,12 @@
 @isTest
-private class Student360ProfileControllerTest {
+private class StudentProfileControllerTest {
     @TestSetup
     private static void createTestData() {
         ContactFactory.DefaultContact contactBuilder = new ContactFactory.DefaultContact();
-        Contact student360ProfileContact = (Contact) contactBuilder.create()[0];
-        student360ProfileContact.EmplId__c = getStudent360ProfileContactEmplId();
-        student360ProfileContact.ASURite_ID__c = getStudent360ProfileContactAsurite();
-        insert student360ProfileContact;
+        Contact studentProfileContact = (Contact) contactBuilder.create()[0];
+        studentProfileContact.EmplId__c = getStudentProfileContactEmplId();
+        studentProfileContact.ASURite_ID__c = getStudentProfileContactAsurite();
+        insert studentProfileContact;
 
         insert new StudentTerm__c(CurrTerm__c = '2000', PrevTerm__c = '1000', NextTerm__c = '3000');
 
@@ -14,14 +14,14 @@ private class Student360ProfileControllerTest {
 
         insert new Financial_Aid_Package__c(
             Aid_Year__c = '2000',
-            Contact__c = student360ProfileContact.Id,
+            Contact__c = studentProfileContact.Id,
             EFC_Range__c = 'Moderate'
         );
 
-        insert new Student_Program_Plan__c(Contact__c = student360ProfileContact.Id, Career__c = 'Undergraduate');
-        insert new Student_Program_Plan__c(Contact__c = student360ProfileContact.Id, Career__c = 'Graduate');
+        insert new Student_Program_Plan__c(Contact__c = studentProfileContact.Id, Career__c = 'Undergraduate');
+        insert new Student_Program_Plan__c(Contact__c = studentProfileContact.Id, Career__c = 'Graduate');
         insert new Student_Program_Plan__c(
-            Contact__c = student360ProfileContact.Id,
+            Contact__c = studentProfileContact.Id,
             Career__c = 'Graduate',
             Status__c = 'Active in Program',
             Primary_Flag__c = true,
@@ -41,34 +41,34 @@ private class Student360ProfileControllerTest {
 
     @isTest
     private static void testInit() {
-        PageReference student360Profile = Page.Student360Profile;
-        Student360ProfileController controller;
-        Test.setCurrentPage(student360Profile);
+        PageReference studentProfile = Page.StudentProfile;
+        StudentProfileController controller;
+        Test.setCurrentPage(studentProfile);
 
         // With no Id
-        controller = new Student360ProfileController();
+        controller = new StudentProfileController();
         controller.init();
 
         // With ContactId
-        student360Profile.getParameters().put('contactId', getStudent360ProfileContactId());
-        controller = new Student360ProfileController();
+        studentProfile.getParameters().put('contactId', getStudentProfileContactId());
+        controller = new StudentProfileController();
         controller.init();
-        System.assertEquals(getStudent360ProfileContactId(), controller.theContact.Id);
+        System.assertEquals(getStudentProfileContactId(), controller.theContact.Id);
 
         // With EmplId
-        student360Profile.getParameters().put('contactId', getStudent360ProfileContactEmplId());
-        controller = new Student360ProfileController();
+        studentProfile.getParameters().put('contactId', getStudentProfileContactEmplId());
+        controller = new StudentProfileController();
         controller.init();
-        System.assertEquals(getStudent360ProfileContactId(), controller.theContact.Id);
+        System.assertEquals(getStudentProfileContactId(), controller.theContact.Id);
     }
 
     @isTest
     private static void financialNeedLevelDisplaySuccess() {
-        PageReference student360Profile = Page.Student360Profile;
-        student360Profile.getParameters().put('contactId', getStudent360ProfileContactId());
-        Test.setCurrentPage(student360Profile);
+        PageReference studentProfile = Page.StudentProfile;
+        studentProfile.getParameters().put('contactId', getStudentProfileContactId());
+        Test.setCurrentPage(studentProfile);
 
-        Student360ProfileController controller = new Student360ProfileController();
+        StudentProfileController controller = new StudentProfileController();
         controller.init();
 
         System.assertEquals('2000', controller.getAidYear());
@@ -88,9 +88,9 @@ private class Student360ProfileControllerTest {
         Database.insert(testGroup);
 
         Test.startTest();
-        Test.setCurrentPage(Page.Student360Profile);
+        Test.setCurrentPage(Page.StudentProfile);
         ApexPages.currentPage().getParameters().put('contactId', testContact.Id);
-        Student360ProfileController profile = new Student360ProfileController();
+        StudentProfileController profile = new StudentProfileController();
         profile.init();
         Boolean result = profile.getWICHE();
         Test.stopTest();
@@ -111,9 +111,9 @@ private class Student360ProfileControllerTest {
         Database.insert(testGroup);
 
         Test.startTest();
-        Test.setCurrentPage(Page.Student360Profile);
+        Test.setCurrentPage(Page.StudentProfile);
         ApexPages.currentPage().getParameters().put('contactId', testContact.Id);
-        Student360ProfileController profile = new Student360ProfileController();
+        StudentProfileController profile = new StudentProfileController();
         profile.init();
         Boolean result = profile.getAccelerated();
         Test.stopTest();
@@ -142,7 +142,7 @@ private class Student360ProfileControllerTest {
             '}' +
             ']';
 
-        List<Student360ProfileController.AdvisingNoteWrapper> allNotes = Student360ProfileController.getPSAdvisorNotes(
+        List<StudentProfileController.AdvisingNoteWrapper> allNotes = StudentProfileController.getPSAdvisorNotes(
             'testEmplId',
             jsonAdvisorNotes
         );
@@ -177,7 +177,7 @@ private class Student360ProfileControllerTest {
             '}' +
             ']';
 
-        List<Student360ProfileController.CommentWrapper> allComments = Student360ProfileController.getComments(
+        List<StudentProfileController.CommentWrapper> allComments = StudentProfileController.getComments(
             'testEmplId',
             jsonComments
         );
@@ -214,28 +214,28 @@ private class Student360ProfileControllerTest {
             ']';
 
         // Sort properly by Title
-        sortedClasses = Student360ProfileController.sortClasses('Title', listOfClassesJSON, true);
+        sortedClasses = StudentProfileController.sortClasses('Title', listOfClassesJSON, true);
         System.assertEquals(3, sortedClasses.size());
         System.assertEquals('www.exampleurl1.example', sortedClasses[0].classInfo.DisplayUrl);
         System.assertEquals('www.exampleurl2.example', sortedClasses[1].classInfo.DisplayUrl);
         System.assertEquals('www.exampleurl3.example', sortedClasses[2].classInfo.DisplayUrl);
 
         // Sort properly by Title Reversed
-        sortedClasses = Student360ProfileController.sortClasses('Title', listOfClassesJSON, false);
+        sortedClasses = StudentProfileController.sortClasses('Title', listOfClassesJSON, false);
         System.assertEquals(3, sortedClasses.size());
         System.assertEquals('www.exampleurl3.example', sortedClasses[0].classInfo.DisplayUrl);
         System.assertEquals('www.exampleurl2.example', sortedClasses[1].classInfo.DisplayUrl);
         System.assertEquals('www.exampleurl1.example', sortedClasses[2].classInfo.DisplayUrl);
 
         // Sort properly by Title
-        sortedClasses = Student360ProfileController.sortClasses('Class', listOfClassesJSON, true);
+        sortedClasses = StudentProfileController.sortClasses('Class', listOfClassesJSON, true);
         System.assertEquals(3, sortedClasses.size());
         System.assertEquals('www.exampleurl3.example', sortedClasses[0].classInfo.DisplayUrl);
         System.assertEquals('www.exampleurl1.example', sortedClasses[1].classInfo.DisplayUrl);
         System.assertEquals('www.exampleurl2.example', sortedClasses[2].classInfo.DisplayUrl);
 
         // Sort properly by Title
-        sortedClasses = Student360ProfileController.sortClasses('Location', listOfClassesJSON, true);
+        sortedClasses = StudentProfileController.sortClasses('Location', listOfClassesJSON, true);
         System.assertEquals(3, sortedClasses.size());
         System.assertEquals('www.exampleurl2.example', sortedClasses[0].classInfo.DisplayUrl);
         System.assertEquals('www.exampleurl3.example', sortedClasses[1].classInfo.DisplayUrl);
@@ -273,28 +273,28 @@ private class Student360ProfileControllerTest {
         );
 
         // Sort properly by Title
-        sortedExams = Student360ProfileController.sortExams('Title', listOfExams, true);
+        sortedExams = StudentProfileController.sortExams('Title', listOfExams, true);
         System.assertEquals(3, sortedExams.size());
         System.assertEquals('www.exampleurl1.example', sortedExams[0].examInfo.DisplayUrl);
         System.assertEquals('www.exampleurl2.example', sortedExams[1].examInfo.DisplayUrl);
         System.assertEquals('www.exampleurl3.example', sortedExams[2].examInfo.DisplayUrl);
 
         // Sort properly by Title Reversed
-        sortedExams = Student360ProfileController.sortExams('Title', listOfExams, false);
+        sortedExams = StudentProfileController.sortExams('Title', listOfExams, false);
         System.assertEquals(3, sortedExams.size());
         System.assertEquals('www.exampleurl3.example', sortedExams[0].examInfo.DisplayUrl);
         System.assertEquals('www.exampleurl2.example', sortedExams[1].examInfo.DisplayUrl);
         System.assertEquals('www.exampleurl1.example', sortedExams[2].examInfo.DisplayUrl);
 
         // Sort properly by Title
-        sortedExams = Student360ProfileController.sortExams('Score', listOfExams, true);
+        sortedExams = StudentProfileController.sortExams('Score', listOfExams, true);
         System.assertEquals(3, sortedExams.size());
         System.assertEquals('www.exampleurl3.example', sortedExams[0].examInfo.DisplayUrl);
         System.assertEquals('www.exampleurl1.example', sortedExams[1].examInfo.DisplayUrl);
         System.assertEquals('www.exampleurl2.example', sortedExams[2].examInfo.DisplayUrl);
 
         // Sort properly by Title
-        sortedExams = Student360ProfileController.sortExams('Course Title', listOfExams, true);
+        sortedExams = StudentProfileController.sortExams('Course Title', listOfExams, true);
         System.assertEquals(3, sortedExams.size());
         System.assertEquals('www.exampleurl2.example', sortedExams[0].examInfo.DisplayUrl);
         System.assertEquals('www.exampleurl3.example', sortedExams[1].examInfo.DisplayUrl);
@@ -360,7 +360,7 @@ private class Student360ProfileControllerTest {
             '}' +
             ']';
 
-        Student360ProfileController.ClassesWrapper classData = Student360ProfileController.getClassesData(
+        StudentProfileController.ClassesWrapper classData = StudentProfileController.getClassesData(
             classListJson,
             asrListJson
         );
@@ -398,13 +398,13 @@ private class Student360ProfileControllerTest {
         System.assert(classData.classSessions.contains('All'));
     }
 
-    private static String getStudent360ProfileContactEmplId() {
+    private static String getStudentProfileContactEmplId() {
         return '1203436008';
     }
-    private static String getStudent360ProfileContactId() {
-        return [SELECT Id FROM Contact WHERE EmplId__c = :getStudent360ProfileContactEmplId() LIMIT 1].Id;
+    private static String getStudentProfileContactId() {
+        return [SELECT Id FROM Contact WHERE EmplId__c = :getStudentProfileContactEmplId() LIMIT 1].Id;
     }
-    private static String getStudent360ProfileContactAsurite() {
+    private static String getStudentProfileContactAsurite() {
         return 'test20test';
     }
 }

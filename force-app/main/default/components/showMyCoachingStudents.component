@@ -396,7 +396,7 @@
                         } else if (type == 'Profile') {
                             sforce.console.openSubtab(
                                 result.id,
-                                '/apex/Student360Profile?contactId=' + contactId,
+                                '/apex/StudentProfile?contactId=' + contactId,
                                 true,
                                 contactName + ' Student Profile',
                                 null
@@ -435,7 +435,7 @@
                                             } else if (type == 'Profile') {
                                                 sforce.console.openSubtab(
                                                     parentTabId,
-                                                    '/apex/Student360Profile?contactId=' + contactId,
+                                                    '/apex/StudentProfile?contactId=' + contactId,
                                                     true,
                                                     contactName + ' Student Profile',
                                                     null
@@ -465,7 +465,7 @@
                     parent.postMessage(message, '*');
                 } else if (type == 'Profile') {
                     // contactId is to be parsed out in the listener, pre-appension is to pass the value in a single message
-                    var message = contactId + '/apex/Student360Profile?contactId=' + emplId;
+                    var message = contactId + '/apex/StudentProfile?contactId=' + emplId;
                     parent.postMessage(message, '*');
                 } else if (type == 'All Cases') {
                     var message = '/lightning/r/Case/' + contactId + '/related/Cases/view';

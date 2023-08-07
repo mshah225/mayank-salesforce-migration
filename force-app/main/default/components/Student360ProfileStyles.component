@@ -1,4 +1,4 @@
-<apex:component id="Student360ProfileStyles">
+<apex:component id="StudentProfileStyles">
     <style>
         * {
             font-family: Arial, Helvetica, "Nimbus Sans L", "Liberation Sans", FreeSans, sans-serif !important;

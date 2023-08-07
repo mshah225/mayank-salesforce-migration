@@ -1,4 +1,4 @@
-global with sharing class Student360ProfileController {
+global with sharing class StudentProfileController {
     private static List<String> vars = new List<String>();
 
     private Boolean isContactId;
@@ -103,7 +103,7 @@ global with sharing class Student360ProfileController {
         set;
     }
 
-    public Student360ProfileController() {
+    public StudentProfileController() {
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
             urlParamsExistAndAreValid = true;
@@ -118,7 +118,7 @@ global with sharing class Student360ProfileController {
 
     public void init() {
         if (urlParamsExistAndAreValid) {
-            setStudent360ProfileMessages();
+            setStudentProfileMessages();
             setContactRecord();
             setDeceased();
             setMilestones();
@@ -190,7 +190,7 @@ global with sharing class Student360ProfileController {
         } else if (Validator.validateEMPLId(contactId)) {
             isContactId = false;
         } else {
-            throw new Student360ProfileException('URL Parameters are missing or invalid');
+            throw new StudentProfileException('URL Parameters are missing or invalid');
         }
 
         if (isContactId) {
@@ -200,7 +200,7 @@ global with sharing class Student360ProfileController {
         }
 
         if (theContact == null || theContact.EMPLID__c == null) {
-            throw new Student360ProfileException('Contact missing EMPLId');
+            throw new StudentProfileException('Contact missing EMPLId');
         }
     }
 
@@ -304,7 +304,7 @@ global with sharing class Student360ProfileController {
         }
     }
 
-    public void setStudent360ProfileMessages() {
+    public void setStudentProfileMessages() {
         generalMessages = new List<String>();
         classesMessages = new List<String>();
         financesMessages = new List<String>();
@@ -1240,14 +1240,14 @@ global with sharing class Student360ProfileController {
 
     @RemoteAction
     global static List<ServiceIndicatorWrapper.ServiceIndicator> getServiceIndicatorsForStudent(String contactEmplid) {
-        return Student360ProfileCallout.getServiceIndicators(contactEmplid);
+        return StudentProfileCallout.getServiceIndicators(contactEmplid);
     }
 
     @RemoteAction
     global static List<FinancialAidChecklistWrapper.FinancialAidChecklist> getFinancialAidChecklist(
         String contactEmplid
     ) {
-        return Student360ProfileCallout.getFinancialAidChecklists(contactEmplid);
+        return StudentProfileCallout.getFinancialAidChecklists(contactEmplid);
     }
 
     @RemoteAction
@@ -1258,12 +1258,10 @@ global with sharing class Student360ProfileController {
     }
 
     @RemoteAction
-    global static Map<String, List<Student360ProfileController.EditMessageWrapper>> getEditMessages(
-        String contactEmplid
-    ) {
-        FinancialEditMessageWrapper editMessageWrapperDetails = Student360ProfileCallout.getEditMessages(contactEmplid);
+    global static Map<String, List<StudentProfileController.EditMessageWrapper>> getEditMessages(String contactEmplid) {
+        FinancialEditMessageWrapper editMessageWrapperDetails = StudentProfileCallout.getEditMessages(contactEmplid);
 
-        Map<String, List<Student360ProfileController.EditMessageWrapper>> aidYearToEditMessage = new Map<String, List<Student360ProfileController.EditMessageWrapper>>();
+        Map<String, List<StudentProfileController.EditMessageWrapper>> aidYearToEditMessage = new Map<String, List<StudentProfileController.EditMessageWrapper>>();
 
         if (editMessageWrapperDetails == null) {
             return null;
@@ -1272,10 +1270,10 @@ global with sharing class Student360ProfileController {
         editMessageWrapperDetails.edit_messages.sort();
 
         for (FinancialEditMessageWrapper.cls_edit_messages messages : editMessageWrapperDetails.edit_messages) {
-            List<Student360ProfileController.EditMessageWrapper> messagesForTerm = new List<Student360ProfileController.EditMessageWrapper>();
+            List<StudentProfileController.EditMessageWrapper> messagesForTerm = new List<StudentProfileController.EditMessageWrapper>();
             messages.message_details.sort();
             for (FinancialEditMessageWrapper.cls_message_details messageDetails : messages.message_details) {
-                Student360ProfileController.EditMessageWrapper emw = new Student360ProfileController.EditMessageWrapper();
+                StudentProfileController.EditMessageWrapper emw = new StudentProfileController.EditMessageWrapper();
                 emw.academic_year = messages.academic_year;
                 emw.aid_year = messages.aid_year;
                 emw.term = messageDetails.term;
@@ -1292,7 +1290,7 @@ global with sharing class Student360ProfileController {
 
     @RemoteAction
     global static Map<String, List<FinancialAidAwardWrapper.cls_term_awards>> getAwardStatusMap(String contactEmplid) {
-        FinancialAidAwardWrapper awardWrapper = Student360ProfileCallout.getAwards(contactEmplid);
+        FinancialAidAwardWrapper awardWrapper = StudentProfileCallout.getAwards(contactEmplid);
 
         awardWrapper.aid_years.sort();
 
@@ -1315,9 +1313,7 @@ global with sharing class Student360ProfileController {
 
     @RemoteAction
     global static Map<String, FinancialAidChargeHistoryWrapper.cls_charges> getChargeHistoryMap(String contactEmplid) {
-        FinancialAidChargeHistoryWrapper chargeHistoryWrapper = Student360ProfileCallout.getChargeHistory(
-            contactEmplid
-        );
+        FinancialAidChargeHistoryWrapper chargeHistoryWrapper = StudentProfileCallout.getChargeHistory(contactEmplid);
 
         Map<String, FinancialAidChargeHistoryWrapper.cls_charges> termToChargeHistory = new Map<String, FinancialAidChargeHistoryWrapper.cls_charges>();
 
@@ -1338,12 +1334,12 @@ global with sharing class Student360ProfileController {
 
     @RemoteAction
     global static FinancialAidBalanceWrapper getFinancialAidAccountBalance(String contactEmplid) {
-        return Student360ProfileCallout.getAccountBalance(contactEmplid);
+        return StudentProfileCallout.getAccountBalance(contactEmplid);
     }
 
     @RemoteAction
     global static FinancialAidRefundWrapper getFinancialAidRefunds(String contactEmplid) {
-        FinancialAidRefundWrapper refundWrapper = Student360ProfileCallout.getRefunds(contactEmplid);
+        FinancialAidRefundWrapper refundWrapper = StudentProfileCallout.getRefunds(contactEmplid);
 
         if (refundWrapper != null && refundWrapper.refunds != null) {
             refundWrapper.refunds.sort();
@@ -1354,19 +1350,19 @@ global with sharing class Student360ProfileController {
 
     @RemoteAction
     global static DepositStatusWrapper getDepositStatus(String contactEmplid) {
-        return Student360ProfileCallout.getDepositStatus(contactEmplid);
+        return StudentProfileCallout.getDepositStatus(contactEmplid);
     }
 
     @RemoteAction
     global static RenewableAidWrapper getRenewableAid(String contactEmplid) {
-        RenewableAidWrapper aidWrapper = Student360ProfileCallout.getRenewableAid(contactEmplid);
+        RenewableAidWrapper aidWrapper = StudentProfileCallout.getRenewableAid(contactEmplid);
         aidWrapper.aid_years.sort();
         return aidWrapper;
     }
 
     @RemoteAction
     global static BookPaymentWrapper getBookPayments(String contactEmplid) {
-        BookPaymentWrapper bookPaymentWrap = Student360ProfileCallout.getBookPayments(contactEmplid);
+        BookPaymentWrapper bookPaymentWrap = StudentProfileCallout.getBookPayments(contactEmplid);
         bookPaymentWrap.aid_years.sort();
         return bookPaymentWrap;
     }
@@ -1374,7 +1370,7 @@ global with sharing class Student360ProfileController {
     @RemoteAction
     global static TuitionResidencyWrapper getTuitionResidencyStatus(String contactEmplid) {
         try {
-            TuitionResidencyWrapper residencyStatus = Student360ProfileCallout.getTuitionResidencyStatus(contactEmplid);
+            TuitionResidencyWrapper residencyStatus = StudentProfileCallout.getTuitionResidencyStatus(contactEmplid);
             return residencyStatus;
         } catch (Exception e) {
             return null;
@@ -1383,7 +1379,7 @@ global with sharing class Student360ProfileController {
 
     @RemoteAction
     global static Map<String, List<SAPWrapper.cls_sap>> getAcademicProgress(String contactEmplid) {
-        SAPWrapper academicProgressWrapper = Student360ProfileCallout.getAcademicProgress(contactEmplid);
+        SAPWrapper academicProgressWrapper = StudentProfileCallout.getAcademicProgress(contactEmplid);
 
         Map<String, List<SAPWrapper.cls_sap>> academicYearToSAP = new Map<String, List<SAPWrapper.cls_sap>>();
 
@@ -1475,6 +1471,6 @@ global with sharing class Student360ProfileController {
         public String aid_year { get; set; }
     }
 
-    private class Student360ProfileException extends Exception {
+    private class StudentProfileException extends Exception {
     }
 }

@@ -3,5 +3,5 @@
     <apiVersion>36.0</apiVersion>
     <availableInTouch>false</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
-    <label>Student 360 Profile</label>
+    <label>Student Profile</label>
 </ApexPage>

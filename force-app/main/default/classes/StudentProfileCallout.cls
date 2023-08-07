@@ -1,5 +1,5 @@
-global with sharing class Student360ProfileCallout {
-    global Student360ProfileCallout() {
+global with sharing class StudentProfileCallout {
+    global StudentProfileCallout() {
     }
 
     global static List<ServiceIndicatorWrapper.ServiceIndicator> getServiceIndicators(String emplid) {

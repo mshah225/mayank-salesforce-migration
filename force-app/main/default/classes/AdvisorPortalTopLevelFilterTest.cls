@@ -558,14 +558,22 @@ private class AdvisorPortalTopLevelFilterTest {
                 inSubordinateSection = false;
                 foundPodsHeader = true;
                 continue;
-            } else if (label == '--Department Committees--' || label == '--College Committees--') {
+            } else if (
+                label == '--Department Committees--' ||
+                label == '--College Committees--' ||
+                label == '--School Name or Advising Team--'
+            ) {
                 atStart = false;
                 inPodsSection = false;
                 inManagedPodsSection = true;
                 inSubordinateSection = false;
                 foundManagedPodsHeader = true;
                 continue;
-            } else if (label == '--Department Advisors--' || label == '--College Advisors--') {
+            } else if (
+                label == '--Department Advisors--' ||
+                label == '--College Advisors--' ||
+                label == '--Program Advisors--'
+            ) {
                 atStart = false;
                 inPodsSection = false;
                 inManagedPodsSection = false;

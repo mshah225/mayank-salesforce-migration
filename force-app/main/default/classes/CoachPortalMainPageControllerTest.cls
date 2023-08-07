@@ -61,25 +61,22 @@ private class CoachPortalMainPageControllerTest {
 
     static testMethod void testQueryStrings() {
         // Arrange
-        String proactiveQuery;
-        String myStudentsQuery;
         String mySummaryListQuery;
-        String myWatchlistQuery;
+        String myStudentsQuery;
+        String proactiveQuery;
         User testUser = [SELECT Id FROM User WHERE LastName = 'Testing1'];
 
         // Act
         CoachPortalMainPageController cpmpc = new CoachPortalMainPageController();
         System.runAs(testUser) {
-            proactiveQuery = cpmpc.myProactiveQuery;
-            myStudentsQuery = cpmpc.myStudentsQuery;
             mySummaryListQuery = cpmpc.mySummaryListQuery;
-            myWatchlistQuery = cpmpc.myWatchlistQuery;
+            myStudentsQuery = cpmpc.myStudentsQuery;
+            proactiveQuery = cpmpc.myProactiveQuery;
         }
 
         // Assert
-        System.assert(proactiveQuery.contains('Category__c != \'Watchlist\''));
-        System.assert(myStudentsQuery.contains('FROM Success_Student__c'));
         System.assert(mySummaryListQuery.contains('ORDER BY Subject ASC NULLS LAST'));
-        System.assert(myWatchlistQuery.contains('Category__c = \'Watchlist\''));
+        System.assert(myStudentsQuery.contains('FROM Success_Student__c'));
+        System.assert(proactiveQuery.contains('Category__c != \'Watchlist\''));
     }
 }

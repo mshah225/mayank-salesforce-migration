@@ -187,8 +187,8 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         insert carDefault;
 
-        Email_To_Case_Filter__c etcf1 = new Email_To_Case_Filter__c(Name = 'Test Filter');
-        Email_To_Case_Filter__c etcf2 = new Email_To_Case_Filter__c(Name = 'blockme@test.test');
+        Email_Case_Filter__c etcf1 = new Email_Case_Filter__c(Name = 'Test Filter');
+        Email_Case_Filter__c etcf2 = new Email_Case_Filter__c(Name = 'blockme@test.test');
         insert etcf1;
         insert etcf2;
 
@@ -468,8 +468,54 @@ public with sharing class CaseInboundEmailHandlerTest {
             Email = 'user@work.com.test',
             ASU_Gmail__c = 'user@acme.com.test'
         );
-        insert c1;
-        insert c2;
+        insert new List<Contact>{ c1, c2 };
+
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
+
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('service12345123451234512345@test.test');
+        email.toAddresses = toAddresses;
+        email.subject = 'test';
+        email.fromAddress = 'user@acme.com.test';
+        email.fromName = 'Last, First';
+        env.fromAddress = 'user@acme.com.test';
+
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.handleInboundEmail(email, env);
+
+        // Verify that the case status was updated
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId IN (:c1.Id, :c2.Id)
+            LIMIT 1
+        ];
+
+        System.assertEquals('test', createdCase.Subject);
+        System.assertEquals('New', createdCase.Status);
+        System.assert(
+            createdCase.Description.contains('Note: there is more than one Contact with this email address.')
+        );
+        Test.stopTest();
+
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
+    }
+
+    @isTest
+    static void multipleExistingContactsOnlyOneExactMatch() {
+        Test.startTest();
+        Contact c1 = new Contact(FirstName = 'First', LastName = 'Last', Email = 'user@acme.com.test');
+        Contact c2 = new Contact(
+            FirstName = 'First',
+            LastName = 'Last2',
+            Email = 'user@work.com.test',
+            ASU_Gmail__c = 'user@acme.com.test'
+        );
+        insert new List<Contact>{ c1, c2 };
 
         Messaging.InboundEmail email = new Messaging.InboundEmail();
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
@@ -497,6 +543,9 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         System.assertEquals('test', createdCase.Subject);
         System.assertEquals('New', createdCase.Status);
+        System.assert(
+            createdCase.Description.contains('Note: there is more than one Contact with this email address.')
+        );
         Test.stopTest();
 
         List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
@@ -1359,8 +1408,8 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         Messaging.InboundEmail email = new Messaging.InboundEmail();
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
-        List<Email_To_Case_Filter__c> filtersToAdd = new List<Email_To_Case_Filter__c>();
-        filtersToAdd.add(new Email_To_Case_Filter__c(Name = 'banana', Filter_Email_Body__c = true));
+        List<Email_Case_Filter__c> filtersToAdd = new List<Email_Case_Filter__c>();
+        filtersToAdd.add(new Email_Case_Filter__c(Name = 'banana', Filter_Email_Body__c = true));
         insert filtersToAdd;
 
         List<string> toAddresses = new List<string>();
@@ -1389,8 +1438,8 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         Messaging.InboundEmail email = new Messaging.InboundEmail();
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
-        List<Email_To_Case_Filter__c> filtersToAdd = new List<Email_To_Case_Filter__c>();
-        filtersToAdd.add(new Email_To_Case_Filter__c(Name = 'banana', Filter_Email_Body__c = false));
+        List<Email_Case_Filter__c> filtersToAdd = new List<Email_Case_Filter__c>();
+        filtersToAdd.add(new Email_Case_Filter__c(Name = 'banana', Filter_Email_Body__c = false));
         insert filtersToAdd;
 
         List<string> toAddresses = new List<string>();
@@ -1550,6 +1599,120 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         System.assert(createdCase.Description != null);
         System.assert(createdCase.Description.contains('without email body or attachment'));
+        Test.stopTest();
+
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
+    }
+
+    @isTest
+    static void testFirstNameLastNameFromNameMatches1() {
+        Test.startTest();
+        Contact c1 = new Contact(FirstName = 'John', LastName = 'Smith', Email = 'john.smith@acme.com.test');
+        Contact c2 = new Contact(FirstName = '', LastName = 'Smith', Email = 'john.smith@acme.com.test');
+        Contact c3 = new Contact(FirstName = '', LastName = 'Smithers', Email = 'john.smith@acme.com.test');
+        insert new List<Contact>{ c1, c2, c3 };
+
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('service12345123451234512345@test.test');
+
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        email.toAddresses = toAddresses;
+        email.subject = 'Should associate with c1';
+        email.fromAddress = 'john.smith@acme.com.test';
+        email.fromName = 'Smith, John';
+        env.fromAddress = 'john.smith@acme.com.test';
+
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.handleInboundEmail(email, env);
+
+        // Associated with contact 1
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId = :c1.Id
+            LIMIT 1
+        ];
+        System.assertEquals('Should associate with c1', createdCase.Subject);
+
+        Test.stopTest();
+
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
+    }
+
+    @isTest
+    static void testFirstNameLastNameFromNameMatches2() {
+        Test.startTest();
+        Contact c1 = new Contact(FirstName = 'John', LastName = 'Smith', Email = 'john.smith@acme.com.test');
+        Contact c2 = new Contact(FirstName = '', LastName = 'Smith', Email = 'john.smith@acme.com.test');
+        Contact c3 = new Contact(FirstName = '', LastName = 'Smithers', Email = 'john.smith@acme.com.test');
+        insert new List<Contact>{ c1, c2, c3 };
+
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('service12345123451234512345@test.test');
+
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        email.toAddresses = toAddresses;
+        email.subject = 'Should associate with c2';
+        email.fromAddress = 'john.smith@acme.com.test';
+        email.fromName = 'Smith';
+        env.fromAddress = 'john.smith@acme.com.test';
+
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.handleInboundEmail(email, env);
+
+        // Associated with contact 2
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId = :c2.Id
+            LIMIT 1
+        ];
+        System.assertEquals('Should associate with c2', createdCase.Subject);
+
+        Test.stopTest();
+
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
+    }
+
+    @isTest
+    static void testFirstNameLastNameFromNameMatches3() {
+        Test.startTest();
+        Contact c1 = new Contact(FirstName = 'John', LastName = 'Smith', Email = 'john.smith@acme.com.test');
+        Contact c2 = new Contact(FirstName = '', LastName = 'Smith', Email = 'john.smith@acme.com.test');
+        Contact c3 = new Contact(FirstName = '', LastName = 'Smithers', Email = 'john.smith@acme.com.test');
+        insert new List<Contact>{ c1, c2, c3 };
+
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('service12345123451234512345@test.test');
+
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        email.toAddresses = toAddresses;
+        email.subject = 'Should associate with c3';
+        email.fromAddress = 'john.smith@acme.com.test';
+        email.fromName = 'Smithers';
+        env.fromAddress = 'john.smith@acme.com.test';
+
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.handleInboundEmail(email, env);
+
+        // Associated with contact 3
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, Functional_Group__c
+            FROM Case
+            WHERE ContactId = :c3.Id
+            LIMIT 1
+        ];
+        System.assertEquals('Should associate with c3', createdCase.Subject);
+
         Test.stopTest();
 
         List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];

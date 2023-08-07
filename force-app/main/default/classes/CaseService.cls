@@ -492,9 +492,13 @@ public class CaseService {
         }
     }
 
-    public static void forwardInsertedCaseEmail(List<Case> newList) {
+    public static void forwardInsertedCaseEmail(List<Case> newList, Map<Id, Case> oldMap) {
         for (Case newCase : newList) {
-            if (newCase.Status == 'Closed: Forwarded') {
+            if (
+                (newCase.Status == 'Closed: Forwarded') &&
+                (oldMap == null ||
+                oldMap.get(newCase.Id).Status != newCase.Status)
+            ) {
                 if (!CaseUtilities.emailForwarded) {
                     CaseUtilities.emailForwarded = true;
                     CaseUtilities.forwardCaseAttachments(

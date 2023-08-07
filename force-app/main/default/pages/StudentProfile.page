@@ -258,17 +258,17 @@
         <div class="student-profile-container-container">
             <div
                 class="student-profile-container-title"
-                style="{!IF(hasStudentCareAndConcernAccess == TRUE, '', 'display:none')}"
+                style="{!IF(hasStudentCareAndConcernAccess == FALSE, '', 'display:none')}"
             >
-                <h1 style="float: left">Student 360</h1>
-                <a class="student-search-button" href="/apex/StudentSearch"> Go to Student Search </a>
+                <h1 style="float: left">Student Profile</h1>
                 <hr />
             </div>
             <div
                 class="student-profile-container-title"
-                style="{!IF(hasStudentCareAndConcernAccess == FALSE, '', 'display:none')}"
+                style="{!IF(hasStudentCareAndConcernAccess == TRUE, '', 'display:none')}"
             >
-                <h1 style="float: left">Student Profile</h1>
+                <h1 style="float: left">Student 360</h1>
+                <a class="student-search-button" href="/apex/StudentSearch"> Go to Student Search </a>
                 <hr />
             </div>
             <div class="row intro">

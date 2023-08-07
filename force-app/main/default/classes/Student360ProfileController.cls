@@ -60,7 +60,7 @@ global with sharing class Student360ProfileController {
     public Boolean hasStudentCareAndConcernAccess {
         get {
             return PermissionsHelper.currentUserHasProfile('System Administrator') ||
-                PermissionsHelper.currentUserHasPermissionSet('Student_360');
+                PermissionsHelper.currentUserHasPermissionSet('Role_Student_360');
         }
         set;
     }

@@ -1,14 +1,14 @@
-global class SortableCreditByExam implements Comparable {
+global class StudentProfileExamSortable implements Comparable {
     public PS_ASU_SP_TRNSFR_V__x examInfo { get; private set; }
     private String examParamSort;
 
-    global SortableCreditByExam(PS_ASU_SP_TRNSFR_V__x examInfo, String sortBy) {
+    global StudentProfileExamSortable(PS_ASU_SP_TRNSFR_V__x examInfo, String sortBy) {
         this.examInfo = examInfo;
         this.examParamSort = sortBy;
     }
 
     global Integer compareTo(Object compareTo) {
-        SortableCreditByExam compareToExam = (SortableCreditByExam) compareTo;
+        StudentProfileExamSortable compareToExam = (StudentProfileExamSortable) compareTo;
         Integer sortDir = 0;
         if (examParamSort.equals('Title')) {
             sortDir = compareToExam.examInfo.Title__c.compareTo(this.examInfo.TITLE__c);

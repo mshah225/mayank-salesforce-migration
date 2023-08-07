@@ -190,7 +190,7 @@ private class StudentProfileControllerTest {
 
     @IsTest
     private static void testSortClasses() {
-        List<SortableClass> sortedClasses;
+        List<StudentProfileClassSortable> sortedClasses;
         String listOfClassesJSON =
             '[' +
             '{' +
@@ -244,7 +244,7 @@ private class StudentProfileControllerTest {
 
     @IsTest
     private static void testSortExams() {
-        List<SortableCreditByExam> sortedExams;
+        List<StudentProfileExamSortable> sortedExams;
         String listOfExamsJSON =
             '[' +
             '{' +

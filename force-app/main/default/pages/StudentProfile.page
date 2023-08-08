@@ -3344,9 +3344,8 @@
                                 </div>
 
                                 <div style="overflow: auto; max-height: 400px">
-                                    <!-- <div id="ps_transfer_work" style="display: none"></div>
-
-                                    <div id="psTransferWorkErrors"></div> -->
+                                    <div id="emergency-contacts-container" style="display: none"></div>
+                                    <div id="emergency-contacts-errors"></div>
                                 </div>
                             </apex:pageBlock>
                         </div>
@@ -3461,71 +3460,6 @@
         $j('#sunCard').error(function () {
             $j(this).attr('src', '{!$Resource.blankAvatar}');
         });
-
-        $j(document).ready(function () {
-            maskPhoneNumbers();
-            loadRemoteSunCardPhoto();
-            loadFinancialAidIndicators();
-            loadCommentsTab();
-            loadUGIndicatorTab();
-            loadClassesTab();
-            loadStudentCareAndConcernTab();
-        });
-
-        function loadFinancialAidIndicators() {
-            loadServiceIndicators();
-            loadFinancialAidChecklist();
-            loadFinancialAidEditMessages();
-            loadFinancialAidAwards();
-            loadFinancialAidChargeHistory();
-            loadAccountBalance();
-            loadRefunds();
-            loadDepositStatus();
-            loadRenewableAid();
-            loadBookPayment();
-            loadResidencyStatus();
-            loadAcademicProgress();
-        }
-
-        function loadRemoteSunCardPhoto() {
-            Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.getSunCardPhotoRA}',
-                '{!theContact.ASURite_ID__c}',
-                '{!theContact.EMPLID__c}',
-                function (result, event) {
-                    if (event.status) {
-                        if (result.length != 0) {
-                            var onlineStudent = '{!theContact.ASU_Online_Student__c}';
-                            if (onlineStudent === true) {
-                                result = '{!$Resource.blankAvatar}';
-                            }
-
-                            var blankAvatarURL = '{!URLFOR($Resource.blankAvatar)}';
-
-                            var html =
-                                '<img id="studentPhotoImg2" src="' +
-                                result +
-                                '" ' +
-                                ' alt="suncard photo" ' +
-                                ' onerror="if (this.src != \'' +
-                                blankAvatarURL +
-                                ")') this.src='" +
-                                blankAvatarURL +
-                                '\'" ' +
-                                ' class="img-responsive intro" ' +
-                                ' style="max-width:200px;width:100%;"/>';
-                            document.getElementById('sunDevilImgDiv').innerHTML = html;
-                            cleanUpUndefined('sunDevilImgDiv');
-                        } else {
-                            jQuery('#sunImgSpinner').remove();
-                        }
-                    } else {
-                        jQuery('#sunImgSpinner').remove();
-                    }
-                },
-                {buffer: false, escape: true, timeout: 120000}
-            );
-        }
 
         // Arrow Functionality
         $j('.page-header-smaller').click(function () {
@@ -3665,33 +3599,37 @@
         var classesData;
         var financialAidData;
         var academicIntegrityData;
+        var emergencyContactsData;
 
-        function loadClassesTab() {
-            getEnrolledClasses();
-            getCreditByExamData();
-            getTransferWork();
-        }
+        var enrolledWrapper;
+        var droppedWrapper;
+        var examWrapper;
+        var transferWrapper;
+        var asrResponseTable;
+        var academicIntegrityWrapper;
+        var emergencyContactsWrapper;
 
-        function loadUGIndicatorTab() {
-            getGeneralIndicators();
-            getTranscripts();
-            if ('{!theContact.Average_MyASU_Cohort__c}' == '') {
-                document.getElementById('sr_below_mean_myasu_usage').innerHTML = '--';
-            } else {
-                document.getElementById('sr_below_mean_myasu_usage').innerHTML = Math.floor(
-                    0.7 * '{!theContact.Average_MyASU_Cohort__c}'
-                );
-            }
-        }
+        // TO FIND A SECTION, SEARCH BY: '[SECTION]' or section name
+        $j(document).ready(function () {
+            maskPhoneNumbers();
+            loadRemoteSunCardPhoto(); // Section name: SUNCARD PHOTO
+            loadClassesTab(); // Section name: CLASSES TAB
+            loadFinancialAidIndicators(); // Section name: FINANCES TAB
+            loadCommentsTab(); // Section name: COMMENTS TAB
+            loadUGIndicatorTab(); // Section name: UNDERGRADUATE INDICATORS TAB
+            loadStudentCareAndConcernTab(); // Section name: STUDENT CARE AND CONCERN TAB
+        });
 
-        function loadStudentCareAndConcernTab() {
-            getAcademicIntegrityData();
-        }
+        /**
+         * [SECTION] HELPER METHODS
+         */
 
-        function loadCommentsTab() {
-            getPSAdvisorNotes();
-            getComments();
-            getGuestAccess();
+        function maskPhoneNumbers() {
+            $j('.phone').each(function () {
+                if ($j(this).text() != '--') {
+                    $j(this).mask('(000) 000-0000');
+                }
+            });
         }
 
         // Method to replace all undefined/missing fields after callout
@@ -3704,675 +3642,59 @@
             }
         }
 
-        // Method to load the Undergraduate Indicators tab
-        function getGeneralIndicators() {
-            if (!indicatorTabLoaded) {
-                var errorHtml = '';
-                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+        /**
+         * [SECTION] SUNCARD PHOTO
+         */
 
-                var asrInformationQuery =
-                    'SELECT ACAD_CAREER__c, ASU_GRADE_INST_LST__c, ASU_GRADE_RSN_LIST__c, ' +
-                    'CLASS_NBR__c, COMMENT1__c, COURSE_SQC__c, COURSE_TITLE__c, CRSE_GRADE_INPUT__c, ' +
-                    'EMPLID__c, ENROLLED__c, INSTITUTION__c, SEQNUM__c, SESSION_CODE__c ' +
-                    'FROM PS_ASU_SR_ASR_INDV__x ' +
-                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
-                    "AND STRM__c = '{!currentTerm}'";
-                conn.query(
-                    asrInformationQuery,
-                    function (err, response) {
-                        if (err) {
-                            errorHtml += err;
-                            document.getElementById('sr_asr_errors').className = '';
-                            document.getElementById('sr_asr_errors').innerHTML =
-                                'An Error has occured trying to load the data for this object';
+        function loadRemoteSunCardPhoto() {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getSunCardPhotoRA}',
+                '{!theContact.ASURite_ID__c}',
+                '{!theContact.EMPLID__c}',
+                function (result, event) {
+                    if (event.status) {
+                        if (result.length != 0) {
+                            var onlineStudent = '{!theContact.ASU_Online_Student__c}';
+                            if (onlineStudent === true) {
+                                result = '{!$Resource.blankAvatar}';
+                            }
+
+                            var blankAvatarURL = '{!URLFOR($Resource.blankAvatar)}';
+
+                            var html =
+                                '<img id="studentPhotoImg2" src="' +
+                                result +
+                                '" ' +
+                                ' alt="suncard photo" ' +
+                                ' onerror="if (this.src != \'' +
+                                blankAvatarURL +
+                                ")') this.src='" +
+                                blankAvatarURL +
+                                '\'" ' +
+                                ' class="img-responsive intro" ' +
+                                ' style="max-width:200px;width:100%;"/>';
+                            document.getElementById('sunDevilImgDiv').innerHTML = html;
+                            cleanUpUndefined('sunDevilImgDiv');
                         } else {
-                            result = response.records.filter((element) => {
-                                return (
-                                    element.CRSE_GRADE_INPUT__c != null ||
-                                    element.COMMENT1__c != null ||
-                                    element.ASU_GRADE_RSN_LIST__c != null ||
-                                    element.ASU_GRADE_INST_LST__c != null
-                                );
-                            });
-                            if (result.length > 0) {
-                                var html =
-                                    '' +
-                                    '<thead>' +
-                                    '<th>Class</th>' +
-                                    '<th>Course</th>' +
-                                    '<th>Title</th>' +
-                                    '<th>Session</th>' +
-                                    '<th>ASR Rpt No</th>' +
-                                    '<th>ASR Grade</th>' +
-                                    '<th>Enrolled</th>' +
-                                    '<th>Reason</th>' +
-                                    '<th>Action</th>' +
-                                    '<th>Comment</th>' +
-                                    '</thead>' +
-                                    '</table>' +
-                                    "<tbody style='font-weight:normal;'>";
-
-                                for (var i = 0; i < result.length; i++) {
-                                    if (result[i].CRSE_GRADE_INPUT__c === null) result[i].CRSE_GRADE_INPUT__c = '--';
-                                    if (result[i].COMMENT1__c === null) result[i].COMMENT1__c = '--';
-                                    if (result[i].ASU_GRADE_RSN_LIST__c === null)
-                                        result[i].ASU_GRADE_RSN_LIST__c = '--';
-                                    if (result[i].ASU_GRADE_INST_LST__c === null)
-                                        result[i].ASU_GRADE_INST_LST__c = '--';
-
-                                    html +=
-                                        '<tr>' +
-                                        '<td>' +
-                                        Math.floor(result[i].CLASS_NBR__c) +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].COURSE_SQC__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].COURSE_TITLE__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].SESSION_CODE__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        Math.floor(result[i].SEQNUM__c) +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].CRSE_GRADE_INPUT__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].ENROLLED__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].ASU_GRADE_RSN_LIST__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].ASU_GRADE_INST_LST__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].COMMENT1__c +
-                                        '</td>' +
-                                        '</tr>';
-                                }
-
-                                html += '</tbody>';
-
-                                document.getElementById('sr_asr_errors').innerHTML = '';
-                                document.getElementById('sr_asr').innerHTML =
-                                    "<span style='color:red'>" + result.length;
-                                document.getElementById('sr_asr_info_table').innerHTML = html;
-                                document.getElementById('sr_asr_info_tr').style.display = 'table-row';
-                                cleanUpUndefined('sr_asr_info_tr');
-                            } else {
-                                document.getElementById('sr_asr_errors').innerHTML = '';
-                                document.getElementById('sr_asr').innerHTML = "<span style='color:black'>" + '--';
-                                document.getElementById('sr_asr_info_table').style.display = 'none';
-                                document.getElementById('sr_asr_info_tr').style.display = 'none';
-                            }
+                            jQuery('#sunImgSpinner').remove();
                         }
-                    },
-                    {buffer: false, escape: true, timeout: 120000}
-                );
-
-                var enrollmentHoldsQuery =
-                    'SELECT SI_Instructions__c, SI_Reason__c, SI_Code__c, SI_Start_Term__c, SI_Start_Term__r.Name ' +
-                    'FROM Service_Indicator__c ' +
-                    "WHERE SI_Contact__r.EMPLID__c = '{!theContact.EMPLID__c}' AND Enrollment_Impact__c = true " +
-                    "AND (SI_Start_Term__c = null OR SI_Start_Term__r.PeopleSoft_Code__c  <= '{!currentTerm}' OR SI_Start_Term__r.PeopleSoft_Code__c  = '0000') " +
-                    'ORDER BY SI_Start_Term__r.PeopleSoft_Code__c  ASC, SI_Code__c ASC ';
-                conn.query(
-                    enrollmentHoldsQuery,
-                    function (err, response) {
-                        if (err) {
-                            errorHtml += err;
-                        } else {
-                            if ('{!studentProgram.Career__c}' == 'Graduate') {
-                                document.getElementById('gr_en_holds').innerHTML = "<span style='color:black'>0</span>";
-                            } else {
-                                document.getElementById('sr_en_holds').innerHTML = "<span style='color:black'>0</span>";
-                            }
-                            if (!response.totalSize == 0) {
-                                var result = response.records;
-                                var startTerm = '';
-                                if ('{!studentProgram.Career__c}' == 'Graduate') {
-                                    document.getElementById('gr_en_holds').innerHTML =
-                                        "<span style='color:red'>" + result.length;
-                                    ('</span>');
-                                } else {
-                                    document.getElementById('sr_en_holds').innerHTML =
-                                        "<span style='color:red'>" + result.length;
-                                    ('</span>');
-                                }
-
-                                var html =
-                                    '' +
-                                    '<thead>' +
-                                    '<th>Code</th>' +
-                                    '<th>Srvc Term</th>' +
-                                    '<th>Reason</th>' +
-                                    '<th>Instructions</th>' +
-                                    '</thead>' +
-                                    '</table>' +
-                                    "<tbody style='font-weight:normal;'>";
-                                for (var i = 0; i < result.length; i++) {
-                                    if (result[i].SI_Start_Term__c != null) {
-                                        startTerm = result[i].SI_Start_Term__r.Name;
-                                    } else {
-                                        startTerm = '--';
-                                    }
-                                    html +=
-                                        '<tr>' +
-                                        '<td>' +
-                                        result[i].SI_Code__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        startTerm +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].SI_Reason__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].SI_Instructions__c +
-                                        '</td>' +
-                                        '</tr>';
-                                }
-                                html += '</tbody>';
-
-                                if ('{!studentProgram.Career__c}' == 'Graduate') {
-                                    document.getElementById('gr_en_holds_info_table').innerHTML = html;
-                                    document.getElementById('gr_en_holds_info_tr').style.display = 'table-row';
-                                } else {
-                                    document.getElementById('sr_en_holds_info_table').innerHTML = html;
-                                    document.getElementById('sr_en_holds_info_tr').style.display = 'table-row';
-                                }
-                            }
-                        }
-                    },
-                    {buffer: false, escape: true, timeout: 120000}
-                );
-
-                var currentTermValue = '{!currentTerm}';
-                if (currentTermValue.slice(-1) != '1') {
-                    document.getElementById('futureEnrolledHours').style.display = 'none';
-                }
-                cleanUpUndefined('UGgeneralIndicators');
-            }
-        }
-
-        // Method to get transcripts
-        function getTranscripts() {
-            if (!transcriptsLoaded) {
-                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
-                document.getElementById('psTranscriptErrors').innerHTML =
-                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-                document.getElementById('grpsTranscriptErrors').innerHTML =
-                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-
-                var transcriptQuery =
-                    'SELECT Address1__c, Address2__c, Address3__c, ' +
-                    'Address4__c, City__c, Country__c, Send_To_Name__c, ' +
-                    'Postal__c, State__c, Status__c, Request_Or_Sent_Date__c, ' +
-                    'Id ' +
-                    'FROM Transcript_Sent__c ' +
-                    "WHERE Contact__c = '{!theContact}' " +
-                    'ORDER BY Request_Or_Sent_Date__c DESC, Send_To_Name__c DESC';
-                conn.query(
-                    transcriptQuery,
-                    function (err, response) {
-                        if (err) {
-                            document.getElementById('psTranscriptErrors').innerHTML = err;
-                            document.getElementById('grpsTranscriptErrors').innerHTML = err;
-                        } else {
-                            document.getElementById('psTranscriptErrors').innerHTML = '';
-                            document.getElementById('grpsTranscriptErrors').innerHTML = '';
-                            if (!response.totalSize == 0) {
-                                document.getElementById('ps_transcript').style.display = 'initial';
-                                document.getElementById('gr_psTranscript').style.display = 'initial';
-
-                                var html =
-                                    '' +
-                                    "<div class='table-responsive'>" +
-                                    "<table id='transcript_table' class='table table-striped table-bordered'> " +
-                                    '<thead>' +
-                                    '<tr>' +
-                                    '<th>Request Date</th>' +
-                                    '<th>Status</th>' +
-                                    '<th>Recipient</th>' +
-                                    '</tr>' +
-                                    '</thead>' +
-                                    '<tbody>';
-                                var result = response.records;
-                                for (var i = 0; i < result.length; i++) {
-                                    var utcSeconds = result[i].Request_Or_Sent_Date__c;
-                                    var sentDate = new Date(utcSeconds);
-                                    sentDate =
-                                        sentDate.getUTCMonth() +
-                                        1 +
-                                        '/' +
-                                        sentDate.getUTCDate() +
-                                        '/' +
-                                        sentDate.getUTCFullYear();
-
-                                    var status = result[i].Status__c;
-                                    var recipient = new Array(
-                                        result[i].Send_To_Name__c,
-                                        result[i].Address1__c,
-                                        result[i].Address2__c,
-                                        result[i].Address3__c,
-                                        result[i].Address4__c
-                                    );
-
-                                    html +=
-                                        '' +
-                                        '<tr>' +
-                                        '<td>' +
-                                        sentDate +
-                                        '</td>' +
-                                        '<td>' +
-                                        status +
-                                        '</td>' +
-                                        '<td>' +
-                                        "<li class='transcriptAddress'>" +
-                                        recipient[0] +
-                                        '</li>';
-
-                                    for (var j = 1; j < recipient.length; j++) {
-                                        if (recipient[j] != null && recipient[j] != '-') {
-                                            html += "<li class='transcriptAddress'> " + recipient[j] + '</li>';
-                                        }
-                                    }
-
-                                    html +=
-                                        "<li class='transcriptAddress'>" +
-                                        result[i].City__c +
-                                        ', ' +
-                                        result[i].State__c +
-                                        ' ' +
-                                        result[i].Postal__c +
-                                        '</li>' +
-                                        "<li class='transcriptAddress'> " +
-                                        result[i].Country__c +
-                                        '</li>' +
-                                        '</td>' +
-                                        '</tr>';
-                                }
-
-                                html += '' + '</tbody>' + '</table>' + '</div>';
-
-                                document.getElementById('ps_transcript').innerHTML = html;
-                                document.getElementById('gr_psTranscript').innerHTML = html;
-                                cleanUpUndefined('ps_transcript');
-                                cleanUpUndefined('gr_psTranscript');
-                                transcriptsLoaded = true;
-                            } else {
-                                document.getElementById('ps_transcript').innerHTML =
-                                    'No transcripts found for {!theContact.Preferred_First_Name__c}.';
-                                document.getElementById('ps_transcript').style.display = 'initial';
-                                document.getElementById('gr_psTranscript').innerHTML =
-                                    'No transcripts found for {!theContact.Preferred_First_Name__c}.';
-                                document.getElementById('gr_psTranscript').style.display = 'initial';
-                                transcriptsLoaded = true;
-                            }
-                        }
-                    },
-                    {buffer: false, escape: true, timeout: 120000}
-                );
-            }
-        }
-
-        // Method to load the advisor comments.
-        function getPSAdvisorNotes() {
-            if (!advisorNotesLoaded) {
-                document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
-                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-
-                var advisorNoteQuery =
-                    'SELECT ACAD_CAREER__c, COMMENTS__c, CREATDTTM__c, CREATEOPRID__c, DisplayUrl, ' +
-                    'EMPLID__c, ExternalId, Id, NAME__c, STRM__c,  Academic_Plan__c, Academic_Plan__r.Name, Academic_Program__r.Name, Student_Career_Number__c ' +
-                    'FROM PS_ASU_SP_ADNOTE_V__x ' +
-                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
-                    'ORDER BY CREATDTTM__c DESC';
-                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
-                conn.query(advisorNoteQuery, function (err, response) {
-                    if (err) {
-                        document.getElementById('psAdvisingNotesResponseErrors').innerHTML = err;
                     } else {
-                        if (!response.totalSize == 0) {
-                            var noteResponse = response.records;
-                            noteResponse.forEach(function (record) {
-                                delete record.attributes;
-                            });
-                            noteResponse = JSON.stringify(noteResponse);
-                            Visualforce.remoting.Manager.invokeAction(
-                                '{!$RemoteAction.StudentProfileController.getPSAdvisorNotes}',
-                                '{!theContact.EMPLID__c}',
-                                noteResponse,
-                                function (result, event) {
-                                    if (event.status) {
-                                        document.getElementById('psAdvisingNotesResponseErrors').innerHTML = '';
-
-                                        if (!Object.getOwnPropertyNames(result).length == 0) {
-                                            document.getElementById('psAdvisingNotesResponseErrors').style.display =
-                                                'none';
-                                            var html = '<table class="table table-striped table-bordered">';
-
-                                            for (var i = 0; i < result.length; i++) {
-                                                var dateStamp = new Date(result[i].note.CREATDTTM__c);
-                                                var commentDate = new Date(
-                                                    dateStamp.toLocaleString('en-US', {timeZone: 'Etc/GMT'})
-                                                );
-                                                commentDate =
-                                                    commentDate.getMonth() +
-                                                    1 +
-                                                    '/' +
-                                                    commentDate.getDate() +
-                                                    '/' +
-                                                    commentDate.getFullYear();
-                                                html +=
-                                                    '<tr>' +
-                                                    '<td>' +
-                                                    (result[i].advUserId == undefined
-                                                        ? ''
-                                                        : "<a href='/_ui/core/userprofile/UserProfilePage?u=" +
-                                                          result[i].advUserId +
-                                                          "&tab=sfdc.ProfilePlatformFeed' target='_blank'>") +
-                                                    result[i].note.NAME__c +
-                                                    (result[i].advUserId == undefined ? '' : '</a>') +
-                                                    '</td> <td>' +
-                                                    commentDate +
-                                                    '</td>' +
-                                                    '</td> <td>' +
-                                                    result[i].note.Academic_Plan__r.Name +
-                                                    '</td>' +
-                                                    '</td> <td>' +
-                                                    result[i].note.Academic_Program__r.Name +
-                                                    '</td>' +
-                                                    '</tr>' +
-                                                    '<tr>' +
-                                                    '<td colspan="4">' +
-                                                    result[i].note.COMMENTS__c.replace(/(?:\r\n|\r|\n)/g, '<br />') +
-                                                    '</td>' +
-                                                    '</tr>';
-                                            }
-                                            html += '</table>';
-                                            document.getElementById('ps_advising_notes_section').innerHTML = html;
-                                            cleanUpUndefined('ps_advising_notes_section');
-                                            advisorNotesLoaded = true;
-                                        } else {
-                                            document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
-                                                'No advising notes found for {!theContact.Preferred_First_Name__c}.';
-                                            advisorNotesLoaded = true;
-                                        }
-                                    } else if (event.type === 'exception') {
-                                        document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
-                                            event.message + '<br/>\n<pre>' + event.where + '</pre>';
-                                    } else {
-                                        document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
-                                            event.message;
-                                    }
-                                },
-                                {buffer: false, escape: true, timeout: 120000}
-                            );
-                        } else {
-                            document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
-                                'No advising notes found for {!theContact.Preferred_First_Name__c}.';
-                            advisorNotesLoaded = true;
-                        }
+                        jQuery('#sunImgSpinner').remove();
                     }
-                });
-            }
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
         }
 
-        function refreshComments() {
-            commentsLoaded = false;
-            advisorNotesLoaded = false;
-            document.getElementById('ps_advising_notes_section').innerHTML = '';
-            document.getElementById('ps_comments_section').innerHTML = '';
-            document.getElementById('psAdvisingNotesResponseErrors').style.display = 'block';
-            document.getElementById('psCommentsResponseErrors').style.display = 'block';
-            getPSAdvisorNotes();
-            getComments();
+        /**
+         * [SECTION] CLASSES TAB
+         */
+
+        function loadClassesTab() {
+            getEnrolledClasses();
+            getCreditByExamData();
+            getTransferWork();
         }
-
-        // Method to load the advisor comments.
-        function getComments() {
-            if (!commentsLoaded) {
-                document.getElementById('psCommentsResponseErrors').innerHTML =
-                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-                var commentQuery =
-                    'SELECT ADMIN_FUNCTION__c, ADMIN_ROLENAME__c, COMMENT_DTTM__c, COMNT_ID__c, ' +
-                    'COMMENTS__c, DisplayUrl, EMPLID__c, ExternalId, Id, NAME__c ' +
-                    'FROM PS_ASU_SP_COMMNT_V__x ' +
-                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' AND CMNT_Category__c  != 'GRPOS' AND CMNT_Category__c != 'GRGCPS'" +
-                    'ORDER BY COMMENT_DTTM__c DESC';
-                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
-                conn.query(commentQuery, function (err, response) {
-                    if (err) {
-                        document.getElementById('psCommentsResponseErrors').innerHTML = err;
-                    } else {
-                        var commentResponse = response.records;
-                        commentResponse.forEach(function (record) {
-                            delete record.attributes;
-                        });
-                        commentResponse = JSON.stringify(commentResponse);
-                        Visualforce.remoting.Manager.invokeAction(
-                            '{!$RemoteAction.StudentProfileController.getComments}',
-                            '{!theContact.EMPLID__c}',
-                            commentResponse,
-                            function (result, event) {
-                                if (event.status) {
-                                    document.getElementById('psCommentsResponseErrors').innerHTML = '';
-
-                                    if (Object.getOwnPropertyNames(result).length != 0 && result != '') {
-                                        document.getElementById('psCommentsResponseErrors').style.display = 'none';
-                                        var html = '';
-
-                                        for (var i = 0; i < result.length; i++) {
-                                            var utcSeconds = result[i].comment.COMMENT_DTTM__c;
-                                            var commentDate = new Date(utcSeconds);
-                                            commentDate =
-                                                commentDate.getMonth() +
-                                                1 +
-                                                '/' +
-                                                commentDate.getDate() +
-                                                '/' +
-                                                commentDate.getFullYear();
-
-                                            html +=
-                                                '' +
-                                                "<div class='comments-panel'>" +
-                                                "<div class='comments-header'>" +
-                                                '<h4>' +
-                                                (result[i].commenterUserId == undefined
-                                                    ? ''
-                                                    : "<a href='/_ui/core/userprofile/UserProfilePage?u=" +
-                                                      result[i].commenterUserId +
-                                                      "&tab=sfdc.ProfilePlatformFeed' target='_blank'>") +
-                                                result[i].comment.NAME__c +
-                                                (result[i].commenterUserId == undefined ? '' : '</a>') +
-                                                '</h4>' +
-                                                "<span class='comments-header-date'>" +
-                                                '&nbsp;&nbsp;-&nbsp;&nbsp;' +
-                                                commentDate +
-                                                '</span>' +
-                                                '</div>' +
-                                                "<div class='comments-main-comment'" +
-                                                "id='ps_comments_main'>" +
-                                                result[i].comment.COMMENTS__c +
-                                                '</div>' +
-                                                '</div>' +
-                                                "<hr class='comments-hr'/>";
-                                        }
-
-                                        document.getElementById('ps_comments_section').innerHTML = html;
-                                        cleanUpUndefined('ps_comments_section');
-                                        commentsLoaded = true;
-                                    } else {
-                                        document.getElementById('psCommentsResponseErrors').innerHTML =
-                                            'No comments found for {!theContact.Preferred_First_Name__c}.';
-                                        commentsLoaded = true;
-                                    }
-                                } else if (event.type === 'exception') {
-                                    document.getElementById('psCommentsResponseErrors').innerHTML =
-                                        event.message + '<br/>\n<pre>' + event.where + '</pre>';
-                                } else {
-                                    document.getElementById('psCommentsResponseErrors').innerHTML = event.message;
-                                }
-                            },
-                            {buffer: false, escape: true, timeout: 120000}
-                        );
-                    }
-                });
-            }
-        }
-
-        // Method to load the advisor comments.
-        function getGuestAccess() {
-            if (!guestAccessLoaded) {
-                document.getElementById('psGuestAccessResponseErrors').innerHTML =
-                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-                var guestQuery =
-                    'SELECT AUTHOR__c, COMMENT_DT__c, COMMENTS__c, DisplayUrl, EMPLID__c, ' +
-                    'ExternalId, Id ' +
-                    'FROM PS_ASU_SP_GUEST_V__x ' +
-                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
-                    'ORDER BY COMMENT_DT__c DESC';
-                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
-                conn.query(
-                    guestQuery,
-                    function (err, response) {
-                        if (err) {
-                            document.getElementById('psGuestAccessResponseErrors').innerHTML = err;
-                        } else {
-                            document.getElementById('psGuestAccessResponseErrors').innerHTML = '';
-
-                            if (!response.totalSize == 0) {
-                                result = response.records;
-                                document.getElementById('psGuestAccessResponseErrors').style.display = 'none';
-                                var html = '';
-
-                                for (var i = 0; i < result.length; i++) {
-                                    var utcSeconds = result[i].COMMENT_DT__c;
-                                    var commentDate = new Date(utcSeconds);
-                                    commentDate =
-                                        commentDate.getMonth() +
-                                        1 +
-                                        '/' +
-                                        commentDate.getDate() +
-                                        '/' +
-                                        commentDate.getFullYear();
-                                    if (result[i].AUTHOR__c == null) {
-                                        result[i].AUTHOR__c = '--';
-                                    }
-                                    html +=
-                                        '' +
-                                        "<div class='comments-panel'>" +
-                                        "<div class='comments-header'>" +
-                                        '<h4>' +
-                                        result[i].AUTHOR__c +
-                                        '</h4>' +
-                                        "<span class='comments-header-date'>" +
-                                        '&nbsp;&nbsp;-&nbsp;&nbsp;' +
-                                        commentDate +
-                                        '</span>' +
-                                        '</div>' +
-                                        "<div class='comments-main-comment'" +
-                                        "id='ps_comments_main'>" +
-                                        result[i].COMMENTS__c +
-                                        '</div>' +
-                                        '</div>' +
-                                        "<hr class='comments-hr'/>";
-                                }
-
-                                document.getElementById('ps_guest_access_section').innerHTML = html;
-                                cleanUpUndefined('ps_guest_access_section');
-                                guestAccessLoaded = true;
-                            } else {
-                                document.getElementById('psGuestAccessResponseErrors').innerHTML =
-                                    'No guest access data found for {!theContact.Preferred_First_Name__c}.';
-                                guestAccessLoaded = true;
-                            }
-                        }
-                    },
-                    {buffer: false, escape: true, timeout: 120000}
-                );
-            }
-        }
-
-        //Method for clicking to sort enrolled classes
-        var ascDirEnrolled = true;
-        var currSortEnrolled = 'Term';
-
-        function sortEnrolledOnClick(name) {
-            if (name == currSortEnrolled) {
-                ascDirEnrolled = !ascDirEnrolled;
-            } else {
-                ascDirEnrolled = true;
-                currSortEnrolled = name;
-            }
-            sortEnrolledClassList(name, ascDirEnrolled);
-        }
-
-        //Method for clicking to sort Dropped Classes
-        var ascDirDropped = true;
-        var currSortDropped = 'Term';
-
-        function sortDroppedOnClick(name) {
-            if (name == currSortDropped) {
-                ascDirDropped = !ascDirDropped;
-            } else {
-                ascDirDropped = true;
-                currSortDropped = name;
-            }
-            sortDroppedClassList(name, ascDirDropped);
-        }
-
-        //Method for clicking to sort Transfer Exams
-        var ascDirExam = true;
-        var currSortExam = 'Title';
-
-        function sortExamOnClick(name) {
-            if (name == currSortExam) {
-                ascDirExam = !ascDirExam;
-            } else {
-                ascDirExam = true;
-                currSortExam = name;
-            }
-            sortExamList(name, ascDirExam);
-        }
-
-        //Method for clicking to sort Transfer Credits
-        var ascDirTransfer = true;
-        var currSortTransfer = 'Term';
-
-        function sortTransferOnClick(name) {
-            if (name == currSortTransfer) {
-                ascDirTransfer = !ascDirTransfer;
-            } else {
-                ascDirTransfer = true;
-                currSortTransfer = name;
-            }
-        }
-
-        var ascDirAcademicIntegrityData = true;
-        var currSortAcademicIntegrityData = 'Term';
-
-        function sortAcademicIntegrityDataOnClick(name) {
-            if (name == currSortAcademicIntegrityData) {
-                ascDirAcademicIntegrityData = !ascDirAcademicIntegrityData;
-            } else {
-                ascDirAcademicIntegrityData = true;
-                currSortAcademicIntegrityData = name;
-            }
-            sortAcademicIntegrityDataList(name, ascDirAcademicIntegrityData);
-        }
-
-        var enrolledWrapper;
-        var droppedWrapper;
-        var examWrapper;
-        var transferWrapper;
-        var asrResponseTable;
-        var academicIntegrityWrapper;
 
         // Method to get Enrolled Classes
         function getEnrolledClasses() {
@@ -4592,12 +3914,6 @@
                                             for (var i = 0; i < result.enrolledClasses.length; i++) {
                                                 var asrValue = '--';
 
-                                                //if (result.asrClasses.indexOf(result.enrolledClasses[i].STRM__c + '|' +
-                                                //                              result.enrolledClasses[i].SESSION_CODE__c + '|' +
-                                                //                              result.enrolledClasses[i].CLASS_NBR__c) > -1) {
-                                                //    asrValue = '&lt;a href=&quot;#&quot; onclick=&quot;eventFire(document.getElementById(&quot;ugIndicators&quot;), &quot;click&quot;);return false;&quot;&gt;!&lt;/a&gt;';
-                                                //}
-
                                                 html +=
                                                     '' +
                                                     '<tr>' +
@@ -4805,6 +4121,34 @@
                     });
                 }
             });
+        }
+
+        //Method for clicking to sort Dropped Classes
+        var ascDirDropped = true;
+        var currSortDropped = 'Term';
+
+        function sortDroppedOnClick(name) {
+            if (name == currSortDropped) {
+                ascDirDropped = !ascDirDropped;
+            } else {
+                ascDirDropped = true;
+                currSortDropped = name;
+            }
+            sortDroppedClassList(name, ascDirDropped);
+        }
+
+        //Method for clicking to sort enrolled classes
+        var ascDirEnrolled = true;
+        var currSortEnrolled = 'Term';
+
+        function sortEnrolledOnClick(name) {
+            if (name == currSortEnrolled) {
+                ascDirEnrolled = !ascDirEnrolled;
+            } else {
+                ascDirEnrolled = true;
+                currSortEnrolled = name;
+            }
+            sortEnrolledClassList(name, ascDirEnrolled);
         }
 
         function filterClasses() {
@@ -5239,109 +4583,18 @@
             );
         }
 
-        function sortAcademicIntegrityDataList(paramToSort, direction) {
-            var academicIntegrityWrapperJson = JSON.stringify(academicIntegrityWrapper);
-            Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.sortAcademicIntegrityData}',
-                paramToSort,
-                academicIntegrityWrapperJson,
-                direction,
-                function (result, event) {
-                    document.getElementById('academic-integrity-container').style.display = 'initial';
+        //Method for clicking to sort Transfer Exams
+        var ascDirExam = true;
+        var currSortExam = 'Title';
 
-                    var html =
-                        '' +
-                        "<div class='table-responsive'>" +
-                        "<table id='academic_integrity_data_table' class='table table-striped table-bordered'> " +
-                        '<thead>' +
-                        '<tr style="cursor:pointer">' +
-                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Term\')">Term</th>' +
-                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Class\')">Class</th>' +
-                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Course\')">Course</th>' +
-                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Title\')">Title</th>' +
-                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Units\')">Units</th>' +
-                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Instructor\')">Instructor(s)</th>' +
-                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Days\')">Days</th>' +
-                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Times\')">Times</th>' +
-                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Dates\')">Dates</th>' +
-                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Location\')">Location</th>' +
-                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Transcript Grade\')">Transcript Grade</th>' +
-                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Academic Integrity Grade\')">Academic Integrity Grade</th>' +
-                        '<th scope="col">ASR</th>' +
-                        '</tr>' +
-                        '</thead>' +
-                        '<tbody>';
-
-                    for (var i = 0; i < result.length; i++) {
-                        console.log(result[i]);
-                        var asrValue = '--';
-                        html +=
-                            '' +
-                            '<tr>' +
-                            '<td data-header="Term">' +
-                            result[i].academicIntegrityDataItem.TERM_DESCR30__c +
-                            '</td>' +
-                            '<td data-header="Class">' +
-                            Math.floor(result[i].academicIntegrityDataItem.CLASS_NBR__c) +
-                            '</td>' +
-                            '<td data-header="Course">' +
-                            result[i].academicIntegrityDataItem.SUBJECT__c +
-                            ' ' +
-                            result[i].academicIntegrityDataItem.CATALOG_NBR__c +
-                            '</td>' +
-                            '<td data-header="Title">' +
-                            result[i].academicIntegrityDataItem.CLASS_DESCR__c +
-                            '</td>' +
-                            '<td data-header="Units">' +
-                            result[i].academicIntegrityDataItem.UNT_TAKEN__c +
-                            '</td>' +
-                            '<td data-header="Instructor(s)">' +
-                            result[i].academicIntegrityDataItem.FT_FULL_NAME__c +
-                            '</td>' +
-                            '<td data-header="Days">' +
-                            result[i].academicIntegrityDataItem.SCH_HTML_DAY1__c +
-                            '</td>' +
-                            '<td data-header="Times">' +
-                            result[i].academicIntegrityDataItem.SCH_DAILY_TIME__c +
-                            '</td>' +
-                            '<td data-header="Dates">' +
-                            result[i].academicIntegrityDataItem.ASU_SCH_DATES__c +
-                            '</td>' +
-                            '<td data-header="Location">' +
-                            result[i].academicIntegrityDataItem.SSR_MTG_LOC_LONG__c +
-                            '</td>' +
-                            '<td data-header="Transcript Grade">' +
-                            result[i].academicIntegrityDataItem.CRSE_GRADE_OFF__c +
-                            '</td>' +
-                            '<td data-header="Academic Integrity Grade">' +
-                            result[i].academicIntegrityDataItem.CRSE_GRADE_INPUT__c +
-                            '</td>';
-                        if (
-                            asrResponseTable.indexOf(
-                                result[i].academicIntegrityDataItem.STRM__c +
-                                    '|' +
-                                    result[i].academicIntegrityDataItem.SESSION_CODE__c +
-                                    '|' +
-                                    result[i].academicIntegrityDataItem.CLASS_NBR__c
-                            ) > -1
-                        ) {
-                            // ASR link opens Undergraduate Indicators tab when clicked
-                            html +=
-                                '<td data-header="ASR">' +
-                                '<a href="#" onclick="document.getElementById(\x27ugIndicatorsLink\x27).click(); return false;">Y</a>' +
-                                '</td>';
-                        } else {
-                            html += '<td data-header="ASR">--</td>';
-                        }
-                        html += '</tr>';
-                    }
-                    html += '</tbody></table></div>';
-
-                    document.getElementById('academic-integrity-container').innerHTML = html;
-                    cleanUpUndefined('academic-integrity-container');
-                },
-                {buffer: false, escape: true, timeout: 120000}
-            );
+        function sortExamOnClick(name) {
+            if (name == currSortExam) {
+                ascDirExam = !ascDirExam;
+            } else {
+                ascDirExam = true;
+                currSortExam = name;
+            }
+            sortExamList(name, ascDirExam);
         }
 
         // Method to get Transfer Work
@@ -5442,12 +4695,23 @@
             );
         }
 
-        function maskPhoneNumbers() {
-            $j('.phone').each(function () {
-                if ($j(this).text() != '--') {
-                    $j(this).mask('(000) 000-0000');
-                }
-            });
+        /**
+         * [SECTION] FINANCES TAB
+         */
+
+        function loadFinancialAidIndicators() {
+            loadServiceIndicators();
+            loadFinancialAidChecklist();
+            loadFinancialAidEditMessages();
+            loadFinancialAidAwards();
+            loadFinancialAidChargeHistory();
+            loadAccountBalance();
+            loadRefunds();
+            loadDepositStatus();
+            loadRenewableAid();
+            loadBookPayment();
+            loadResidencyStatus();
+            loadAcademicProgress();
         }
 
         function loadServiceIndicators() {
@@ -6409,6 +5673,636 @@
             document.getElementById('sapTable').innerHTML = html;
         }
 
+        /**
+         * [SECTION] COMMENTS TAB
+         */
+
+        function loadCommentsTab() {
+            getPSAdvisorNotes();
+            getComments();
+            getGuestAccess();
+        }
+
+        // Method to load the advisor comments.
+        function getPSAdvisorNotes() {
+            if (!advisorNotesLoaded) {
+                document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
+                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+
+                var advisorNoteQuery =
+                    'SELECT ACAD_CAREER__c, COMMENTS__c, CREATDTTM__c, CREATEOPRID__c, DisplayUrl, ' +
+                    'EMPLID__c, ExternalId, Id, NAME__c, STRM__c,  Academic_Plan__c, Academic_Plan__r.Name, Academic_Program__r.Name, Student_Career_Number__c ' +
+                    'FROM PS_ASU_SP_ADNOTE_V__x ' +
+                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
+                    'ORDER BY CREATDTTM__c DESC';
+                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+                conn.query(advisorNoteQuery, function (err, response) {
+                    if (err) {
+                        document.getElementById('psAdvisingNotesResponseErrors').innerHTML = err;
+                    } else {
+                        if (!response.totalSize == 0) {
+                            var noteResponse = response.records;
+                            noteResponse.forEach(function (record) {
+                                delete record.attributes;
+                            });
+                            noteResponse = JSON.stringify(noteResponse);
+                            Visualforce.remoting.Manager.invokeAction(
+                                '{!$RemoteAction.StudentProfileController.getPSAdvisorNotes}',
+                                '{!theContact.EMPLID__c}',
+                                noteResponse,
+                                function (result, event) {
+                                    if (event.status) {
+                                        document.getElementById('psAdvisingNotesResponseErrors').innerHTML = '';
+
+                                        if (!Object.getOwnPropertyNames(result).length == 0) {
+                                            document.getElementById('psAdvisingNotesResponseErrors').style.display =
+                                                'none';
+                                            var html = '<table class="table table-striped table-bordered">';
+
+                                            for (var i = 0; i < result.length; i++) {
+                                                var dateStamp = new Date(result[i].note.CREATDTTM__c);
+                                                var commentDate = new Date(
+                                                    dateStamp.toLocaleString('en-US', {timeZone: 'Etc/GMT'})
+                                                );
+                                                commentDate =
+                                                    commentDate.getMonth() +
+                                                    1 +
+                                                    '/' +
+                                                    commentDate.getDate() +
+                                                    '/' +
+                                                    commentDate.getFullYear();
+                                                html +=
+                                                    '<tr>' +
+                                                    '<td>' +
+                                                    (result[i].advUserId == undefined
+                                                        ? ''
+                                                        : "<a href='/_ui/core/userprofile/UserProfilePage?u=" +
+                                                          result[i].advUserId +
+                                                          "&tab=sfdc.ProfilePlatformFeed' target='_blank'>") +
+                                                    result[i].note.NAME__c +
+                                                    (result[i].advUserId == undefined ? '' : '</a>') +
+                                                    '</td> <td>' +
+                                                    commentDate +
+                                                    '</td>' +
+                                                    '</td> <td>' +
+                                                    result[i].note.Academic_Plan__r.Name +
+                                                    '</td>' +
+                                                    '</td> <td>' +
+                                                    result[i].note.Academic_Program__r.Name +
+                                                    '</td>' +
+                                                    '</tr>' +
+                                                    '<tr>' +
+                                                    '<td colspan="4">' +
+                                                    result[i].note.COMMENTS__c.replace(/(?:\r\n|\r|\n)/g, '<br />') +
+                                                    '</td>' +
+                                                    '</tr>';
+                                            }
+                                            html += '</table>';
+                                            document.getElementById('ps_advising_notes_section').innerHTML = html;
+                                            cleanUpUndefined('ps_advising_notes_section');
+                                            advisorNotesLoaded = true;
+                                        } else {
+                                            document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
+                                                'No advising notes found for {!theContact.Preferred_First_Name__c}.';
+                                            advisorNotesLoaded = true;
+                                        }
+                                    } else if (event.type === 'exception') {
+                                        document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
+                                            event.message + '<br/>\n<pre>' + event.where + '</pre>';
+                                    } else {
+                                        document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
+                                            event.message;
+                                    }
+                                },
+                                {buffer: false, escape: true, timeout: 120000}
+                            );
+                        } else {
+                            document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
+                                'No advising notes found for {!theContact.Preferred_First_Name__c}.';
+                            advisorNotesLoaded = true;
+                        }
+                    }
+                });
+            }
+        }
+
+        function refreshComments() {
+            commentsLoaded = false;
+            advisorNotesLoaded = false;
+            document.getElementById('ps_advising_notes_section').innerHTML = '';
+            document.getElementById('ps_comments_section').innerHTML = '';
+            document.getElementById('psAdvisingNotesResponseErrors').style.display = 'block';
+            document.getElementById('psCommentsResponseErrors').style.display = 'block';
+            getPSAdvisorNotes();
+            getComments();
+        }
+
+        // Method to load the advisor comments.
+        function getComments() {
+            if (!commentsLoaded) {
+                document.getElementById('psCommentsResponseErrors').innerHTML =
+                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+                var commentQuery =
+                    'SELECT ADMIN_FUNCTION__c, ADMIN_ROLENAME__c, COMMENT_DTTM__c, COMNT_ID__c, ' +
+                    'COMMENTS__c, DisplayUrl, EMPLID__c, ExternalId, Id, NAME__c ' +
+                    'FROM PS_ASU_SP_COMMNT_V__x ' +
+                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' AND CMNT_Category__c  != 'GRPOS' AND CMNT_Category__c != 'GRGCPS'" +
+                    'ORDER BY COMMENT_DTTM__c DESC';
+                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+                conn.query(commentQuery, function (err, response) {
+                    if (err) {
+                        document.getElementById('psCommentsResponseErrors').innerHTML = err;
+                    } else {
+                        var commentResponse = response.records;
+                        commentResponse.forEach(function (record) {
+                            delete record.attributes;
+                        });
+                        commentResponse = JSON.stringify(commentResponse);
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.StudentProfileController.getComments}',
+                            '{!theContact.EMPLID__c}',
+                            commentResponse,
+                            function (result, event) {
+                                if (event.status) {
+                                    document.getElementById('psCommentsResponseErrors').innerHTML = '';
+
+                                    if (Object.getOwnPropertyNames(result).length != 0 && result != '') {
+                                        document.getElementById('psCommentsResponseErrors').style.display = 'none';
+                                        var html = '';
+
+                                        for (var i = 0; i < result.length; i++) {
+                                            var utcSeconds = result[i].comment.COMMENT_DTTM__c;
+                                            var commentDate = new Date(utcSeconds);
+                                            commentDate =
+                                                commentDate.getMonth() +
+                                                1 +
+                                                '/' +
+                                                commentDate.getDate() +
+                                                '/' +
+                                                commentDate.getFullYear();
+
+                                            html +=
+                                                '' +
+                                                "<div class='comments-panel'>" +
+                                                "<div class='comments-header'>" +
+                                                '<h4>' +
+                                                (result[i].commenterUserId == undefined
+                                                    ? ''
+                                                    : "<a href='/_ui/core/userprofile/UserProfilePage?u=" +
+                                                      result[i].commenterUserId +
+                                                      "&tab=sfdc.ProfilePlatformFeed' target='_blank'>") +
+                                                result[i].comment.NAME__c +
+                                                (result[i].commenterUserId == undefined ? '' : '</a>') +
+                                                '</h4>' +
+                                                "<span class='comments-header-date'>" +
+                                                '&nbsp;&nbsp;-&nbsp;&nbsp;' +
+                                                commentDate +
+                                                '</span>' +
+                                                '</div>' +
+                                                "<div class='comments-main-comment'" +
+                                                "id='ps_comments_main'>" +
+                                                result[i].comment.COMMENTS__c +
+                                                '</div>' +
+                                                '</div>' +
+                                                "<hr class='comments-hr'/>";
+                                        }
+
+                                        document.getElementById('ps_comments_section').innerHTML = html;
+                                        cleanUpUndefined('ps_comments_section');
+                                        commentsLoaded = true;
+                                    } else {
+                                        document.getElementById('psCommentsResponseErrors').innerHTML =
+                                            'No comments found for {!theContact.Preferred_First_Name__c}.';
+                                        commentsLoaded = true;
+                                    }
+                                } else if (event.type === 'exception') {
+                                    document.getElementById('psCommentsResponseErrors').innerHTML =
+                                        event.message + '<br/>\n<pre>' + event.where + '</pre>';
+                                } else {
+                                    document.getElementById('psCommentsResponseErrors').innerHTML = event.message;
+                                }
+                            },
+                            {buffer: false, escape: true, timeout: 120000}
+                        );
+                    }
+                });
+            }
+        }
+
+        // Method to load the advisor comments.
+        function getGuestAccess() {
+            if (!guestAccessLoaded) {
+                document.getElementById('psGuestAccessResponseErrors').innerHTML =
+                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+                var guestQuery =
+                    'SELECT AUTHOR__c, COMMENT_DT__c, COMMENTS__c, DisplayUrl, EMPLID__c, ' +
+                    'ExternalId, Id ' +
+                    'FROM PS_ASU_SP_GUEST_V__x ' +
+                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
+                    'ORDER BY COMMENT_DT__c DESC';
+                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+                conn.query(
+                    guestQuery,
+                    function (err, response) {
+                        if (err) {
+                            document.getElementById('psGuestAccessResponseErrors').innerHTML = err;
+                        } else {
+                            document.getElementById('psGuestAccessResponseErrors').innerHTML = '';
+
+                            if (!response.totalSize == 0) {
+                                result = response.records;
+                                document.getElementById('psGuestAccessResponseErrors').style.display = 'none';
+                                var html = '';
+
+                                for (var i = 0; i < result.length; i++) {
+                                    var utcSeconds = result[i].COMMENT_DT__c;
+                                    var commentDate = new Date(utcSeconds);
+                                    commentDate =
+                                        commentDate.getMonth() +
+                                        1 +
+                                        '/' +
+                                        commentDate.getDate() +
+                                        '/' +
+                                        commentDate.getFullYear();
+                                    if (result[i].AUTHOR__c == null) {
+                                        result[i].AUTHOR__c = '--';
+                                    }
+                                    html +=
+                                        '' +
+                                        "<div class='comments-panel'>" +
+                                        "<div class='comments-header'>" +
+                                        '<h4>' +
+                                        result[i].AUTHOR__c +
+                                        '</h4>' +
+                                        "<span class='comments-header-date'>" +
+                                        '&nbsp;&nbsp;-&nbsp;&nbsp;' +
+                                        commentDate +
+                                        '</span>' +
+                                        '</div>' +
+                                        "<div class='comments-main-comment'" +
+                                        "id='ps_comments_main'>" +
+                                        result[i].COMMENTS__c +
+                                        '</div>' +
+                                        '</div>' +
+                                        "<hr class='comments-hr'/>";
+                                }
+
+                                document.getElementById('ps_guest_access_section').innerHTML = html;
+                                cleanUpUndefined('ps_guest_access_section');
+                                guestAccessLoaded = true;
+                            } else {
+                                document.getElementById('psGuestAccessResponseErrors').innerHTML =
+                                    'No guest access data found for {!theContact.Preferred_First_Name__c}.';
+                                guestAccessLoaded = true;
+                            }
+                        }
+                    },
+                    {buffer: false, escape: true, timeout: 120000}
+                );
+            }
+        }
+
+        /**
+         * [SECTION] UNDERGRADUATE INDICATORS TAB
+         */
+
+        function loadUGIndicatorTab() {
+            getGeneralIndicators();
+            getTranscripts();
+            if ('{!theContact.Average_MyASU_Cohort__c}' == '') {
+                document.getElementById('sr_below_mean_myasu_usage').innerHTML = '--';
+            } else {
+                document.getElementById('sr_below_mean_myasu_usage').innerHTML = Math.floor(
+                    0.7 * '{!theContact.Average_MyASU_Cohort__c}'
+                );
+            }
+        }
+
+        // Method to load the Undergraduate Indicators tab
+        function getGeneralIndicators() {
+            if (!indicatorTabLoaded) {
+                var errorHtml = '';
+                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+
+                var asrInformationQuery =
+                    'SELECT ACAD_CAREER__c, ASU_GRADE_INST_LST__c, ASU_GRADE_RSN_LIST__c, ' +
+                    'CLASS_NBR__c, COMMENT1__c, COURSE_SQC__c, COURSE_TITLE__c, CRSE_GRADE_INPUT__c, ' +
+                    'EMPLID__c, ENROLLED__c, INSTITUTION__c, SEQNUM__c, SESSION_CODE__c ' +
+                    'FROM PS_ASU_SR_ASR_INDV__x ' +
+                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
+                    "AND STRM__c = '{!currentTerm}'";
+                conn.query(
+                    asrInformationQuery,
+                    function (err, response) {
+                        if (err) {
+                            errorHtml += err;
+                            document.getElementById('sr_asr_errors').className = '';
+                            document.getElementById('sr_asr_errors').innerHTML =
+                                'An Error has occured trying to load the data for this object';
+                        } else {
+                            result = response.records.filter((element) => {
+                                return (
+                                    element.CRSE_GRADE_INPUT__c != null ||
+                                    element.COMMENT1__c != null ||
+                                    element.ASU_GRADE_RSN_LIST__c != null ||
+                                    element.ASU_GRADE_INST_LST__c != null
+                                );
+                            });
+                            if (result.length > 0) {
+                                var html =
+                                    '' +
+                                    '<thead>' +
+                                    '<th>Class</th>' +
+                                    '<th>Course</th>' +
+                                    '<th>Title</th>' +
+                                    '<th>Session</th>' +
+                                    '<th>ASR Rpt No</th>' +
+                                    '<th>ASR Grade</th>' +
+                                    '<th>Enrolled</th>' +
+                                    '<th>Reason</th>' +
+                                    '<th>Action</th>' +
+                                    '<th>Comment</th>' +
+                                    '</thead>' +
+                                    '</table>' +
+                                    "<tbody style='font-weight:normal;'>";
+
+                                for (var i = 0; i < result.length; i++) {
+                                    if (result[i].CRSE_GRADE_INPUT__c === null) result[i].CRSE_GRADE_INPUT__c = '--';
+                                    if (result[i].COMMENT1__c === null) result[i].COMMENT1__c = '--';
+                                    if (result[i].ASU_GRADE_RSN_LIST__c === null)
+                                        result[i].ASU_GRADE_RSN_LIST__c = '--';
+                                    if (result[i].ASU_GRADE_INST_LST__c === null)
+                                        result[i].ASU_GRADE_INST_LST__c = '--';
+
+                                    html +=
+                                        '<tr>' +
+                                        '<td>' +
+                                        Math.floor(result[i].CLASS_NBR__c) +
+                                        '</td>' +
+                                        '<td>' +
+                                        result[i].COURSE_SQC__c +
+                                        '</td>' +
+                                        '<td>' +
+                                        result[i].COURSE_TITLE__c +
+                                        '</td>' +
+                                        '<td>' +
+                                        result[i].SESSION_CODE__c +
+                                        '</td>' +
+                                        '<td>' +
+                                        Math.floor(result[i].SEQNUM__c) +
+                                        '</td>' +
+                                        '<td>' +
+                                        result[i].CRSE_GRADE_INPUT__c +
+                                        '</td>' +
+                                        '<td>' +
+                                        result[i].ENROLLED__c +
+                                        '</td>' +
+                                        '<td>' +
+                                        result[i].ASU_GRADE_RSN_LIST__c +
+                                        '</td>' +
+                                        '<td>' +
+                                        result[i].ASU_GRADE_INST_LST__c +
+                                        '</td>' +
+                                        '<td>' +
+                                        result[i].COMMENT1__c +
+                                        '</td>' +
+                                        '</tr>';
+                                }
+
+                                html += '</tbody>';
+
+                                document.getElementById('sr_asr_errors').innerHTML = '';
+                                document.getElementById('sr_asr').innerHTML =
+                                    "<span style='color:red'>" + result.length;
+                                document.getElementById('sr_asr_info_table').innerHTML = html;
+                                document.getElementById('sr_asr_info_tr').style.display = 'table-row';
+                                cleanUpUndefined('sr_asr_info_tr');
+                            } else {
+                                document.getElementById('sr_asr_errors').innerHTML = '';
+                                document.getElementById('sr_asr').innerHTML = "<span style='color:black'>" + '--';
+                                document.getElementById('sr_asr_info_table').style.display = 'none';
+                                document.getElementById('sr_asr_info_tr').style.display = 'none';
+                            }
+                        }
+                    },
+                    {buffer: false, escape: true, timeout: 120000}
+                );
+
+                var enrollmentHoldsQuery =
+                    'SELECT SI_Instructions__c, SI_Reason__c, SI_Code__c, SI_Start_Term__c, SI_Start_Term__r.Name ' +
+                    'FROM Service_Indicator__c ' +
+                    "WHERE SI_Contact__r.EMPLID__c = '{!theContact.EMPLID__c}' AND Enrollment_Impact__c = true " +
+                    "AND (SI_Start_Term__c = null OR SI_Start_Term__r.PeopleSoft_Code__c  <= '{!currentTerm}' OR SI_Start_Term__r.PeopleSoft_Code__c  = '0000') " +
+                    'ORDER BY SI_Start_Term__r.PeopleSoft_Code__c  ASC, SI_Code__c ASC ';
+                conn.query(
+                    enrollmentHoldsQuery,
+                    function (err, response) {
+                        if (err) {
+                            errorHtml += err;
+                        } else {
+                            if ('{!studentProgram.Career__c}' == 'Graduate') {
+                                document.getElementById('gr_en_holds').innerHTML = "<span style='color:black'>0</span>";
+                            } else {
+                                document.getElementById('sr_en_holds').innerHTML = "<span style='color:black'>0</span>";
+                            }
+                            if (!response.totalSize == 0) {
+                                var result = response.records;
+                                var startTerm = '';
+                                if ('{!studentProgram.Career__c}' == 'Graduate') {
+                                    document.getElementById('gr_en_holds').innerHTML =
+                                        "<span style='color:red'>" + result.length;
+                                    ('</span>');
+                                } else {
+                                    document.getElementById('sr_en_holds').innerHTML =
+                                        "<span style='color:red'>" + result.length;
+                                    ('</span>');
+                                }
+
+                                var html =
+                                    '' +
+                                    '<thead>' +
+                                    '<th>Code</th>' +
+                                    '<th>Srvc Term</th>' +
+                                    '<th>Reason</th>' +
+                                    '<th>Instructions</th>' +
+                                    '</thead>' +
+                                    '</table>' +
+                                    "<tbody style='font-weight:normal;'>";
+                                for (var i = 0; i < result.length; i++) {
+                                    if (result[i].SI_Start_Term__c != null) {
+                                        startTerm = result[i].SI_Start_Term__r.Name;
+                                    } else {
+                                        startTerm = '--';
+                                    }
+                                    html +=
+                                        '<tr>' +
+                                        '<td>' +
+                                        result[i].SI_Code__c +
+                                        '</td>' +
+                                        '<td>' +
+                                        startTerm +
+                                        '</td>' +
+                                        '<td>' +
+                                        result[i].SI_Reason__c +
+                                        '</td>' +
+                                        '<td>' +
+                                        result[i].SI_Instructions__c +
+                                        '</td>' +
+                                        '</tr>';
+                                }
+                                html += '</tbody>';
+
+                                if ('{!studentProgram.Career__c}' == 'Graduate') {
+                                    document.getElementById('gr_en_holds_info_table').innerHTML = html;
+                                    document.getElementById('gr_en_holds_info_tr').style.display = 'table-row';
+                                } else {
+                                    document.getElementById('sr_en_holds_info_table').innerHTML = html;
+                                    document.getElementById('sr_en_holds_info_tr').style.display = 'table-row';
+                                }
+                            }
+                        }
+                    },
+                    {buffer: false, escape: true, timeout: 120000}
+                );
+
+                var currentTermValue = '{!currentTerm}';
+                if (currentTermValue.slice(-1) != '1') {
+                    document.getElementById('futureEnrolledHours').style.display = 'none';
+                }
+                cleanUpUndefined('UGgeneralIndicators');
+            }
+        }
+
+        // Method to get transcripts
+        function getTranscripts() {
+            if (!transcriptsLoaded) {
+                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+                document.getElementById('psTranscriptErrors').innerHTML =
+                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+                document.getElementById('grpsTranscriptErrors').innerHTML =
+                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+
+                var transcriptQuery =
+                    'SELECT Address1__c, Address2__c, Address3__c, ' +
+                    'Address4__c, City__c, Country__c, Send_To_Name__c, ' +
+                    'Postal__c, State__c, Status__c, Request_Or_Sent_Date__c, ' +
+                    'Id ' +
+                    'FROM Transcript_Sent__c ' +
+                    "WHERE Contact__c = '{!theContact}' " +
+                    'ORDER BY Request_Or_Sent_Date__c DESC, Send_To_Name__c DESC';
+                conn.query(
+                    transcriptQuery,
+                    function (err, response) {
+                        if (err) {
+                            document.getElementById('psTranscriptErrors').innerHTML = err;
+                            document.getElementById('grpsTranscriptErrors').innerHTML = err;
+                        } else {
+                            document.getElementById('psTranscriptErrors').innerHTML = '';
+                            document.getElementById('grpsTranscriptErrors').innerHTML = '';
+                            if (!response.totalSize == 0) {
+                                document.getElementById('ps_transcript').style.display = 'initial';
+                                document.getElementById('gr_psTranscript').style.display = 'initial';
+
+                                var html =
+                                    '' +
+                                    "<div class='table-responsive'>" +
+                                    "<table id='transcript_table' class='table table-striped table-bordered'> " +
+                                    '<thead>' +
+                                    '<tr>' +
+                                    '<th>Request Date</th>' +
+                                    '<th>Status</th>' +
+                                    '<th>Recipient</th>' +
+                                    '</tr>' +
+                                    '</thead>' +
+                                    '<tbody>';
+                                var result = response.records;
+                                for (var i = 0; i < result.length; i++) {
+                                    var utcSeconds = result[i].Request_Or_Sent_Date__c;
+                                    var sentDate = new Date(utcSeconds);
+                                    sentDate =
+                                        sentDate.getUTCMonth() +
+                                        1 +
+                                        '/' +
+                                        sentDate.getUTCDate() +
+                                        '/' +
+                                        sentDate.getUTCFullYear();
+
+                                    var status = result[i].Status__c;
+                                    var recipient = new Array(
+                                        result[i].Send_To_Name__c,
+                                        result[i].Address1__c,
+                                        result[i].Address2__c,
+                                        result[i].Address3__c,
+                                        result[i].Address4__c
+                                    );
+
+                                    html +=
+                                        '' +
+                                        '<tr>' +
+                                        '<td>' +
+                                        sentDate +
+                                        '</td>' +
+                                        '<td>' +
+                                        status +
+                                        '</td>' +
+                                        '<td>' +
+                                        "<li class='transcriptAddress'>" +
+                                        recipient[0] +
+                                        '</li>';
+
+                                    for (var j = 1; j < recipient.length; j++) {
+                                        if (recipient[j] != null && recipient[j] != '-') {
+                                            html += "<li class='transcriptAddress'> " + recipient[j] + '</li>';
+                                        }
+                                    }
+
+                                    html +=
+                                        "<li class='transcriptAddress'>" +
+                                        result[i].City__c +
+                                        ', ' +
+                                        result[i].State__c +
+                                        ' ' +
+                                        result[i].Postal__c +
+                                        '</li>' +
+                                        "<li class='transcriptAddress'> " +
+                                        result[i].Country__c +
+                                        '</li>' +
+                                        '</td>' +
+                                        '</tr>';
+                                }
+
+                                html += '' + '</tbody>' + '</table>' + '</div>';
+
+                                document.getElementById('ps_transcript').innerHTML = html;
+                                document.getElementById('gr_psTranscript').innerHTML = html;
+                                cleanUpUndefined('ps_transcript');
+                                cleanUpUndefined('gr_psTranscript');
+                                transcriptsLoaded = true;
+                            } else {
+                                document.getElementById('ps_transcript').innerHTML =
+                                    'No transcripts found for {!theContact.Preferred_First_Name__c}.';
+                                document.getElementById('ps_transcript').style.display = 'initial';
+                                document.getElementById('gr_psTranscript').innerHTML =
+                                    'No transcripts found for {!theContact.Preferred_First_Name__c}.';
+                                document.getElementById('gr_psTranscript').style.display = 'initial';
+                                transcriptsLoaded = true;
+                            }
+                        }
+                    },
+                    {buffer: false, escape: true, timeout: 120000}
+                );
+            }
+        }
+
+        /**
+         * [SECTION] STUDENT CARE AND CONCERN TABL
+         */
+
+        function loadStudentCareAndConcernTab() {
+            getAcademicIntegrityData();
+            getEmergencyContacts();
+        }
+
         function getAcademicIntegrityData() {
             if (academicIntegrityData != null) return;
             document.getElementById('academic-integrity-errors').innerHTML =
@@ -6430,8 +6324,6 @@
                 'SELECT CLASS_NBR__c, SESSION_CODE__c, STRM__c ' +
                 'FROM PS_ASU_SP_ASR_CLSV__x ' +
                 "WHERE EMPLID__c = '{!theContact.EMPLID__c}'";
-            // "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
-            // "AND STRM__c = '{!currentTerm}'";
             var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
             conn.query(academicIntegrityQuery, function (err, response) {
                 if (err) {
@@ -6563,7 +6455,6 @@
                                             document.getElementById('academic-integrity-errors').innerHTML =
                                                 'No academic integrity data found for {!theContact.Preferred_First_Name__c}.';
                                         }
-                                        // filterClasses();
                                     } else if (event.type === 'exception') {
                                         document.getElementById('academic-integrity-errors').innerHTML =
                                             event.message + '<br/>\n<pre>' + event.where + '</pre>';
@@ -6575,6 +6466,231 @@
                             );
                         }
                     });
+                }
+            });
+        }
+
+        var ascDirAcademicIntegrityData = true;
+        var currSortAcademicIntegrityData = 'Term';
+
+        function sortAcademicIntegrityDataOnClick(name) {
+            if (name == currSortAcademicIntegrityData) {
+                ascDirAcademicIntegrityData = !ascDirAcademicIntegrityData;
+            } else {
+                ascDirAcademicIntegrityData = true;
+                currSortAcademicIntegrityData = name;
+            }
+            sortAcademicIntegrityDataList(name, ascDirAcademicIntegrityData);
+        }
+
+        function sortAcademicIntegrityDataList(paramToSort, direction) {
+            var academicIntegrityWrapperJson = JSON.stringify(academicIntegrityWrapper);
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.sortAcademicIntegrityData}',
+                paramToSort,
+                academicIntegrityWrapperJson,
+                direction,
+                function (result, event) {
+                    document.getElementById('academic-integrity-container').style.display = 'initial';
+
+                    var html =
+                        '' +
+                        "<div class='table-responsive'>" +
+                        "<table id='academic_integrity_data_table' class='table table-striped table-bordered'> " +
+                        '<thead>' +
+                        '<tr style="cursor:pointer">' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Term\')">Term</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Class\')">Class</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Course\')">Course</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Title\')">Title</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Units\')">Units</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Instructor\')">Instructor(s)</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Days\')">Days</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Times\')">Times</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Dates\')">Dates</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Location\')">Location</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Transcript Grade\')">Transcript Grade</th>' +
+                        '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Academic Integrity Grade\')">Academic Integrity Grade</th>' +
+                        '<th scope="col">ASR</th>' +
+                        '</tr>' +
+                        '</thead>' +
+                        '<tbody>';
+
+                    for (var i = 0; i < result.length; i++) {
+                        console.log(result[i]);
+                        var asrValue = '--';
+                        html +=
+                            '' +
+                            '<tr>' +
+                            '<td data-header="Term">' +
+                            result[i].academicIntegrityDataItem.TERM_DESCR30__c +
+                            '</td>' +
+                            '<td data-header="Class">' +
+                            Math.floor(result[i].academicIntegrityDataItem.CLASS_NBR__c) +
+                            '</td>' +
+                            '<td data-header="Course">' +
+                            result[i].academicIntegrityDataItem.SUBJECT__c +
+                            ' ' +
+                            result[i].academicIntegrityDataItem.CATALOG_NBR__c +
+                            '</td>' +
+                            '<td data-header="Title">' +
+                            result[i].academicIntegrityDataItem.CLASS_DESCR__c +
+                            '</td>' +
+                            '<td data-header="Units">' +
+                            result[i].academicIntegrityDataItem.UNT_TAKEN__c +
+                            '</td>' +
+                            '<td data-header="Instructor(s)">' +
+                            result[i].academicIntegrityDataItem.FT_FULL_NAME__c +
+                            '</td>' +
+                            '<td data-header="Days">' +
+                            result[i].academicIntegrityDataItem.SCH_HTML_DAY1__c +
+                            '</td>' +
+                            '<td data-header="Times">' +
+                            result[i].academicIntegrityDataItem.SCH_DAILY_TIME__c +
+                            '</td>' +
+                            '<td data-header="Dates">' +
+                            result[i].academicIntegrityDataItem.ASU_SCH_DATES__c +
+                            '</td>' +
+                            '<td data-header="Location">' +
+                            result[i].academicIntegrityDataItem.SSR_MTG_LOC_LONG__c +
+                            '</td>' +
+                            '<td data-header="Transcript Grade">' +
+                            result[i].academicIntegrityDataItem.CRSE_GRADE_OFF__c +
+                            '</td>' +
+                            '<td data-header="Academic Integrity Grade">' +
+                            result[i].academicIntegrityDataItem.CRSE_GRADE_INPUT__c +
+                            '</td>';
+                        if (
+                            asrResponseTable.indexOf(
+                                result[i].academicIntegrityDataItem.STRM__c +
+                                    '|' +
+                                    result[i].academicIntegrityDataItem.SESSION_CODE__c +
+                                    '|' +
+                                    result[i].academicIntegrityDataItem.CLASS_NBR__c
+                            ) > -1
+                        ) {
+                            // ASR link opens Undergraduate Indicators tab when clicked
+                            html +=
+                                '<td data-header="ASR">' +
+                                '<a href="#" onclick="document.getElementById(\x27ugIndicatorsLink\x27).click(); return false;">Y</a>' +
+                                '</td>';
+                        } else {
+                            html += '<td data-header="ASR">--</td>';
+                        }
+                        html += '</tr>';
+                    }
+                    html += '</tbody></table></div>';
+
+                    document.getElementById('academic-integrity-container').innerHTML = html;
+                    cleanUpUndefined('academic-integrity-container');
+                },
+                {buffer: false, escape: true, timeout: 120000}
+            );
+        }
+
+        function getEmergencyContacts() {
+            if (emergencyContactsData != null) return;
+
+            document.getElementById('emergency-contacts-errors').innerHTML =
+                "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+
+            var emergencyContactsQuery =
+                'Emergency_Contact_Relationship__c, Emergency_Primary_Contact__c, Emergency_Contact_Full_Name__c, ' +
+                'Emergency_Contact_Phone__c, Emergency_Contact_Address__c, Emergency_Contact_City__c, ' +
+                'Emergency_Contact_State__c, Emergency_Contact_Zip__c, Contact__c ' +
+                'FROM Emergency_Contact__c  ' +
+                "WHERE Contact__c = '{!theContact.EMPLID__c}'";
+
+            var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+            conn.query(emergencyContactsQuery, function (err, response) {
+                if (err) {
+                    document.getElementById('academic-integrity-errors').innerHTML = err;
+                } else {
+                    let emergencyContactsResponse = response.records;
+                    emergencyContactsResponse.forEach(function (record) {
+                        delete record.attributes;
+                    });
+                    emergencyContactsResponse = JSON.stringify(emergencyContactsResponse);
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.StudentProfileController.getEmergencyContactsData}',
+                        emergencyContactsResponse,
+                        function (result, event) {
+                            if (event.status) {
+                                document.getElementById('academic-integrity-errors').innerHTML = '';
+                                emergencyContactsData = result;
+                                emergencyContactsWrapper = result.emergencyContactsData;
+                                if (
+                                    !Object.getOwnPropertyNames(result.emergencyContactsData).length == 0 &&
+                                    result.emergencyContactsData.length > 0
+                                ) {
+                                    document.getElementById('academic-integrity-container').style.display = 'initial';
+                                    var html =
+                                        '' +
+                                        "<div class='table-responsive'>" +
+                                        "<table id='emergency_contacts_table' class='table table-striped table-bordered'> " +
+                                        '<thead>' +
+                                        '<tr style="cursor:pointer">' +
+                                        '<th scope="col">Relationship</th>' +
+                                        '<th scope="col">Primary</th>' +
+                                        '<th scope="col">Name</th>' +
+                                        '<th scope="col">Phone</th>' +
+                                        '<th scope="col">Other Phone</th>' +
+                                        '<th scope="col">Instructor(s)</th>' +
+                                        '<th scope="col">Address</th>' +
+                                        '</tr>' +
+                                        '</thead>' +
+                                        '<tbody>';
+                                    for (var i = 0; i < result.emergencyContactsData.length; i++) {
+                                        var emergencyContactDisplayValue = result.emergencyContactsData[i]
+                                            .Emergency_Primary_Contact__c
+                                            ? 'Yes'
+                                            : 'No';
+
+                                        html +=
+                                            '' +
+                                            '<tr>' +
+                                            '<td data-header="Relationship">' +
+                                            result.emergencyContactsData[i].Emergency_Contact_Relationship__c +
+                                            '</td>' +
+                                            '<td data-header="Primary">' +
+                                            emergencyContactDisplayValue +
+                                            '</td>' +
+                                            '<td data-header="Name">' +
+                                            result.emergencyContactsData[i].Emergency_Contact_Full_Name__c +
+                                            '</td>' +
+                                            '<td data-header="Phone">' +
+                                            result.emergencyContactsData[i].Emergency_Contact_Phone__c +
+                                            '</td>' +
+                                            '<td data-header="Other Phone">' +
+                                            '[OTHER PHONE DATA]' +
+                                            '</td>' +
+                                            '<td data-header="Address">' +
+                                            result.emergencyContactsData[i].Emergency_Contact_Address__c +
+                                            '<br />' +
+                                            result.emergencyContactsData[i].Emergency_Contact_City__c +
+                                            ', ' +
+                                            result.emergencyContactsData[i].Emergency_Contact_State__c +
+                                            ' ' +
+                                            result.emergencyContactsData[i].Emergency_Contact_Zip__c +
+                                            '</td>' +
+                                            '</tr>';
+                                    }
+                                    html += '</tbody></table></div>';
+                                    document.getElementById('emergency-contacts-container').innerHTML = html;
+                                    cleanUpUndefined('emergency-contacts-container');
+                                } else {
+                                    document.getElementById('emergency-contacts-errors').innerHTML =
+                                        'No emergency contact details found for {!theContact.Preferred_First_Name__c}.';
+                                }
+                            } else if (event.type === 'exception') {
+                                document.getElementById('emergency-contacts-errors').innerHTML =
+                                    event.message + '<br/>\n<pre>' + event.where + '</pre>';
+                            } else {
+                                document.getElementById('emergency-contacts-errors').innerHTML = event.message;
+                            }
+                        },
+                        {buffer: false, escape: true, timeout: 120000}
+                    );
                 }
             });
         }

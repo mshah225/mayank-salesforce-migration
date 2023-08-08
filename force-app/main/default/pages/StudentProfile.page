@@ -6595,16 +6595,16 @@
                 "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
 
             var emergencyContactsQuery =
-                'Emergency_Contact_Relationship__c, Emergency_Primary_Contact__c, Emergency_Contact_Full_Name__c, ' +
+                'SELECT Emergency_Contact_Relationship__c, Emergency_Primary_Contact__c, Emergency_Contact_Full_Name__c, ' +
                 'Emergency_Contact_Phone__c, Emergency_Contact_Address__c, Emergency_Contact_City__c, ' +
                 'Emergency_Contact_State__c, Emergency_Contact_Zip__c, Contact__c ' +
                 'FROM Emergency_Contact__c  ' +
-                "WHERE Contact__c = '{!theContact.EMPLID__c}'";
+                "WHERE Contact__r.EMPLID__c = '{!theContact.EMPLID__c}'";
 
             var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
             conn.query(emergencyContactsQuery, function (err, response) {
                 if (err) {
-                    document.getElementById('academic-integrity-errors').innerHTML = err;
+                    document.getElementById('emergency-contacts-errors').innerHTML = err;
                 } else {
                     let emergencyContactsResponse = response.records;
                     emergencyContactsResponse.forEach(function (record) {
@@ -6616,14 +6616,14 @@
                         emergencyContactsResponse,
                         function (result, event) {
                             if (event.status) {
-                                document.getElementById('academic-integrity-errors').innerHTML = '';
+                                document.getElementById('emergency-contacts-errors').innerHTML = '';
                                 emergencyContactsData = result;
                                 emergencyContactsWrapper = result.emergencyContactsData;
                                 if (
                                     !Object.getOwnPropertyNames(result.emergencyContactsData).length == 0 &&
                                     result.emergencyContactsData.length > 0
                                 ) {
-                                    document.getElementById('academic-integrity-container').style.display = 'initial';
+                                    document.getElementById('emergency-contacts-container').style.display = 'initial';
                                     var html =
                                         '' +
                                         "<div class='table-responsive'>" +
@@ -6635,7 +6635,6 @@
                                         '<th scope="col">Name</th>' +
                                         '<th scope="col">Phone</th>' +
                                         '<th scope="col">Other Phone</th>' +
-                                        '<th scope="col">Instructor(s)</th>' +
                                         '<th scope="col">Address</th>' +
                                         '</tr>' +
                                         '</thead>' +

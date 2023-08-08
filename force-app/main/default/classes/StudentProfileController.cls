@@ -1210,6 +1210,21 @@ global with sharing class StudentProfileController {
         return academicIntegrityData;
     }
 
+    @RemoteAction
+    global static EmergencyContactsWrapper getEmergencyContactsData(String emergencyContactsListJson) {
+        List<Emergency_Contact__c> emergencyContactsList = (List<Emergency_Contact__c>) JSON.deserialize(
+            emergencyContactsListJson,
+            List<Emergency_Contact__c>.class
+        );
+
+        EmergencyContactsWrapper emergencyContactsData = new EmergencyContactsWrapper();
+        for (Emergency_Contact__c emergencyContact : emergencyContactsList) {
+            emergencyContactsData.emergencyContactsData.add(emergencyContact);
+        }
+
+        return emergencyContactsData;
+    }
+
     public String getAidYear() {
         return aidYear;
     }
@@ -1422,6 +1437,10 @@ global with sharing class StudentProfileController {
     global class AcademicIntegrityWrapper {
         public Set<String> asrClasses = new Set<String>();
         public List<PS_ASU_SP_CLASS_V__x> academicIntegrityData = new List<PS_ASU_SP_CLASS_V__x>();
+    }
+
+    global class EmergencyContactsWrapper {
+        public List<Emergency_Contact__c> emergencyContactsData = new List<Emergency_Contact__c>();
     }
 
     global class CommentWrapper {

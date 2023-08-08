@@ -509,18 +509,14 @@ public with sharing class MyASUHelpController {
             return go;
         }
 
-        newCase.ContactId = userContact.Id;
-        newCase.Web_Submission__c = 'My ASU Standard';
-        try {
-            insert newCase;
+        Case createdCase = MyASUHelpEmailService.submitCase(newCase, userContact);
+        
+        if (createdCase != null) {
             ApexPages.currentPage().getParameters().put('caseId', newCase.Id);
             confirmPage = viewCase();
             confirmPage.setRedirect(true);
             return confirmPage;
-        } catch (Exception e) {
-            List<String> vars = new List<String>();
-            vars.add('');
-            ErrorLogger.log(e, vars, false);
+        } else {
             return null;
         }
     }

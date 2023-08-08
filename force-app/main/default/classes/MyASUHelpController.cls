@@ -511,7 +511,7 @@ public with sharing class MyASUHelpController {
 
         Case createdCase = MyASUHelpEmailService.submitCase(newCase, userContact);
         
-        if (createdCase != null) {
+        if (createdCase.Id != null) {
             ApexPages.currentPage().getParameters().put('caseId', newCase.Id);
             confirmPage = viewCase();
             confirmPage.setRedirect(true);

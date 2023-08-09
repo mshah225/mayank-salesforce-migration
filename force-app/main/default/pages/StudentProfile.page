@@ -6640,10 +6640,22 @@
                                         '</thead>' +
                                         '<tbody>';
                                     for (var i = 0; i < result.emergencyContactsData.length; i++) {
-                                        var emergencyContactDisplayValue = result.emergencyContactsData[i]
+                                        var emergencyPrimaryContact = result.emergencyContactsData[i]
                                             .Emergency_Primary_Contact__c
                                             ? 'Yes'
                                             : 'No';
+
+                                        var emergencyContactAddress =
+                                            result.emergencyContactsData[i].Emergency_Contact_Address__c != null &&
+                                            result.emergencyContactsData[i].Emergency_Contact_Address__c != ''
+                                                ? result.emergencyContactsData[i].Emergency_Contact_Address__c +
+                                                  '<br />' +
+                                                  result.emergencyContactsData[i].Emergency_Contact_City__c +
+                                                  ', ' +
+                                                  result.emergencyContactsData[i].Emergency_Contact_State__c +
+                                                  ' ' +
+                                                  result.emergencyContactsData[i].Emergency_Contact_Zip__c
+                                                : '[NO ADDRESS DATA]';
 
                                         html +=
                                             '' +
@@ -6652,7 +6664,7 @@
                                             result.emergencyContactsData[i].Emergency_Contact_Relationship__c +
                                             '</td>' +
                                             '<td data-header="Primary">' +
-                                            emergencyContactDisplayValue +
+                                            emergencyPrimaryContact +
                                             '</td>' +
                                             '<td data-header="Name">' +
                                             result.emergencyContactsData[i].Emergency_Contact_Full_Name__c +
@@ -6664,13 +6676,7 @@
                                             '[OTHER PHONE DATA]' +
                                             '</td>' +
                                             '<td data-header="Address">' +
-                                            result.emergencyContactsData[i].Emergency_Contact_Address__c +
-                                            '<br />' +
-                                            result.emergencyContactsData[i].Emergency_Contact_City__c +
-                                            ', ' +
-                                            result.emergencyContactsData[i].Emergency_Contact_State__c +
-                                            ' ' +
-                                            result.emergencyContactsData[i].Emergency_Contact_Zip__c +
+                                            emergencyContactAddress +
                                             '</td>' +
                                             '</tr>';
                                     }

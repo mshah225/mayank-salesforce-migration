@@ -1,0 +1,30 @@
+{
+    "apiName": "Case",
+    "childRelationships": {},
+    "fields": {
+        "CC_Category__c": {"displayValue": null, "value": "Category A"},
+        "CC_Functional_Group__c": {"displayValue": null, "value": "Group A"},
+        "CC_Sub_Category__c": {"displayValue": null, "value": "Sub Category A"},
+        "ContactId": {"displayValue": null, "value": "123abc"},
+        "Description": {"displayValue": null, "value": "Test case description"},
+        "Subject": {"displayValue": null, "value": "Test case subject"},
+        "Needs_Attention__c": {"displayValue": null, "value": "true"},
+        "Escalated_From__c": {"displayValue": null, "value": "Exec Director"},
+        "Processing_Status__c": {"displayValue": null, "value": "All Approved"},
+        "Opportunity__c": {"displayValue": null, "value": "Sparky"},
+        "Case_Source__c": {"displayValue": null, "value": "Email"},
+        "Initial_Request_Sent_To_Addresses__c": {"displayValue": null, "value": "XYZ"}
+    },
+    "id": "1234567890qwerty",
+    "lastModifiedById": "0056T000009K22AQAS",
+    "lastModifiedDate": "2023-05-03T22:20:35.000Z",
+    "recordTypeId": "012d0000000x2VTAAY",
+    "recordTypeInfo": {
+        "available": true,
+        "defaultRecordTypeMapping": true,
+        "master": false,
+        "name": "ASU Service",
+        "recordTypeId": "012d0000000x2VTAAY"
+    },
+    "systemModstamp": "2023-05-03T22:20:35.000Z"
+}

@@ -1,0 +1,164 @@
+<template>
+    <lightning-quick-action-panel header="Clone Case" style="overflow-y: hidden">
+        <div style="max-height: 40vh">
+            <!-- Form loader -->
+            <template lwc:if={loading}>
+                <br />
+                <br />
+                <lightning-spinner variant="brand" alternative-text="Loading..." size="medium"></lightning-spinner>
+                <br />
+                <br />
+            </template>
+
+            <!-- Clone case form -->
+            <template lwc:else>
+                <lightning-record-edit-form
+                    object-api-name="Case"
+                    density="comfy"
+                    onsuccess={handleSuccess}
+                    onload={handleLoad}
+                >
+                    <!-- Hidden fields -->
+                    <lightning-input-field
+                        field-name="CC_Functional_Group__c"
+                        value={getFunctionalGroup}
+                        class="slds-hidden"
+                        style="display: none"
+                    ></lightning-input-field>
+
+                    <lightning-input-field
+                        field-name="CC_Category__c"
+                        value={getCategory}
+                        class="slds-hidden"
+                        style="display: none"
+                    ></lightning-input-field>
+
+                    <lightning-input-field
+                        field-name="CC_Sub_Category__c"
+                        value={getSubCategory}
+                        class="slds-hidden"
+                        style="display: none"
+                    ></lightning-input-field>
+
+                    <lightning-input-field
+                        field-name="ParentId"
+                        value={getParentCase}
+                        class="slds-hidden"
+                        style="display: none;"
+                    ></lightning-input-field>
+                    <!-- Hidden fields end here -->
+
+                    <template if:true={selectedCase.ContactId_Visibility}>
+                        <lightning-input-field 
+                        field-name="ContactId" 
+                        disabled={selectedCase.ContactId_isDisabled} 
+                        value={getContact}></lightning-input-field>
+                    </template>
+
+                    <!-- Custom controlled fields -->
+                    <lightning-combobox
+                        name="CC_Category__c"
+                        label="Category"
+                        value={getCategory}
+                        placeholder="Select Category"
+                        options={categoryOptions}
+                        onchange={handleCategoryChange}
+                        disabled={isCategoryDisabled}
+                        style="width: 99%; margin-left: 4.5px"
+                    ></lightning-combobox>
+
+                    <lightning-combobox
+                        name="CC_Sub_Category__c"
+                        label="Sub Category"
+                        value={getSubCategory}
+                        placeholder="Select Sub Category"
+                        options={subCategoryOptions}
+                        onchange={handleSubCategoryChange}
+                        disabled={isSubCategoryDisabled}
+                        style="width: 99%; margin-left: 4.5px"
+                    ></lightning-combobox>
+                    <!-- Custom controlled fields end here -->
+
+                    <template if:true={selectedCase.Origin__c_Visibility}>
+                        <lightning-input-field 
+                        field-name="Origin__c" 
+                        disabled={selectedCase.Origin__c_isDisabled} 
+                        value={getOrigin}></lightning-input-field>
+                    </template>
+
+                    <template if:true={selectedCase.Status_Visibility}>
+                        <lightning-input-field 
+                        field-name="Status" 
+                        disabled={selectedCase.Status_isDisabled} 
+                        value={getStatus}></lightning-input-field>
+                    </template>
+
+                    <template if:true={selectedCase.Subject_Visibility}>
+                        <lightning-input-field 
+                        field-name="Subject" 
+                        disabled={selectedCase.Subject_isDisabled} 
+                        value={getSubject}></lightning-input-field>
+                    </template>
+
+                    <template if:true={selectedCase.Description_Visibility}>
+                        <lightning-input-field 
+                        field-name="Description" 
+                        disabled={selectedCase.Description_isDisabled} 
+                        value={getDescription}></lightning-input-field>
+                    </template>
+
+                    <template if:true={selectedCase.Needs_Attention__c_Visibility}>
+                        <lightning-input-field 
+                        field-name="Needs_Attention__c" 
+                        disabled={selectedCase.Needs_Attention__c_isDisabled} 
+                        value={getNeedsAttentionStatus}></lightning-input-field>
+                    </template>
+
+                    <template if:true={selectedCase.Escalated_From__c_Visibility}>
+                        <lightning-input-field field-name="Escalated_From__c" 
+                        disabled={selectedCase.Escalated_From__c_isDisabled} 
+                        value={getEscalationSource}></lightning-input-field>
+                    </template>
+
+                    <template if:true={selectedCase.Processing_Status__c_Visibility}>
+                        <lightning-input-field 
+                        field-name="Processing_Status__c" 
+                        disabled={selectedCase.Processing_Status__c_isDisabled} 
+                        value={getProcessingStatus}></lightning-input-field>
+                    </template>
+
+                    <template if:true={selectedCase.Opportunity__c_Visibility}>
+                        <lightning-input-field field-name="Opportunity__c" 
+                        disabled={selectedCase.Opportunity__c_isDisabled} 
+                        value={getOpportunity}></lightning-input-field>
+                    </template>
+
+                    <template if:true={selectedCase.Case_Source__c_Visibility}>
+                        <lightning-input-field 
+                        field-name="Case_Source__c" 
+                        disabled={selectedCase.Case_Source__c_isDisabled} 
+                        value={getCaseSource}></lightning-input-field>
+                    </template>
+
+                    <template if:true={selectedCase.Initial_Request_Sent_To_Addresses__c_Visibility}>
+                        <lightning-input-field
+                            field-name="Initial_Request_Sent_To_Addresses__c"
+                            disabled={selectedCase.Initial_Request_Sent_To_Addresses__c_isDisabled}
+                            value={getInitialRequestAddress}
+                        ></lightning-input-field>
+                    </template>
+                </lightning-record-edit-form>
+            </template>
+        </div>
+
+        <div slot="footer">
+            <lightning-button variant="neutral" label="Cancel" onclick={closeModal}></lightning-button>
+            <lightning-button
+                variant="brand"
+                class="slds-m-left_x-small"
+                label="Submit"
+                onclick={submitForm}
+            ></lightning-button>
+        </div>
+    </lightning-quick-action-panel>
+</template>

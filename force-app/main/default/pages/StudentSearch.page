@@ -30,8 +30,9 @@
     </head>
 
     <body>
+        <!-- Adjust these class names -->
         <div class="student-profile-container">
-            <div class="student-search-title">
+            <div class="student-profile-container-title">
                 <h1 style="float: left">Student 360: Student Search</h1>
                 <hr />
             </div>
@@ -78,6 +79,10 @@
             }
 
             $j = jQuery.noConflict();
+
+            $j(document).ready(function () {
+                // call remote action method here
+            });
         }
     </script>
 </apex:page>

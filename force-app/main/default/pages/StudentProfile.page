@@ -1,7 +1,7 @@
 <apex:page
     id="StudentProfile"
     controller="StudentProfileController"
-    cache="true"
+    cache="false"
     showHeader="false"
     sideBar="false"
     standardStylesheets="false"

@@ -1,11 +1,83 @@
-<apex:page showHeader="false" sidebar="false">
-    <apex:includeLightning />
-    <div id="student-search-container" />
-    <script>
-        $Lightning.use('c:StudentSearchApp', function () {
-            $Lightning.createComponent('c:studentSearch', {}, 'student-search-container', function (cmp) {
-                console.log('LWC Componenet added in VF page');
-            });
-        });
+<apex:page
+    id="StudentSearch"
+    controller="StudentSearchController"
+    cache="false"
+    showHeader="false"
+    sideBar="false"
+    standardStylesheets="false"
+    docType="HTML-5.0"
+    action="{!init}"
+>
+    <apex:includeScript value="/support/console/42.0/integration.js" />
+    <apex:includeScript value="{!URLFOR($Resource.jsForce)}" />
+
+    <head>
+        <title>Student Search</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+            integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+            crossorigin="anonymous"
+        />
+        <link href="https://fonts.googleapis.com/css?family=Roboto:normal,medium" rel="stylesheet" type="text/css" />
+        <apex:stylesheet
+            value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"
+        />
+        <c:StudentProfileStyles />
+        <style></style>
+    </head>
+
+    <body>
+        <div class="student-profile-container">
+            <div class="student-search-title">
+                <h1 style="float: left">Student 360: Student Search</h1>
+                <hr />
+            </div>
+        </div>
+    </body>
+
+    <script type="text/javascript">
+        var inConsole = false;
+
+        function setTabTitle() {
+            //Set the current tab's title
+            if (sforce.console.isInConsole() || window.location.href.includes('FrameOrigin')) {
+                sforce.console.setTabTitle('Student Search');
+                inConsole = true;
+            }
+        }
+
+        var pageLoad = window.onload;
+        window.onload = function () {
+            if (pageLoad) {
+                pageLoad();
+            }
+            setTabTitle();
+        };
+
+        function openNewSubtab(subtabUrl, subtabTitle) {
+            var openSubtab = function (result) {
+                if (result.id === 'null') {
+                    window.open(subtabUrl);
+                    return;
+                }
+
+                if (subtabTitle !== 'null') {
+                    sforce.console.openSubtab(result.id, subtabUrl, true, subtabTitle, null);
+                } else {
+                    sforce.console.openSubtab(result.id, subtabUrl, true);
+                }
+            };
+
+            if (inConsole) {
+                sforce.console.getEnclosingPrimaryTabId(openSubtab);
+            } else {
+                window.open(subtabUrl);
+            }
+
+            $j = jQuery.noConflict();
+        }
     </script>
 </apex:page>

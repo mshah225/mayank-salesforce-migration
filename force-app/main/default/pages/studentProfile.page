@@ -421,7 +421,13 @@
                                     <a href="#" data-toggle="modal" data-target="#myModal"> Create New Service Case </a>
                                 </td>
 
-                                <div class="modal fade" id="myModal" role="dialog">
+                                <div
+                                    class="modal fade"
+                                    id="myModal"
+                                    data-backdrop="static"
+                                    data-keyboard="false"
+                                    role="dialog"
+                                >
                                     <div class="modal-dialog">
                                         <!-- Modal content-->
                                         <div class="modal-content">
@@ -3358,8 +3364,13 @@
 
                         var url = window.location.href;
                         var caseUrl = './' + result;
-                        var modalResultText = 'Case created successfully! <br> Case ID: ' + result + '<br>' +
-                          'Click <a href="#" onclick="openCaseDetails(event, \'' + result + '\')">here</a> to view the case.';
+                        var modalResultText =
+                            'Case created successfully! <br> Case ID: ' +
+                            result +
+                            '<br>' +
+                            'Click <a href="#" onclick="openCaseDetails(event, \'' +
+                            result +
+                            '\')">here</a> to view the case.';
                         document.getElementById('modalResult').innerHTML = modalResultText;
                     }
                 );
@@ -3368,7 +3379,7 @@
 
         function openCaseDetails(event, recid) {
             event.preventDefault(); // Prevent the default link behavior
-            
+
             openTab(recid, 'Case Details');
         }
 

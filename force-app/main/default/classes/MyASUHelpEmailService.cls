@@ -11,7 +11,7 @@ public without sharing class MyASUHelpEmailService {
 
         newCase.ContactId = userContact.Id;
         newCase.Web_Submission__c = 'My ASU Standard';
-        newCase.Origin = carRule.Origin__c;
+        newCase.Origin__c = carRule.Origin__c;
         newCase.CC_Functional_Group__c = carRule.CC_Functional_Group__c;
         newCase.CC_Category__c = carRule.CC_Category__c;
 

@@ -3,8 +3,9 @@ public class TagBatchUpdateRecordType implements Database.Batchable<sObject>{
     public final String RTID;
  
     public TagBatchUpdateRecordType(String oldRecordType, String newRecordType) {
-              QUERY = 'SELECT Id FROM Tag__c WHERE RecordType.DeveloperName = ' + oldRecordType;
-              RTID = (String) Schema.SObjectType.Object_Tag__c.getRecordTypeInfosByDeveloperName().get(newRecordType).getRecordTypeId();        
+              QUERY = 'SELECT Id FROM Object_Tag__c WHERE RecordType.DeveloperName = \'' + oldRecordType + '\'';
+        System.debug(QUERY);
+              RTID = (String) Schema.SObjectType.Object_Tag__c.getRecordTypeInfosByDeveloperName().get(newRecordType).getRecordTypeId();    
     }
  
     public Database.QueryLocator start(Database.BatchableContext BC){
@@ -12,8 +13,11 @@ public class TagBatchUpdateRecordType implements Database.Batchable<sObject>{
     }
  
     public void execute(Database.BatchableContext BC, List<sObject> scope) {
-        for (Sobject s : scope) {
-            s.put('RecordTypeId', RTID); 
+        
+        List<Object_Tag__c> objectTagsToUpdate = (List<Object_Tag__c>) scope;
+        
+        for (Object_Tag__c ot : objectTagsToUpdate) {
+            ot.RecordTypeId = RTID;
         }
 
         update scope;

@@ -3,7 +3,7 @@
     <fullName>Tag_Removal_Date__c</fullName>
     <description>The Ineffective date will be updated on the tag removal on UI.</description>
     <externalId>false</externalId>
-    <label>InEffective Date</label>
+    <label>Tag Removal Date</label>
     <required>false</required>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>

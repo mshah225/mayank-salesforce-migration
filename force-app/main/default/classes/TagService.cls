@@ -7,7 +7,7 @@ public class TagService {
             String oldRecordTypeName = oldMap.get(tagId).RecordType.DeveloperName;
 
             if (newRecordTypeName != oldRecordTypeName) {
-                Id batchInstanceId = Database.executeBatch(new UpdateObjectTags(oldRecordTypeName, newRecordTypeName), 200);
+                Id batchInstanceId = Database.executeBatch(new TagBatchUpdateRecordType(oldRecordTypeName, newRecordTypeName), 200);
             }
         }
     }

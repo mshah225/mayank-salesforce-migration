@@ -43,25 +43,29 @@ public class TaggingComponentController {
     
     /*Method is used to uncheck the checkbox on ContactTag__c Object when a tag is removed on the UI or create a new tag if not available on the UI .It takes 2 parameters tag label and recordId.*/
    @AuraEnabled
-   public static String updateTag(String tag,Id recordId){
+   public static String updateTag(String tag, Id recordId){
         
         String returnResult; 
-        Id tagId;
+        Tag__c parentTag;
+
+        parentTag = [
+            SELECT Id, Name, Searchable__c, RecordType.DeveloperName  
+            FROM Tag__c
+            WHERE Name LIKE :tag
+        ]; 
         
-        for(Tag__c t:[SELECT Id,Name,Searchable__c FROM Tag__c WHERE Name Like:tag]){
-            tagId =t.Id;
-        }
         List<Object_Tag__c> contactTaggedList = [
             SELECT Contact__r.Name,Tag__r.Name,isActive__c FROM Object_Tag__c WHERE Contact__r.Id =:recordId AND Tag__r.Name =:tag
         ];
+
+        Id recordTypeIdForObjectTag = Schema.SObjectType.Object_Tag__c.getRecordTypeInfosByDeveloperName().get(parentTag.RecordType.DeveloperName).getRecordTypeId();
         
-        system.debug('contactTaggedList'+contactTaggedList);
-        list<Object_Tag__c> updateTag = new List<Object_Tag__c>();
+        List<Object_Tag__c> updateTag = new List<Object_Tag__c>();
         
         if(!contactTaggedList.isEmpty()) {
             
             for(Object_Tag__c cc: contactTaggedList) {
-                if(cc.isActive__c == false){
+                if (cc.isActive__c == false) {
                     cc.isActive__c = true;
                     cc.Tag_Added_Date__c = datetime.now();
                     cc.Tag_Removal_Date__c = null;
@@ -72,8 +76,9 @@ public class TaggingComponentController {
         } else {
             
             Object_Tag__c addtag = new Object_Tag__c();
+            addtag.RecordTypeId = recordTypeIdForObjectTag;
             addtag.Related_Object_Id__c = recordId;
-            addtag.Tag__c = tagId;
+            addtag.Tag__c = parentTag.Id;
             addtag.isActive__c = true;
             addtag.Tag_Added_Date__c = datetime.now();
             updateTag.add(addtag);            

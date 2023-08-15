@@ -79,8 +79,8 @@ public with sharing class ObjectTaggingService {
                 obTag.Name = objectTagName.length() >= 80 ? objectTagName.substring(0,80):objectTagName;
             }
 
-            if (obTag.Contact_Tag_Key__c == null && obTag.Contact__c != null && obTag.Tag__c != null ) {
-                obTag.Contact_Tag_Key__c = obTag.Contact__c +''+ obTag.Tag__c;
+            if (obTag.Contact_Tag_Key__c == null && obTag.Related_Object_Id__c != null && obTag.Tag__c != null ) {
+                obTag.Contact_Tag_Key__c = obTag.Related_Object_Id__c + obTag.Tag__c + obTag.RecordTypeId;
             }
         }
         

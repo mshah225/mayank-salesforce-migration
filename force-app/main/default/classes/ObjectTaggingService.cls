@@ -3,34 +3,12 @@ public with sharing class ObjectTaggingService {
     private static Set<Id> objectTagId = new Set<Id>();
     private static Set<Id> tagId = new Set<Id>();
 
-    private static Map<Id, Contact> contactNameMap {
-        get {
-            if (contactNameMap == null) {
-                contactNameMap = new Map<Id, Contact>();
-                
-                if (!objectTagId.isEmpty()) {
-                    for (Contact ct : [
-                        SELECT Id, FirstName, LastName
-                        FROM Contact
-                        WHERE Id IN :objectTagId
-                    ]) {
-                        contactNameMap.put(ct.Id, ct);
-                    }
-                }
-            }
-            
-            return contactNameMap;
-        }
-        
-        set;
-    }
-
     private static Map<Id, Tag__c> tagMap {
         get {
             if (tagMap == null) {
                 tagMap = new Map<Id, Tag__c>();
                 
-                if (!objectTagId.isEmpty()) {
+                if (!tagId.isEmpty()) {
                     for (Tag__c t : [
                         SELECT Id,Name
                         FROM Tag__c
@@ -50,8 +28,9 @@ public with sharing class ObjectTaggingService {
     public static void initData (List<Object_Tag__c> obTagList) {
 
         for (Object_Tag__c obTag : obTagList) {
-            if (obTag.Contact__c != null) objectTagId.add(obTag.Contact__c);
-            if(obTag.Tag__c != null) tagId.add(obTag.Tag__c);
+            if (obTag.Tag__c != null) {
+                tagId.add(obTag.Tag__c);
+            }
         }
     }
 

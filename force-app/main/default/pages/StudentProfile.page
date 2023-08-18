@@ -5998,7 +5998,7 @@
                             errorHtml += err;
                             document.getElementById('sr_asr_errors').className = '';
                             document.getElementById('sr_asr_errors').innerHTML =
-                                'An Error has occured trying to load the data for this object';
+                                'An error has occured trying to load the data for this object.';
                         } else {
                             result = response.records.filter((element) => {
                                 return (

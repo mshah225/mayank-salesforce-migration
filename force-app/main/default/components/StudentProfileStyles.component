@@ -451,6 +451,21 @@
             display: inline-block;
         }
 
+        #psEnrolledClassesErrors,
+        #psDroppedWithdrawnClassesErrors,
+        #psCreditByExamErrors,
+        #psTransferWorkErrors,
+        #psAdvisingNotesResponseErrors,
+        #psCommentsResponseErrors,
+        #psGuestAccessResponseErrors,
+        #sr_asr_errors,
+        #psTranscriptErrors,
+        #grpsTranscriptErrors,
+        #academic-integrity-errors,
+        #emergency-contacts-errors {
+            margin-bottom: 1em;
+        }
+
         @media screen and (max-width: 1170px) {
             .student-profile-container {
                 padding: 24px 35px 20px 35px !important;

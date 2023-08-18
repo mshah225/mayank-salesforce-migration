@@ -6596,8 +6596,8 @@
 
             var emergencyContactsQuery =
                 'SELECT Emergency_Contact_Relationship__c, Emergency_Primary_Contact__c, Emergency_Contact_Full_Name__c, ' +
-                'Emergency_Contact_Phone__c, Emergency_Contact_Address__c, Emergency_Contact_City__c, ' +
-                'Emergency_Contact_State__c, Emergency_Contact_Zip__c, Contact__c ' +
+                'Emergency_Contact_Phone__c, Emergency_Contact_Phone_Type__c, Emergency_Contact_Other_Phone__c, Emergency_Contact_Other_Phone_Type__c, ' +
+                'Emergency_Contact_Address__c, Emergency_Contact_City__c, Emergency_Contact_State__c, Emergency_Contact_Zip__c, Contact__c ' +
                 'FROM Emergency_Contact__c  ' +
                 "WHERE Contact__r.EMPLID__c = '{!theContact.EMPLID__c}'";
 
@@ -6634,13 +6634,16 @@
                                         '<th scope="col">Primary</th>' +
                                         '<th scope="col">Name</th>' +
                                         '<th scope="col">Phone</th>' +
-                                        '<th scope="col">Other Phone</th>' +
+                                        '<th scope="col" class="emergency-contacts-other-phone">Other Phone</th>' +
                                         '<th scope="col">Address</th>' +
                                         '</tr>' +
                                         '</thead>' +
                                         '<tbody>';
+
+                                    var emergencyContactOtherPhoneCount = 0;
+
                                     for (var i = 0; i < result.emergencyContactsData.length; i++) {
-                                        var emergencyPrimaryContact = result.emergencyContactsData[i]
+                                        var emergencyContactPrimary = result.emergencyContactsData[i]
                                             .Emergency_Primary_Contact__c
                                             ? 'Yes'
                                             : 'No';
@@ -6655,7 +6658,94 @@
                                                   result.emergencyContactsData[i].Emergency_Contact_State__c +
                                                   ' ' +
                                                   result.emergencyContactsData[i].Emergency_Contact_Zip__c
-                                                : '[NO ADDRESS DATA]';
+                                                : '--';
+
+                                        var emergencyContactPhone =
+                                            result.emergencyContactsData[i].Emergency_Contact_Phone__c != null &&
+                                            result.emergencyContactsData[i].Emergency_Contact_Phone__c != ''
+                                                ? result.emergencyContactsData[i].Emergency_Contact_Phone__c
+                                                : '--';
+
+                                        // Filter only numbers from the input
+                                        var emergencyContactPhoneCleaned =
+                                            emergencyContactPhone != '--'
+                                                ? emergencyContactPhone.replace(/\D/g, '')
+                                                : null;
+
+                                        // Check if the input is of correct length (10)
+                                        var emergencyContactPhoneValidated =
+                                            emergencyContactPhoneCleaned != null
+                                                ? emergencyContactPhoneCleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
+                                                : false;
+
+                                        // If phone number is valid, display in proper format
+                                        emergencyContactPhone =
+                                            emergencyContactPhone != '--' && emergencyContactPhoneValidated
+                                                ? '(' +
+                                                  emergencyContactPhoneValidated[1] +
+                                                  ') ' +
+                                                  emergencyContactPhoneValidated[2] +
+                                                  '-' +
+                                                  emergencyContactPhoneValidated[3]
+                                                : emergencyContactPhone;
+
+                                        var emergencyContactPhoneType =
+                                            result.emergencyContactsData[i].Emergency_Contact_Phone_Type__c != null &&
+                                            result.emergencyContactsData[i].Emergency_Contact_Phone_Type__c != ''
+                                                ? result.emergencyContactsData[i].Emergency_Contact_Phone_Type__c
+                                                : '';
+
+                                        emergencyContactPhoneType =
+                                            emergencyContactPhoneType != '' && emergencyContactPhone != '--'
+                                                ? emergencyContactPhoneType.toLowerCase()
+                                                : '';
+
+                                        var emergencyContactOtherPhone =
+                                            result.emergencyContactsData[i].Emergency_Contact_Other_Phone__c != null &&
+                                            result.emergencyContactsData[i].Emergency_Contact_Other_Phone__c != ''
+                                                ? result.emergencyContactsData[i].Emergency_Contact_Other_Phone__c
+                                                : '--';
+
+                                        // Filter only numbers from the input
+                                        var emergencyContactOtherPhoneCleaned =
+                                            emergencyContactOtherPhone != '--'
+                                                ? emergencyContactOtherPhone.replace(/\D/g, '')
+                                                : null;
+
+                                        // Check if the input is of correct length (10)
+                                        var emergencyContactOtherPhoneValidated =
+                                            emergencyContactOtherPhoneCleaned != null
+                                                ? emergencyContactOtherPhoneCleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
+                                                : false;
+
+                                        // If phone number is valid, display in proper format
+                                        emergencyContactOtherPhone =
+                                            emergencyContactOtherPhone != '--' && emergencyContactOtherPhoneValidated
+                                                ? '(' +
+                                                  emergencyContactOtherPhoneValidated[1] +
+                                                  ') ' +
+                                                  emergencyContactOtherPhoneValidated[2] +
+                                                  '-' +
+                                                  emergencyContactOtherPhoneValidated[3]
+                                                : emergencyContactOtherPhone;
+
+                                        var emergencyContactOtherPhoneType =
+                                            result.emergencyContactsData[i].Emergency_Contact_Other_Phone_Type__c !=
+                                                null &&
+                                            result.emergencyContactsData[i].Emergency_Contact_Other_Phone_Type__c !=
+                                                '' &&
+                                            emergencyContactOtherPhone != '--'
+                                                ? result.emergencyContactsData[i].Emergency_Contact_Other_Phone_Type__c
+                                                : '';
+
+                                        if (emergencyContactOtherPhone != '--') {
+                                            emergencyContactOtherPhoneCount++;
+
+                                            emergencyContactOtherPhoneType =
+                                                emergencyContactOtherPhoneType != ''
+                                                    ? emergencyContactOtherPhoneType.toLowerCase()
+                                                    : '';
+                                        }
 
                                         html +=
                                             '' +
@@ -6664,16 +6754,31 @@
                                             result.emergencyContactsData[i].Emergency_Contact_Relationship__c +
                                             '</td>' +
                                             '<td data-header="Primary">' +
-                                            emergencyPrimaryContact +
+                                            emergencyContactPrimary +
                                             '</td>' +
                                             '<td data-header="Name">' +
                                             result.emergencyContactsData[i].Emergency_Contact_Full_Name__c +
                                             '</td>' +
                                             '<td data-header="Phone">' +
-                                            result.emergencyContactsData[i].Emergency_Contact_Phone__c +
+                                            emergencyContactPhone;
+
+                                        // if (emergencyContactPhoneType != '' && emergencyContactPhone != '--') {
+                                        //     html += ' (' + emergencyContactPhoneType + ')';
+                                        // }
+
+                                        html +=
                                             '</td>' +
-                                            '<td data-header="Other Phone">' +
-                                            '[OTHER PHONE DATA]' +
+                                            '<td data-header="Other Phone" class="emergency-contacts-other-phone">' +
+                                            emergencyContactOtherPhone;
+
+                                        // if (
+                                        //     emergencyContactOtherPhoneType != '' &&
+                                        //     emergencyContactOtherPhone != '--'
+                                        // ) {
+                                        //     html += ' (' + emergencyContactOtherPhoneType + ')';
+                                        // }
+
+                                        html +=
                                             '</td>' +
                                             '<td data-header="Address">' +
                                             emergencyContactAddress +
@@ -6682,7 +6787,13 @@
                                     }
                                     html += '</tbody></table></div>';
                                     document.getElementById('emergency-contacts-container').innerHTML = html;
+
                                     cleanUpUndefined('emergency-contacts-container');
+                                    if (emergencyContactOtherPhoneCount < 1) {
+                                        $j(
+                                            'td.emergency-contacts-other-phone,th.emergency-contacts-other-phone'
+                                        ).hide();
+                                    }
                                 } else {
                                     document.getElementById('emergency-contacts-errors').innerHTML =
                                         'No emergency contact details found for {!theContact.Preferred_First_Name__c}.';

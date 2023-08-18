@@ -1217,12 +1217,12 @@ global with sharing class StudentProfileController {
             List<Emergency_Contact__c>.class
         );
 
-        EmergencyContactsWrapper emergencyContactsData = new EmergencyContactsWrapper();
+        EmergencyContactsWrapper emergencyContactsWrapper = new EmergencyContactsWrapper();
         for (Emergency_Contact__c emergencyContact : emergencyContactsList) {
-            emergencyContactsData.emergencyContactsData.add(emergencyContact);
+            emergencyContactsWrapper.emergencyContactsData.add(emergencyContact);
         }
 
-        return emergencyContactsData;
+        return emergencyContactsWrapper;
     }
 
     public String getAidYear() {

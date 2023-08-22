@@ -133,3 +133,8 @@
 .slds-button_icon-border {
     border: 0 !important;
 }
+
+.title-image img {
+    max-height: 200px;
+    max-width: 200px;
+}

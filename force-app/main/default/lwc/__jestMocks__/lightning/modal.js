@@ -1,20 +1,19 @@
 /*
- * I took this from the git lwc recipes
- * https://github.com/trailheadapps/lwc-recipes/blob/main/force-app/test/jest-mocks/lightning/modal.js
- *
  * Copyright (c) 2021, salesforce.com, inc.
  * All rights reserved.
  * SPDX-License-Identifier: MIT
  * For full license text, see the LICENSE file in the repo root or https://opensource.org/licenses/MIT
  */
-import {LightningElement, api} from 'lwc';
+import { LightningElement, api } from 'lwc';
 
 const LIGHTNING_MODAL_HEADER = 'lightning-modal-header';
 const LIGHTNING_MODAL_BODY = 'lightning-modal-body';
 const LIGHTNING_MODAL_FOOTER = 'lightning-modal-footer';
 
 function getSlotNodes(template, element) {
-    return template.querySelector(element).shadowRoot.children[0].assignedNodes();
+    return template
+        .querySelector(element)
+        .shadowRoot.children[0].assignedNodes();
 }
 
 function query(nodes, selectors) {
@@ -26,7 +25,11 @@ function query(nodes, selectors) {
         }
         // Query nested nodes, ignroes text nodes
         if (currentValue.querySelectorAll) {
-            return [...previousValue, ...matches, ...currentValue.querySelectorAll(selectors)];
+            return [
+                ...previousValue,
+                ...matches,
+                ...currentValue.querySelectorAll(selectors)
+            ];
         }
         return previousValue;
     }, []);
@@ -55,7 +58,9 @@ function selectAll(template, element, selectors) {
  */
 export default class LightningModal extends LightningElement {
     static open(apis) {
-        throw new Error('The LightningModal documentation contains examples for mocking .open');
+        throw new Error(
+            'The LightningModal documentation contains examples for mocking .open'
+        );
     }
 
     @api size;

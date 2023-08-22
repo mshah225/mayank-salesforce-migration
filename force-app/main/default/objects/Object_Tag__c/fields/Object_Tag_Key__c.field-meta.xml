@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Object_Tag_Key__c</fullName>
     <caseSensitive>false</caseSensitive>
-    <description>This field is a unique key for the Object Tag object which is a combination of Related Object Id, TagId, and RecordType.</description>
+    <description>This field is a unique key for the contactTag__c object which is a combination of ContactId and TagId.</description>
     <externalId>true</externalId>
     <label>Object_Tag_Key</label>
     <length>255</length>

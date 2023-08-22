@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Use_Related_Object__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>If this is checked, then instead of using itself for the tag objects, it will use the related field instead.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Use Related Object</label>
+    <type>Checkbox</type>
+</CustomField>

@@ -6,7 +6,22 @@ public class TaggingComponentController {
     public static Map<String,Object_Tag__c> contactTags(Id recordId) {
         
         Map<String,Object_Tag__c> objTagMap = new Map<String,Object_Tag__c>();
-     
+
+        String recordIdPrefix = (String)recordId;
+        recordIdPrefix = recordIdPrefix.left(3);
+
+        List<Object_Tag_Mapping__mdt> tagMap = [
+            SELECT Related_Field_Name__c, DeveloperName
+            FROM Object_Tag_Mapping__mdt 
+            WHERE Object_Prefix__c =: recordIdPrefix
+            AND Use_Related_Object__c = true
+            LIMIT 1
+        ];
+        
+        if (tagMap.size() > 0) {
+            String queryStr = 'SELECT ' + tagMap[0].Related_Field_Name__c + ' FROM ' + tagMap[0].DeveloperName + ' WHERE Id = \'' + recordId + '\'';
+            recordId = (String)Database.query(queryStr)[0].get(tagMap[0].Related_Field_Name__c);
+        }
        
         List<Object_Tag__c> objectTagList = [
             SELECT Contact__r.Name, Tag__r.Name, Tag__r.Background_Color__c, isActive__c,isVerified__c, Tag__r.Tag_Api_Name__c,Tag__r.Tag_Label_Color__c, Tag__r.Priority__c, Tag__r.Tag_Description__c, Tag__r.Removeable__c,Tag__r.Tag_Icon_URL__c, CP_Stage__c,Verified_Image__c,Verification__c 
@@ -42,29 +57,45 @@ public class TaggingComponentController {
     }
     
     /*Method is used to uncheck the checkbox on ContactTag__c Object when a tag is removed on the UI or create a new tag if not available on the UI .It takes 2 parameters tag label and recordId.*/
-   @AuraEnabled
-   public static String updateTag(String tag, Id recordId){
+    @AuraEnabled
+    public static String updateTag(String tag, Id recordId){
         
         String returnResult; 
-        Tag__c parentTag;
-
+        Tag__c parentTag; 
+       
         parentTag = [
             SELECT Id, Name, Searchable__c, RecordType.DeveloperName  
             FROM Tag__c
             WHERE Name LIKE :tag
         ]; 
+       
+       	String recordIdPrefix = (String)recordId;
+        recordIdPrefix = recordIdPrefix.left(3);
+
+        List<Object_Tag_Mapping__mdt> tagMap = [
+            SELECT Related_Field_Name__c, DeveloperName
+            FROM Object_Tag_Mapping__mdt 
+            WHERE Object_Prefix__c =: recordIdPrefix
+            AND Use_Related_Object__c = true
+            LIMIT 1
+        ];
+       
+       if (tagMap.size() > 0) {
+            String queryStr = 'SELECT ' + tagMap[0].Related_Field_Name__c + ' FROM ' + tagMap[0].DeveloperName + ' WHERE Id = \'' + recordId + '\'';
+            recordId = (String)Database.query(queryStr)[0].get(tagMap[0].Related_Field_Name__c);
+        }
         
-        List<Object_Tag__c> contactTaggedList = [
-            SELECT Contact__r.Name,Tag__r.Name,isActive__c FROM Object_Tag__c WHERE Contact__r.Id =:recordId AND Tag__r.Name =:tag
+        List<Object_Tag__c> objectTaggedList = [
+            SELECT Id, isActive__c FROM Object_Tag__c WHERE Related_Object_Id__c =:recordId AND Tag__r.Name =:tag
         ];
 
         Id recordTypeIdForObjectTag = Schema.SObjectType.Object_Tag__c.getRecordTypeInfosByDeveloperName().get(parentTag.RecordType.DeveloperName).getRecordTypeId();
         
         List<Object_Tag__c> updateTag = new List<Object_Tag__c>();
-        
-        if(!contactTaggedList.isEmpty()) {
+
+        if(!objectTaggedList.isEmpty()) {
             
-            for(Object_Tag__c cc: contactTaggedList) {
+            for(Object_Tag__c cc: objectTaggedList) {
                 if (cc.isActive__c == false) {
                     cc.isActive__c = true;
                     cc.Tag_Added_Date__c = datetime.now();
@@ -81,7 +112,7 @@ public class TaggingComponentController {
             addtag.Tag__c = parentTag.Id;
             addtag.isActive__c = true;
             addtag.Tag_Added_Date__c = datetime.now();
-            updateTag.add(addtag);            
+            updateTag.add(addtag);  
         }
         
         if(!updateTag.isEmpty()) {
@@ -101,6 +132,22 @@ public class TaggingComponentController {
     public static String removeTag(String tag, Id recordId, String tagRemovalReason) {
         
         String returnResult; 
+
+        String recordIdPrefix = (String)recordId;
+        recordIdPrefix = recordIdPrefix.left(3);
+
+        List<Object_Tag_Mapping__mdt> tagMap = [
+            SELECT Related_Field_Name__c, DeveloperName
+            FROM Object_Tag_Mapping__mdt 
+            WHERE Object_Prefix__c =: recordIdPrefix
+            AND Use_Related_Object__c = true
+            LIMIT 1
+        ];
+        
+        if (tagMap.size() > 0) {
+            String queryStr = 'SELECT ' + tagMap[0].Related_Field_Name__c + ' FROM ' + tagMap[0].DeveloperName + ' WHERE Id = \'' + recordId + '\'';
+            recordId = (String)Database.query(queryStr)[0].get(tagMap[0].Related_Field_Name__c);
+        }
         
         List<Object_Tag__c> removeTag = new List<Object_Tag__c>();
         for (Object_Tag__c cc: [

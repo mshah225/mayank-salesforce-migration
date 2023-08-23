@@ -248,7 +248,7 @@
                         <apex:outputText>
                             <apex:param
                                 name="successCoach"
-                                value="successStudent.Succes_Coach_Name__c"
+                                value="successStudent.Success_Coach_Name__c"
                             />
                             Coach&nbsp;
                         </apex:outputText>

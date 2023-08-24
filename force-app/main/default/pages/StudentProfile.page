@@ -6597,7 +6597,7 @@
             var emergencyContactsQuery =
                 'SELECT Emergency_Contact_Relationship__c, Emergency_Primary_Contact__c, Emergency_Contact_Full_Name__c, ' +
                 'Emergency_Contact_Phone__c, Emergency_Contact_Phone_Type__c, Emergency_Contact_Other_Phone__c, Emergency_Contact_Other_Phone_Type__c, ' +
-                'Emergency_Contact_Address__c, Emergency_Contact_City__c, Emergency_Contact_State__c, Emergency_Contact_Zip__c, Contact__c ' +
+                'Emergency_Contact_Address__c, Emergency_Contact_City__c, Emergency_Contact_State__c, Emergency_Contact_Zip__c, Emergency_Contact_Country__c, Contact__c ' +
                 'FROM Emergency_Contact__c  ' +
                 "WHERE Contact__r.EMPLID__c = '{!theContact.EMPLID__c}'";
 
@@ -6648,16 +6648,42 @@
                                             ? 'Yes'
                                             : 'No';
 
+                                        var emergencyContactCity =
+                                            result.emergencyContactsData[i].Emergency_Contact_City__c != null &&
+                                            result.emergencyContactsData[i].Emergency_Contact_City__c != ''
+                                                ? result.emergencyContactsData[i].Emergency_Contact_City__c
+                                                : '--';
+
+                                        var emergencyContactState =
+                                            result.emergencyContactsData[i].Emergency_Contact_State__c != null &&
+                                            result.emergencyContactsData[i].Emergency_Contact_State__c != ''
+                                                ? result.emergencyContactsData[i].Emergency_Contact_State__c
+                                                : '--';
+
+                                        var emergencyContactZip =
+                                            result.emergencyContactsData[i].Emergency_Contact_Zip__c != null &&
+                                            result.emergencyContactsData[i].Emergency_Contact_Zip__c != ''
+                                                ? result.emergencyContactsData[i].Emergency_Contact_Zip__c
+                                                : '--';
+
+                                        var emergencyContactCountry =
+                                            result.emergencyContactsData[i].Emergency_Contact_Country__c != null &&
+                                            result.emergencyContactsData[i].Emergency_Contact_Country__c != ''
+                                                ? result.emergencyContactsData[i].Emergency_Contact_Country__c
+                                                : '--';
+
                                         var emergencyContactAddress =
                                             result.emergencyContactsData[i].Emergency_Contact_Address__c != null &&
                                             result.emergencyContactsData[i].Emergency_Contact_Address__c != ''
                                                 ? result.emergencyContactsData[i].Emergency_Contact_Address__c +
                                                   '<br />' +
-                                                  result.emergencyContactsData[i].Emergency_Contact_City__c +
+                                                  emergencyContactCity +
                                                   ', ' +
-                                                  result.emergencyContactsData[i].Emergency_Contact_State__c +
+                                                  emergencyContactState +
                                                   ' ' +
-                                                  result.emergencyContactsData[i].Emergency_Contact_Zip__c
+                                                  emergencyContactZip +
+                                                  '<br />' +
+                                                  emergencyContactCountry
                                                 : '--';
 
                                         var emergencyContactPhone =

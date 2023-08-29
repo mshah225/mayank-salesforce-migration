@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FERPA_Directory_Hold__c</fullName>
+    <description>[Peoplesoft] - Examples include: No Hold, Phone-Address Hold, Full Hold</description>
+    <externalId>false</externalId>
+    <label>FERPA Directory Hold</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>No Hold</fullName>
+                <default>false</default>
+                <label>No Hold</label>
+            </value>
+            <value>
+                <fullName>Phone-Address Hold</fullName>
+                <default>false</default>
+                <label>Phone-Address Hold</label>
+            </value>
+            <value>
+                <fullName>Full Hold</fullName>
+                <default>false</default>
+                <label>Full Hold</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

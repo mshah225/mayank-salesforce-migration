@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>I20_F1J1_Form_Submission__c</fullName>
+    <description>[Peoplesoft] - Date is auto generated upon I-20 webform submission. During manual entry, unmarking the "F1J1 Form Submitted" check box along with clearing the Mailing Option drop-down menu and saving should re-initiate F1CNFM. Upon I-20 submission, F1CNFM checklist item is completed.</description>
+    <externalId>false</externalId>
+    <label>F1J1 Form Submission</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Date</type>
+</CustomField>

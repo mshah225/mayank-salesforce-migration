@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Emergency_Contact_Country__c</fullName>
+    <description>Emergency contact field from ps_emergency_cntct.country</description>
+    <externalId>false</externalId>
+    <label>Emergency Contact Country</label>
+    <length>100</length>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

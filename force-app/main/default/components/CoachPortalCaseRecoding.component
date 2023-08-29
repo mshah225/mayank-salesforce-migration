@@ -245,9 +245,8 @@
                 <apex:column headerValue="Coach" headerClass="ASUColumnHead" styleClass="ASUColumn">
                     {!caseWrapper.successStudent.Success_Coach_Name__c}
                     <apex:facet name="header">
-                        <apex:outputText>
-                            <apex:param
-                                name="successCoach"
+                        <apex:outputText >
+                            <apex:param name="successCoach"
                                 value="successStudent.Success_Coach_Name__c"
                             />
                             Coach&nbsp;
@@ -258,9 +257,8 @@
                 <apex:column headerValue="Delegated Resource" headerClass="ASUColumnHead" styleClass="ASUColumn">
                     {!caseWrapper.successStudent.Success_Resource__r.Delegated_Resource__r.Name}
                     <apex:facet name="header">
-                        <apex:outputText>
-                            <apex:param
-                                name="successCoach"
+                        <apex:outputText >
+                            <apex:param name="successCoach"
                                 value="successStudent.Delegated_Resource__r.Name"
                             />
                             Coverage Coach&nbsp;

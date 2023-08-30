@@ -434,6 +434,10 @@ public without sharing class UserDeprovisioner {
                 cronTypeNameMap.put('G', 'Sitemap SEO Incremental Job');
             if (!cronTypeNameMap.containsKey('K'))
                 cronTypeNameMap.put('K', 'Autonomous Data Loader Job');
+            if (!cronTypeNameMap.containsKey('T'))
+                cronTypeNameMap.put('T', 'Report Type Metadata for Search');
+            if (!cronTypeNameMap.containsKey('X'))
+                cronTypeNameMap.put('X', 'Standard Report Type Metadata for Search');
         }
 
         if (cronTypeNameMap.containsKey(key))

@@ -3,7 +3,7 @@ public without sharing class MyASUHelpEmailService {
     public static Case submitCase(Case newCase, Contact userContact) {
         String carId = Label.MyASU_ContactUs_CAR;         
 
-        Case_Assignment_Rule__c carRule = [
+        List<Case_Assignment_Rule__c> carRule = [
             SELECT Origin__c, CC_Functional_Group__c, CC_Category__c, Email_Template_ID__c, Reply_To_Email_Address__c
             FROM Case_Assignment_Rule__c
             WHERE Id =: carId
@@ -11,13 +11,18 @@ public without sharing class MyASUHelpEmailService {
 
         newCase.ContactId = userContact.Id;
         newCase.Web_Submission__c = 'My ASU Standard';
-        newCase.Origin__c = carRule.Origin__c;
-        newCase.CC_Functional_Group__c = carRule.CC_Functional_Group__c;
-        newCase.CC_Category__c = carRule.CC_Category__c;
+        
+        if(carRule.size() > 0) {
+            newCase.Origin__c = carRule[0].Origin__c;
+        	newCase.CC_Functional_Group__c = carRule[0].CC_Functional_Group__c;
+        	newCase.CC_Category__c = carRule[0].CC_Category__c;
+        }        
 
         try {
             insert newCase;
-            sendEmailOnCaseSubmition(carRule, newCase);
+            if(carRule.size() > 0) {
+            	sendEmailOnCaseSubmition(carRule[0], newCase);
+            }
             return newCase;
         } catch (Exception e) {
             List<String> vars = new List<String>();

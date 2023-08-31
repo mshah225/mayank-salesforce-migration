@@ -9,6 +9,8 @@ public without sharing class UserDeprovisionQueue implements Queueable {
     private List<UserLogin> updatedUserLogins;
     private Map<Id, String> userToProcessingNotes;
 
+    private Queueable nextQueable;
+
     private static Boolean debug = false;
 
     public UserDeprovisionQueue() {
@@ -34,6 +36,10 @@ public without sharing class UserDeprovisionQueue implements Queueable {
         this.updatedUserLogins = updatedUserLogins;
     }
 
+    public void nextQueueable(Queueable next) {
+        this.nextQueable = next;
+    }
+
     public void execute(QueueableContext context) {
         if (!updatedUserCases.isEmpty()) {
             UserDeprovisionOrganizer.updateSobjectRecords('OwnerId', updatedUserCases, userToProcessingNotes);
@@ -47,6 +53,10 @@ public without sharing class UserDeprovisionQueue implements Queueable {
         }
         if (!updatedUserLogins.isEmpty()) {
             UserDeprovisionOrganizer.updateSobjectRecords('UserId', updatedUserLogins, userToProcessingNotes);
+        }
+
+        if (nextQueable != null) {
+            System.enqueueJob(nextQueable);
         }
     }
 }

@@ -116,10 +116,6 @@ public without sharing class UserDeprovisionOrganizer {
                 deleteSobjectRecords('UserOrGroupId', toDeletePublicGroupMemberships, userToProcessingNotesMap);
             }
 
-            if (!toDeletePermissionSetAssignments.isEmpty()) {
-                deleteSobjectRecords('AssigneeId', toDeletePermissionSetAssignments, userToProcessingNotesMap);
-            }
-
             if (!toDeleteUserPackageLicense.isEmpty()) {
                 deleteSobjectRecords('UserId', toDeleteUserPackageLicense, userToProcessingNotesMap);
             }
@@ -133,19 +129,20 @@ public without sharing class UserDeprovisionOrganizer {
             }
 
             // And handle all non-setup objects here
-            if (
-                !toUpdateUserCases.isEmpty() ||
-                !toDeleteChatterGroupMemberships.isEmpty() ||
-                !toUpdateUserLogins.isEmpty()
-            ) {
-                UserDeprovisionQueue userDeprovisionQueue = new UserDeprovisionQueue();
-                userDeprovisionQueue.setUpdatedUserCases(toUpdateUserCases);
-                userDeprovisionQueue.setAllUserChatterGroupMemberships(toDeleteChatterGroupMemberships);
-                userDeprovisionQueue.setUpdatedUserLogins(toUpdateUserLogins);
+            UserDeprovisionQueue userDeprovisionQueue = new UserDeprovisionQueue();
+            userDeprovisionQueue.setUpdatedUserCases(toUpdateUserCases);
+            userDeprovisionQueue.setAllUserChatterGroupMemberships(toDeleteChatterGroupMemberships);
+            userDeprovisionQueue.setUpdatedUserLogins(toUpdateUserLogins);
 
-                userDeprovisionQueue.setUserToProcessingNotesMap(userToProcessingNotesMap);
-                System.enqueueJob(userDeprovisionQueue);
-            }
+            userDeprovisionQueue.setUserToProcessingNotesMap(userToProcessingNotesMap);
+
+            UserDeprovisionQueue2 userDeprovisionQueue2 = new UserDeprovisionQueue2();
+            UserDeprovisionQueue2.setUserToProcessingNotesMap(userToProcessingNotesMap);
+            UserDeprovisionQueue2.setPermissionSetAssignments(toDeletePermissionSetAssignments);
+
+            userDeprovisionQueue.nextQueueable(userDeprovisionQueue2);
+
+            System.enqueueJob(userDeprovisionQueue);
         }
     }
 

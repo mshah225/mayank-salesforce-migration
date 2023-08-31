@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CRSE_GRADE_INPUT__c</fullName>
+    <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>FERPA</complianceGroup>
+    <description>Data sourced from PS_STDNT_ENRL.CRSE_GRADE_INPUT
+Perm Student 360 Read access</description>
+    <externalDeveloperName>CRSE_GRADE_INPUT</externalDeveloperName>
+    <externalId>false</externalId>
+    <isFilteringDisabled>false</isFilteringDisabled>
+    <isNameField>false</isNameField>
+    <isSortingDisabled>false</isSortingDisabled>
+    <label>Academic Integrity Grade</label>
+    <length>4</length>
+    <required>false</required>
+    <securityClassification>Highly Sensitive</securityClassification>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

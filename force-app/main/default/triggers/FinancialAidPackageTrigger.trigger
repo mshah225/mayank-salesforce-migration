@@ -29,7 +29,7 @@ trigger FinancialAidPackageTrigger on Financial_Aid_Package__c(
             d.afterUpdate();
         if (Trigger.isDelete)
             d.afterDelete();
-        if (Trigger.isUnDelete)
-            d.afterUnDelete();
+        if (Trigger.isUndelete)
+            d.afterUndelete();
     }
 }

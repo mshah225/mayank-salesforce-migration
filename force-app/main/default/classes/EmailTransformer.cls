@@ -45,6 +45,10 @@ public class EmailTransformer {
 
     private String findAndReplaceSecondToLastPeriod(String emailToClean) {
         String reverseEmail = emailToClean.reverse();
+        if (reverseEmail.indexOf('@') == -1 
+            && (reverseEmail.indexOf('.') == -1 || reverseEmail.indexOf('.', reverseEmail.indexOf('.') + 1) == -1)) {
+            return emailToClean += '@asu.edu';
+        }
         Integer posOfPeriod = reverseEmail.indexOf('.', reverseEmail.indexOf('.') + 1);
         reverseEmail = reverseEmail.subString(0, posOfPeriod) + '@' + reverseEmail.subString(posOfPeriod + 1);
         reverseEmail = reverseEmail.reverse();

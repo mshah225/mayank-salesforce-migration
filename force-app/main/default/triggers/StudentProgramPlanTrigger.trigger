@@ -29,7 +29,7 @@ trigger StudentProgramPlanTrigger on Student_Program_Plan__c(
             dispatcher.afterInsert();
         if (Trigger.isDelete)
             dispatcher.afterDelete();
-        if (Trigger.isUnDelete)
-            dispatcher.afterUnDelete();
+        if (Trigger.isUndelete)
+            dispatcher.afterUndelete();
     }
 }

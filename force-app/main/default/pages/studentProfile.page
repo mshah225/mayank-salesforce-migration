@@ -436,6 +436,18 @@
                                             <div class="modal-body">
                                                 <div id="modalError" style="color: red"></div>
                                                 <div class="form-group">
+                                                    <label for="comment">Functional Group:</label>
+                                                    <apex:form >
+                                                        <apex:selectList id="selectedVal"
+                                                            size="1"
+                                                            styleclass="chartBlock"
+                                                        >
+                                                            <apex:selectOptions value="{!caseFunctionaGroupPicklist}"
+                                                            ></apex:selectOptions>
+                                                        </apex:selectList>
+                                                    </apex:form>
+                                                </div>
+                                                <div class="form-group">
                                                     <label for="comment">Subject:</label>
                                                     <input type="text" class="form-control" id="usrSubject" />
                                                 </div>
@@ -923,8 +935,8 @@
                                                     <tr>
                                                         <th>Age</th>
                                                         <td>
-                                                            {!IF(ISBLANK(theContact.Current_Age__c), '--',
-                                                            theContact.Current_Age__c)}
+                                                            {!IF(ISBLANK(theContact.Current_Age_Calc__c), '--',
+                                                            theContact.Current_Age_Calc__c)}
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -1334,14 +1346,14 @@
                                     </div>
                                 </div>
 
-                                <div id ="bookPaymentHeader" class="page-header-smaller">
+                                <div id="bookPaymentHeader" class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
                                         &nbsp;Eligible Book Payment Options
                                     </h4>
                                 </div>
 
-                                <div id ="bookPaymentBody" style="overflow: auto; max-height: 400px">
+                                <div id="bookPaymentBody" style="overflow: auto; max-height: 400px">
                                     <div id="bookPaymentErrors"></div>
                                     <div id="book_payment_list">
                                         <apex:form >
@@ -3250,7 +3262,12 @@
         function submitCase() {
             var subject = document.getElementById('usrSubject').value;
             var description = document.getElementById('usrDescription').value;
-            if (subject.length <= 0 || description.length <= 0) {
+            var e = document.getElementsByClassName('chartBlock')[0];
+            var funcGroup = e.options[e.selectedIndex].value;
+            if (funcGroup == '') {
+                document.getElementById('modalError').innerHTML =
+                    'You must select a functional group';
+            } else if (subject.length <= 0 || description.length <= 0) {
                 document.getElementById('modalError').innerHTML =
                     'Please ensure that subject and description are not blank';
             } else {
@@ -3258,6 +3275,7 @@
                     '{!$RemoteAction.StudentProfileController.createCase}',
                     description,
                     subject,
+                    funcGroup,
                     '{!theContact.EMPLId__c}',
                     function (result, event) {
                         document.getElementById('usrSubject').value = '';
@@ -4187,6 +4205,7 @@
         var droppedWrapper;
         var examWrapper;
         var transferWrapper;
+        var asrResponseTable;
 
         // Method to get Enrolled Classes
         function getEnrolledClasses() {
@@ -4449,7 +4468,7 @@
                                                     '</td>' +
                                                     '<td data-header="Participation">' +
                                                     result.enrolledClasses[i].CONFIRMATION_OF_PARTICIPATION__c +
-                                                    '</td>'
+                                                    '</td>' +
                                                     "<td style='display:none'>" +
                                                     result.enrolledClasses[i].EARN_CREDIT__c +
                                                     '' +
@@ -4494,8 +4513,8 @@
                                                 '<div>* in Location column in the table above means: No Scheduled Meetings/Locations</div>';
 
                                             document.getElementById('ps_enrolled_classes').innerHTML = html;
-                                            sortEnrolledClassList('Term', true);
                                             cleanUpUndefined('ps_enrolled_classes');
+                                            asrResponseTable = result.asrClasses;
                                         } else {
                                             document.getElementById('psEnrolledClassesErrors').innerHTML =
                                                 'No enrolled classes found.';
@@ -4559,11 +4578,25 @@
                                                     '</td>' +
                                                     '<td data-header="Participation">' +
                                                     result.droppedClasses[i].CONFIRMATION_OF_PARTICIPATION__c +
-                                                    '</td>' +
-                                                    '<td data-header="ASR">' +
-                                                    '--' +
-                                                    '</td>' +
-                                                    '</tr>';
+                                                    '</td>';
+                                                if (
+                                                    asrResponseTable.indexOf(
+                                                        result.droppedClasses[i].STRM__c +
+                                                            '|' +
+                                                            result.droppedClasses[i].SESSION_CODE__c +
+                                                            '|' +
+                                                            result.droppedClasses[i].CLASS_NBR__c
+                                                    ) > -1
+                                                ) {
+                                                    html +=
+                                                        '<td data-header="ASR">' +
+                                                        '<a href="#" onclick="document.getElementById(\x27ugIndicatorsLink\x27).click(); return false;">!</a>' +
+                                                        '</td>';
+                                                } else {
+                                                    html += '<td data-header="ASR">--</td>';
+                                                }
+
+                                                html += '</tr>';
                                             }
 
                                             html += '</tbody></table></div>';
@@ -4626,8 +4659,10 @@
                         cumGpa = 'Cumulative GPA: ' + classTable.rows[r].cells[16].innerHTML;
                     }
                     if (
-                        classTable.rows[r].cells[14] != null && classTable.rows[r].cells[14].innerHTML == 'YY' &&
-                        classTable.rows[r].cells[17] != null && classTable.rows[r].cells[17].innerHTML != '{!currentTerm}'
+                        classTable.rows[r].cells[14] != null &&
+                        classTable.rows[r].cells[14].innerHTML == 'YY' &&
+                        classTable.rows[r].cells[17] != null &&
+                        classTable.rows[r].cells[17].innerHTML != '{!currentTerm}'
                     ) {
                         earnedUnits += Number(classTable.rows[r].cells[6].innerHTML);
                     }
@@ -4763,7 +4798,23 @@
                             "<td style='display:none'>" +
                             result[i].classInfo.STRM__c +
                             '</td>';
-                        html += '<td>--</td>';
+                        if (
+                            asrResponseTable.indexOf(
+                                result[i].classInfo.STRM__c +
+                                    '|' +
+                                    result[i].classInfo.SESSION_CODE__c +
+                                    '|' +
+                                    result[i].classInfo.CLASS_NBR__c
+                            ) > -1
+                        ) {
+                            // ASR link opens Undergraduate Indicators tab when clicked
+                            html +=
+                                '<td data-header="ASR">' +
+                                '<a href="#" onclick="document.getElementById(\x27ugIndicatorsLink\x27).click(); return false;">!</a>' +
+                                '</td>';
+                        } else {
+                            html += '<td data-header="ASR">--</td>';
+                        }
 
                         html += '</tr>';
                     }
@@ -4847,11 +4898,25 @@
                                 '</td>' +
                                 '<td>' +
                                 result[i].classInfo.CONFIRMATION_OF_PARTICIPATION__c +
-                                '</td>' +
-                                '<td>' +
-                                '--' +
-                                '</td>' +
-                                '</tr>';
+                                '</td>';
+                            if (
+                                asrResponseTable.indexOf(
+                                    result[i].classInfo.STRM__c +
+                                    '|' +
+                                    result[i].classInfo.SESSION_CODE__c +
+                                    '|' +
+                                    result[i].classInfo.CLASS_NBR__c
+                                ) > -1
+                            ) {
+                                html +=
+                                    '<td data-header="ASR">' +
+                                    '<a href="#" onclick="document.getElementById(\x27ugIndicatorsLink\x27).click(); return false;">!</a>' +
+                                    '</td>';
+                            } else {
+                                html += '<td data-header="ASR">--</td>';
+                            }
+
+                            html += '</tr>';
                         }
 
                         html += '</tbody></table></div>';
@@ -5790,28 +5855,28 @@
                                 '' +
                                 '<tr>' +
                                 '<td>' +
-                                    replaceEmptyString(result.aid_years[i].aid_year) +
+                                replaceEmptyString(result.aid_years[i].aid_year) +
                                 '</td>' +
                                 '<td>' +
-                                    replaceEmptyString(result.aid_years[i].name) +
+                                replaceEmptyString(result.aid_years[i].name) +
                                 '</td>' +
                                 '<td>' +
-                                    replaceEmptyString(result.aid_years[i].terms_used) +
+                                replaceEmptyString(result.aid_years[i].terms_used) +
                                 '</td>' +
                                 '<td>' +
-                                    replaceEmptyString(result.aid_years[i].current_award) +
+                                replaceEmptyString(result.aid_years[i].current_award) +
                                 '</td>' +
                                 '<td>' +
-                                    replaceEmptyString(result.aid_years[i].awards_description) +
+                                replaceEmptyString(result.aid_years[i].awards_description) +
                                 '</td>' +
                                 '<td>' +
-                                    replaceEmptyString(result.aid_years[i].renewal_status) +
+                                replaceEmptyString(result.aid_years[i].renewal_status) +
                                 '</td>' +
                                 '<td>' +
-                                    replaceEmptyString(result.aid_years[i].measurement_description) +
+                                replaceEmptyString(result.aid_years[i].measurement_description) +
                                 '</td>' +
                                 '<td>' +
-                                    replaceEmptyString(result.aid_years[i].max_amount) +
+                                replaceEmptyString(result.aid_years[i].max_amount) +
                                 '</td>' +
                                 '</tr>';
                         }
@@ -5820,8 +5885,8 @@
 
                         document.getElementById('renewableAidTable').innerHTML = html;
                     } else {
-                        document.getElementById('renewableAidHeader').style.display = "none"; 
-                        document.getElementById('renewableAidBody').style.display = "none"; 
+                        document.getElementById('renewableAidHeader').style.display = 'none';
+                        document.getElementById('renewableAidBody').style.display = 'none';
                     }
                 },
                 {buffer: false, escape: true, timeout: 120000}
@@ -5836,8 +5901,8 @@
                 function (result, event) {
                     if (result.emplid != null) {
                         var formatter = new Intl.NumberFormat('en-US', {
-                                style: 'currency',
-                                currency: 'USD',
+                            style: 'currency',
+                            currency: 'USD',
                         });
 
                         var html =
@@ -5857,7 +5922,6 @@
                             '<tbody>';
 
                         for (var i = 0; i < result.aid_years.length; i++) {
-                            
                             html +=
                                 '' +
                                 '<tr>' +
@@ -5886,8 +5950,8 @@
 
                         document.getElementById('bookPaymentTable').innerHTML = html;
                     } else {
-                        document.getElementById('bookPaymentHeader').style.display = "none"; 
-                        document.getElementById('bookPaymentBody').style.display = "none"; 
+                        document.getElementById('bookPaymentHeader').style.display = 'none';
+                        document.getElementById('bookPaymentBody').style.display = 'none';
                     }
                 },
                 {buffer: false, escape: true, timeout: 120000}
@@ -5902,22 +5966,25 @@
                     if (result != null && result.tuition_residency.length > 0) {
                         var html;
 
-                        if (result.tuition_residency[0].residency == null || result.tuition_residency[0].residency == '') {
+                        if (
+                            result.tuition_residency[0].residency == null ||
+                            result.tuition_residency[0].residency == ''
+                        ) {
                             html = '--';
                         } else {
                             html = result.tuition_residency[0].residency;
-                        }                         
+                        }
 
                         document.getElementById('residencyStatus').innerHTML = html;
                     } else {
-                        document.getElementById('residencyStatus').innerHTML = "--"; 
+                        document.getElementById('residencyStatus').innerHTML = '--';
                     }
                 },
                 {buffer: false, escape: true, timeout: 120000}
             );
         }
 
-        function replaceEmptyString (stringToCheck) {
+        function replaceEmptyString(stringToCheck) {
             if (!stringToCheck || stringToCheck == ' ') {
                 return '--';
             } else {
@@ -5972,9 +6039,15 @@
                 '<thead>' +
                 '<tr>' +
                 '<th></th>' +
-                '<th>Fall ' + (selectedTerm - 1) + '</th>' +
-                '<th>Spring ' + selectedTerm + '</th>' +
-                '<th>Summer ' + selectedTerm + '</th>' +
+                '<th>Fall ' +
+                (selectedTerm - 1) +
+                '</th>' +
+                '<th>Spring ' +
+                selectedTerm +
+                '</th>' +
+                '<th>Summer ' +
+                selectedTerm +
+                '</th>' +
                 '</tr>' +
                 '</thead>' +
                 '<tbody>';
@@ -5985,13 +6058,13 @@
                 '<b>Overall SAP Status</b>' +
                 '</td>' +
                 '<td><b>' +
-                    sapForSelectedTerm[0].sapDescription +
+                sapForSelectedTerm[0].sapDescription +
                 '</b></td>' +
                 '<td><b>' +
-                    sapForSelectedTerm[1].sapDescription +
+                sapForSelectedTerm[1].sapDescription +
                 '</b></td>' +
                 '<td><b>' +
-                    sapForSelectedTerm[2].sapDescription +
+                sapForSelectedTerm[2].sapDescription +
                 '</b></td>' +
                 '</tr>';
 
@@ -6001,13 +6074,13 @@
                 'Pace Rate' +
                 '</td>' +
                 '<td>' +
-                    sapForSelectedTerm[0].paceRateDescription +
+                sapForSelectedTerm[0].paceRateDescription +
                 '</td>' +
                 '<td>' +
-                    sapForSelectedTerm[1].paceRateDescription +
+                sapForSelectedTerm[1].paceRateDescription +
                 '</td>' +
                 '<td>' +
-                    sapForSelectedTerm[2].paceRateDescription +
+                sapForSelectedTerm[2].paceRateDescription +
                 '</td>' +
                 '</tr>';
 
@@ -6017,13 +6090,13 @@
                 'Maximum Credit Hour' +
                 '</td>' +
                 '<td>' +
-                    sapForSelectedTerm[0].maximumHourDescription +
+                sapForSelectedTerm[0].maximumHourDescription +
                 '</td>' +
                 '<td>' +
-                    sapForSelectedTerm[1].maximumHourDescription +
+                sapForSelectedTerm[1].maximumHourDescription +
                 '</td>' +
                 '<td>' +
-                    sapForSelectedTerm[2].maximumHourDescription +
+                sapForSelectedTerm[2].maximumHourDescription +
                 '</td>' +
                 '</tr>';
 
@@ -6033,13 +6106,13 @@
                 'Minimum GPA' +
                 '</td>' +
                 '<td>' +
-                    sapForSelectedTerm[0].minimumGpaDescription +
+                sapForSelectedTerm[0].minimumGpaDescription +
                 '</td>' +
                 '<td>' +
-                    sapForSelectedTerm[1].minimumGpaDescription +
+                sapForSelectedTerm[1].minimumGpaDescription +
                 '</td>' +
                 '<td>' +
-                    sapForSelectedTerm[2].minimumGpaDescription +
+                sapForSelectedTerm[2].minimumGpaDescription +
                 '</td>' +
                 '</tr>';
 
@@ -6047,6 +6120,5 @@
 
             document.getElementById('sapTable').innerHTML = html;
         }
-
     </script>
 </apex:page>

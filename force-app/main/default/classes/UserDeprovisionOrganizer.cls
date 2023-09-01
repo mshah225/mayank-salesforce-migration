@@ -116,6 +116,11 @@ public without sharing class UserDeprovisionOrganizer {
                 deleteSobjectRecords('UserOrGroupId', toDeletePublicGroupMemberships, userToProcessingNotesMap);
             }
 
+            if (!toDeletePermissionSetAssignments.isEmpty()) {
+                // * We need to do this before the user is updated/deactivated, since otherwise the permission sets can be reloaded (and thus record ids change)
+                deleteSobjectRecords('AssigneeId', toDeletePermissionSetAssignments, userToProcessingNotesMap);
+            }
+
             if (!toDeleteUserPackageLicense.isEmpty()) {
                 deleteSobjectRecords('UserId', toDeleteUserPackageLicense, userToProcessingNotesMap);
             }
@@ -126,10 +131,6 @@ public without sharing class UserDeprovisionOrganizer {
 
             if (!toUpdateUsers.isEmpty()) {
                 updateSobjectRecords('Id', toUpdateUsers, userToProcessingNotesMap);
-            }
-
-            if (!toDeletePermissionSetAssignments.isEmpty()) {
-                deleteSobjectRecords('AssigneeId', toDeletePermissionSetAssignments, userToProcessingNotesMap);
             }
 
             // And handle all non-setup objects here

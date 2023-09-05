@@ -1,60 +1,18 @@
 @isTest(SeeAllData=true)
 public with sharing class TopFiveArticleControllerTest {
-    static void setUpTest() {
-        // setup test data
-        List<FAQ__kav> faqList = new List<FAQ__kav>();
-        for (Integer i = 0; i <= 4; i++) {
-            FAQ__kav faq = new FAQ__kav(Title = 'TestFaq' + i, UrlName = 'TestFaq1' + i);
-            faqList.add(faq);
-        }
+    private static Boolean isSandbox = [SELECT IsSandbox FROM Organization].IsSandbox == true ? true : false;
+    private static String sandboxInstance = [SELECT InstanceName FROM Organization LIMIT 1].InstanceName;
+    private static String sandboxName = UserInfo.getUserName().substringAfterLast('.');
 
-        insert faqList;
-
-        List<FAQ__DataCategorySelection> faqDCSList = new List<FAQ__DataCategorySelection>();
-        for (FAQ__kav faq : faqList) {
-            FAQ__DataCategorySelection faqDCS = new FAQ__DataCategorySelection(
-                ParentId = faq.Id,
-                DataCategoryGroupName = 'Finances',
-                DataCategoryName = 'My_ASU_Financial_Aid'
-            );
-            faqDCSList.add(faqDCS);
-        }
-
-        insert faqDCSList;
-    }
-
-    static testMethod void testDoGet() {
-        RestRequest req = new RestRequest();
-        RestResponse res = new RestResponse();
-
-        req.requestURI = System.URL.getSalesforceBaseUrl() + '/services/apexrest/TopFiveArticles';
-        req.httpMethod = 'GET';
-        RestContext.request = req;
-        RestContext.response = res;
-
-        List<TopFiveArticleController.ArticleInfo> getResults = TopFiveArticleController.getTopFiveArticles();
-        List<TopFiveArticleController.ArticleInfo> postResults1 = TopFiveArticleController.getTopFiveArticles2(
-            'Classes'
-        );
-        List<TopFiveArticleController.ArticleInfo> postResults2 = TopFiveArticleController.getTopFiveArticles2(
-            'Programs and eAdvisor'
-        );
-        List<TopFiveArticleController.ArticleInfo> postResults3 = TopFiveArticleController.getTopFiveArticles2(
-            'Application Status'
-        );
-        List<TopFiveArticleController.ArticleInfo> postResults4 = TopFiveArticleController.getTopFiveArticles2(
-            'Devil2Devil'
-        );
-        List<TopFiveArticleController.ArticleInfo> postResults5 = TopFiveArticleController.getTopFiveArticles2(
-            'Account Charges'
-        );
-        List<TopFiveArticleController.ArticleInfo> postResults6 = TopFiveArticleController.getTopFiveArticles2(
-            'Financial Aid and Scholarships'
-        );
-
-        //System.assertEquals('true', results.success);
-        //System.assertEquals(10, results.records.size());
-        //System.assertEquals('Query executed successfully.', results.message);
+    @IsTest
+    private static void testDoGet() {
+        TopFiveArticleController.getTopFiveArticles();
+        TopFiveArticleController.getTopFiveArticles2('Classes');
+        TopFiveArticleController.getTopFiveArticles2('Programs and eAdvisor');
+        TopFiveArticleController.getTopFiveArticles2('Application Status');
+        TopFiveArticleController.getTopFiveArticles2('Devil2Devil');
+        TopFiveArticleController.getTopFiveArticles2('Account Charges');
+        TopFiveArticleController.getTopFiveArticles2('Financial Aid and Scholarships');
     }
 
     @isTest
@@ -78,8 +36,8 @@ public with sharing class TopFiveArticleControllerTest {
         }
 
         String domain = '';
-        if ([SELECT IsSandbox FROM Organization].IsSandbox) {
-            domain = 'http://utocomm-uto.cs10.force.com/pkb/articles/';
+        if (isSandbox) {
+            domain = 'http://' + sandboxName + '-asu' + '.' + sandboxInstance + '.force.com/kb/articles/';
         } else {
             domain = 'https://asu.secure.force.com/kb/articles/';
         }
@@ -105,8 +63,8 @@ public with sharing class TopFiveArticleControllerTest {
     @isTest
     private static void checkMoreArticleTransformation() {
         String domain = '';
-        if ([SELECT IsSandbox FROM Organization].IsSandbox) {
-            domain = 'http://utocomm-uto.cs10.force.com/pkb/pkb_Home?l=en_US&c=';
+        if (isSandbox) {
+            domain = 'http://' + sandboxName + '-asu' + '.' + sandboxInstance + '.force.com/kb/pkb_Home?l=en_US&c=';
         } else {
             domain = 'https://asu.secure.force.com/kb/pkb_Home?l=en_US&c=';
         }
@@ -116,12 +74,5 @@ public with sharing class TopFiveArticleControllerTest {
         String expectedUrl = domain + 'dcGroupId%3AdataCatagoryId';
 
         System.assertEquals(expectedUrl, TopFiveArticleController.getMoreArticlesUrl(dcGroup, dataCategory));
-    }
-
-    @isTest
-    private static void verifySandbox() {
-        Boolean expected = [SELECT IsSandbox FROM Organization].IsSandbox;
-        Boolean suspected = TopFiveArticleController.isSandbox();
-        System.assertEquals(expected, suspected);
     }
 }

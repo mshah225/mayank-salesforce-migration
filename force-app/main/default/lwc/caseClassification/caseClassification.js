@@ -197,6 +197,10 @@ export default class CaseClassification extends LightningElement {
                 });
             // Enable the combo box
             this.categoryDisabled = false;
+
+            // sort the sub categories alphabetically
+            this.categoryOptions.sort((a, b) => a.label.localeCompare(b.label));
+
             // Add empty option to remove category
             this.categoryOptions.unshift({label: '--', value: ''});
         }
@@ -220,6 +224,10 @@ export default class CaseClassification extends LightningElement {
                 });
             // Enable the combo box
             this.subCategoryDisabled = false;
+
+            // sort the sub categories alphabetically
+            this.subCategoryOptions.sort((a, b) => a.label.localeCompare(b.label));
+
             // Add empty option to remove sub-category
             this.subCategoryOptions.unshift({label: '--', value: ''});
         }

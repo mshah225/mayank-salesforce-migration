@@ -529,7 +529,7 @@ public class ContactService {
             for (Opportunity o : oppList) {
                 o.Territory_Assignment_Required__c = true;
             }
-            TerritoryAssignmentService.updateOpportunityList(oppList);
+            TerritoryAssignmentHelper.updateOpportunityList(oppList);
             assignTerritoryDone = true;
         }
     }

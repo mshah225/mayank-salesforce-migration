@@ -326,7 +326,7 @@ public class OpportunityService {
                     InstitutionIdSet.add(c.Last_College_Attended__c);
                 }
                 //Ensures Zipcode is five digits or less
-                string shortZip = TerritoryAssignmentService.shortenZipCode(c.MailingPostalCode);
+                string shortZip = TerritoryAssignmentHelper.shortenZipCode(c.MailingPostalCode);
                 ContactZips.add(shortZip);
             }
 
@@ -350,7 +350,7 @@ public class OpportunityService {
                 //For each contact
                 for (Contact Cons : contactList) {
                     //Ensures Zipcode is five digits or less
-                    string shortZip = TerritoryAssignmentService.shortenZipCode(Cons.MailingPostalCode);
+                    string shortZip = TerritoryAssignmentHelper.shortenZipCode(Cons.MailingPostalCode);
 
                     //If the contact is a FTF and has a last HS attended
                     //Update the contact's geomarket code to reflect this
@@ -388,7 +388,7 @@ public class OpportunityService {
                 }
 
                 if (geoMarketChanged.size() > 0) {
-                    TerritoryAssignmentService.updateContactList(geoMarketChanged);
+                    TerritoryAssignmentHelper.updateContactList(geoMarketChanged);
                 }
             }
         }
@@ -444,7 +444,7 @@ public class OpportunityService {
             }
 
             // Get all of the tars keyed by rule key. Used for international assignment now.
-            Map<String, List<Territory_Assignment_Rule__c>> mapOfTarsByRuleKey = TerritoryAssignmentService.mapTerritoryAssignmentRulesToRuleKey();
+            Map<String, List<Territory_Assignment_Rule__c>> mapOfTarsByRuleKey = TerritoryAssignmentHelper.mapTerritoryAssignmentRulesToRuleKey();
 
             for (Opportunity opp : newOpportunities) {
                 Boolean inactiveUserFound = false;
@@ -511,7 +511,7 @@ public class OpportunityService {
                         String oppCountry = thisContact.MailingCountry;
 
                         if (String.isNotEmpty(oppCountry)) {
-                            oppCountry = TerritoryAssignmentService.getSFCountry(oppCountry);
+                            oppCountry = TerritoryAssignmentHelper.getSFCountry(oppCountry);
                         }
 
                         // Avoid NPE on Opportunity Assignment Number Rand. At least one of these should be populated.
@@ -541,7 +541,7 @@ public class OpportunityService {
                             possibleTars = mapOfTarsByRuleKey.get('International||');
                         }
 
-                        tar = TerritoryAssignmentService.getTerritoryAssignmentRule(possibleTars, oppAssignNumber);
+                        tar = TerritoryAssignmentHelper.getTerritoryAssignmentRule(possibleTars, oppAssignNumber);
 
                         // As long as we found a relevant Territory Assignment Rule, populate the information on the Opportunity
                         if (tar != null) {

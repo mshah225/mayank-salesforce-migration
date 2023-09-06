@@ -13,7 +13,7 @@ public without sharing class AccountService {
 
         for (Account newAccount : newAccounts) {
             //Ensures Zipcode is five digits or less
-            string shortZip = TerritoryAssignmentService.shortenZipCode(newAccount.ShippingPostalCode);
+            string shortZip = TerritoryAssignmentHelper.shortenZipCode(newAccount.ShippingPostalCode);
             zipcodesToCheck.add(shortZip);
         }
 
@@ -30,7 +30,7 @@ public without sharing class AccountService {
 
             for (Account newAccount : newAccounts) {
                 //Ensures Zipcode is five digits or less
-                string shortZip = TerritoryAssignmentService.shortenZipCode(newAccount.ShippingPostalCode);
+                string shortZip = TerritoryAssignmentHelper.shortenZipCode(newAccount.ShippingPostalCode);
                 newAccount.Geomarket_Code__c = geomarketZipWithGeomarketCode.get(shortZip);
             }
         }

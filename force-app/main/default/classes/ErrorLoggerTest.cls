@@ -521,4 +521,16 @@ public class ErrorLoggerTest {
         expected = '{' + fakeName + ':[' + string.valueOf(fakeList) + ']}';
         system.assertEquals(expected, result);
     }
+
+    @isTest
+    private static void testTerritoryAssignmentHelperErrorLogger() {
+        Test.startTest();
+        TerritoryAssignmentHelper.updateContactList(null);
+        TerritoryAssignmentHelper.updateOpportunityList(null);
+        Test.stopTest();
+
+        List<Case> errorList = [SELECT Id FROM Case];
+
+        System.assertEquals(2, errorList.size());
+    }
 }

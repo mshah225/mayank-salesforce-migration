@@ -13,6 +13,102 @@ public without sharing class TerritoryAssignmentTest {
     }
 
     @isTest
+    public static void testAccountGeomarketCodeAssignment() {
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
+
+        Account HS = new Account();
+        HS.Name = 'Test High School';
+        insert HS;
+
+        Contact con = new Contact();
+        con.FirstName = 'TestFirstName';
+        con.LastName = 'TestLastName';
+        con.MailingPostalCode = '90210';
+        con.Geomarket_Code__c = 'CA-01';
+        insert con;
+
+        con = [SELECT Id, AccountId FROM Contact WHERE Id = :con.Id];
+
+        Key_Value__c KV = new Key_Value__c();
+        KV.Geomarket_ZIP__c = '85287';
+        KV.Geomarket_Code__c = 'GM-01';
+        insert KV;
+
+        Opportunity Opp = new Opportunity();
+        Opp.Name = 'Test Opp';
+        Opp.Contact__c = con.Id;
+        Opp.AccountId = con.AccountID;
+        Opp.StageName = 'Prospect';
+        Opp.CloseDate = date.today() + 365;
+        Opp.Type = 'First Time Freshman';
+        Opp.OwnerId = TestUser.Id;
+        insert Opp;
+
+        TerritoryAssignmentAccount.assignTerritoryDone = false;
+
+        Test.startTest();
+        HS.ShippingPostalCode = '85287';
+        HS.Territory_Manager__c = TestUser.Id;
+        update HS;
+        Test.stopTest();
+
+        String accountGeoCodeAfterUpdate = [SELECT Id, Geomarket_Code__c FROM Account WHERE Id = :HS.Id LIMIT 1]
+        .Geomarket_Code__c;
+
+        System.Assert(
+            accountGeoCodeAfterUpdate == KV.Geomarket_Code__c,
+            'Account Geomarket Code did not match by ZIP code'
+        );
+    }
+
+    @isTest
+    public static void testFreshmanScholar() {
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
+
+        Contact Con = new Contact();
+        Con.FirstName = 'TestFirstName';
+        Con.LastName = 'TestLastName';
+        insert Con;
+
+        Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];
+
+        Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
+        aTar1.Rule_Type__c = 'Freshman Scholar';
+        aTar1.Opportunity_Type__c = 'First Time Freshman';
+        aTar1.User__c = TestUser.Id;
+        insert aTar1;
+
+        Opportunity opp = new Opportunity();
+        opp.Name = 'Test Opp';
+        opp.StageName = 'Prospect';
+        opp.Type = 'test';
+        opp.Career__c = 'Undergraduate';
+        opp.CloseDate = date.today() + 365;
+        opp.Contact__c = Con.Id;
+        opp.AccountId = Con.AccountId;
+        insert opp;
+
+        Test.startTest();
+        opp.Type = 'First Time Freshman';
+        opp.Potential_National_Scholar__c = true;
+        update opp;
+
+        Test.stopTest();
+
+        String lastRuleType = [
+            SELECT Id, Territory_Assignment_Last_Rule_Type__c
+            FROM Opportunity
+            WHERE Id = :opp.Id
+            LIMIT 1
+        ]
+        .Territory_Assignment_Last_Rule_Type__c;
+        System.assert(
+            lastRuleType == 'Freshman Scholar',
+            'Rule did not assign correctly by rule type Freshman Scholar: ' + lastRuleType
+        );
+    }
+
+    @isTest
     public static void testContactGeomarketCodeAssignment() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
 
@@ -111,53 +207,6 @@ public without sharing class TerritoryAssignmentTest {
         System.assert(
             contactCollegeGeoCodeAfterUpdate == KVCollege.Geomarket_Code__c,
             'Contact Geomarket Code did not match by Last Attended College Geomarket Code'
-        );
-    }
-
-    @isTest
-    public static void testFreshmanScholar() {
-        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
-
-        Contact Con = new Contact();
-        Con.FirstName = 'TestFirstName';
-        Con.LastName = 'TestLastName';
-        insert Con;
-
-        Con = [SELECT Id, AccountId FROM Contact WHERE Id = :Con.Id];
-
-        Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
-        aTar1.Rule_Type__c = 'Freshman Scholar';
-        aTar1.Opportunity_Type__c = 'First Time Freshman';
-        aTar1.User__c = TestUser.Id;
-        insert aTar1;
-
-        Opportunity opp = new Opportunity();
-        opp.Name = 'Test Opp';
-        opp.StageName = 'Prospect';
-        opp.Type = 'test';
-        opp.Career__c = 'Undergraduate';
-        opp.CloseDate = date.today() + 365;
-        opp.Contact__c = Con.Id;
-        opp.AccountId = Con.AccountId;
-        insert opp;
-
-        Test.startTest();
-        opp.Type = 'First Time Freshman';
-        opp.Potential_National_Scholar__c = true;
-        update opp;
-
-        Test.stopTest();
-
-        String lastRuleType = [
-            SELECT Id, Territory_Assignment_Last_Rule_Type__c
-            FROM Opportunity
-            WHERE Id = :opp.Id
-            LIMIT 1
-        ]
-        .Territory_Assignment_Last_Rule_Type__c;
-        System.assert(
-            lastRuleType == 'Freshman Scholar',
-            'Rule did not assign correctly by rule type Freshman Scholar: ' + lastRuleType
         );
     }
 

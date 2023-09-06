@@ -1,17 +1,5 @@
 @isTest
 public without sharing class TerritoryAssignmentTest {
-    @testSetup
-    static void setup() {
-        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
-        User testUser = (User) userCreator.create(1)[0];
-
-        Id saProfile = [SELECT Id FROM Profile WHERE Name = 'System Administrator'].Id;
-
-        testUser.ProfileId = saProfile;
-
-        insert testUser;
-    }
-
     @isTest
     public static void testAccountGeomarketCodeAssignment() {
         User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];

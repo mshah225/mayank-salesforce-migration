@@ -1442,7 +1442,8 @@ public without sharing class TerritoryAssignmentTest {
         );
     }
 
-    public testMethod static void testErrorLogger() {
+    @isTest
+    public static void testErrorLogger() {
         Test.startTest();
         TerritoryAssignmentService.updateContactList(null);
         TerritoryAssignmentService.updateOpportunityList(null);

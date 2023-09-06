@@ -1,0 +1,3 @@
+[submodule "metadata-analysis"]
+	path = metadata-analysis
+	url = https://github.com/asu-sf/metadata-analysis.git

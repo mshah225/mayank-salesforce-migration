@@ -14,50 +14,50 @@ abortedMergeArray=()
 abortedMergeCoreArray=()
 
 for remote in $(git branch -r); do
-    if [[ "$remote" != "origin/HEAD" ]] && [[ "$remote" != "->" ]] && [[ "$remote" != "origin/main" ]]; then
-        branch="${remote#origin/}"
-        git checkout $branch
+	if [[ "$remote" != "origin/HEAD" ]] && [[ "$remote" != "->" ]] && [[ "$remote" != "origin/main" ]]; then
+		branch="${remote#origin/}"
+		git checkout $branch
 
-        if [[ "$branch" == "sync" ]] || [[ "$branch" == "sync-pr" ]]; then
-            git reset --hard origin/main
-            git push -f origin $branch
-            cleanMergeArray+=("$branch")
-            cleanMergeCount=$((cleanMergeCount + 1))
-            continue
-        fi
+		if [[ "$branch" == "sync" ]] || [[ "$branch" == "sync-pr" ]]; then
+			git reset --hard origin/main
+			git push -f origin $branch
+			cleanMergeArray+=("$branch")
+			cleanMergeCount=$((cleanMergeCount + 1))
+			continue
+		fi
 
-        if git diff-index --quiet origin/main --; then
-            sha=$(git rev-parse --short HEAD)
-            git checkout -f main
-            git branch -D $branch
-            git push origin --delete $branch
-            deletedBranchArray+=("$branch [$sha]")
-            deletedBranchCount=$((deletedBranchCount + 1))
-            continue
-        fi
+		if git diff-index --quiet origin/main --; then
+			sha=$(git rev-parse --short HEAD)
+			git checkout -f main
+			git branch -D $branch
+			git push origin --delete $branch
+			deletedBranchArray+=("$branch [$sha]")
+			deletedBranchCount=$((deletedBranchCount + 1))
+			continue
+		fi
 
-        git pull --no-edit origin main
-        if [ $? -eq 0 ]; then
-            git push origin $branch
-            if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]]; then
-                cleanMergeCoreArray+=("$branch")
-                cleanMergeCoreCount=$((cleanMergeCoreCount + 1))
-            else
-                cleanMergeArray+=("$branch")
-                cleanMergeCount=$((cleanMergeCount + 1))
-            fi
-        else
-            git merge --abort
-            if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]]; then
-                abortedMergeCoreArray+=("$branch")
-                abortedMergeCoreCount=$((abortedMergeCoreCount + 1))
-            else
-                abortedMergeArray+=("$branch")
-                abortedMergeCount=$((abortedMergeCount + 1))
-            fi
-        fi
+		git pull --no-edit origin main
+		if [ $? -eq 0 ]; then
+			git push origin $branch
+			if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]]; then
+				cleanMergeCoreArray+=("$branch")
+				cleanMergeCoreCount=$((cleanMergeCoreCount + 1))
+			else
+				cleanMergeArray+=("$branch")
+				cleanMergeCount=$((cleanMergeCount + 1))
+			fi
+		else
+			git merge --abort
+			if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]]; then
+				abortedMergeCoreArray+=("$branch")
+				abortedMergeCoreCount=$((abortedMergeCoreCount + 1))
+			else
+				abortedMergeArray+=("$branch")
+				abortedMergeCount=$((abortedMergeCount + 1))
+			fi
+		fi
 
-    fi
+	fi
 done
 
 blocks='{
@@ -94,7 +94,7 @@ blocks='{
 
 devBranchBlocks=''
 if [[ "${cleanMergeCoreArray[*]}" =~ "${dev}" ]]; then
-    devBranchBlocks='
+	devBranchBlocks='
         {
 			"type": "section",
 			"text": {
@@ -114,7 +114,7 @@ if [[ "${cleanMergeCoreArray[*]}" =~ "${dev}" ]]; then
 			}
 		},'
 else
-    devBranchBlocks='
+	devBranchBlocks='
         {
 			"type": "section",
 			"text": {
@@ -138,7 +138,7 @@ blocks="$blocks$devBranchBlocks"
 
 qaBranchBlocks=''
 if [[ "${cleanMergeCoreArray[*]}" =~ "${qa}" ]]; then
-    qaBranchBlocks='
+	qaBranchBlocks='
         {
 			"type": "section",
 			"text": {
@@ -158,7 +158,7 @@ if [[ "${cleanMergeCoreArray[*]}" =~ "${qa}" ]]; then
 			}
 		},'
 else
-    qaBranchBlocks='
+	qaBranchBlocks='
         {
 			"type": "section",
 			"text": {
@@ -182,7 +182,7 @@ blocks="$blocks$qaBranchBlocks"
 
 uatBranchBlocks=''
 if [[ "${cleanMergeCoreArray[*]}" =~ "${uat}" ]]; then
-    uatBranchBlocks='
+	uatBranchBlocks='
         {
 			"type": "section",
 			"text": {
@@ -205,7 +205,7 @@ if [[ "${cleanMergeCoreArray[*]}" =~ "${uat}" ]]; then
 			"type": "divider"
 		},'
 else
-    uatBranchBlocks='
+	uatBranchBlocks='
         {
 			"type": "section",
 			"text": {
@@ -232,7 +232,7 @@ blocks="$blocks$uatBranchBlocks"
 
 deletedBranchBlocks=''
 if [ ${#deletedBranchArray[@]} -gt 0 ]; then
-    deletedBranchBlocks='
+	deletedBranchBlocks='
         {
 			"type": "section",
 			"fields": [
@@ -249,12 +249,12 @@ if [ ${#deletedBranchArray[@]} -gt 0 ]; then
                     "type": "rich_text_list",
                     "elements": ['
 
-    for index in "${!deletedBranchArray[@]}"; do
-        branch="${deletedBranchArray[$index]}"
-        deletedBranchBlocks=''"$deletedBranchBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":"'"$branch"'"}]},'
-    done
+	for index in "${!deletedBranchArray[@]}"; do
+		branch="${deletedBranchArray[$index]}"
+		deletedBranchBlocks=''"$deletedBranchBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":"'"$branch"'"}]},'
+	done
 
-    deletedBranchBlocks=''"$deletedBranchBlocks"'
+	deletedBranchBlocks=''"$deletedBranchBlocks"'
                     ],
                     "style": "bullet",
                     "indent": 1
@@ -265,7 +265,7 @@ if [ ${#deletedBranchArray[@]} -gt 0 ]; then
 			"type": "divider"
 		},'
 else
-    deletedBranchBlocks='
+	deletedBranchBlocks='
         {
 			"type": "section",
 			"fields": [
@@ -280,7 +280,7 @@ else
 			"fields": [
                 {
                     "type": "mrkdwn",
-                    "text": "&nbsp;&nbsp;→ No branches to list."
+                    "text": "  → No branches to list."
                 }
             ]
         },
@@ -292,7 +292,7 @@ blocks="$blocks$deletedBranchBlocks"
 
 abortedMergeBlocks=''
 if [ ${#abortedMergeArray[@]} -gt 0 ]; then
-    abortedMergeBlocks='
+	abortedMergeBlocks='
         {
 			"type": "section",
 			"fields": [
@@ -309,12 +309,12 @@ if [ ${#abortedMergeArray[@]} -gt 0 ]; then
                     "type": "rich_text_list",
                     "elements": ['
 
-    for index in "${!abortedMergeArray[@]}"; do
-        branch="${abortedMergeArray[$index]}"
-        abortedMergeBlocks=''"$abortedMergeBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":"'"$branch"'"}]},'
-    done
+	for index in "${!abortedMergeArray[@]}"; do
+		branch="${abortedMergeArray[$index]}"
+		abortedMergeBlocks=''"$abortedMergeBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":"'"$branch"'"}]},'
+	done
 
-    abortedMergeBlocks=''"$abortedMergeBlocks"'
+	abortedMergeBlocks=''"$abortedMergeBlocks"'
                     ],
                     "style": "bullet",
                     "indent": 1
@@ -325,7 +325,7 @@ if [ ${#abortedMergeArray[@]} -gt 0 ]; then
 			"type": "divider"
 		},'
 else
-    abortedMergeBlocks='
+	abortedMergeBlocks='
         {
 			"type": "section",
 			"fields": [
@@ -340,7 +340,7 @@ else
 			"fields": [
                 {
                     "type": "mrkdwn",
-                    "text": "&nbsp;&nbsp;→ No branches to list."
+                    "text": "  → No branches to list."
                 }
             ]
         },
@@ -352,7 +352,7 @@ blocks="$blocks$abortedMergeBlocks"
 
 cleanMergeBlocks=''
 if [ ${#cleanMergeArray[@]} -gt 0 ]; then
-    cleanMergeBlocks='
+	cleanMergeBlocks='
         {
 			"type": "section",
 			"fields": [
@@ -369,12 +369,12 @@ if [ ${#cleanMergeArray[@]} -gt 0 ]; then
                     "type": "rich_text_list",
                     "elements": ['
 
-    for index in "${!cleanMergeArray[@]}"; do
-        branch="${cleanMergeArray[$index]}"
-        cleanMergeBlocks=''"$cleanMergeBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":"'"$branch"'"}]},'
-    done
+	for index in "${!cleanMergeArray[@]}"; do
+		branch="${cleanMergeArray[$index]}"
+		cleanMergeBlocks=''"$cleanMergeBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":"'"$branch"'"}]},'
+	done
 
-    cleanMergeBlocks=''"$cleanMergeBlocks"'
+	cleanMergeBlocks=''"$cleanMergeBlocks"'
                     ],
                     "style": "bullet",
                     "indent": 1
@@ -382,7 +382,7 @@ if [ ${#cleanMergeArray[@]} -gt 0 ]; then
             ]
         },'
 else
-    cleanMergeBlocks='
+	cleanMergeBlocks='
         {
 			"type": "section",
 			"fields": [
@@ -397,7 +397,7 @@ else
 			"fields": [
                 {
                     "type": "mrkdwn",
-                    "text": "&nbsp;&nbsp;→ No branches to list."
+                    "text": "  → No branches to list."
                 }
             ]
         },'

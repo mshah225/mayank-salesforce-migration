@@ -136,10 +136,10 @@ public class TaggingComponentControllerTest
             
             
             taggingComponentController.contactTags(cons1.Id);
-            taggingComponentController.fetchTags('tag1');
-            taggingComponentController.fetchTags('tag2');
-            taggingComponentController.fetchTags('tag3');
-            taggingComponentController.fetchTags('tag4');
+            taggingComponentController.fetchTags('tag1', cons1.Id);
+            taggingComponentController.fetchTags('tag2', cons1.Id);
+            taggingComponentController.fetchTags('tag3', cons1.Id);
+            taggingComponentController.fetchTags('tag4', cons1.Id);
             taggingComponentController.updateTag('tag5', cons1.Id);
             taggingComponentController.removeTag('tag5',cons1.Id,'');
             taggingComponentController.tagRemovalReason();

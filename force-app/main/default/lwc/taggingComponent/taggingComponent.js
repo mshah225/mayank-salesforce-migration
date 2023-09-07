@@ -140,7 +140,7 @@ export default class TaggingComponent extends LightningElement {
 
     //This method takes the tagSeachKey as a parameter and shows the result which tag can be searched on UI
     getContactTags() {
-        fetchTags({ tagSearch: this.tagSearchKey })
+        fetchTags({ tagSearch: this.tagSearchKey, recordId: this.recordId})
             .then((result) => {
                 var formattedArray = [];
                 var tagList = result;

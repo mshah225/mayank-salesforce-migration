@@ -1,14 +1,10 @@
-public class TaggingComponentController {
-
-    public static List<Id> tagsForObject {get; get;}
-    
+public class TaggingComponentController {    
     
     /*This method fetches all the tags which are a part of contacts in a Map on page load by taking the recordId as parameter*/
     @AuraEnabled
     public static Map<String, Object_Tag__c> contactTags(Id recordId) {
         
         Map<String,Object_Tag__c> objTagMap = new Map<String,Object_Tag__c>();
-        tagsForObject = new List<Id>();
 
         String recordIdPrefix = (String)recordId;
         recordIdPrefix = recordIdPrefix.left(3);
@@ -36,7 +32,6 @@ public class TaggingComponentController {
         
         for (Object_Tag__c obListItem : objectTagList) {
             objTagMap.put(obListItem.Tag__r.Name, obListItem);
-            tagsForObject.add(obListItem.Tag__r.Id);
         }
         
         return objTagMap;

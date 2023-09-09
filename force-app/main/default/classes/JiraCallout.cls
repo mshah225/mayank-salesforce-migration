@@ -236,8 +236,11 @@ global class JiraCallout {
             errorLoggerVars.add(ErrorLogger.convertStringToJSON('res.toString()', res.toString()));
             errorLoggerVars.add(ErrorLogger.convertStringToJSON('req.toString()', req.toString()));
             errorLoggerVars.add(ErrorLogger.convertStringToJSON('endPoint', endPoint));
-            ErrorLogger.log(e, errorLoggerVars, DEBUG);
+
+            ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(e, errorLoggerVars, DEBUG, false);
+            System.enqueueJob(logQueue);
         }
+
         return responseBody;
     }
 
@@ -273,8 +276,11 @@ global class JiraCallout {
             errorLoggerVars.add(ErrorLogger.convertStringToJSON('res.toString()', res.toString()));
             errorLoggerVars.add(ErrorLogger.convertStringToJSON('req.toString()', req.toString()));
             errorLoggerVars.add(ErrorLogger.convertStringToJSON('endPoint', endPoint));
-            ErrorLogger.log(e, errorLoggerVars, DEBUG);
+
+            ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(e, errorLoggerVars, DEBUG, false);
+            System.enqueueJob(logQueue);
         }
+
         return responseBody;
     }
 
@@ -360,7 +366,9 @@ global class JiraCallout {
             errorLoggerVars.add(ErrorLogger.convertStringToJSON('res.toString()', res.toString()));
             errorLoggerVars.add(ErrorLogger.convertStringToJSON('req.toString()', req.toString()));
             errorLoggerVars.add(ErrorLogger.convertStringToJSON('endPoint', endPoint));
-            ErrorLogger.log(e, errorLoggerVars, DEBUG);
+
+            ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(e, errorLoggerVars, DEBUG, false);
+            System.enqueueJob(logQueue);
         }
 
         return accountId;

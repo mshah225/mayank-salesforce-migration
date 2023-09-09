@@ -1,11 +1,35 @@
 /* eslint-disable no-use-before-define */
-import {LightningElement, wire} from 'lwc';
+import {LightningElement, wire, api} from 'lwc';
 import getIssuesForCurrentUser from '@salesforce/apex/JiraViewAllIssuesController.getIssuesForCurrentUser';
 import getWatchedIssuesForCurrentUser from '@salesforce/apex/JiraViewAllIssuesController.getWatchedIssuesForCurrentUser';
+import {TicketItem} from 'c/jiraTicketTable';
 
 export default class JiraViewMyTickets extends LightningElement {
     myTickets = [];
     watchedTickets = [];
+    testFormQuestionList = [];
+    techReviewQuestionList = [];
+
+    @api set testFormQuestionListJSON(val) {
+        if (val != null && val !== '') this.testFormQuestionList = JSON.parse(val);
+        else this.testFormQuestionList = [];
+
+        for (let i = 0; i < this.testFormQuestionList.length; i++) this.testFormQuestionList[i].key = 'test-key-' + i;
+    }
+    get testFormQuestionListJSON() {
+        return this.testFormQuestionList;
+    }
+
+    @api set techReviewQuestionListJSON(val) {
+        if (val != null && val !== '') this.techReviewQuestionList = JSON.parse(val);
+        else this.techReviewQuestionList = [];
+
+        for (let i = 0; i < this.techReviewQuestionList.length; i++)
+            this.techReviewQuestionList[i].key = 'tech_review-key-' + i;
+    }
+    get techReviewQuestionListJSON() {
+        return this.techReviewQuestionList;
+    }
 
     @wire(getIssuesForCurrentUser)
     gotIssuesForUser(result) {
@@ -39,23 +63,5 @@ export default class JiraViewMyTickets extends LightningElement {
             console.error(error);
         }
         this.watchedTickets = watchedTickets;
-    }
-}
-
-class TicketItem {
-    issueId = null;
-    key = null;
-    url = null;
-    issueType = null;
-    summary = null;
-    status = null;
-
-    constructor(parsedIssue) {
-        this.issueId = parsedIssue.id;
-        this.key = parsedIssue.key;
-        this.url = 'https://asudev.jira.com/browse/' + parsedIssue.key;
-        this.issueType = parsedIssue.fields.issuetype.name;
-        this.summary = parsedIssue.fields.summary;
-        this.status = parsedIssue.fields.status.name;
     }
 }

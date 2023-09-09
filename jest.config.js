@@ -21,5 +21,5 @@ module.exports = {
         '^lightning/modalBody$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/modalBody',
         '^lightning/modalFooter$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/modalFooter',
     },
-    modulePathIgnorePatterns: ['<rootDir>/.localdevserver'],
+    modulePathIgnorePatterns: ['<rootDir>/.localdevserver']
 };

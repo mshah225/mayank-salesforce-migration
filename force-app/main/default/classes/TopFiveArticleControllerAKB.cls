@@ -121,7 +121,7 @@ global class TopFiveArticleControllerAKB {
         String urlPrefix = 'https://myasu.force.com/';
 
         if (isSandbox()) {
-            List<String> tokens = URL.getSalesforceBaseUrl().getHost().split('\\.');
+            List<String> tokens = URL.getOrgDomainUrl().getHost().split('\\.');
             List<String> tokens2 = tokens[0].split('--');
             urlPrefix = 'https://' + tokens2[1] + '-myasu.' + tokens[1] + '.force.com/';
         }
@@ -130,7 +130,7 @@ global class TopFiveArticleControllerAKB {
     }
 
     global static Boolean isSandbox() {
-        String host = URL.getSalesforceBaseUrl().getHost();
+        String host = URL.getOrgDomainUrl().getHost();
         String server = host.substring(0, host.indexOf('.'));
 
         // It's easiest to check for 'my domain' sandboxes first

@@ -44,7 +44,7 @@ public with sharing class CaseShowAllAttachmentsControllerExt {
     }
 
     private String getDownloadAllAsZipUrl() {
-        String baseUrl = Url.getSalesforceBaseUrl().toExternalForm();
+        String baseUrl = Url.getOrgDomainUrl().toExternalForm();
         return baseUrl.replace(STANDARD_PREFIX, DOWNLOAD_AS_ZIP_PREFIX);
     }
 

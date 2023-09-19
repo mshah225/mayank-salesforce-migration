@@ -424,7 +424,7 @@ public with sharing class ViewCaseController {
     private HttpRequest createEmailMessageRequestWithJsonBody(String jsonEmailMessage) {
         HttpRequest emailMessageInsertRequest = new HttpRequest();
 
-        String baseURL = System.URL.getSalesforceBaseURL().toExternalForm();
+        String baseURL = System.URL.getOrgDomainUrl().toExternalForm();
 
         emailMessageInsertRequest.setHeader('Content-Type', 'application/json');
         emailMessageInsertRequest.setEndpoint(baseURL + '/services/apexrest/InsertEmailMessage');

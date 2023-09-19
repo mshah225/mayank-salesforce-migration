@@ -147,7 +147,6 @@ global class TopFiveArticleController {
         }
 
         System.debug('GRF2: ' + articles);
-        System.debug('GRF 3:' + System.URL.getSalesforceBaseURL().getHost());
 
         return articles;
     }
@@ -197,7 +196,7 @@ global class TopFiveArticleController {
     }
 
     global static Boolean isSandbox() {
-        String host = URL.getSalesforceBaseUrl().getHost();
+        String host = URL.getOrgDomainUrl().getHost();
         String server = host.substring(0, host.indexOf('.'));
 
         // It's easiest to check for 'my domain' sandboxes first

@@ -33,6 +33,8 @@ public with sharing class ViewCaseController {
     public String formattedClosedDate { get; set; }
     public String formattedCreatedDate { get; set; }
     public List<AttachmentWithFormattedDateTime> allCaseAttachmentsFormattedTime { get; set; }
+    private final String LOGIN_DOMAIN = 'my.salesforce';
+    private final String COMMUNITY_PAGE_DOMAIN = 'my.site';
 
     public ViewCaseController() {
         siteTitleName = 'My ASU';
@@ -425,6 +427,8 @@ public with sharing class ViewCaseController {
         HttpRequest emailMessageInsertRequest = new HttpRequest();
 
         String baseURL = System.URL.getOrgDomainUrl().toExternalForm();
+        baseURL = baseUrl.replace(LOGIN_DOMAIN, COMMUNITY_PAGE_DOMAIN);
+
 
         emailMessageInsertRequest.setHeader('Content-Type', 'application/json');
         emailMessageInsertRequest.setEndpoint(baseURL + '/services/apexrest/InsertEmailMessage');

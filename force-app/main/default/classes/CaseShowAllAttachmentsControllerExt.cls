@@ -3,9 +3,9 @@ public with sharing class CaseShowAllAttachmentsControllerExt {
     public String caseParentId { get; private set; }
 
     public String attachmentIdOnCase { get; set; }
-    private final String STANDARD_PREFIX = '.sandbox';
-    private final String DOWNLOAD_AS_ZIP_PREFIX = '--attachmentzip.sandbox';
-    private final String LOGIN_DOMAIN = 'my.salesforce';
+    private final String SANDBOX_PREFIX = '.sandbox';
+    private final String DOWNLOAD_AS_ZIP_PREFIX = '--attachmentzip';
+    private final String LOGIN_DOMAIN = '.my.salesforce';
     private final String VF_PAGE_DOMAIN = 'vf.force';
 
     public List<Attachment> allAttachmentsOnCaseOrEmailMessageOrCaseParent;
@@ -47,8 +47,14 @@ public with sharing class CaseShowAllAttachmentsControllerExt {
 
     private String getDownloadAllAsZipUrl() {
         String baseUrl = Url.getOrgDomainUrl().toExternalForm();
-        baseUrl = baseUrl.replace(LOGIN_DOMAIN, VF_PAGE_DOMAIN);
-        return baseUrl.replace(STANDARD_PREFIX, DOWNLOAD_AS_ZIP_PREFIX);
+        if (baseUrl.contains(SANDBOX_PREFIX)) {
+            baseUrl = baseUrl.replace(SANDBOX_PREFIX, DOWNLOAD_AS_ZIP_PREFIX + SANDBOX_PREFIX);
+            baseUrl = baseUrl.replace(LOGIN_DOMAIN, VF_PAGE_DOMAIN);
+        } else {
+            baseUrl = baseUrl.replace(LOGIN_DOMAIN, DOWNLOAD_AS_ZIP_PREFIX + '.' + VF_PAGE_DOMAIN);
+        }
+        
+        return baseUrl;
     }
 
     public PageReference deleteSelectedAttachmentOnCase() {

@@ -12,6 +12,7 @@ public without sharing class UserDeprovisioner {
     private List<CollaborationGroupMember> chatterGroupMemberships;
     private List<PermissionSetAssignment> permissionSetAssignments;
     private List<UserPackageLicense> userPackageLicenses;
+    private List<CronTrigger> cronJobs;
     // Data to delete/update data
     private List<Case> toUpdateCases;
     private UserLogin toUpdateUserLogin;
@@ -19,6 +20,7 @@ public without sharing class UserDeprovisioner {
     private List<CollaborationGroupMember> toDeleteChatterGroupMemberships;
     private List<PermissionSetAssignment> toDeletePermissionSetAssignments;
     private List<UserPackageLicense> toDeleteUserPackageLicenses;
+    private List<CronTrigger> toAbortCronJobs;
 
     private static Boolean debug = false;
     private static Boolean allowRepeatCases = true;
@@ -39,6 +41,7 @@ public without sharing class UserDeprovisioner {
         toDeleteChatterGroupMemberships = new List<CollaborationGroupMember>();
         toDeletePermissionSetAssignments = new List<PermissionSetAssignment>();
         toDeleteUserPackageLicenses = new List<UserPackageLicense>();
+        toAbortCronJobs = new List<CronTrigger>();
     }
 
     // Wraps together all the logic
@@ -59,6 +62,9 @@ public without sharing class UserDeprovisioner {
             if (matchDelegatedAdmin()) {
                 throw new DeprovisionUserException('Could not deprovision user. Matched Delegated Adminstrator.');
             }
+            if (matchPermSetToIgnore()) {
+                throw new DeprovisionUserException('Could not deprovision user. Matched Permission Set.');
+            }
             changeUserField('ProfileId');
             changeUserField('UserRoleId');
             transferCases();
@@ -68,6 +74,7 @@ public without sharing class UserDeprovisioner {
             removePermissionSetAssignments();
             removeChatterGroupMemberships();
             removeUserPackageLicenses();
+            abortCronJobs();
             deprovisionedUser.Deprovision_User__c = false;
             deprovisionedUser.IsActive = false;
         } catch (Exception e) {
@@ -184,6 +191,45 @@ public without sharing class UserDeprovisioner {
             addToProcessingNotes(removedStr.substring(0, removedStr.length() - 2));
         }
     }
+    private void abortCronJobs() {
+        Set<String> abortTypesSet = new Set<String>();
+        for (String deprovisionConfigurationName : deprovisionUserConfiguration.keySet()) {
+            if (deprovisionConfigurationName.contains('AbortCronJob')) {
+                Deprovision_User_Configuration__c configuration = deprovisionUserConfiguration.get(
+                    deprovisionConfigurationName
+                );
+                abortTypesSet.add(configuration.Name__c);
+            }
+        }
+
+        if (cronJobs != null && !cronJobs.isEmpty()) {
+            String removedStr = 'Aborting scheduled jobs: ';
+            List<String> removedJobStrs = new List<String>();
+            for (CronTrigger job : cronJobs) {
+                // Abort types form the configuration settings
+                if (abortTypesSet.contains(job.CronJobDetail.JobType)) {
+                    toAbortCronJobs.add(job);
+                    String name = job.CronJobDetail.Name;
+
+                    // if type 8 (a Report Run) - then the name is actually an id, and we need to get the name of the Report from fieldIdToNameMap
+                    if (job.CronJobDetail.JobType == '8') {
+                        name = fieldIdToNameMap.get(name);
+                    }
+
+                    removedJobStrs.add(name + ' (type: ' + getCronTypeNameFromType(job.CronJobDetail.JobType) + ')');
+                }
+            }
+
+            // only note if there were aborted jobs
+            if (!toAbortCronJobs.isEmpty()) {
+                removedStr += String.join(removedJobStrs, ', ');
+            } else {
+                removedStr += 'No jobs to abort';
+            }
+
+            addToProcessingNotes(removedStr);
+        }
+    }
     private void updateUserLogin() {
         if (userLogin != null && userLogin.IsFrozen) {
             addToProcessingNotes('Unfroze related UserLogin (' + userLogin.Id + ')');
@@ -254,22 +300,44 @@ public without sharing class UserDeprovisioner {
         return false;
     }
     private Boolean matchDelegatedAdmin() {
-        Boolean hasPermSet = false;
-        if (permissionSetAssignments != null && !permissionSetAssignments.isEmpty()) {
-            for (PermissionSetAssignment permSet : permissionSetAssignments) {
-                if (permSet.PermissionSetId == Id.valueOf('0PSd0000000qzf4GAA')) {
-                    hasPermSet = true;
-                    break;
-                }
-            }
-        }
-
-        if (userToDeprovision.Sandbox_Delagated_Administrator__c || hasPermSet) {
+        if (userToDeprovision.Sandbox_Delagated_Administrator__c) {
             addToProcessingNotes('Detected Delegated Administrator. Stopping User Deprovision');
             return true;
         } else {
             return false;
         }
+    }
+    private Boolean matchPermSetToIgnore() {
+        Boolean hasPermSet = false;
+
+        // Get a map of all the perm sets that should cause abort
+        Map<Id, String> permSetToIgnoreIdToName = new Map<Id, String>();
+        for (String deprovisionConfigurationName : deprovisionUserConfiguration.keySet()) {
+            Deprovision_User_Configuration__c customSetting = deprovisionUserConfiguration.get(
+                deprovisionConfigurationName
+            );
+            if (customSetting.Name.contains('PermissionSetToIgnore')) {
+                permSetToIgnoreIdToName.put(customSetting.Id__c, customSetting.Name__c);
+            }
+        }
+
+        // Check if this user has at least one of these
+        if (permissionSetAssignments != null && !permissionSetAssignments.isEmpty()) {
+            for (PermissionSetAssignment permSet : permissionSetAssignments) {
+                // this perm set is one of the abort-causing perm sets
+                if (permSetToIgnoreIdToName.keySet().contains(permSet.PermissionSetId)) {
+                    hasPermSet = true;
+                    // record this in the notes
+                    addToProcessingNotes(
+                        'Permission set matched to: ' +
+                        permSetToIgnoreIdToName.get(permSet.PermissionSetId) +
+                        ', Stopping User Deprovision'
+                    );
+                    break;
+                }
+            }
+        }
+        return hasPermSet;
     }
     private void changeUserField(String fieldName) {
         Deprovision_User_Configuration__c changeFieldTo = deprovisionUserConfiguration.get(
@@ -306,6 +374,9 @@ public without sharing class UserDeprovisioner {
     public void setUserPackageLicenses(List<UserPackageLicense> userPackageLicenses) {
         this.userPackageLicenses = userPackageLicenses;
     }
+    public void setCronJobs(List<CronTrigger> cronJobs) {
+        this.cronJobs = cronJobs;
+    }
     public void setUserLogin(UserLogin userLogin) {
         this.userLogin = userLogin;
     }
@@ -336,10 +407,41 @@ public without sharing class UserDeprovisioner {
     public List<PermissionSetAssignment> getToDeletePermissionSetAssignments() {
         return toDeletePermissionSetAssignments;
     }
+    public List<CronTrigger> getToAbortCronJobs() {
+        return toAbortCronJobs;
+    }
     public List<UserPackageLicense> getToDeleteUserPackageLicenses() {
         return toDeleteUserPackageLicenses;
     }
 
     public class DeprovisionUserException extends Exception {
+    }
+
+    private static Map<String, String> cronTypeNameMap;
+    private static String getCronTypeNameFromType(String key) {
+        if (cronTypeNameMap == null) {
+            cronTypeNameMap = new Map<String, String>();
+
+            // Get from picklist
+            Map<String, String> nameToKey = ObjectService.getPicklistChoicesMap('CronJobDetail', 'JobType');
+            for (String name : nameToKey.keySet()) {
+                cronTypeNameMap.put(nameToKey.get(name), name);
+            }
+            // Add any others that we know from experience
+            if (!cronTypeNameMap.containsKey('E'))
+                cronTypeNameMap.put('E', 'Sitemap SEO Generation Job');
+            if (!cronTypeNameMap.containsKey('G'))
+                cronTypeNameMap.put('G', 'Sitemap SEO Incremental Job');
+            if (!cronTypeNameMap.containsKey('K'))
+                cronTypeNameMap.put('K', 'Autonomous Data Loader Job');
+            if (!cronTypeNameMap.containsKey('T'))
+                cronTypeNameMap.put('T', 'Report Type Metadata for Search');
+            if (!cronTypeNameMap.containsKey('X'))
+                cronTypeNameMap.put('X', 'Standard Report Type Metadata for Search');
+        }
+
+        if (cronTypeNameMap.containsKey(key))
+            return cronTypeNameMap.get(key);
+        return 'UNKNOWN';
     }
 }

@@ -1,8 +1,6 @@
 public class NavLinks {
     public NavLinks() {
     }
-    public NavLinks(FamilyPortalController controller) {
-    }
     public NavLinks(ServiceCenter controller) {
     }
     public NavLinks(viewCaseController controller) {

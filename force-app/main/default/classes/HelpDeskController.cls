@@ -641,16 +641,29 @@ public with sharing class HelpDeskController {
         }
 
         ID functionalTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group');
+
+        Id userProfileId = UserInfo.getProfileId();
+
+        List<Help_Desk_Profile_Map__mdt> profileToFGMap = [
+            SELECT Functional_Group_Id__c
+            FROM Help_Desk_Profile_Map__mdt
+            WHERE Profile_Id__c =: userProfileId
+            LIMIT 1
+        ];
+
+        if (profileToFGMap.size() == 0) {
+            profileToFGMap = [
+                SELECT Functional_Group_Id__c
+                FROM Help_Desk_Profile_Map__mdt
+                WHERE MasterLabel = 'DEFAULT'
+                LIMIT 1
+            ];
+        }
+
         myCase.ContactId = selectedContactId;
         myCase.Status = 'New';
         myCase.Campus__c = 'Tempe';
-        myCase.CC_Functional_Group__c = [
-            SELECT Id, Name
-            FROM Case_Classification__c
-            WHERE RecordType.Name = 'Functional Group' AND Active__c = TRUE AND Name = 'Help Desk'
-            LIMIT 1
-        ]
-        .Id;
+        myCase.CC_Functional_Group__c = profileToFGMap[0].Functional_Group_Id__c;
         ccPicklist.selectedFunctionalGroup = myCase.CC_Functional_Group__c;
         ccPicklist.updateCategoryAndSubCategory();
     }

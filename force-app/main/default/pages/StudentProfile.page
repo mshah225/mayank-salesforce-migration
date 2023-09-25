@@ -437,7 +437,13 @@
                                     <a href="#" data-toggle="modal" data-target="#myModal"> Create New Service Case </a>
                                 </td>
 
-                                <div class="modal fade" id="myModal" role="dialog">
+                                <div
+                                    class="modal fade"
+                                    id="myModal"
+                                    data-backdrop="static"
+                                    data-keyboard="false"
+                                    role="dialog"
+                                >
                                     <div class="modal-dialog">
                                         <!-- Modal content-->
                                         <div class="modal-content">
@@ -454,6 +460,7 @@
                                             </div>
                                             <div class="modal-body">
                                                 <div id="modalError" style="color: red"></div>
+                                                <div id="modalResult"></div>
                                                 <div class="form-group">
                                                     <label for="comment">Functional Group:</label>
                                                     <apex:form>
@@ -2137,6 +2144,11 @@
                                                                 </tr>
                                                             </apex:repeat>
                                                         </apex:outputPanel>
+                                                        <apex:outputPanel
+                                                            rendered="{!IF(studentMilestonesUGrad.size > 0, false, true)}"
+                                                        >
+                                                            <div>No undergraduate milestones found.</div>
+                                                        </apex:outputPanel>
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -3088,6 +3100,11 @@
                                                         </td>
                                                     </tr>
                                                 </apex:repeat>
+                                                <apex:outputPanel
+                                                    rendered="{!IF(testGradScoreList.size > 0, false, true)}"
+                                                >
+                                                    <div>No graduate test scores found.</div>
+                                                </apex:outputPanel>
                                             </tbody>
                                         </table>
                                     </div>
@@ -3423,21 +3440,67 @@
                     funcGroup,
                     '{!theContact.EMPLId__c}',
                     function (result, event) {
+                        // Hide input fields
                         document.getElementById('usrSubject').value = '';
                         document.getElementById('usrDescription').value = '';
                         document.getElementById('modalError').innerHTML = '';
+                        document.getElementById('modalResult').innerHTML = '';
+                        var form_groups = document.getElementsByClassName('form-group');
+                        for (var group of form_groups) {
+                            group.style.display = 'none';
+                        }
+                        var form_footers = document.getElementsByClassName('modal-footer');
+                        for (var footer of form_footers) {
+                            footer.style.display = 'none';
+                        }
+
                         var url = window.location.href;
-                        sforce.console.openPrimaryTab(null, './' + result, true);
-                        jQuery('#myModal').modal('hide');
+                        var caseUrl = './' + result;
+                        var modalResultText = 'Case created successfully! <br><br> Case Number: ' + result;
+                        // '<br>' +
+                        // 'Click <a href="#" onclick="openCaseDetails(event, \'' +
+                        // result +
+                        // '\')">here</a> to view the case.';
+                        document.getElementById('modalResult').innerHTML = modalResultText;
                     }
                 );
             }
         }
 
+        function openCaseDetails(event, recid) {
+            event.preventDefault(); // Prevent the default link behavior
+
+            openTab(recid, 'Case Details');
+        }
+
+        function isLightningExperienceOrSalesforce() {
+            return typeof sforce != 'undefined' && sforce && !!sforce.one;
+        }
+
+        function openTab(recid, recname) {
+            var isIFrame = window.self !== window.top;
+            if (isLightningExperienceOrSalesforce() || !isIFrame) {
+                window.open('/' + recid + '?saveURL=%2F' + recid + '&retURL=%2F' + recid, '_blank');
+            } else {
+                sforce.console.openPrimaryTab(null, './' + recid, true);
+            }
+        }
+
         function clearError() {
             document.getElementById('modalError').innerHTML = '';
+            document.getElementById('modalResult').innerHTML = '';
             document.getElementById('usrSubject').value = '';
             document.getElementById('usrDescription').value = '';
+
+            // unhide input fields
+            var form_groups = document.getElementsByClassName('form-group');
+            for (var group of form_groups) {
+                group.style.display = 'block';
+            }
+            var form_footers = document.getElementsByClassName('modal-footer');
+            for (var footer of form_footers) {
+                footer.style.display = 'block';
+            }
         }
 
         $j = jQuery.noConflict();

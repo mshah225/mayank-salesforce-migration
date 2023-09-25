@@ -1245,7 +1245,9 @@ global with sharing class StudentProfileController {
                 IsVisibleInSelfService = false
             );
             insert feedbackCase;
-            return feedbackCase.Id;
+
+            Case insertedCase = [SELECT CaseNumber FROM Case WHERE Id = :feedbackCase.Id];
+            return insertedCase.CaseNumber;
         } catch (Exception e) {
             vars.add(ErrorLogger.convertStringToJSON('emplId', emplidIn));
             vars.add(ErrorLogger.convertStringToJSON('subjectIn', subjectIn));

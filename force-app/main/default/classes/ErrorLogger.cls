@@ -94,12 +94,16 @@ public without sharing class ErrorLogger {
         System.debug(toString());
 
         caseToCreate.Subject = getSubject();
-        List<Case> oldCases = getDuplicateCasesFromToday();
 
-        if (!oldCases.isEmpty() && !allowRepeats) {
-            oldCases[0].Description = oldCases[0].Description + '\n' + getCurrentTimeStamp();
-            caseToCreate = oldCases[0];
+        if (!allowRepeats) {
+            List<Case> oldCases = getDuplicateCasesFromToday();
+
+            if (!oldCases.isEmpty()) {
+                oldCases[0].Description = oldCases[0].Description + '\n' + getCurrentTimeStamp();
+                caseToCreate = oldCases[0];
+            }
         }
+
         try {
             upsert caseToCreate;
         } catch (Exception errorLoggerException) {

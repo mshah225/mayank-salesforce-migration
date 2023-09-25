@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>This contains a map that connects the Profile Id of the logged in user to the default functional group for creating a case.</description>
-    <label>Help Desk Profile Map</label>
-    <pluralLabel>Help Desk Profile Maps</pluralLabel>
-    <visibility>Public</visibility>
-</CustomObject>

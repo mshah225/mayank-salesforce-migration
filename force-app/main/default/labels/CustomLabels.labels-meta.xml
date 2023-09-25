@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?><CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
-    <labels>
-        <fullName>MyASU_ContactUs_CAR</fullName>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>MyASU ContactUs CAR</shortDescription>
-        <value>a04Dl000006BNA9</value>
-    </labels>
-</CustomLabels>

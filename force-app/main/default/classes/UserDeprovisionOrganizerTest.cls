@@ -12,15 +12,23 @@ public class UserDeprovisionOrganizerTest {
     @TestSetup
     private static void setupTestData() {
         // 5 Users
-        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
-        List<User> usersToDeprovision = (List<User>) userCreator.create(5);
-        Id standardProfile = [SELECT Id FROM Profile WHERE Name = 'Standard User'].Id;
-        for (Integer i = 0; i < usersToDeprovision.size(); i++) {
-            User user = usersToDeprovision[i];
-            user.ProfileId = standardProfile;
-            user.FirstName = 'userDepro.testUser' + i;
-            user.Username = 'userDepro.testUser' + i + '@test.example.com';
-            user.CommunityNickname = 'userDepro.testUser' + i;
+        String standardProfile = RecordIdHelper.getProfileId('Standard User');
+        List<User> usersToDeprovision = new List<User>();
+        for (Integer i = 0; i < 5; i++) {
+            User user = new User(
+                FirstName = 'userDepro.testUser' + i,
+                LastName = 'User-' + i,
+                Username = 'userDepro.testUser' + i + '@test.example.com',
+                Email = 'test.user.' + i + '@test.example.com',
+                Alias = 'testuser',
+                CommunityNickname = 'userDepro.testUser' + i,
+                TimeZoneSidKey = 'America/Phoenix',
+                LocaleSidKey = 'en_US',
+                EmailEncodingKey = 'ISO-8859-1',
+                ProfileId = standardProfile,
+                LanguageLocaleKey = 'en_US'
+            );
+            usersToDeprovision.add(user);
         }
         System.runAs(new User(Id = UserInfo.getUserId())) {
             insert usersToDeprovision;
@@ -57,6 +65,9 @@ public class UserDeprovisionOrganizerTest {
                 Name = 'RemovePackageLicense_icAgentConsole',
                 Id__c = icAgentConsoleId
             )
+        );
+        deproivisionConfigurations.add(
+            new Deprovision_User_Configuration__c(Name = 'AbortCronJob_Schuduled_Apex', Name__c = '7')
         );
         System.runAs(new User(Id = UserInfo.getUserId())) {
             insert deproivisionConfigurations;
@@ -162,6 +173,15 @@ public class UserDeprovisionOrganizerTest {
         }
         System.runAs(new User(Id = UserInfo.getUserId())) {
             insert casesToAdd;
+        }
+
+        // And scheduled jobs - one every 15 minutes
+        for (Integer i = -0; i < 4; i++) {
+            System.runAs(usersToDeprovision[0]) {
+                Schedulable job = new ScheduledStalledSMSDetector();
+                String sch = '0 ' + 15 * i + ' * * * ?';
+                System.Schedule('UserDeproJob-' + i, sch, job);
+            }
         }
 
         UserLogin freezeFirstUserLogin = [SELECT Id, UserId, IsFrozen FROM UserLogin WHERE UserId = :uids[0]][0];
@@ -279,6 +299,38 @@ public class UserDeprovisionOrganizerTest {
         System.assert(
             theUserPostDeprovision.Processing_Notes__c.contains('Removed user from permissionSets:'),
             'The deletion of permission set assignments should have been recorded on the user'
+        );
+    }
+
+    @isTest
+    public static void checkUserDeprovisionedWithScheduledJobs() {
+        Map<Id, User> oldUsersMap = new Map<Id, User>();
+        List<User> newUsers = new List<User>();
+        User theUser = [SELECT Id FROM User WHERE FirstName = 'userDepro.testUser0'][0];
+
+        theUser.Deprovision_User__c = false;
+        oldUsersMap.put(theUser.Id, theUser);
+        newUsers.add(new User(Id = theUser.Id, Deprovision_User__c = true));
+
+        UserDeprovisionOrganizer deprovisionOrganizer = new UserDeprovisionOrganizer(
+            (Map<Id, User>) oldUsersMap,
+            (List<User>) newUsers
+        );
+
+        List<CronTrigger> scheduledJobs = [SELECT Id FROM CronTrigger WHERE OwnerId = :theUser.Id];
+        System.assert(!scheduledJobs.isEmpty(), 'This user should have some scheduled jobs pre-deprovision');
+
+        Test.startTest();
+        deprovisionOrganizer.deprovisionUsersAfterUpdate();
+        Test.stopTest();
+
+        scheduledJobs = [SELECT Id FROM CronTrigger WHERE OwnerId = :theUser.Id];
+        System.assert(scheduledJobs.isEmpty(), 'Should have aborted user\'s jobs');
+
+        User theUserPostDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id = :theUser.Id][0];
+        System.assert(
+            theUserPostDeprovision.Processing_Notes__c.contains('Aborting scheduled jobs:'),
+            'The aborting of scheduled jobs should have been recorded on the user'
         );
     }
 
@@ -404,13 +456,20 @@ public class UserDeprovisionOrganizerTest {
         List<User> newUsers = new List<User>();
 
         Id standardProfile = RecordIdHelper.getProfileId('Standard User');
+        PermissionSet permSet = [SELECT Id FROM PermissionSet WHERE Name = 'View_Setup_And_Configuration'];
         System.runAs(new User(Id = UserInfo.getUserId())) {
             Deprovision_User_Configuration__c deproConfig = new Deprovision_User_Configuration__c(
                 Name = 'ProfileToIgnore',
                 Id__c = standardProfile,
-                Name__c = ''
+                Name__c = 'Standard User'
             );
-            insert deproConfig;
+
+            Deprovision_User_Configuration__c deproConfig2 = new Deprovision_User_Configuration__c(
+                Name = 'PermissionSetToIgnore',
+                Id__c = permSet.Id,
+                Name__c = 'View Setup And Configuration'
+            );
+            insert new List<Deprovision_User_Configuration__c>{ deproConfig, deproConfig2 };
         }
 
         Integer counter = 0;
@@ -430,9 +489,14 @@ public class UserDeprovisionOrganizerTest {
                 newUsers.add(
                     new User(Id = user.Id, Role_Administrator_Developer__c = true, Deprovision_User__c = true)
                 );
-            } else {
+            } else if (counter < 4) {
                 // Stop on Delegated Admin users
-                psas.add(new PermissionSetAssignment(AssigneeId = user.Id, PermissionSetId = '0PSd0000000qzf4GAA'));
+                newUsers.add(
+                    new User(Id = user.Id, Sandbox_Delagated_Administrator__c = true, Deprovision_User__c = true)
+                );
+            } else {
+                // Stop on perm set matches
+                psas.add(new PermissionSetAssignment(AssigneeId = user.Id, PermissionSetId = permSet.Id));
                 newUsers.add(new User(Id = user.Id, Deprovision_User__c = true));
             }
             user.Deprovision_User__c = false;
@@ -469,6 +533,8 @@ public class UserDeprovisionOrganizerTest {
                 properException = true;
             } else if (user.Processing_Notes__c.contains('Detected Delegated Administrator')) {
                 properException = true;
+            } else if (user.Processing_Notes__c.contains('Permission set matched to')) {
+                properException = true;
             }
             System.assert(properException, 'Error was of incorrect type');
         }
@@ -491,7 +557,7 @@ public class UserDeprovisionOrganizerTest {
 
         List<Case> usersCases = [SELECT Id, OwnerId FROM Case WHERE OwnerId = :theUser.Id];
 
-        usersCases = [SELECT Id FROM Case WHERE OwnerId = :theUser.Id];
+        usersCases = [SELECT Id, OwnerId FROM Case WHERE OwnerId = :theUser.Id];
         System.assert(!usersCases.isEmpty(), 'Should have some cases');
 
         Test.startTest();
@@ -525,14 +591,20 @@ public class UserDeprovisionOrganizerTest {
         Test.stopTest();
 
         User theUserPostDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id = :theUser.Id][0];
-        System.assert(theUserPostDeprovision.Processing_Notes__c.contains('The following errors have occurred:'));
+        System.assert(theUserPostDeprovision.Processing_Notes__c.contains('Errors'));
 
         List<Case> generatedErrorLoggerCases = [
             SELECT Id, Subject, Description
             FROM Case
             WHERE Subject LIKE '%DatabaseErrorException%'
         ];
-        System.assertEquals(2, generatedErrorLoggerCases.size(), 'Should have added an ErrorLogger case for each case');
+        System.assertEquals(
+            1,
+            generatedErrorLoggerCases.size(),
+            'Should have added a single ErrorLogger case for all errors'
+        );
+        System.assert(generatedErrorLoggerCases[0].Description.contains('deleteResult[0]'));
+        System.assert(generatedErrorLoggerCases[0].Description.contains('deleteResult[1]'));
     }
 
     @isTest
@@ -558,14 +630,20 @@ public class UserDeprovisionOrganizerTest {
         Test.stopTest();
 
         User theUserPostDeprovision = [SELECT Processing_Notes__c FROM User WHERE Id = :theUser.Id][0];
-        System.assert(theUserPostDeprovision.Processing_Notes__c.contains('The following errors have occurred:'));
+        System.assert(theUserPostDeprovision.Processing_Notes__c.contains('Errors'));
 
         List<Case> generatedErrorLoggerCases = [
             SELECT Id, Subject, Description
             FROM Case
             WHERE Subject LIKE '%DatabaseErrorException%'
         ];
-        System.assertEquals(2, generatedErrorLoggerCases.size(), 'Should have added an ErrorLogger case for each case');
+        System.assertEquals(
+            1,
+            generatedErrorLoggerCases.size(),
+            'Should have added a single ErrorLogger case for all errors'
+        );
+        System.assert(generatedErrorLoggerCases[0].Description.contains('saveResult[0]'));
+        System.assert(generatedErrorLoggerCases[0].Description.contains('saveResult[1]'));
     }
 
     @isTest

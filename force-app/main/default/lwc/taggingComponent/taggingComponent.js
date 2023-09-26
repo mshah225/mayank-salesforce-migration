@@ -189,7 +189,7 @@ export default class TaggingComponent extends LightningElement {
                 else if (result == "Error") {
                     const event = new ShowToastEvent({
                         "title": "error",
-                        "message": "Can't udpate this tag",
+                        "message": "Can't update this tag",
                         variant: 'error',
                         mode: 'dismissable'
                     });
@@ -217,7 +217,7 @@ export default class TaggingComponent extends LightningElement {
         }
         else {
             const event = new ShowToastEvent({
-                title : 'Error',
+                title : 'Missing Field(s)',
                 message : 'Please select a reason for removal.',
                 variant : 'error'
             });

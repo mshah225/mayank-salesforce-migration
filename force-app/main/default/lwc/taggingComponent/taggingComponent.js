@@ -14,6 +14,7 @@ export default class TaggingComponent extends LightningElement {
     @api recordId;
     @api selectedTag;
     @api selectedTagId;
+    @api show;
     @track contactTagList;
     @track tagList;
     @track tagSearch = "";
@@ -66,7 +67,12 @@ export default class TaggingComponent extends LightningElement {
                         console.log('_data' + _data);
                     }
 
-
+                    console.log(_date.length);
+                    if (_data.length == 0) {
+                        show = false;
+                    } else {
+                        show = true;
+                    }
                     console.log('_data after the temp json creation' + _data);
                     this.contactTagList = _data;
 

@@ -14,7 +14,6 @@ export default class TaggingComponent extends LightningElement {
     @api recordId;
     @api selectedTag;
     @api selectedTagId;
-    @api show;
     @track contactTagList;
     @track tagList;
     @track tagSearch = "";
@@ -65,13 +64,6 @@ export default class TaggingComponent extends LightningElement {
                         //This line is used to sort the tag which are verified on the UI.
                         _data = renderFormat.map((a) => { if (a.isVerified) { a.sortBy = 1; } else { a.sortBy = 0; } return a; }).sort((a, b) => b.sortBy - a.sortBy)
                         console.log('_data' + _data);
-                    }
-
-                    console.log(_date.length);
-                    if (_data.length == 0) {
-                        show = false;
-                    } else {
-                        show = true;
                     }
                     console.log('_data after the temp json creation' + _data);
                     this.contactTagList = _data;

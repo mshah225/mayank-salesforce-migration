@@ -206,9 +206,26 @@ export default class TaggingComponent extends LightningElement {
 
     //Captures the TagName/Label and does the updation on ContactTag__c Object
     captureTagLabel(event) {
-        this.clickedButtonLabel = event.target.dataset.id;
-        this.removeTagFromUI();
-        this.isModalOpen = false;
+        const All_Compobox_Valid = [...this.template.querySelectorAll('lightning-combobox')]
+            .reduce((validSoFar, input_Field_Reference) => {
+                input_Field_Reference.reportValidity();
+                return validSoFar && input_Field_Reference.checkValidity();
+            }, true);
+ 
+        if (All_Compobox_Valid) {
+            this.clickedButtonLabel = event.target.dataset.id;
+            this.removeTagFromUI();
+            this.isModalOpen = false;
+        }
+        else {
+            const event = new ShowToastEvent({
+                title : 'Error',
+                message : 'Please select a reason for removal.',
+                variant : 'error'
+            });
+            this.dispatchEvent(event);
+        }
+        
     }
 
     @track isModalOpen = false;

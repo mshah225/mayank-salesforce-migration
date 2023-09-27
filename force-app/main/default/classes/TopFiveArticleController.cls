@@ -154,7 +154,7 @@ global class TopFiveArticleController {
 
     global static string getArticleUrl(KnowledgeArticleVersion kav) {
         String url = System.URL.getSalesforceBaseURL().toExternalForm();
-        url = url.replace('salesforce.com', 'salesforce-site.com');
+        url = url.replace('salesforce.com', 'salesforce-site.com/kb/articles/');
 
         string articleTypeString;
         string articleIdPrefix = String.valueOf(kav.Id).substring(0, 3);

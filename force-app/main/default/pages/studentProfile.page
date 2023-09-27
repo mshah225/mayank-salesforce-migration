@@ -418,7 +418,13 @@
                                     <a href="#" data-toggle="modal" data-target="#myModal"> Create New Service Case </a>
                                 </td>
 
-                                <div class="modal fade" id="myModal" role="dialog">
+                                <div
+                                    class="modal fade"
+                                    id="myModal"
+                                    data-backdrop="static"
+                                    data-keyboard="false"
+                                    role="dialog"
+                                >
                                     <div class="modal-dialog">
                                         <!-- Modal content-->
                                         <div class="modal-content">
@@ -435,6 +441,7 @@
                                             </div>
                                             <div class="modal-body">
                                                 <div id="modalError" style="color: red"></div>
+                                                <div id="modalResult"></div>
                                                 <div class="form-group">
                                                     <label for="comment">Functional Group:</label>
                                                     <apex:form >
@@ -1412,15 +1419,19 @@
                                     </h4>
                                 </div>
 
-                                <div style="overflow: auto;">
+                                <div style="overflow: auto">
                                     <div class="table-responsive">
                                         <apex:dataTable styleClass="table table-striped table-bordered"
                                             value="{!emailsForContact}"
                                             var="emailSends"
                                             rendered="{!IF(emailsForContact.size > 0,true,false)}"
                                         >
-                                            <apex:column headerValue="Email Subject" value="{!emailSends.et4ae5__SubjectLine__c}" />
-                                            <apex:column headerValue="Date Sent" value="{!emailSends.et4ae5__DateSent__c}" />
+                                            <apex:column headerValue="Email Subject"
+                                                value="{!emailSends.et4ae5__SubjectLine__c}"
+                                            />
+                                            <apex:column headerValue="Date Sent"
+                                                value="{!emailSends.et4ae5__DateSent__c}"
+                                            />
                                         </apex:dataTable>
                                     </div>
 
@@ -3265,8 +3276,7 @@
             var e = document.getElementsByClassName('chartBlock')[0];
             var funcGroup = e.options[e.selectedIndex].value;
             if (funcGroup == '') {
-                document.getElementById('modalError').innerHTML =
-                    'You must select a functional group';
+                document.getElementById('modalError').innerHTML = 'You must select a functional group';
             } else if (subject.length <= 0 || description.length <= 0) {
                 document.getElementById('modalError').innerHTML =
                     'Please ensure that subject and description are not blank';
@@ -3278,21 +3288,67 @@
                     funcGroup,
                     '{!theContact.EMPLId__c}',
                     function (result, event) {
+                        // Hide input fields
                         document.getElementById('usrSubject').value = '';
                         document.getElementById('usrDescription').value = '';
                         document.getElementById('modalError').innerHTML = '';
+                        document.getElementById('modalResult').innerHTML = '';
+                        var form_groups = document.getElementsByClassName('form-group');
+                        for (var group of form_groups) {
+                            group.style.display = 'none';
+                        }
+                        var form_footers = document.getElementsByClassName('modal-footer');
+                        for (var footer of form_footers) {
+                            footer.style.display = 'none';
+                        }
+
                         var url = window.location.href;
-                        sforce.console.openPrimaryTab(null, './' + result, true);
-                        jQuery('#myModal').modal('hide');
+                        var caseUrl = './' + result;
+                        var modalResultText = 'Case created successfully! <br><br> Case Number: ' + result;
+                        // '<br>' +
+                        // 'Click <a href="#" onclick="openCaseDetails(event, \'' +
+                        // result +
+                        // '\')">here</a> to view the case.';
+                        document.getElementById('modalResult').innerHTML = modalResultText;
                     }
                 );
             }
         }
 
+        function openCaseDetails(event, recid) {
+            event.preventDefault(); // Prevent the default link behavior
+
+            openTab(recid, 'Case Details');
+        }
+
+        function isLightningExperienceOrSalesforce() {
+            return typeof sforce != 'undefined' && sforce && !!sforce.one;
+        }
+
+        function openTab(recid, recname) {
+            var isIFrame = window.self !== window.top;
+            if (isLightningExperienceOrSalesforce() || !isIFrame) {
+                window.open('/' + recid + '?saveURL=%2F' + recid + '&retURL=%2F' + recid, '_blank');
+            } else {
+                sforce.console.openPrimaryTab(null, './' + recid, true);
+            }
+        }
+
         function clearError() {
             document.getElementById('modalError').innerHTML = '';
+            document.getElementById('modalResult').innerHTML = '';
             document.getElementById('usrSubject').value = '';
             document.getElementById('usrDescription').value = '';
+
+            // unhide input fields
+            var form_groups = document.getElementsByClassName('form-group');
+            for (var group of form_groups) {
+                group.style.display = 'block';
+            }
+            var form_footers = document.getElementsByClassName('modal-footer');
+            for (var footer of form_footers) {
+                footer.style.display = 'block';
+            }
         }
 
         $j = jQuery.noConflict();
@@ -4408,7 +4464,7 @@
                                                 '<th scope="col" onclick="sortEnrolledOnClick(\'Grade\')">Grade</th>' +
                                                 '<th scope="col">Conf. Of Participation ' +
                                                 '<a class="fa fa-question-circle" title="Yes means:&#10;-Student participated in this class in Canvas&#10;-Student completed the Confirmation of Participation (COP) survey&#10;-Student is an international student and exempt from the process&#10;&#10;No means:&#10;-Student has not met any of those conditions&#10;&#10;-- means:&#10;-The class was taken before ASU tracked COP in this way" data-placement="right"></a>' +
-                                            	'</th>' +
+                                                '</th>' +
                                                 '<th scope="col">ASR</th>' +
                                                 '</tr>' +
                                                 '</thead>' +
@@ -4540,7 +4596,7 @@
                                                 '<th scope="col" onclick="sortDroppedOnClick(\'Status\')">Status</th>' +
                                                 '<th scope="col">Conf. Of Participation ' +
                                                 '<a class="fa fa-question-circle" title="Yes means:&#10;-Student participated in this class in Canvas&#10;-Student completed the Confirmation of Participation (COP) survey&#10;-Student is an international student and exempt from the process&#10;&#10;No means:&#10;-Student has not met any of those conditions&#10;&#10;-- means:&#10;-The class was taken before ASU tracked COP in this way" data-placement="right"></a>' +
-                                            	'</th>' +
+                                                '</th>' +
                                                 '<th scope="col">ASR</th>' +
                                                 '</tr>' +
                                                 '</thead>' +
@@ -4902,10 +4958,10 @@
                             if (
                                 asrResponseTable.indexOf(
                                     result[i].classInfo.STRM__c +
-                                    '|' +
-                                    result[i].classInfo.SESSION_CODE__c +
-                                    '|' +
-                                    result[i].classInfo.CLASS_NBR__c
+                                        '|' +
+                                        result[i].classInfo.SESSION_CODE__c +
+                                        '|' +
+                                        result[i].classInfo.CLASS_NBR__c
                                 ) > -1
                             ) {
                                 html +=

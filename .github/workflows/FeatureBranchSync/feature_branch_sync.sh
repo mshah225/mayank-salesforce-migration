@@ -12,6 +12,9 @@ cleanMergeArray=()
 cleanMergeCoreArray=()
 abortedMergeArray=()
 abortedMergeCoreArray=()
+dev="dev"
+qa="qa"
+uat="uat"
 
 for remote in $(git branch -r); do
 	if [[ "$remote" != "origin/HEAD" ]] && [[ "$remote" != "->" ]] && [[ "$remote" != "origin/main" ]]; then

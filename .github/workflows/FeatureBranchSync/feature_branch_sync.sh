@@ -1,5 +1,5 @@
 set +e
-curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":zap: Syncing Feature Branches","emoji":true}},{"type":"section","text":{"type":"mrkdwn","text":"*Notice:* This was automatically triggered by a push to `main` or manually run by a repository administrator."}},{"type":"section","text":{"type":"mrkdwn","text":"Please *do not* make any changes to feature branches until this is complete, and then make sure to update your local copy of the repository."}},{"type":"section","text":{"type":"mrkdwn","text":"<!here|here>"}}]}' https://hooks.slack.com/services/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
+curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":sync: Syncing Feature Branches","emoji":true}},{"type":"section","text":{"type":"mrkdwn","text":"This was automatically triggered by a push to the primary branch or manually run by a repository administrator. Please *do not* make any changes to feature branches until this is complete, and then make sure to update your local copy of the repository."}},{"type":"section","text":{"type":"mrkdwn","text":"<!here|here>"}}]}' https://hooks.slack.com/services/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
 git config pull.rebase false && git config user.name "GitHub Actions" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com" && git fetch --prune &>/dev/null && git reset --hard origin/main &>/dev/null
 
 deletedBranchCount=0
@@ -69,18 +69,9 @@ blocks='{
 			"type": "header",
 			"text": {
 				"type": "plain_text",
-				"text": ":partywizard: Syncing Feature Branches [DONE]",
+				"text": ":verified-badge: Feature Branch Sync Results",
 				"emoji": true
 			}
-		},
-		{
-			"type": "section",
-			"fields": [
-				{
-					"type": "mrkdwn",
-					"text": "<!here|here>"
-				}
-			]
 		},
         {
 			"type": "divider"
@@ -90,7 +81,7 @@ blocks='{
 			"fields": [
 				{
 					"type": "mrkdwn",
-					"text": ":git-push: *CORE BRANCHES PASSING:* '"$cleanMergeCoreCount"' of 3"
+					"text": ":code-brackets: *CORE BRANCHES PASSING:* '"$cleanMergeCoreCount"' of 3"
 				}
 			]
 		},'
@@ -241,7 +232,7 @@ if [ ${#deletedBranchArray[@]} -gt 0 ]; then
 			"fields": [
 				{
 					"type": "mrkdwn",
-					"text": ":x: *DELETES:* '"$deletedBranchCount"'"
+					"text": ":crossmark: *DELETES:* '"$deletedBranchCount"'"
 				}
 			]
 		},
@@ -274,7 +265,7 @@ else
 			"fields": [
 				{
 					"type": "mrkdwn",
-					"text": ":x: *DELETES:* '"$deletedBranchCount"'"
+					"text": ":crossmark: *DELETES:* '"$deletedBranchCount"'"
 				},
 			]
 		},
@@ -301,7 +292,7 @@ if [ ${#abortedMergeArray[@]} -gt 0 ]; then
 			"fields": [
 				{
 					"type": "mrkdwn",
-					"text": ":exclamation: *ABORTED MERGES:* '"$abortedMergeCount"'"
+					"text": ":warning-badge: *ABORTED MERGES:* '"$abortedMergeCount"'"
 				}
 			]
 		},
@@ -334,7 +325,7 @@ else
 			"fields": [
 				{
 					"type": "mrkdwn",
-					"text": ":exclamation: *ABORTED MERGES:* '"$abortedMergeCount"'"
+					"text": ":warning-badge: *ABORTED MERGES:* '"$abortedMergeCount"'"
 				}
 			]
 		},
@@ -361,7 +352,7 @@ if [ ${#cleanMergeArray[@]} -gt 0 ]; then
 			"fields": [
 				{
 					"type": "mrkdwn",
-					"text": ":canvas-check: *CLEAN MERGES:* '"$cleanMergeCount"'"
+					"text": ":checkmark: *CLEAN MERGES:* '"$cleanMergeCount"'"
 				}
 			]
 		},
@@ -391,7 +382,7 @@ else
 			"fields": [
 				{
 					"type": "mrkdwn",
-					"text": ":canvas-check: *CLEAN MERGES:* '"$cleanMergeCount"'"
+					"text": ":checkmark: *CLEAN MERGES:* '"$cleanMergeCount"'"
 				},
 			]
 		},

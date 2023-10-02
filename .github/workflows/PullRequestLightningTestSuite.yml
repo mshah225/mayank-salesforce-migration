@@ -1,4 +1,4 @@
-name: Pull Request LWC Test Runs
+name: Pull Request Lightning Test Suite
 
 on:
     pull_request:
@@ -12,8 +12,8 @@ on:
             - 'main'
 
 jobs:
-    auto-lwc-tests:
-        name: LWC Tests
+    lightning-test-suite:
+        name: Lightning Test Suite
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
@@ -22,6 +22,6 @@ jobs:
             - name: Install npm
               run: |
                   npm install
-            - name: Run LWC tests
+            - name: Run LWC test suite
               run: |
                   npm run test:unit

@@ -46,7 +46,7 @@ export default class CaseQuickClose extends LightningElement {
     inputFieldsAfter = [];
     statusFieldLabel;
     validationError;
-    allowedCloseCaseSpamRTs = ['ASU_Service', 'ASU_Admissions_Services', 'ASU_Secure_Case'];
+    allowedCloseCaseSpamRTs = ['ASU_Service', 'ASU_Admission_Services', 'ASU_Secure_Case'];
 
     // Case Record
     @wire(getRecord, {

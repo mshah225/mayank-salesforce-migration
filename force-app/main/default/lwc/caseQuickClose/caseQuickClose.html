@@ -16,6 +16,16 @@
                     if:true={isButtonVisible}
                 ></lightning-button>
 
+                <!-- Case Close Spam Button -->
+                <span if:true={isRTAllowedClosedSpam}>
+                    &nbsp;&nbsp;
+                    <lightning-button
+                        variant={lwcCloseSpamButtonVariant}
+                        label={lwcCloseSpamButtonLabel}
+                        onclick={handleOnCaseCloseSpamButton}
+                        if:true={isSpamButtonVisible}
+                    ></lightning-button>
+                </span>
                 <!-- Loading -->
                 <template if:true={loading}>
                     <template if:false={formVisible}> <br /><br /> </template>

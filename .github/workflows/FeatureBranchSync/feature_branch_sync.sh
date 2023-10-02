@@ -69,7 +69,7 @@ blocks='{
 			"type": "header",
 			"text": {
 				"type": "plain_text",
-				"text": ":verified-badge: Syncing Feature Branches",
+				"text": ":verified-badge: Feature Branch Sync Results",
 				"emoji": true
 			}
 		},

@@ -153,16 +153,8 @@ global class TopFiveArticleController {
     }
 
     global static string getArticleUrl(KnowledgeArticleVersion kav) {
-        string urlPrefix = '';
-        string urlBase = '';
-        string sandboxInstance = [SELECT InstanceName FROM Organization LIMIT 1].InstanceName;
-        string sandboxName = UserInfo.getUserName().substringAfterLast('.');
-        if (isSandbox()) {
-            urlBase = sandboxName + '-asu';
-            urlPrefix = 'http://' + urlBase + '.' + sandboxInstance + '.force.com/kb/articles/';
-        } else {
-            urlPrefix = 'https://asu.secure.force.com/kb/articles/';
-        }
+        String url = System.URL.getSalesforceBaseURL().toExternalForm();
+        url = url.replace('salesforce.com', 'salesforce-site.com/kb/articles/');
 
         string articleTypeString;
         string articleIdPrefix = String.valueOf(kav.Id).substring(0, 3);
@@ -177,20 +169,15 @@ global class TopFiveArticleController {
             articleTypeString = articleIdPrefix;
         }
 
-        return urlPrefix + articleTypeString + kav.UrlName;
+        return url + articleTypeString + kav.UrlName;
     }
 
     global static string getMoreArticlesUrl(string dcGroup, string dataCategory) {
-        string url = '';
-        string urlBase = '';
-        string sandboxInstance = [SELECT InstanceName FROM Organization LIMIT 1].InstanceName;
-        string sandboxName = UserInfo.getUserName().substringAfterLast('.');
-        if (isSandbox()) {
-            urlBase = sandboxName + '-asu';
-            url = 'http://' + urlBase + '.' + sandboxInstance + '.force.com/kb/pkb_Home?l=en_US&c=';
-        } else {
-            url = 'https://asu.secure.force.com/kb/pkb_Home?l=en_US&c=';
-        }
+        String url = System.URL.getSalesforceBaseURL().toExternalForm();
+        url = url.replace('salesforce.com', 'salesforce-site.com');
+
+        url += '/kb/pkb_Home?l=en_US&c=';
+
         url += dcGroup.replace('__c', '') + '%3A' + dataCategory.replace('__c', '');
 
         return url;

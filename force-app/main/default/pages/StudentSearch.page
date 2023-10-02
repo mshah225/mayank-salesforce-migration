@@ -30,16 +30,52 @@
     </head>
 
     <body>
-        <!-- Adjust these class names -->
+        <!-- @TODO: Adjust these class names -->
         <div class="student-profile-container">
             <div class="student-profile-container-title">
                 <h1 style="float: left">Student 360: Student Search</h1>
                 <hr />
             </div>
+            <apex:repeat value="{!studentSearchMessages}" var="message">
+                <div class="alert">{!message}</div>
+            </apex:repeat>
+            <apex:form>
+                <apex:pageBlock mode="maindetail">
+                    <div id="student-search-input-field-container">
+                        <apex:inputText
+                            id="student-search-input-field"
+                            styleClass="slds-select"
+                            value="{!textToSearch}"
+                        />
+                        <apex:commandButton
+                            id="student-search-input-button"
+                            onclick="getStudentSearchResults(); return false;"
+                            value="Search"
+                        />
+                        <div id="student-search-input-field-description">
+                            <strong>Search by</strong> ASURITE, EMPLID, Campus ID, name or partial name ("LAST, FIRST"
+                            or "FIRST LAST" format)
+                        </div>
+                    </div>
+                    <br />
+                    <div id="student-search-results" style="display: none">
+                        <strong>Search results: "<span id="student-search-current-search-value"></span>"</strong>
+                        <div id="student-search-results-count">Your search returned X results</div>
+                    </div>
+                    <div id="student-search-errors"></div>
+                </apex:pageBlock>
+            </apex:form>
         </div>
     </body>
 
+    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}" />
+    <!-- <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/bootstrap.min.js')}" /> -->
+    <!-- <apex:includeScript value="{!URLFOR($Resource.bs_responsive_tabs)}" /> -->
+    <!-- <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.0/jquery.mask.min.js" /> -->
+
     <script type="text/javascript">
+        var studentSearchResults;
+        var studentSearchWrapper;
         var inConsole = false;
 
         function setTabTitle() {
@@ -77,11 +113,379 @@
             } else {
                 window.open(subtabUrl);
             }
+        }
 
-            $j = jQuery.noConflict();
+        $j = jQuery.noConflict();
+        $j(document).ready(function () {
+            $j('#student-search-errors').text("Start by entering in a search term and then click 'Search'");
+        });
 
-            $j(document).ready(function () {
-                // call remote action method here
+        function getStudentSearchResults() {
+            var userSearchInput = $j('[id$=student-search-input-field]').val().trim();
+            console.log(userSearchInput);
+
+            if (userSearchInput !== '') {
+                $j('#student-search-results').show();
+                $j('#student-search-errors').hide();
+
+                $j('#student-search-current-search-value').text(userSearchInput);
+            } else {
+                $j('#student-search-results').hide();
+                $j('#student-search-errors').show();
+
+                $j('#student-search-errors').text('Awaiting your instructions, captain.');
+            }
+        }
+
+        function getStudentSearchResults2() {
+            if (studentSearchResults != null) return;
+
+            document.getElementById('student-search-errors').innerHTML =
+                "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+
+            var searchString = document.getElementById('{!$Component.form1.searchString}');
+
+            var locationQuery = 'SELECT Id, Location_Code__c FROM Location__c WHERE Location_Status = true';
+            var records = [];
+
+            var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+            conn.query(locationQuery, function (locationError, locationResponse) {
+                if (locationError) {
+                    document.getElementById('student-search-errors').innerHTML = err;
+                } else {
+                    let locationRecords = locationResponse.records;
+
+                    console.log('total : ' + result.totalSize);
+                    console.log('fetched : ' + result.records.length);
+
+                    let isSearchingByCampus = false;
+                    // iterate over locationRecords and check for a search term match to location code
+                    locationRecords.forEach(function (record) {
+                        delete record.attributes;
+                    });
+                    locationRecords = JSON.stringify(locationRecords);
+
+                    if (true) {
+                        // if the search matches a campus code, then return all contacts with a program plan consisting of said code
+                    } else {
+                        // if the search isn't a campus code, then do a search based on:
+                        // ASURITE (matches exactly)
+                        // EMPLID (matches exactly)
+                        // Preferred_Full_Name__c (matches exactly)
+                        // LastName, Preferred_First_Name__c (matches exactly OR partial)
+                        // Preferred_First_Name__c LastName (matches exactly OR partial)
+                    }
+                }
+            });
+
+            // $or: [
+            //                 {ASURite_ID__c: {$eq: a}},
+            //                 {EMPLID__c: {$eq: b}},
+            //                 {ASURite_ID__c: {$eq: a}},
+            //                 {EMPLID__c: {$eq: b}},
+            //             ],
+            //
+            // Following query is equivalent to this SOQL
+            //
+            // "SELECT Id, Name, CreatedDate FROM Contact
+            //  WHERE LastName LIKE 'A%' AND CreatedDate >= YESTERDAY AND Account.Name = 'Sony, Inc.'
+            //  ORDER BY CreatedDate DESC, Name ASC
+            //  LIMIT 5 OFFSET 10"
+            //
+            // conn.sobject('Location__c')
+            //     .find(
+            //         {
+
+            //                 {ASURite_ID__c: {$eq: a}},
+            //                 {EMPLID__c: {$eq: b}},
+            //                 {ASURite_ID__c: {$eq: a}},
+            //                 {EMPLID__c: {$eq: b}},
+            //         },
+            //         'Id, ASURite_ID__c, Birthdate, EMPLID__c, LastName, Preferred_First_Name__c, Preferred_Full_Name__c'
+            //     )
+            //     .sort('-LastName')
+            //     .limit(1000)
+            //     .execute(function (err, records) {
+            //         if (err) {
+            //             document.getElementById('student-search-errors').innerHTML = err;
+            //         } else {
+            //             console.log('record length = ' + records.length);
+            //             for (var i = 0; i < records.length; i++) {
+            //                 var record = records[i];
+            //                 console.log('---------');
+            //                 console.log('Id: ' + record.Id);
+            //                 console.log('ASURITE: ' + record.ASURite_ID__c);
+            //                 console.log('Birthdate: ' + record.Birthdate);
+            //                 console.log('EMPLID__c: ' + record.EMPLID__c);
+            //                 console.log('LastName: ' + record.LastName);
+            //                 console.log('Preferred_First_Name__c: ' + record.Preferred_First_Name__c);
+            //                 console.log('Preferred_Full_Name__c: ' + record.Preferred_Full_Name__c);
+            //                 console.log('---------');
+            //             }
+            //         }
+            //     });
+
+            // conn.search('FIND {Un*} IN ALL FIELDS RETURNING Account(Id, Name), Lead(Id, Name)', function (err, res) {
+            //     if (err) {
+            //         document.getElementById('student-search-errors').innerHTML = err;
+            //     }
+            //     console.log(res);
+            // });
+
+            // conn.sobject('Contact')
+            //     .find(
+            //         {
+            //             $or: [{EndDate: {$gt: a}}, {EndDate: {$lt: b}}],
+            //         },
+            //         'Id, ASURite_ID__c, Birthdate, EMPLID__c, LastName, Preferred_First_Name__c, Preferred_Full_Name__c'
+            //     )
+            //     .limit(1000)
+            //     .then((results) => {
+            //         console.log(data);
+            //     })
+            //     .catch((err) => {
+            //         console.error('refreshResidencyPicklistValues', err);
+            //     });
+
+            // // Construct a map within a map
+            // studentSearchWrapperMap: [
+            //     {Contact__c: '1st', name: 'First', innerArray: ['this', 'that']},
+            //     {id: '2nd', name: 'Second', innerArray: ['some', 'what']},
+            // ];
+
+            conn.query(studentSearchQuery, function (err, response) {
+                if (err) {
+                    document.getElementById('student-search-errors').innerHTML = err;
+                } else {
+                    let studentSearchResponse = response.records;
+                    studentSearchResponse.forEach(function (record) {
+                        delete record.attributes;
+                    });
+                    studentSearchResponse = JSON.stringify(studentSearchResponse);
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.StudentSearchController.getStudentSearchResults}',
+                        studentSearchResponse,
+                        function (result, event) {
+                            if (event.status) {
+                                document.getElementById('student-search-errors').innerHTML = '';
+                                studentSearchResults = result;
+                                studentSearchWrapper = result.studentSearchResults;
+                                if (
+                                    !Object.getOwnPropertyNames(result.studentSearchResults).length == 0 &&
+                                    result.studentSearchResults.length > 0
+                                ) {
+                                    document.getElementById('student-search-results').style.display = 'initial';
+                                    var html =
+                                        '' +
+                                        "<div class='table-responsive'>" +
+                                        "<table id='student_search_results_table' class='table table-striped table-bordered'> " +
+                                        '<thead>' +
+                                        '<tr style="cursor:pointer">' +
+                                        '<th scope="col">Name</th>' +
+                                        '<th scope="col">EMPLID</th>' +
+                                        '<th scope="col">ASURITE</th>' +
+                                        '<th scope="col">DOB</th>' +
+                                        '<th scope="col">Campus</th>' +
+                                        '<th scope="col">Plan</th>' +
+                                        '<th scope="col">Program</th>' +
+                                        '</tr>' +
+                                        '</thead>' +
+                                        '<tbody>';
+
+                                    var emergencyContactOtherPhoneCount = 0;
+
+                                    for (var i = 0; i < result.studentSearchResults.length; i++) {
+                                        var emergencyContactPrimary = result.studentSearchResults[i]
+                                            .Emergency_Primary_Contact__c
+                                            ? 'Yes'
+                                            : 'No';
+
+                                        var emergencyContactCity =
+                                            result.studentSearchResults[i].Emergency_Contact_City__c != null &&
+                                            result.studentSearchResults[i].Emergency_Contact_City__c != ''
+                                                ? result.studentSearchResults[i].Emergency_Contact_City__c
+                                                : '--';
+
+                                        var emergencyContactState =
+                                            result.studentSearchResults[i].Emergency_Contact_State__c != null &&
+                                            result.studentSearchResults[i].Emergency_Contact_State__c != ''
+                                                ? result.studentSearchResults[i].Emergency_Contact_State__c
+                                                : '--';
+
+                                        var emergencyContactZip =
+                                            result.studentSearchResults[i].Emergency_Contact_Zip__c != null &&
+                                            result.studentSearchResults[i].Emergency_Contact_Zip__c != ''
+                                                ? result.studentSearchResults[i].Emergency_Contact_Zip__c
+                                                : '--';
+
+                                        var emergencyContactCountry =
+                                            result.studentSearchResults[i].Emergency_Contact_Country_Name__c != null &&
+                                            result.studentSearchResults[i].Emergency_Contact_Country_Name__c != ''
+                                                ? result.studentSearchResults[i].Emergency_Contact_Country_Name__c
+                                                : '--';
+
+                                        var emergencyContactAddress =
+                                            result.studentSearchResults[i].Emergency_Contact_Address__c != null &&
+                                            result.studentSearchResults[i].Emergency_Contact_Address__c != ''
+                                                ? result.studentSearchResults[i].Emergency_Contact_Address__c +
+                                                  '<br />' +
+                                                  emergencyContactCity +
+                                                  ', ' +
+                                                  emergencyContactState +
+                                                  ' ' +
+                                                  emergencyContactZip +
+                                                  '<br />' +
+                                                  emergencyContactCountry
+                                                : '--';
+
+                                        var emergencyContactPhone =
+                                            result.studentSearchResults[i].Emergency_Contact_Phone__c != null &&
+                                            result.studentSearchResults[i].Emergency_Contact_Phone__c != ''
+                                                ? result.studentSearchResults[i].Emergency_Contact_Phone__c
+                                                : '--';
+
+                                        // Filter only numbers from the input
+                                        var emergencyContactPhoneCleaned =
+                                            emergencyContactPhone != '--'
+                                                ? emergencyContactPhone.replace(/\D/g, '')
+                                                : null;
+
+                                        // Check if the input is of correct length (10)
+                                        var emergencyContactPhoneValidated =
+                                            emergencyContactPhoneCleaned != null
+                                                ? emergencyContactPhoneCleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
+                                                : false;
+
+                                        // If phone number is valid, display in proper format
+                                        emergencyContactPhone =
+                                            emergencyContactPhone != '--' && emergencyContactPhoneValidated
+                                                ? '(' +
+                                                  emergencyContactPhoneValidated[1] +
+                                                  ') ' +
+                                                  emergencyContactPhoneValidated[2] +
+                                                  '-' +
+                                                  emergencyContactPhoneValidated[3]
+                                                : emergencyContactPhone;
+
+                                        var emergencyContactPhoneType =
+                                            result.studentSearchResults[i].Emergency_Contact_Phone_Type__c != null &&
+                                            result.studentSearchResults[i].Emergency_Contact_Phone_Type__c != ''
+                                                ? result.studentSearchResults[i].Emergency_Contact_Phone_Type__c
+                                                : '';
+
+                                        emergencyContactPhoneType =
+                                            emergencyContactPhoneType != '' && emergencyContactPhone != '--'
+                                                ? emergencyContactPhoneType.toLowerCase()
+                                                : '';
+
+                                        var emergencyContactOtherPhone =
+                                            result.studentSearchResults[i].Emergency_Contact_Other_Phone__c != null &&
+                                            result.studentSearchResults[i].Emergency_Contact_Other_Phone__c != ''
+                                                ? result.studentSearchResults[i].Emergency_Contact_Other_Phone__c
+                                                : '--';
+
+                                        // Filter only numbers from the input
+                                        var emergencyContactOtherPhoneCleaned =
+                                            emergencyContactOtherPhone != '--'
+                                                ? emergencyContactOtherPhone.replace(/\D/g, '')
+                                                : null;
+
+                                        // Check if the input is of correct length (10)
+                                        var emergencyContactOtherPhoneValidated =
+                                            emergencyContactOtherPhoneCleaned != null
+                                                ? emergencyContactOtherPhoneCleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
+                                                : false;
+
+                                        // If phone number is valid, display in proper format
+                                        emergencyContactOtherPhone =
+                                            emergencyContactOtherPhone != '--' && emergencyContactOtherPhoneValidated
+                                                ? '(' +
+                                                  emergencyContactOtherPhoneValidated[1] +
+                                                  ') ' +
+                                                  emergencyContactOtherPhoneValidated[2] +
+                                                  '-' +
+                                                  emergencyContactOtherPhoneValidated[3]
+                                                : emergencyContactOtherPhone;
+
+                                        var emergencyContactOtherPhoneType =
+                                            result.studentSearchResults[i].Emergency_Contact_Other_Phone_Type__c !=
+                                                null &&
+                                            result.studentSearchResults[i].Emergency_Contact_Other_Phone_Type__c !=
+                                                '' &&
+                                            emergencyContactOtherPhone != '--'
+                                                ? result.studentSearchResults[i].Emergency_Contact_Other_Phone_Type__c
+                                                : '';
+
+                                        if (emergencyContactOtherPhone != '--') {
+                                            emergencyContactOtherPhoneCount++;
+
+                                            emergencyContactOtherPhoneType =
+                                                emergencyContactOtherPhoneType != ''
+                                                    ? emergencyContactOtherPhoneType.toLowerCase()
+                                                    : '';
+                                        }
+
+                                        html +=
+                                            '' +
+                                            '<tr>' +
+                                            '<td data-header="Relationship">' +
+                                            result.studentSearchResults[i].Emergency_Contact_Relationship__c +
+                                            '</td>' +
+                                            '<td data-header="Primary">' +
+                                            emergencyContactPrimary +
+                                            '</td>' +
+                                            '<td data-header="Name">' +
+                                            result.studentSearchResults[i].Emergency_Contact_Full_Name__c +
+                                            '</td>' +
+                                            '<td data-header="Phone">' +
+                                            emergencyContactPhone;
+
+                                        // if (emergencyContactPhoneType != '' && emergencyContactPhone != '--') {
+                                        //     html += ' (' + emergencyContactPhoneType + ')';
+                                        // }
+
+                                        html +=
+                                            '</td>' +
+                                            '<td data-header="Other Phone" class="emergency-contacts-other-phone">' +
+                                            emergencyContactOtherPhone;
+
+                                        // if (
+                                        //     emergencyContactOtherPhoneType != '' &&
+                                        //     emergencyContactOtherPhone != '--'
+                                        // ) {
+                                        //     html += ' (' + emergencyContactOtherPhoneType + ')';
+                                        // }
+
+                                        html +=
+                                            '</td>' +
+                                            '<td data-header="Address">' +
+                                            emergencyContactAddress +
+                                            '</td>' +
+                                            '</tr>';
+                                    }
+                                    html += '</tbody></table></div>';
+                                    document.getElementById('student-search-results').innerHTML = html;
+
+                                    cleanUpUndefined('student-search-results');
+                                    if (emergencyContactOtherPhoneCount < 1) {
+                                        $j(
+                                            'td.emergency-contacts-other-phone,th.emergency-contacts-other-phone'
+                                        ).hide();
+                                    }
+                                } else {
+                                    document.getElementById('student-search-errors').innerHTML =
+                                        "No students matching 'search term'.";
+                                }
+                            } else if (event.type === 'exception') {
+                                document.getElementById('student-search-errors').innerHTML =
+                                    event.message + '<br/>\n<pre>' + event.where + '</pre>';
+                            } else {
+                                document.getElementById('student-search-errors').innerHTML = event.message;
+                            }
+                        },
+                        {buffer: false, escape: true, timeout: 120000}
+                    );
+                }
             });
         }
     </script>

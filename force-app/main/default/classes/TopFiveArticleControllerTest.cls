@@ -35,12 +35,9 @@ public with sharing class TopFiveArticleControllerTest {
             }
         }
 
-        String domain = '';
-        if (isSandbox) {
-            domain = 'http://' + sandboxName + '-asu' + '.' + sandboxInstance + '.force.com/kb/articles/';
-        } else {
-            domain = 'https://asu.secure.force.com/kb/articles/';
-        }
+        String domain = System.URL.getSalesforceBaseURL().toExternalForm();
+        domain = domain.replace('salesforce.com', 'salesforce-site.com');
+        domain += '/kb/articles/';
 
         if (kav1 != null) {
             String url = TopFiveArticleController.getArticleUrl(kav1);
@@ -62,12 +59,10 @@ public with sharing class TopFiveArticleControllerTest {
 
     @isTest
     private static void checkMoreArticleTransformation() {
-        String domain = '';
-        if (isSandbox) {
-            domain = 'http://' + sandboxName + '-asu' + '.' + sandboxInstance + '.force.com/kb/pkb_Home?l=en_US&c=';
-        } else {
-            domain = 'https://asu.secure.force.com/kb/pkb_Home?l=en_US&c=';
-        }
+
+        String domain = System.URL.getSalesforceBaseURL().toExternalForm();
+        domain = domain.replace('salesforce.com', 'salesforce-site.com');
+        domain += '/kb/pkb_Home?l=en_US&c=';
 
         String dcGroup = 'dcGroupId__c';
         String dataCategory = 'dataCatagoryId__c';

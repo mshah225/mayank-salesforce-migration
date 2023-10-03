@@ -215,14 +215,6 @@ export default class TaggingComponent extends LightningElement {
             this.removeTagFromUI();
             this.isModalOpen = false;
         }
-        else {
-            const event = new ShowToastEvent({
-                title : 'Missing Field(s)',
-                message : 'Please select a reason for removal.',
-                variant : 'error'
-            });
-            this.dispatchEvent(event);
-        }
         
     }
 

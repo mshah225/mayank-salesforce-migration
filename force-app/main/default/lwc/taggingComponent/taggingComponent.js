@@ -210,7 +210,7 @@ export default class TaggingComponent extends LightningElement {
                 return validSoFar && input_Field_Reference.checkValidity();
             }, true);
  
-        if (All_Compobox_Valid) {
+        if (All_Compobox_Valid || this.tagRemovalReasonSelected != null) {
             this.clickedButtonLabel = event.target.dataset.id;
             this.removeTagFromUI();
             this.isModalOpen = false;
@@ -248,6 +248,7 @@ export default class TaggingComponent extends LightningElement {
                     this.dispatchEvent(event);
                     this.boolShowPopover = false;
                     this.connectedCallback();
+                    this.tagRemovalReasonSelected = null;
                 }
                 else if (result == "Error") {
                     const event = new ShowToastEvent({

@@ -218,7 +218,7 @@ export default class TaggingComponent extends LightningElement {
         
     }
 
-    @track isModalOpen = false;
+    isModalOpen = false;
     openModal() {
         // to open modal set isModalOpen tarck value as true
         this.isModalOpen = true;

@@ -132,7 +132,7 @@
                                 data-title={eachTag.title} data-color={eachTag.color} data-label={eachTag.label}
                                 data-image={eachTag.image}></lightning-icon>
 
-                            <template if:true={isModalOpen}>
+                            <template lwc:if={isModalOpen}>
                                 <!-- Modal/Popup Box LWC starts here -->
                                 <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01"
                                     aria-modal="true" aria-describedby="modal-content-id-1"

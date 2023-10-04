@@ -109,4 +109,27 @@ public with sharing class ObjectTaggingService {
             ErrorLogger.log(ex, vars, debug);
         }  
     }
+
+    public static void updateCreationDateTime(List<Object_Tag__c obTagList) {
+        for (Object_Tag__c obTag : obTagList) {
+            obTag.Tag_Added_Date__c = datetime.now();
+        } 
+    }
+
+    public static void updateCreationOrRemovalDate(Map<Id, Object_Tag__c> newTags, Map<Id, Object_Tag__c> oldTags) {
+        try {
+            for (Id tagId : newTags.keyset()) {
+                if (newTags.get(tagId).isActive__c == true && oldTags.get(tagId).isActive__c == false) {
+                    newTags.get(tagId).Tag_Added_Date__c = datetime.now();
+                } else if (newTags.get(tagId).isActive__c == false && oldTags.get(tagId).isActive__c == true) {
+                    newTags.get(tagId).Tag_Removal_Date__c = datetime.now();
+                }
+            }
+        } catch (Exception ex) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertMapToJSON('NewObjectTags', newTags));
+            vars.add(ErrorLogger.convertMapToJSON('OldObjectTags', oldTags));
+            ErrorLogger.log(ex, vars, debug);
+        }  
+    }
 }

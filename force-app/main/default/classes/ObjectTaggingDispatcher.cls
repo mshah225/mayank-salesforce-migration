@@ -15,11 +15,13 @@ public class ObjectTaggingDispatcher implements TriggerDispatcherInterface {
         ObjectTaggingService.applyRelatedObject(newList);     
         ObjectTaggingService.initData(newList);
         ObjectTaggingService.createName(newList);
+        ObjectTaggingService.updateCreationDateTime(newList);
     }
 
     public void beforeUpdate() {
         ObjectTaggingService.initData(newList);
         ObjectTaggingService.fixName(newList);
+        ObjectTaggingService.updateCreationOrRemovalDate(newMap, oldMap);
     }
 
     public void beforeDelete() {

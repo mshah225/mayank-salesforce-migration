@@ -105,11 +105,11 @@ global class TopFiveArticleControllerAKB {
     }
 
     global static string getArticleUrl(KnowledgeArticleVersion kav) {
-        return getUrlPrefix() + 'authkb?id=' + kav.KnowledgeArticleId;
+        return getUrlPrefix() + '/authkb?id=' + kav.KnowledgeArticleId;
     }
 
     global static string getMoreArticlesUrl(string dcGroup, string dataCategory) {
-        String baseUrl = getUrlPrefix() + 'viewAllArticles?q=';
+        String baseUrl = getUrlPrefix() + '/viewAllArticles?q=';
         String dcgroupFix = dcGroup.replace('__c', '');
         String dataCategoryGroupFix = dataCategory.replace('__c', '');
         baseUrl += dcgroupFix.replace('_', '+') + '+' + dataCategoryGroupFix.replace('_', '+');
@@ -119,7 +119,7 @@ global class TopFiveArticleControllerAKB {
 
     global static string getUrlPrefix() {
         String baseURL = System.URL.getSalesforceBaseURL().toExternalForm();
-        baseURL = baseURL.replace('salesforce.com', 'salesforce-site.com');
+        baseURL = baseURL.replace('salesforce.com', 'site.com');
 
         return baseURL;
     }

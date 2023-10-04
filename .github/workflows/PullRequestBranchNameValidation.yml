@@ -1,0 +1,23 @@
+name: Pull Request Branch Name Validation
+on:
+    pull_request:
+        types: [opened, ready_for_review, reopened]
+
+jobs:
+    pull-request-branch-name-validation:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Source Branch
+              uses: actions/checkout@v3
+            - name: Branch Name Validation
+              uses: AlbertHernandez/branch-name-action@v1.0.2
+              with:
+                  branch_pattern: '${{ github.actor }}.'
+                  comment_for_invalid_branch_name: 'The branch will need to be named `${{ github.actor }}.${{ github.event.pull_request.head.ref }}` in order to pass validation, or utilize one of the approved branch patterns. Please rename the branch and then reopen a new pull request.'
+                  fail_if_invalid_branch_name: 'true'
+                  ignore_branch_pattern: 'test.|project.|dev|qa|uat|migration.|hotfix.|main'
+            - name: Close Pull Request
+              if: failure()
+              run: gh pr close "${{ github.event.number }}"
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

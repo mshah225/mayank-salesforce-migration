@@ -121,8 +121,11 @@ public with sharing class ObjectTaggingService {
             for (Id tagId : newTags.keyset()) {
                 if (newTags.get(tagId).isActive__c == true && oldTags.get(tagId).isActive__c == false) {
                     newTags.get(tagId).Tag_Added_Date__c = datetime.now();
+                    newTags.get(tagId).Tag_Removal_Date__c = null;
+                    newTags.get(tagId).Tag_Removal_Reason__c = null;
                 } else if (newTags.get(tagId).isActive__c == false && oldTags.get(tagId).isActive__c == true) {
                     newTags.get(tagId).Tag_Removal_Date__c = datetime.now();
+                    newTags.get(tagId).Tag_Added_Date__c = null;
                 }
             }
         } catch (Exception ex) {

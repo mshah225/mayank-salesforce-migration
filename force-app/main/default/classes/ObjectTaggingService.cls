@@ -110,7 +110,7 @@ public with sharing class ObjectTaggingService {
         }  
     }
 
-    public static void updateCreationDateTime(List<Object_Tag__c obTagList) {
+    public static void updateCreationDateTime(List<Object_Tag__c> obTagList) {
         for (Object_Tag__c obTag : obTagList) {
             obTag.Tag_Added_Date__c = datetime.now();
         } 

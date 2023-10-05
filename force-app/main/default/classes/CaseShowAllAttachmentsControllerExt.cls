@@ -48,7 +48,7 @@ public with sharing class CaseShowAllAttachmentsControllerExt {
     private String getDownloadAllAsZipUrl() {
         String baseUrl = Url.getOrgDomainUrl().toExternalForm();
         if (baseUrl.contains(SANDBOX_PREFIX)) {
-            baseUrl = baseUrl.replace(SANDBOX_PREFIX, DOWNLOAD_AS_ZIP_PREFIX + SANDBOX_PREFIX);
+            baseUrl = baseUrl.replace(SANDBOX_PREFIX, DOWNLOAD_AS_ZIP_PREFIX + SANDBOX_PREFIX + '.');
             baseUrl = baseUrl.replace(LOGIN_DOMAIN, VF_PAGE_DOMAIN);
         } else {
             baseUrl = baseUrl.replace(LOGIN_DOMAIN, DOWNLOAD_AS_ZIP_PREFIX + '.' + VF_PAGE_DOMAIN);

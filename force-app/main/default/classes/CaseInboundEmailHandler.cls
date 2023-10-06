@@ -564,7 +564,13 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         AttachmentResult attachmentResponse = handleAttachments(theCase, email);
 
         if (!attachmentResponse.success) {
-            String attachmentFailureTemplateId = getConfigurationSetting('Rejected Attachment Email Template ID');
+            String attachmentFailureTemplateId;
+
+            if (attachmentResponse.attachmentSizeLimitReached) {
+                attachmentFailureTemplateId = getConfigurationSetting('Attachment Limit Email Template ID');
+            } else {
+                attachmentFailureTemplateId = getConfigurationSetting('Rejected Attachment Email Template ID');
+            }
 
             if (attachmentFailureTemplateId != null && attachmentFailureTemplateId != '') {
                 sendAutoReplyAttachment(
@@ -590,7 +596,17 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         AttachmentResult response = new AttachmentResult();
         response.success = true;
         List<String> validFileExtensionList = getConfigurationSetting('Valid Attachment Types').split(',');
+        Integer attachmentLimit = Integer.valueOf(getConfigurationSetting('Attachment Limit'));
         Set<String> validFileExtensionSet = new Set<String>(validFileExtensionList);
+
+        Integer attachmentsOnCase = [SELECT COUNT() FROM Attachment WHERE ParentId =: parentObject.Id];
+
+        if (loggingSettings.Attachment_Limit_Logging__c && attachmentsOnCase >= attachmentLimit) {
+            response.success = false;
+            response.attachmentSizeLimitReached = true;
+            generateLostEmail(email, theCase, 'This case currently has too many attachments.');
+            return response;
+        }
 
         if (email.textAttachments != null && email.textAttachments.size() > 0) {
             for (Messaging.Inboundemail.TextAttachment tAttachment : email.textAttachments) {
@@ -1286,6 +1302,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
     private class AttachmentResult {
         public Boolean success = false;
         public Boolean neutralEmail = true;
+        public Boolean attachmentSizeLimitReached = false;
         public List<Messaging.Inboundemail.BinaryAttachment> badBinaryAttachments = new List<Messaging.Inboundemail.BinaryAttachment>();
         public List<Messaging.Inboundemail.TextAttachment> badTextAttachments = new List<Messaging.Inboundemail.TextAttachment>();
     }

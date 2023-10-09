@@ -1,6 +1,5 @@
 import {LightningElement} from 'lwc';
 import submitFeedback from '@salesforce/apex/FeedbackButtonService.submitFeedback';
-import createTicket from '@salesforce/apex/JiraCallout.createTicket';
 import LightningQuestionAnswerModal from 'c/lightningQuestionAnswerModal';
 
 export default class AdvisorPortalFeedbackButton extends LightningElement {

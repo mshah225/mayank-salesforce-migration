@@ -94,6 +94,7 @@ public class TaggingComponentControllerTest
             Insert tag4;
             
             Tag__c tag5 = new Tag__c(Name = 'tag5',
+                                     RecordTypeId = Schema.SObjectType.Tag__c.getRecordTypeInfosByDeveloperName().get('Ed_Plus').getRecordTypeId(),
                                      OwnerId = testUser.Id,
                                      Removeable__c = true,
                                      Searchable__c = true);

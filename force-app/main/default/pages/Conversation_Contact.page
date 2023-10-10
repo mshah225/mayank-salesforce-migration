@@ -1,21 +1,31 @@
 <apex:page showHeader="false" standardController="Contact">
-    <apex:includeLightning rendered="true" />
-    <div id="lightning" />
+	
+	<apex:includeLightning rendered="true"/>
+	<apex:includeScript value="/support/console/50.0/integration.js" />
+	<div id="lightning" />
 
-    <script>
-        var recordId = '{!$CurrentPage.parameters.id}';
-        $Lightning.use('smagicinteract:ConversationsApp', function () {
-            $Lightning.createComponent(
-                'smagicinteract:conversations',
-                {
-                    recordId: recordId,
-                    sObjectName: 'Contact',
-                    phoneFieldCSV: '',
-                    embedContext: 'detail',
-                },
-                'lightning',
-                function (cmp) { }
-            );
-        });
-    </script>
+	<script>
+		var recordId = "{!$CurrentPage.parameters.id}";
+		var visualForceFunction = function (event) { if (sforce.console.isInConsole()) { sforce.console.getEnclosingPrimaryTabId((result) => { sforce.console.getFocusedPrimaryTabId((focusedTabId)=>{if(focusedTabId.id != result.id){sforce.console.setTabStyle('background:green;', result.id, () => {});}}) });}};
+		var eventHandler = function (result) {sforce.console.setTabStyle(null, result.id, function () { });};
+		sforce.console.onFocusedPrimaryTab(eventHandler);
+		$Lightning.use(
+			"smagicinteract:ConversationsApp", 
+			function() {
+				$Lightning.createComponent(
+					"smagicinteract:conversations",
+					{
+						 recordId : recordId,
+						 sObjectName : "Contact",
+						 phoneFieldCSV : "",
+						 embedContext : "detail"
+					},
+					"lightning",
+					function(cmp) {
+					$A.eventService.addHandler({ "event": "smagicinteract:ConversationReload", "handler": visualForceFunction });
+					}
+				);
+			}
+		);
+	</script>
 </apex:page>

@@ -125,10 +125,6 @@ public without sharing class UserDeprovisionOrganizer {
                 abortCronJobs('OwnerId', toAbortCronJobs, userToProcessingNotesMap);
             }
 
-            if (!toUpdateUsers.isEmpty()) {
-                updateSobjectRecords('Id', toUpdateUsers, userToProcessingNotesMap);
-            }
-
             // And handle all non-setup objects here
             if (toDeleteChatterGroupMemberships.size() > 0 || toUpdateUserLogins.size() > 0) {
                 UserDeprovisionQueue userDeprovisionQueue = new UserDeprovisionQueue();

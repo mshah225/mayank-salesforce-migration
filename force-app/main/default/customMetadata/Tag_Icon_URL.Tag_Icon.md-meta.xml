@@ -4,6 +4,6 @@
     <protected>false</protected>
     <values>
         <field>Tag_Icon_URL__c</field>
-        <value xsi:type="xsd:string">https://asu--edplus--c.sandbox.vf.force.com/resource/</value>
+        <value xsi:type="xsd:string">https://asu--qa.sandbox.my.salesforce.com/resource/</value>
     </values>
 </CustomMetadata>

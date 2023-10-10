@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Tag_Api_Name__c</fullName>
-    <description>This field defines the icon used inside a tag.</description>
+    <businessStatus>Active</businessStatus>
+    <description>This field holds the name of the icon used on the tag and stored in static resources. This field is used within the formula field Tag_Icon_URL__c.</description>
     <externalId>false</externalId>
+    <inlineHelpText>This field holds the name of the icon used on the tag and stored in static resources. This field is used within the formula field Tag_Icon_URL__c.</inlineHelpText>
     <label>Tag_Api_Name</label>
     <length>255</length>
     <required>false</required>
-    <trackHistory>false</trackHistory>
+    <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Text</type>
     <unique>false</unique>

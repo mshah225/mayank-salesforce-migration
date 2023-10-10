@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Contact__c</fullName>
+    <businessStatus>Active</businessStatus>
     <deleteConstraint>SetNull</deleteConstraint>
-    <description>This field is a look-up to contact object.</description>
+    <description>This field looks up to the Contact that the object tag is for.</description>
     <externalId>false</externalId>
+    <inlineHelpText>This field looks up to the Contact that the object tag is for.</inlineHelpText>
     <label>Contact</label>
     <referenceTo>Contact</referenceTo>
     <relationshipLabel>Contact Tags</relationshipLabel>
     <relationshipName>Contact_Tags</relationshipName>
     <required>false</required>
-    <trackHistory>false</trackHistory>
+    <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Lookup</type>
 </CustomField>

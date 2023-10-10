@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Tag_Description__c</fullName>
-    <description>This field depicts the tag details/description.</description>
+    <businessStatus>Active</businessStatus>
+    <description>This field denotes the tag details/description and will be displayed in the UI/LWC when the user clicks on the tag.</description>
     <externalId>false</externalId>
+    <inlineHelpText>This field denotes the tag details/description and will be displayed in the UI/LWC when the user clicks on the tag.</inlineHelpText>
     <label>Tag Description</label>
     <length>32768</length>
-    <trackHistory>false</trackHistory>
+    <trackHistory>true</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Html</type>
     <visibleLines>25</visibleLines>

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Related_Field_Name__c</fullName>
-    <description>The API name of the field associated with this type of object on the Object Tagging object</description>
+    <businessOwnerGroup>Data_Owner_Salesforce_Team</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>The API name of the field associated with this type of object on the Object Tagging object. The field notated here will be what's used for the corresponding object tag record (i.e. Contact__c, Lead__c, etc.).</description>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>The API name of the field associated with this type of object on the Object Tagging object. The field notated here will be what's used for the corresponding object tag record (i.e. Contact__c, Lead__c, etc.).</inlineHelpText>
     <label>Related Field Name</label>
     <length>255</length>
     <required>true</required>

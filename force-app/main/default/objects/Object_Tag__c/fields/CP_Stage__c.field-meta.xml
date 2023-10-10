@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CP_Stage__c</fullName>
+    <description>This field represents 4 stages of Corporate Partner, i.e., CP Verified, CP Eligible, Benefit Ready, Benefit Applied</description>
+    <externalId>false</externalId>
+    <label>CP Stage</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>verified_image</fullName>
+                <default>false</default>
+                <label>CP Verified</label>
+            </value>
+            <value>
+                <fullName>CP_Eligible</fullName>
+                <default>false</default>
+                <label>CP Eligible</label>
+            </value>
+            <value>
+                <fullName>Benefit_Ready</fullName>
+                <default>false</default>
+                <label>Benefit Ready</label>
+            </value>
+            <value>
+                <fullName>Benefit_Applied</fullName>
+                <default>false</default>
+                <label>Benefit Applied</label>
+            </value>
+            <value>
+                <fullName>Separated</fullName>
+                <default>false</default>
+                <label>Separated</label>
+            </value>
+            <value>
+                <fullName>not_eligible</fullName>
+                <default>false</default>
+                <label>Not Eligible</label>
+            </value>
+            <value>
+                <fullName>Incomplete</fullName>
+                <default>false</default>
+                <label>Incomplete</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -4,7 +4,6 @@ public without sharing class UserDeprovisionQueue implements Queueable {
      * contains a list of setup objects, but it is incomplete so you should perform a quick test via the developer
      * console if you are unsure if an object is a setup object or not.
      */
-    private List<Case> updatedUserCases;
     private List<CollaborationGroupMember> allUserChatterGroupMemberships;
     private List<UserLogin> updatedUserLogins;
     private Map<Id, String> userToProcessingNotes;
@@ -12,14 +11,9 @@ public without sharing class UserDeprovisionQueue implements Queueable {
     private static Boolean debug = false;
 
     public UserDeprovisionQueue() {
-        updatedUserCases = new List<Case>();
         allUserChatterGroupMemberships = new List<CollaborationGroupMember>();
         updatedUserLogins = new List<UserLogin>();
         userToProcessingNotes = new Map<Id, String>();
-    }
-
-    public void setUpdatedUserCases(List<Case> updatedUserCases) {
-        this.updatedUserCases = updatedUserCases;
     }
 
     public void setAllUserChatterGroupMemberships(List<CollaborationGroupMember> allUserChatterGroupMemberships) {
@@ -35,9 +29,6 @@ public without sharing class UserDeprovisionQueue implements Queueable {
     }
 
     public void execute(QueueableContext context) {
-        if (!updatedUserCases.isEmpty()) {
-            UserDeprovisionOrganizer.updateSobjectRecords('OwnerId', updatedUserCases, userToProcessingNotes);
-        }
         if (!allUserChatterGroupMemberships.isEmpty()) {
             UserDeprovisionOrganizer.deleteSobjectRecords(
                 'MemberId',

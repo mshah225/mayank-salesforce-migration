@@ -146,14 +146,11 @@ global class TopFiveArticleController {
             articles.add(ai);
         }
 
-        System.debug('GRF2: ' + articles);
-        System.debug('GRF 3:' + System.URL.getSalesforceBaseURL().getHost());
-
         return articles;
     }
 
     global static string getArticleUrl(KnowledgeArticleVersion kav) {
-        String url = System.URL.getSalesforceBaseURL().toExternalForm();
+        String url = System.URL.getOrgDomainUrl().toExternalForm();
         url = url.replace('salesforce.com', 'salesforce-site.com/kb/articles/');
 
         string articleTypeString;
@@ -173,7 +170,7 @@ global class TopFiveArticleController {
     }
 
     global static string getMoreArticlesUrl(string dcGroup, string dataCategory) {
-        String url = System.URL.getSalesforceBaseURL().toExternalForm();
+        String url = System.URL.getOrgDomainUrl().toExternalForm();
         url = url.replace('salesforce.com', 'salesforce-site.com');
 
         url += '/kb/pkb_Home?l=en_US&c=';
@@ -184,36 +181,6 @@ global class TopFiveArticleController {
     }
 
     global static Boolean isSandbox() {
-        String host = URL.getSalesforceBaseUrl().getHost();
-        String server = host.substring(0, host.indexOf('.'));
-
-        // It's easiest to check for 'my domain' sandboxes first
-        // even though that will be rare
-        if (server.contains('--')) {
-            return true;
-        }
-
-        // tapp0 is a unique "non-cs" server so we check it now
-        if (server == 'tapp0') {
-            return true;
-        }
-
-        // If server is 'cs' followed by a number it's a sandbox
-        if (server.length() > 2) {
-            if (server.substring(0, 2) == 'cs') {
-                try {
-                    Integer.valueOf(server.substring(2, server.length()));
-                } catch (exception e) {
-                    //started with cs, but not followed by a number
-                    return false;
-                }
-
-                //cs followed by a number, that's a hit
-                return true;
-            }
-        }
-
-        // If we made it here it's a production box
-        return false;
+        return [SELECT Id, IsSandbox FROM Organization].IsSandbox;
     }
 }

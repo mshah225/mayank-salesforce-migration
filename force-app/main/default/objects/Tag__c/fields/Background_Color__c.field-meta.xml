@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Background_Color__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <description>This field denotes the tag background color. Required format: 6 digit Hex code (i.e. cccccc, 333333, 8C1D40)</description>
+    <externalId>false</externalId>
+    <inlineHelpText>This field denotes the tag background color. Required format: 6 digit Hex code (i.e. cccccc, 333333, 8C1D40)</inlineHelpText>
+    <label>Tag Background Color</label>
+    <length>100</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

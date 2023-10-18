@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>isActive__c</fullName>
+    <businessStatus>Active</businessStatus>
+    <defaultValue>false</defaultValue>
+    <description>Denotes if the record is active - can be set thru the UI/LWC or thru an update to the record.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Denotes if the record is active - can be set thru the UI/LWC or thru an update to the record.</inlineHelpText>
+    <label>isActive</label>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

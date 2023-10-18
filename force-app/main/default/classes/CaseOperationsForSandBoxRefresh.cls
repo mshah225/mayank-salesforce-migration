@@ -14,7 +14,7 @@ public class CaseOperationsForSandBoxRefresh implements Database.Batchable<sObje
     }
 
     private void deleteAllDevOrQACases(List<Case> scope) {
-        String baseUrl = System.URL.getSalesforceBaseUrl().toExternalForm();
+        String baseUrl = System.URL.getOrgDomainUrl().toExternalForm();
         String orgType = SandboxRefreshService.setOrgTypeFromUrl(baseUrl);
 
         Boolean caseShouldBeDeleted = orgIsQAOrDev(orgType);

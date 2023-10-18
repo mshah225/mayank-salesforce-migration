@@ -6,7 +6,6 @@ public without sharing class UserDeprovisioner {
     private Map<Id, String> fieldIdToNameMap;
 
     // original data
-    private List<Case> cases;
     private UserLogin userLogin;
     private List<GroupMember> groupMemberships;
     private List<CollaborationGroupMember> chatterGroupMemberships;
@@ -14,7 +13,6 @@ public without sharing class UserDeprovisioner {
     private List<UserPackageLicense> userPackageLicenses;
     private List<CronTrigger> cronJobs;
     // Data to delete/update data
-    private List<Case> toUpdateCases;
     private UserLogin toUpdateUserLogin;
     private List<GroupMember> toDeleteGroupMemberships;
     private List<CollaborationGroupMember> toDeleteChatterGroupMemberships;
@@ -24,6 +22,7 @@ public without sharing class UserDeprovisioner {
 
     private static Boolean debug = false;
     private static Boolean allowRepeatCases = true;
+    private Integer countTransferred = 0;
 
     public UserDeprovisioner(
         Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration,
@@ -35,7 +34,6 @@ public without sharing class UserDeprovisioner {
         this.deprovisionUserConfiguration = deprovisionUserConfiguration;
         this.fieldIdToNameMap = new Map<Id, String>();
 
-        toUpdateCases = new List<Case>();
         toUpdateUserLogin = null;
         toDeleteGroupMemberships = new List<GroupMember>();
         toDeleteChatterGroupMemberships = new List<CollaborationGroupMember>();
@@ -45,7 +43,7 @@ public without sharing class UserDeprovisioner {
     }
 
     // Wraps together all the logic
-    public void deprovisionUser() {
+    public Boolean deprovisionUser() {
         try {
             if (userToDeprovision.Processing_Notes__c != null) {
                 addToProcessingNotes(
@@ -67,7 +65,6 @@ public without sharing class UserDeprovisioner {
             }
             changeUserField('ProfileId');
             changeUserField('UserRoleId');
-            transferCases();
             updateUserFields();
             updateUserLogin();
             removeGroupMemberships();
@@ -77,6 +74,8 @@ public without sharing class UserDeprovisioner {
             abortCronJobs();
             deprovisionedUser.Deprovision_User__c = false;
             deprovisionedUser.IsActive = false;
+
+            return true; // User is allowed to be deprovisioned
         } catch (Exception e) {
             if (e.getTypeName().equals('System.SObjectException')) {
                 // If this is the type - one of the custom setting details might be wrong - add which to check
@@ -99,32 +98,11 @@ public without sharing class UserDeprovisioner {
 
             ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(e, vars, debug, allowRepeatCases);
             System.enqueueJob(logQueue);
+
+            return false; // unexpected error: user cannot be deprovisioned at this moment
         }
     }
 
-    // Do the logic for each object type
-    private void transferCases() {
-        Integer countTransferred = 0;
-        try {
-            if (cases != null && !cases.isEmpty()) {
-                for (Case userCase : cases) {
-                    if (userCase.CC_Functional_Group__r.Is_Functional_Group_Private__c) {
-                        userCase.OwnerId = userCase.CC_Functional_Group__r.Queue_Id__c;
-                        toUpdateCases.add(userCase);
-
-                        countTransferred++;
-                    }
-                }
-
-                addToProcessingNotes('Transferred ' + countTransferred + ' private cases to queue.');
-            }
-        } catch (Exception e) {
-            addToProcessingNotes('Stopping transfer of cases.');
-            throw new DeprovisionUserException(
-                'Could not transfer cases. QueueId on case\'s functional group may be invalid.'
-            );
-        }
-    }
     private void updateUserFields() {
         for (String deprovisionConfigurationName : deprovisionUserConfiguration.keySet()) {
             if (deprovisionConfigurationName.contains('SwitchToFalse')) {
@@ -359,9 +337,6 @@ public without sharing class UserDeprovisioner {
     }
 
     // Set optional attributes
-    public void setCases(List<Case> cases) {
-        this.cases = cases;
-    }
     public void setGroupMemberships(List<GroupMember> groupMemberships) {
         this.groupMemberships = groupMemberships;
     }
@@ -391,9 +366,6 @@ public without sharing class UserDeprovisioner {
     public User getDeprovisionedUserWithProcessingNotes() {
         deprovisionedUser.Processing_Notes__c = processingNotes;
         return deprovisionedUser;
-    }
-    public List<Case> getToUpdateUserCases() {
-        return toUpdateCases;
     }
     public UserLogin getToUpdateUserLogin() {
         return toUpdateUserLogin;

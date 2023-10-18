@@ -14,7 +14,7 @@ public class ContactOperationsForSandBoxRefresh implements Database.Batchable<sO
     }
 
     public void execute(Database.BatchableContext BC, List<Contact> scope) {
-        String baseUrl = System.URL.getSalesforceBaseUrl().toExternalForm();
+        String baseUrl = System.URL.getOrgDomainUrl().toExternalForm();
         List<Contact> contactsToUpdate = new List<Contact>();
         String orgType = SandboxRefreshService.setOrgTypeFromUrl(baseUrl);
 

@@ -128,7 +128,7 @@ global class JITUserHandler implements Auth.SamlJitHandler {
                     u.LastName = contactLookup[0].LastName;
                 }
 
-                String fullURL = URL.getSalesforceBaseUrl().toExternalForm();
+                String fullURL = URL.getOrgDomainUrl().toExternalForm();
                 System.debug(fullURL);
 
                 String[] splitArray = fullURL.split('\\.');

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>isVerified__c</fullName>
+    <businessOwnerGroup>Data_Owner_Ed_Plus</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <defaultValue>false</defaultValue>
+    <description>[Alteryx/Ed Plus] - This field denotes whether the object tag is verified or eligible or benefit ready.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>[Alteryx/Ed Plus] - This field denotes whether the object tag is verified or eligible or benefit ready.</inlineHelpText>
+    <label>isVerified</label>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

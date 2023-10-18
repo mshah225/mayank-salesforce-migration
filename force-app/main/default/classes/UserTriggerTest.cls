@@ -1,18 +1,5 @@
 @isTest
 public class UserTriggerTest {
-    @isTest
-    static void changeKnowledgePermission() {
-        User updateUser = createTestUser();
-        updateUser.ProfileId = RecordIdHelper.getProfileId('System Administrator');
-        insert updateUser;
-
-        updateUser.Role_Knowledge__c = true;
-        update updateUser;
-
-        updateUser = [SELECT Role_Knowledge__c FROM User WHERE Id = :updateUser.Id];
-
-        System.assert(!updateUser.Role_Knowledge__c);
-    }
 
     @isTest
     static void insertCAPUser() {

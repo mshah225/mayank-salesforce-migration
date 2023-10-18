@@ -35,7 +35,7 @@ public with sharing class TopFiveArticleControllerTest {
             }
         }
 
-        String domain = System.URL.getSalesforceBaseURL().toExternalForm();
+        String domain = System.URL.getOrgDomainUrl().toExternalForm();
         domain = domain.replace('salesforce.com', 'salesforce-site.com');
         domain += '/kb/articles/';
 
@@ -60,7 +60,7 @@ public with sharing class TopFiveArticleControllerTest {
     @isTest
     private static void checkMoreArticleTransformation() {
 
-        String domain = System.URL.getSalesforceBaseURL().toExternalForm();
+        String domain = System.URL.getOrgDomainUrl().toExternalForm();
         domain = domain.replace('salesforce.com', 'salesforce-site.com');
         domain += '/kb/pkb_Home?l=en_US&c=';
 

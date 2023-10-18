@@ -12,11 +12,9 @@ public with sharing class UserDispatcher implements TriggerDispatcherInterface {
     }
 
     public void beforeInsert() {
-        UserService.populateRoles(newList);
         UserService.populateContactsUsingAsurite(newList);
     }
     public void beforeUpdate() {
-        UserService.populateRoles(newList);
     }
     public void beforeDelete() {
     }

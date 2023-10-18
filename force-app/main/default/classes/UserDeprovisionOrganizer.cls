@@ -12,7 +12,6 @@ public without sharing class UserDeprovisionOrganizer {
     List<UserDeprovisioner> userDeprovisionersList;
 
     private List<Id> userToDeprovisionIds;
-    private List<Case> allUserCases;
     private List<GroupMember> allUserPublicGroupMemberships;
     private List<CollaborationGroupMember> allUserChatterGroupMemberships;
     private List<PermissionSetAssignment> allUserPermissionSetAssignments;
@@ -20,7 +19,6 @@ public without sharing class UserDeprovisionOrganizer {
     private List<UserLogin> allUserLogins;
     private List<CronTrigger> allCronJobs;
 
-    private Map<Id, List<Case>> userToCaseMap;
     private Map<Id, UserLogin> userToUserLoginMap;
     private Map<Id, List<GroupMember>> userToGroupMembershipMap;
     private Map<Id, List<CollaborationGroupMember>> userToChatterGroupMembershipMap;
@@ -41,7 +39,6 @@ public without sharing class UserDeprovisionOrganizer {
         this.userToDeprovisionIds = new List<Id>();
         this.userDeprovisionersList = new List<UserDeprovisioner>();
 
-        this.userToCaseMap = new Map<Id, List<Case>>();
         this.userToUserLoginMap = new Map<Id, UserLogin>();
         this.userToGroupMembershipMap = new Map<Id, List<GroupMember>>();
         this.userToChatterGroupMembershipMap = new Map<Id, List<CollaborationGroupMember>>();
@@ -60,7 +57,6 @@ public without sharing class UserDeprovisionOrganizer {
         }
 
         if (!userDeprovisionersList.isEmpty()) {
-            populateUserToDeprovisionCaseMap();
             populateUserToDeprovisionGroupMembershipMap();
             populateUserToDeprovisionChatterGroupMembershipMap();
             populateUserToDeprovisionPermissionSetMap();
@@ -73,19 +69,18 @@ public without sharing class UserDeprovisionOrganizer {
 
     public void deprovisionUsersAfterUpdate() {
         if (!userDeprovisionersList.isEmpty()) {
-            List<User> toUpdateUsers = new List<User>();
-            List<Case> toUpdateUserCases = new List<Case>();
             List<UserLogin> toUpdateUserLogins = new List<UserLogin>();
             List<GroupMember> toDeletePublicGroupMemberships = new List<GroupMember>();
             List<CollaborationGroupMember> toDeleteChatterGroupMemberships = new List<CollaborationGroupMember>();
             List<PermissionSetAssignment> toDeletePermissionSetAssignments = new List<PermissionSetAssignment>();
             List<UserPackageLicense> toDeleteUserPackageLicense = new List<UserPackageLicense>();
             List<CronTrigger> toAbortCronJobs = new List<CronTrigger>();
+            List<Id> userIdsToTransferCases = new List<Id>();
+            Map<User, Boolean> userDeprovisionCapabilityMap = new Map<User, Boolean>();
 
             for (UserDeprovisioner userDeprovisioner : userDeprovisionersList) {
                 // Setup deprovision
                 Id userId = userDeprovisioner.getUserToDeprovision().Id;
-                userDeprovisioner.setCases(userToCaseMap.get(userId));
                 userDeprovisioner.setGroupMemberships(userToGroupMembershipMap.get(userId));
                 userDeprovisioner.setChatterGroupMemberships(userToChatterGroupMembershipMap.get(userId));
                 userDeprovisioner.setPermissionSetAssignments(userToPermissionSetMap.get(userId));
@@ -93,10 +88,11 @@ public without sharing class UserDeprovisionOrganizer {
                 userDeprovisioner.setCronJobs(userToCronJobsMap.get(userId));
                 userDeprovisioner.setUserLogin(userToUserLoginMap.get(userId));
                 userDeprovisioner.setFieldIdToNameMap(fieldIdToNameMap);
+                
                 // Deprovision
-                userDeprovisioner.deprovisionUser();
+                Boolean canDeprovision = userDeprovisioner.deprovisionUser();
+                
                 // Get all updated and deleted data
-                toUpdateUserCases.addAll(userDeprovisioner.getToUpdateUserCases());
                 UserLogin needToUpdateUserLogin = userDeprovisioner.getToUpdateUserLogin();
                 if (needToUpdateUserLogin != null) {
                     toUpdateUserLogins.add(needToUpdateUserLogin);
@@ -108,7 +104,7 @@ public without sharing class UserDeprovisionOrganizer {
                 toDeleteUserPackageLicense.addAll(userDeprovisioner.getToDeleteUserPackageLicenses());
 
                 User userWithProcessingNotes = userDeprovisioner.getDeprovisionedUserWithProcessingNotes();
-                toUpdateUsers.add(userWithProcessingNotes);
+                userDeprovisionCapabilityMap.put(userWithProcessingNotes, canDeprovision);
                 userToProcessingNotesMap.put(userId, userWithProcessingNotes.Processing_Notes__c);
             }
 
@@ -129,46 +125,23 @@ public without sharing class UserDeprovisionOrganizer {
                 abortCronJobs('OwnerId', toAbortCronJobs, userToProcessingNotesMap);
             }
 
-            if (!toUpdateUsers.isEmpty()) {
-                updateSobjectRecords('Id', toUpdateUsers, userToProcessingNotesMap);
-            }
-
             // And handle all non-setup objects here
-            if (
-                !toUpdateUserCases.isEmpty() ||
-                !toDeleteChatterGroupMemberships.isEmpty() ||
-                !toUpdateUserLogins.isEmpty()
-            ) {
+            if (toDeleteChatterGroupMemberships.size() > 0 || toUpdateUserLogins.size() > 0) {
                 UserDeprovisionQueue userDeprovisionQueue = new UserDeprovisionQueue();
-                userDeprovisionQueue.setUpdatedUserCases(toUpdateUserCases);
                 userDeprovisionQueue.setAllUserChatterGroupMemberships(toDeleteChatterGroupMemberships);
                 userDeprovisionQueue.setUpdatedUserLogins(toUpdateUserLogins);
 
                 userDeprovisionQueue.setUserToProcessingNotesMap(userToProcessingNotesMap);
                 System.enqueueJob(userDeprovisionQueue);
             }
+
+            batchTransferDeprovisionUserCases(userDeprovisionCapabilityMap);
         }
     }
 
-    private void populateUserToDeprovisionCaseMap() {
-        allUserCases = [
-            SELECT
-                Id,
-                OwnerId,
-                CC_Functional_Group__c,
-                CC_Functional_Group__r.Name,
-                CC_Functional_Group__r.Queue_Id__c,
-                CC_Functional_Group__r.Is_Functional_Group_Private__c
-            FROM Case
-            WHERE OwnerId IN :userToDeprovisionIds
-        ];
-
-        for (Case userCase : allUserCases) {
-            if (!userToCaseMap.containsKey(userCase.OwnerId)) {
-                userToCaseMap.put(userCase.OwnerId, new List<Case>());
-            }
-            userToCaseMap.get(userCase.OwnerId).add(userCase);
-        }
+    private void batchTransferDeprovisionUserCases(Map<User, Boolean> userDeprovisionCapabilityMap) {
+        UserDeprovisionCaseTransferBatch batch = new UserDeprovisionCaseTransferBatch(userDeprovisionCapabilityMap);
+        Database.executeBatch(batch, 200);
     }
 
     private void populateUserToDeprovisionGroupMembershipMap() {

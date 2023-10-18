@@ -63,6 +63,12 @@
             margin: 0;
         }
 
+        .knowledge-articles ul {
+            list-style-type: revert !important;
+            padding: revert !important;
+            margin: revert !important;
+        }
+
         .myasu-help-scope .c-w-15 {
             width: 15%;
         }

@@ -118,7 +118,7 @@ global class TopFiveArticleControllerAKB {
     }
 
     global static string getUrlPrefix() {
-        String baseURL = System.URL.getSalesforceBaseURL().toExternalForm();
+        String baseURL = System.URL.getOrgDomainUrl().toExternalForm();
         baseURL = baseURL.replace('salesforce.com', 'site.com');
 
         return baseURL;

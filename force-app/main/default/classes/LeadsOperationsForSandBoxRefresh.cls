@@ -14,7 +14,7 @@ public class LeadsOperationsForSandBoxRefresh implements Database.Batchable<sObj
     }
 
     public void execute(Database.BatchableContext BC, List<Lead> scope) {
-        String baseUrl = System.URL.getSalesforceBaseUrl().toExternalForm();
+        String baseUrl = System.URL.getOrgDomainUrl().toExternalForm();
         String orgType = SandboxRefreshService.setOrgTypeFromUrl(baseUrl);
 
         List<Lead> leadsToUpdated = deleteConvertedLeads(scope);

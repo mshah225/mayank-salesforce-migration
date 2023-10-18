@@ -50,7 +50,7 @@ private class EmailAPIServiceTest {
 
             RestRequest request = new RestRequest();
             RestResponse response = new RestResponse();
-            request.requestURI = System.URL.getSalesforceBaseUrl().getHost() + '/services/apexrest/EmailService/';
+            request.requestURI = System.URL.getOrgDomainUrl().getHost() + '/services/apexrest/EmailService/';
             request.httpMethod = 'POST';
             request.requestBody = Blob.valueof('{ "emailCaseId": "", "carId": "' + testCAR.Id + '" }');
             RestContext.request = request;
@@ -73,7 +73,7 @@ private class EmailAPIServiceTest {
 
             RestRequest request = new RestRequest();
             RestResponse response = new RestResponse();
-            request.requestURI = System.URL.getSalesforceBaseUrl().getHost() + '/services/apexrest/EmailService/';
+            request.requestURI = System.URL.getOrgDomainUrl().getHost() + '/services/apexrest/EmailService/';
             request.httpMethod = 'POST';
             request.requestBody = Blob.valueof('{ "emailCaseId": "", "carId": "' + testCAR.Id + '" }');
             RestContext.request = request;

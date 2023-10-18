@@ -33,14 +33,4 @@ public class UserService {
             }
         }
     }
-
-    public static void populateRoles(List<User> userList) {
-        for (User u : userList) {
-            if (u.UserPermissionsKnowledgeUser) {
-                u.Role_Knowledge__c = true;
-            } else {
-                u.Role_Knowledge__c = false;
-            }
-        }
-    }
 }

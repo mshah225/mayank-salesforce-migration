@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Contains a mapping for the id prefix, to the related field on the Object Tagging object.</description>
+    <label>Object Tag Mapping</label>
+    <pluralLabel>Object Tag Mappings</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

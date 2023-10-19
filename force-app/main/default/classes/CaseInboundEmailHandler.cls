@@ -227,7 +227,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
                 theCase.Subject = limitLength(email.Subject, 255);
                 theCase.Description = '';
-                theCase.Inbound_Email_Checksum__c = generateChecksum(email.plainTextBody ? email.plainTextBody : email.htmlBody);
+                theCase.Inbound_Email_Checksum__c = generateChecksum(String.isNotBlank(email.plainTextBody) ? email.plainTextBody : email.htmlBody);
 
                 if (email.plainTextBody != null) {
                     theCase.Description = limitLength(email.plainTextBody, 31500);

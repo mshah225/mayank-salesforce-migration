@@ -1760,7 +1760,7 @@ public with sharing class CaseInboundEmailHandlerTest {
             LIMIT 1
         ];
 
-        String checksum = emailServiceObj.generateChecksum(emailplainTextBody);
+        String checksum = emailServiceObj.generateChecksum(email.plainTextBody);
 
         System.assertEquals(checksum, createdCase.Inbound_Email_Checksum__c);
         Test.stopTest();

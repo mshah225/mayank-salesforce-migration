@@ -1,4 +1,4 @@
-global with sharing class StudentSearchController {
+global class StudentSearchController {
     public List<String> studentSearchMessages { get; set; }
     public String textToSearch { get; set; }
 
@@ -23,23 +23,21 @@ global with sharing class StudentSearchController {
     }
 
     @RemoteAction
-    global static StudentSearchResultsWrapper getStudentSearchResults(String emergencyContactsListJson) {
-        // List<Emergency_Contact__c> emergencyContactsList = (List<Emergency_Contact__c>) JSON.deserialize(
-        //     emergencyContactsListJson,
-        //     List<Emergency_Contact__c>.class
-        // );
+    global static StudentSearchResultsWrapper getStudentSearchResults(String studentSearchResultsJson) {
+        List<Student_Program_Plan__c> studentSearchResults = (List<Student_Program_Plan__c>) JSON.deserialize(
+            studentSearchResultsJson,
+            List<Student_Program_Plan__c>.class
+        );
 
-        // StudentSearchResultsWrapper searchResults = new StudentSearchResultsWrapper();
-        // for (Emergency_Contact__c emergencyContact : emergencyContactsList) {
-        //     searchResults.emergencyContactsData.add(emergencyContact);
-        // }
+        StudentSearchResultsWrapper searchResults = new StudentSearchResultsWrapper();
+        for (Student_Program_Plan__c studentProgramPlan : studentSearchResults) {
+            searchResults.studentProgramPlanData.add(studentProgramPlan);
+        }
 
-        // return searchResults;
-        return null;
+        return searchResults;
     }
 
     global class StudentSearchResultsWrapper {
-        public Set<String> asrClasses = new Set<String>();
-        public List<PS_ASU_SP_CLASS_V__x> academicIntegrityData = new List<PS_ASU_SP_CLASS_V__x>();
+        public List<Student_Program_Plan__c> studentProgramPlanData = new List<Student_Program_Plan__c>();
     }
 }

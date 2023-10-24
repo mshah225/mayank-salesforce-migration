@@ -174,7 +174,7 @@
                         isSearchingByCampus = record.Location_Code__c.trim() === userSearchInput ? true : false;
                     });
 
-                    const isEmplid = (str) => /^[^a-zA-Z][0-9]+[^a-zA-Z]$/gi.test(str);
+                    const isEmplid = (str) => /^[^a-zA-Z][0-9]{10}[^a-zA-Z]$/gi.test(str);
 
                     if (isSearchingByCampus) {
                         studentSearchQuery = getStudentCampusQuery();

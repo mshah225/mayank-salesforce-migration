@@ -171,8 +171,11 @@
                     campusLocationRecords = locationResponse.records;
                     campusLocationRecords.forEach(function (record) {
                         delete record.attributes;
-                        isSearchingByCampus = record.Location_Code__c.trim() === userSearchInput ? true : false;
+                        isSearchingByCampus =
+                            record.Location_Code__c.trim() === userSearchInput ? true : isSearchingByCampus;
                     });
+
+                    console.log(campusLocationRecords);
 
                     const isEmplid = (str) => /^[^a-zA-Z][0-9]{10}[^a-zA-Z]$/gi.test(str);
 
@@ -387,7 +390,7 @@
                 'FROM Student_Program_Plan__c ' +
                 "WHERE Campus__r.Location_Code__c = '" +
                 userSearchInput +
-                "' ORDER BY Contact__r.Preferred_Full_Name__c DESC, Contact__r.EMPLID__c ASC, " +
+                "' ORDER BY Contact__r.Preferred_Full_Name__c ASC, Contact__r.EMPLID__c ASC, " +
                 'Status__c ASC, Degree_Conferral_Date__c DESC NULLS FIRST ' +
                 'LIMIT ' +
                 studentSearchQueryLimit

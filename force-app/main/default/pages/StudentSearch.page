@@ -158,7 +158,7 @@
                     let studentSearchQuery;
                     let campusCodeList = [];
                     let isSearchingByCampus;
-                    const isEmplid;
+                    const isEmplid = (str) => /^[^a-zA-Z][0-9]{10}[^a-zA-Z]$/gi.test(str);
 
                     $j('#student-search-current-search-count').hide();
                     $j('#student-search-errors').show();
@@ -171,19 +171,22 @@
                         delete record.attributes;
                         campusCodeList.push(record.Location_Code__c.trim());
                     });
-
                     isSearchingByCampus = campusCodeList.includes(userSearchInput) ? true : false;
-                    isEmplid = (str) => /^[^a-zA-Z][0-9]{10}[^a-zA-Z]$/gi.test(str);
 
                     if (isSearchingByCampus) {
+                        console.log('### SEARCH BY: CAMPUS ###');
                         studentSearchQuery = getStudentCampusQuery();
                     } else if (isEmplid(userSearchInput)) {
+                        console.log('### SEARCH BY: EMPLID ###');
                         studentSearchQuery = getStudentEmplidQuery();
                     } else if (userSearchInput.includes(',')) {
+                        console.log('### SEARCH BY: NAME + COMMA ###');
                         studentSearchQuery = getStudentFormattedQuery();
                     } else if (userSearchInput.includes(' ')) {
+                        console.log('### SEARCH BY: NAME + SPACE ###');
                         studentSearchQuery = getStudentFormattedQuery();
                     } else {
+                        console.log('### SEARCH BY: ASURITE + NAME ###');
                         studentSearchQuery = getStudentDefaultQuery();
                     }
 

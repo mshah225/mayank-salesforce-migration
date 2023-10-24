@@ -78,7 +78,7 @@
         let studentSearchWrapper;
         let inConsole = false;
         let userSearchInput;
-        let studentSearchQueryLimit = '250';
+        let studentSearchQueryLimit = '300';
 
         function setTabTitle() {
             //Set the current tab's title
@@ -254,6 +254,16 @@
                                                 }, {})
                                             );
 
+                                            resultsWithMostRecentProgram.sort((a, b) =>
+                                                a.Contact__r.Preferred_Full_Name__c >
+                                                b.Contact__r.Preferred_Full_Name__c
+                                                    ? 1
+                                                    : b.Contact__r.Preferred_Full_Name__c >
+                                                      a.Contact__r.Preferred_Full_Name__c
+                                                    ? -1
+                                                    : 0
+                                            );
+
                                             console.log('### RESULTS WITH MOST RECENT PROGRAM ###');
                                             console.log(resultsWithMostRecentProgram);
 
@@ -409,8 +419,7 @@
                 'FROM Student_Program_Plan__c ' +
                 "WHERE Campus__r.Location_Code__c = '" +
                 userSearchInput +
-                "' ORDER BY Contact__r.Preferred_Full_Name__c, Contact__r.EMPLID__c, Degree_Conferral_Date__c DESC NULLS FIRST " +
-                'LIMIT ' +
+                "' LIMIT " +
                 studentSearchQueryLimit
             );
         }
@@ -424,8 +433,7 @@
                 'FROM Student_Program_Plan__c ' +
                 "WHERE Contact__r.EMPLID__c = '" +
                 userSearchInput +
-                "' ORDER BY Contact__r.Preferred_Full_Name__c, Contact__r.EMPLID__c, Degree_Conferral_Date__c DESC NULLS FIRST " +
-                'LIMIT ' +
+                "' LIMIT " +
                 studentSearchQueryLimit
             );
         }
@@ -460,16 +468,13 @@
                 'Contact__r.Preferred_First_Name__c, Contact__r.LastName, Degree_Conferral_Date__c, Plan_Code__c, ' +
                 'Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c ' +
                 'FROM Student_Program_Plan__c ' +
-                "WHERE Contact__r.Preferred_Full_Name__c = '" +
-                userSearchInput +
-                "' OR Contact__r.Preferred_Full_Name__c LIKE '%" +
+                "WHERE Contact__r.Preferred_Full_Name__c LIKE '%" +
                 extractedFullName +
-                "%' AND Contact__r.Preferred_First_Name__c LIKE '%" +
+                "%' OR (Contact__r.Preferred_First_Name__c LIKE '%" +
                 extractedFirstName +
-                "%' OR (Contact__r.LastName LIKE '%" +
+                "%' AND Contact__r.LastName LIKE '%" +
                 extractedLastName +
-                "%') ORDER BY Contact__r.Preferred_Full_Name__c, Contact__r.EMPLID__c, Degree_Conferral_Date__c DESC NULLS FIRST " +
-                'LIMIT ' +
+                "%') LIMIT " +
                 studentSearchQueryLimit
             );
         }
@@ -489,8 +494,7 @@
                 userSearchInput +
                 "%' OR Contact__r.LastName LIKE '%" +
                 userSearchInput +
-                "%' ORDER BY Contact__r.Preferred_Full_Name__c, Contact__r.EMPLID__c, Degree_Conferral_Date__c DESC NULLS FIRST " +
-                'LIMIT ' +
+                "%' LIMIT " +
                 studentSearchQueryLimit
             );
         }

@@ -387,7 +387,7 @@
                 'FROM Student_Program_Plan__c ' +
                 "WHERE Campus__r.Location_Code__c = '" +
                 userSearchInput +
-                "' ORDER BY Contact__r.Preferred_Full_Name__c ASC, Contact__r.EMPLID__c ASC, " +
+                "' ORDER BY Contact__r.LastName DESC, Contact__r.EMPLID__c ASC, " +
                 'Status__c ASC, Degree_Conferral_Date__c DESC NULLS FIRST ' +
                 'LIMIT ' +
                 studentSearchQueryLimit
@@ -403,7 +403,7 @@
                 'FROM Student_Program_Plan__c ' +
                 "WHERE Contact__r.EMPLID__c = '" +
                 userSearchInput +
-                "' ORDER BY Contact__r.Preferred_Full_Name__c ASC, Contact__r.EMPLID__c ASC, " +
+                "' ORDER BY Contact__r.LastName DESC, Contact__r.EMPLID__c ASC, " +
                 'Status__c ASC, Degree_Conferral_Date__c DESC NULLS FIRST ' +
                 'LIMIT ' +
                 studentSearchQueryLimit
@@ -448,7 +448,7 @@
                 extractedLastName +
                 "%' AND Contact__r.Preferred_First_Name__c LIKE '%" +
                 extractedFirstName +
-                "%') ORDER BY Contact__r.Preferred_Full_Name__c ASC, Contact__r.EMPLID__c ASC, " +
+                "%') ORDER BY Contact__r.LastName DESC, Contact__r.EMPLID__c ASC, " +
                 'Status__c ASC, Degree_Conferral_Date__c DESC NULLS FIRST ' +
                 'LIMIT ' +
                 studentSearchQueryLimit
@@ -470,7 +470,7 @@
                 userSearchInput +
                 "%' OR Contact__r.Preferred_First_Name__c LIKE '%" +
                 userSearchInput +
-                "%' ORDER BY Contact__r.Preferred_Full_Name__c ASC, Contact__r.EMPLID__c ASC, " +
+                "%' ORDER BY Contact__r.LastName DESC, Contact__r.EMPLID__c ASC, " +
                 'Status__c ASC, Degree_Conferral_Date__c DESC NULLS FIRST ' +
                 'LIMIT ' +
                 studentSearchQueryLimit

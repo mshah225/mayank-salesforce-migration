@@ -405,12 +405,11 @@
                 'SELECT Id, Campus__r.Location_Code__c, College_Diploma_Description__c, Contact__c, ' +
                 'Contact__r.ASURite_ID__c, Contact__r.Birthdate, Contact__r.EMPLID__c, Contact__r.Preferred_Full_Name__c, ' +
                 'Contact__r.Preferred_First_Name__c, Contact__r.LastName, Degree_Conferral_Date__c, Plan_Code__c, ' +
-                'Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c, Status__c ' +
+                'Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c ' +
                 'FROM Student_Program_Plan__c ' +
                 "WHERE Campus__r.Location_Code__c = '" +
                 userSearchInput +
-                "' ORDER BY Contact__r.Preferred_Full_Name__c, Contact__r.EMPLID__c ASC, " +
-                'Status__c ASC, Degree_Conferral_Date__c DESC NULLS FIRST ' +
+                "' ORDER BY Contact__r.Preferred_Full_Name__c, Contact__r.EMPLID__c, Degree_Conferral_Date__c DESC NULLS FIRST " +
                 'LIMIT ' +
                 studentSearchQueryLimit
             );
@@ -421,12 +420,11 @@
                 'SELECT Id, Campus__r.Location_Code__c, College_Diploma_Description__c, Contact__c, ' +
                 'Contact__r.ASURite_ID__c, Contact__r.Birthdate, Contact__r.EMPLID__c, Contact__r.Preferred_Full_Name__c, ' +
                 'Contact__r.Preferred_First_Name__c, Contact__r.LastName, Degree_Conferral_Date__c, Plan_Code__c, ' +
-                'Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c, Status__c ' +
+                'Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c ' +
                 'FROM Student_Program_Plan__c ' +
                 "WHERE Contact__r.EMPLID__c = '" +
                 userSearchInput +
-                "' ORDER BY Contact__r.Preferred_Full_Name__c DESC, Contact__r.EMPLID__c ASC, " +
-                'Status__c ASC, Degree_Conferral_Date__c DESC NULLS FIRST ' +
+                "' ORDER BY Contact__r.Preferred_Full_Name__c, Contact__r.EMPLID__c, Degree_Conferral_Date__c DESC NULLS FIRST " +
                 'LIMIT ' +
                 studentSearchQueryLimit
             );
@@ -460,7 +458,7 @@
                 'SELECT Id, Campus__r.Location_Code__c, College_Diploma_Description__c, Contact__c, ' +
                 'Contact__r.ASURite_ID__c, Contact__r.Birthdate, Contact__r.EMPLID__c, Contact__r.Preferred_Full_Name__c, ' +
                 'Contact__r.Preferred_First_Name__c, Contact__r.LastName, Degree_Conferral_Date__c, Plan_Code__c, ' +
-                'Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c, Status__c ' +
+                'Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c ' +
                 'FROM Student_Program_Plan__c ' +
                 "WHERE Contact__r.Preferred_Full_Name__c = '" +
                 userSearchInput +
@@ -470,8 +468,7 @@
                 extractedFirstName +
                 "%' OR (Contact__r.LastName LIKE '%" +
                 extractedLastName +
-                "%') ORDER BY Contact__r.Preferred_Full_Name__c DESC, Contact__r.EMPLID__c ASC, " +
-                'Status__c ASC, Degree_Conferral_Date__c DESC NULLS FIRST ' +
+                "%') ORDER BY Contact__r.Preferred_Full_Name__c, Contact__r.EMPLID__c, Degree_Conferral_Date__c DESC NULLS FIRST " +
                 'LIMIT ' +
                 studentSearchQueryLimit
             );
@@ -482,7 +479,7 @@
                 'SELECT Id, Campus__r.Location_Code__c, College_Diploma_Description__c, Contact__c, ' +
                 'Contact__r.ASURite_ID__c, Contact__r.Birthdate, Contact__r.EMPLID__c, Contact__r.Preferred_Full_Name__c, ' +
                 'Contact__r.Preferred_First_Name__c, Contact__r.LastName, Degree_Conferral_Date__c, Plan_Code__c, ' +
-                'Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c, Status__c ' +
+                'Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c ' +
                 'FROM Student_Program_Plan__c ' +
                 "WHERE Contact__r.ASURite_ID__c = '" +
                 userSearchInput +
@@ -492,8 +489,7 @@
                 userSearchInput +
                 "%' OR Contact__r.LastName LIKE '%" +
                 userSearchInput +
-                "%' ORDER BY Contact__r.Preferred_Full_Name__c DESC, Contact__r.EMPLID__c ASC, " +
-                'Status__c ASC, Degree_Conferral_Date__c DESC NULLS FIRST ' +
+                "%' ORDER BY Contact__r.Preferred_Full_Name__c, Contact__r.EMPLID__c, Degree_Conferral_Date__c DESC NULLS FIRST " +
                 'LIMIT ' +
                 studentSearchQueryLimit
             );

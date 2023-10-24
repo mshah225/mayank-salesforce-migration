@@ -187,8 +187,10 @@
                         studentSearchQuery = getStudentDefaultQuery();
                     }
 
-                    console.log('### QUERY: ' + studentSearchQuery);
-                    console.log('### QUERY LIMIT: ' + studentSearchQueryLimit);
+                    console.log('### QUERY ###');
+                    console.log(studentSearchQuery);
+                    console.log('### QUERY LIMIT ###');
+                    studentSearchQueryLimit);
 
                     if (studentSearchQuery !== null) {
                         conn.query(studentSearchQuery, function (studentSearchQueryError, response) {
@@ -249,6 +251,7 @@
                                                 }, {})
                                             );
 
+                                            console.log('### RESULTS WITH MOST RECENT PROGRAM ###');
                                             console.log(resultsWithMostRecentProgram);
 
                                             if (

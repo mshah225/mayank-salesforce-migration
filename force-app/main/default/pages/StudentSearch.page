@@ -74,11 +74,11 @@
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}" />
 
     <script type="text/javascript">
-        var studentSearchResults;
-        var studentSearchWrapper;
-        var inConsole = false;
-        var userSearchInput;
-        var studentSearchQueryLimit = '250';
+        let studentSearchResults;
+        let studentSearchWrapper;
+        let inConsole = false;
+        let userSearchInput;
+        let studentSearchQueryLimit = '250';
 
         function setTabTitle() {
             //Set the current tab's title
@@ -88,7 +88,7 @@
             }
         }
 
-        var pageLoad = window.onload;
+        let pageLoad = window.onload;
         window.onload = function () {
             if (pageLoad) {
                 pageLoad();
@@ -97,7 +97,7 @@
         };
 
         function openNewSubtab(subtabUrl, subtabTitle) {
-            var openSubtab = function (result) {
+            let openSubtab = function (result) {
                 if (result.id === 'null') {
                     window.open(subtabUrl);
                     return;
@@ -147,10 +147,10 @@
         }
 
         function renderStudentSearchResults() {
-            var campusLocationQuery = 'SELECT Id, Location_Code__c FROM Location__c WHERE Location_Status__c = true';
-            var campusLocationRecords = [];
+            let campusLocationQuery = 'SELECT Id, Location_Code__c FROM Location__c WHERE Location_Status__c = true';
+            let campusLocationRecords = [];
 
-            var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+            let conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
             conn.query(campusLocationQuery, function (locationError, locationResponse) {
                 if (locationError) {
                     $j('#student-search-errors').html(locationError);
@@ -215,7 +215,7 @@
                                             studentSearchResults = result;
                                             studentSearchWrapper = result.studentProgramPlanData;
 
-                                            var resultsWithoutDuplicates = result.studentProgramPlanData.reduce(
+                                            let resultsWithoutDuplicates = result.studentProgramPlanData.reduce(
                                                 (unique, obj) => {
                                                     if (
                                                         !unique.some(
@@ -234,7 +234,7 @@
                                                 []
                                             );
 
-                                            var resultsWithMostRecentProgram = Object.values(
+                                            let resultsWithMostRecentProgram = Object.values(
                                                 resultsWithoutDuplicates.reduce((r, o) => {
                                                     if (
                                                         !r[o.Contact__r.EMPLID__c] ||
@@ -263,7 +263,7 @@
                                                 );
                                                 $j('#student-search-container').css('display', 'initial');
 
-                                                var resultTableHtml =
+                                                let resultTableHtml =
                                                     '' +
                                                     "<div class='table-responsive'>" +
                                                     "<table id='student_search_table' class='table table-striped table-bordered'> " +
@@ -280,7 +280,7 @@
                                                     '</thead>' +
                                                     '<tbody>';
 
-                                                for (var i = 0; i < resultsWithMostRecentProgram.length; i++) {
+                                                for (let i = 0; i < resultsWithMostRecentProgram.length; i++) {
                                                     let fullName =
                                                         resultsWithMostRecentProgram[i].Contact__r
                                                             .Preferred_Full_Name__c;
@@ -438,7 +438,7 @@
                 extractedFirstName = extractedNames[1].trim();
             } else if (userSearchInput.includes(' ')) {
                 extractedNames = userSearchInput.split(' ');
-                for (var i = 0; i < extractedNames.length; i++) {
+                for (let i = 0; i < extractedNames.length; i++) {
                     if (i === 0) {
                         extractedFirstName = extractedNames[i].trim();
                     } else if (i === 1) {

@@ -454,10 +454,7 @@
                     }
                 }
             }
-
-            if (extractedFirstName != null && extractedLastName != null) {
-                extractedFullName = extractedFirstName + ' ' + extractedLastName;
-            }
+            extractedFullName = (extractedFirstName + ' ' + extractedLastName).trim();
 
             return (
                 'SELECT Id, Campus__r.Location_Code__c, College_Diploma_Description__c, Contact__c, ' +

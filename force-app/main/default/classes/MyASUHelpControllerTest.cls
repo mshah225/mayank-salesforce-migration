@@ -295,14 +295,19 @@ private class MyASUHelpControllerTest {
     @isTest
     private static void testStudentSCPageAC() {
         Datetime now = System.now();
-        Service_Center_Maintenance__c scm = new Service_Center_Maintenance__c(
-            Name = 'The Test Message',
-            Displayed__c = true,
-            Message__c = 'There is maintenance',
-            Start_Time__c = now.addDays(-20),
-            End_Time__c = now.addDays(20)
+        CustomMetadataHelper.setFakeRecords(
+            'ASU_Alert_Messages__mdt$$ASUHelpTab$$Active',
+            new List<ASU_Alert_Messages__mdt>{
+                new ASU_Alert_Messages__mdt(
+                    Display_Message__c = 'There is maintenance',
+                    Start_Time__c = now.addDays(-20),
+                    End_Time__c = now.addDays(20),
+                    Priority__c = 0,
+                    Location__c = 'ASUHelpTab',
+                    Is_Active__c = true
+                )
+            }
         );
-        insert scm;
 
         User testUser = [
             SELECT Id, ContactId, FirstName, LastName, EMPLID__c, ASURite_Id__c
@@ -361,12 +366,17 @@ private class MyASUHelpControllerTest {
 
     @isTest
     private static void testStudentSCPageB() {
-        Service_Center_Maintenance__c scm = new Service_Center_Maintenance__c(
-            Name = 'The Test Message',
-            Displayed__c = true,
-            Message__c = 'There is maintenance forever'
+        CustomMetadataHelper.setFakeRecords(
+            'ASU_Alert_Messages__mdt$$ASUHelpTab$$Active',
+            new List<ASU_Alert_Messages__mdt>{
+                new ASU_Alert_Messages__mdt(
+                    Display_Message__c = 'There is maintenance forever',
+                    Priority__c = 0,
+                    Location__c = 'ASUHelpTab',
+                    Is_Active__c = true
+                )
+            }
         );
-        insert scm;
 
         User testUser = [
             SELECT Id, ContactId, FirstName, LastName, EMPLID__c, ASURite_Id__c

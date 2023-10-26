@@ -83,12 +83,20 @@ public with sharing class MyASUHelpController {
     private void loadStudentSCAlerts() {
         // Only loaded on studentSC page
         if (ApexPages.currentPage().getUrl().toLowerCase().contains(Page.studentSC.getUrl().toLowerCase())) {
-            List<ASU_Alert_Messages__mdt> alertMessages = [
-                SELECT Display_Message__c, Url__c, Priority__c, Type__c, Title__c, Start_Time__c, End_Time__c
-                FROM ASU_Alert_Messages__mdt
-                WHERE Location__c LIKE '%ASUHelpTab%' AND Is_Active__c = TRUE
-                ORDER BY Priority__c
-            ];
+            List<ASU_Alert_Messages__mdt> alertMessages;
+
+            if (CustomMetadataHelper.isNotTest()) {
+                alertMessages = [
+                    SELECT Display_Message__c, Url__c, Priority__c, Type__c, Title__c, Start_Time__c, End_Time__c
+                    FROM ASU_Alert_Messages__mdt
+                    WHERE Location__c LIKE '%ASUHelpTab%' AND Is_Active__c = TRUE
+                    ORDER BY Priority__c
+                ];
+            } else {
+                alertMessages = (List<ASU_Alert_Messages__mdt>) CustomMetadataHelper.getFakeRecords(
+                    'ASU_Alert_Messages__mdt$$ASUHelpTab$$Active'
+                );
+            }
 
             processAlerts(alertMessages);
         }

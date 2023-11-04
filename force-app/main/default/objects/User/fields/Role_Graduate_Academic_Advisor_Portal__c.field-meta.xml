@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Role_Graduate_Academic_Advisor_Portal__c</fullName>
+    <complianceGroup>FERPA</complianceGroup>
+    <defaultValue>false</defaultValue>
+    <description>Indicates user has access to Graduate Academic Advisor Portal. PeopleSoft security role = ASU_FC_SF GP Graduate Portal</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Indicates user has access to the Graduate Academic Advisor Portal. Users will be assigned the permission set Role: Graduate Academic Advisor Portal (Service Users).</inlineHelpText>
+    <label>Graduate Academic Advisor Portal</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Checkbox</type>
+</CustomField>

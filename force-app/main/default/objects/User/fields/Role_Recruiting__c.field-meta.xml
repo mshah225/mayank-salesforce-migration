@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Role_Recruiting__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>User object field for capturing users that have an approved and completed PeopleSoft Role for Recruitment. PeopleSoft security role = ASU_FC_SF RC Recruiting</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Users could be either part of Admissions Services (with corresponding ASU Recruitment profile) or part of a College (with corresponding ASU Service profile). Marketing User checkbox will need to be checked.</inlineHelpText>
+    <label>Recruiting (Case + Recruitment)</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Checkbox</type>
+</CustomField>

@@ -20,6 +20,7 @@ public class CaseListTransferController {
     public String selectedCARLabel { get; set; }
     public String searchString { get; set; }
     public String source { get; set; }
+    public String vfRetURLInSFX { get; set; }
 
     public CaseListTransferController(ApexPages.StandardController stdController) {
         page = 1;
@@ -28,6 +29,8 @@ public class CaseListTransferController {
         userList = new List<User>();
         serviceCARS = new Map<String, List<Case_Assignment_Rule__c>>();
         collegeCARS = new Map<String, List<Case_Assignment_Rule__c>>();
+
+        vfRetURLInSFX = ApexPages.currentPage().getParameters().get('vfRetURLInSFX');
 
         this.cs = [
             SELECT
@@ -67,6 +70,8 @@ public class CaseListTransferController {
         userList = new List<User>();
         serviceCARS = new Map<String, List<Case_Assignment_Rule__c>>();
         collegeCARS = new Map<String, List<Case_Assignment_Rule__c>>();
+
+        vfRetURLInSFX = ApexPages.currentPage().getParameters().get('vfRetURLInSFX');
 
         if (selectedIds != null) {
             Validator.setPrefix(Case.class);
@@ -379,6 +384,10 @@ public class CaseListTransferController {
         if (this.cs.size() == 1) {
             nextPage = new PageReference('/' + cs[0].Id);
             nextPage.setRedirect(true);
+        } else if (vfRetURLInSFX != null) {
+            vfRetURLInSFX = vfRetURLInSFX.trim();
+            nextPage = new PageReference(vfRetURLInSFX);
+            nextPage.setRedirect(true);
         } else {
             nextPage = new ApexPages.action('{!list}').invoke();
         }
@@ -387,6 +396,7 @@ public class CaseListTransferController {
             page = 5;
             return ApexPages.currentPage();
         }
+
         return nextPage;
     }
 
@@ -496,7 +506,13 @@ public class CaseListTransferController {
                 lastPage = new PageReference('/' + string.ValueOf(this.cs[0].Id));
                 lastPage.setRedirect(true);
             } else if (this.cs.size() > 1) {
-                lastPage = new ApexPages.action('{!list}').invoke();
+                if (vfRetURLInSFX != null) {
+                    vfRetURLInSFX = vfRetURLInSFX.trim();
+                    lastPage = new PageReference(vfRetURLInSFX);
+                    lastPage.setRedirect(true);
+                } else {
+                    lastPage = new ApexPages.action('{!list}').invoke();
+                }
             }
         } else if (page == 2 || page == 3) {
             page = 1;

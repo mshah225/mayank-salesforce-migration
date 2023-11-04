@@ -34,6 +34,7 @@ public class CaseWebformCloser {
         return UserInfo.getName() == 'API ASU DRUPAL' &&
             previousCaseState.IsClosed &&
             previousCaseState.Deep_Links__c != null &&
+            currentCase.Number_of_Files__c != null &&
             previousCaseState.Deep_Links__c.split('Click Here').size() ==
             (Integer.valueof(currentCase.Number_of_Files__c) + 1);
     }

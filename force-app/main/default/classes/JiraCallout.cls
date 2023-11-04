@@ -270,6 +270,7 @@ global class JiraCallout {
         try {
             setHeader(req);
             setEndPoint(req, endPoint, 'GET');
+            setTimeout(req, 60000);
             res = http.send(req);
             responseBody = res.getBody();
         } catch (System.CalloutException e) {
@@ -295,6 +296,10 @@ global class JiraCallout {
 
     private static void setBody(HttpRequest req, String body) {
         req.setBody(body);
+    }
+
+    private static void setTimeout(HttpRequest req, Integer timeout) {
+        req.setTimeout(timeout);
     }
 
     @TestVisible

@@ -27,6 +27,14 @@ export default class LightningComboBox extends LightningElement {
     @api label;
     @api placeholder = 'Select an Option';
 
+    @api set disabled(val) {
+        this._disabled = parseBoolean(val);
+    }
+    get disabled() {
+        return this._disabled;
+    }
+    _disabled = false;
+
     @api set required(val) {
         this._required = parseBoolean(val);
     }
@@ -255,6 +263,8 @@ export default class LightningComboBox extends LightningElement {
      * Open the dropdown and add the active border
      */
     openDropdown() {
+        if (this.disabled) return;
+
         this.hoveredIndex = -1;
         this.showDropdown = true;
         this.template.querySelector('.inputBox').classList.add('active');
@@ -264,6 +274,8 @@ export default class LightningComboBox extends LightningElement {
      * When the .focusCapture element receives focus (usually via tab), open the dropdown
      */
     handleFocusEvent() {
+        if (this.disabled) return;
+
         this.template.querySelector('.inputBox').classList.add('active');
         this.sendFocusEvent();
         this.openDropdown();

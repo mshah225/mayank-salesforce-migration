@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Only_System_Admins_Change_Names_Email</fullName>
+    <active>true</active>
+    <description>Prevents community users from changing their name. This will allow Community User names to always match Contact names.</description>
+    <errorConditionFormula>AND(
+Profile.Id = '00ed00000019z5n' || Profile.Id = '00ed00000019z5s',
+
+$User.ProfileId = '00ed00000019z5n' || $User.ProfileId = '00ed00000019z5s',
+
+ISCHANGED( FirstName ) || ISCHANGED ( LastName) || ISCHANGED ( Email )
+)</errorConditionFormula>
+    <errorMessage>Only System Administrators can change Community User Names or Emails. Please contact Salesforce.Support@asu.edu if you need to make a change.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Processing_Notes__c</fullName>
+    <businessOwnerGroup>Data_Owner_IAM_Identity_Management</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>Notes about the deprovision process - steps taken and errors encountered.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Notes from the deprovision process that is triggered by checking the checkbox Deprovision_User__c.</inlineHelpText>
+    <label>Processing Notes</label>
+    <length>131072</length>
+    <securityClassification>Internal</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

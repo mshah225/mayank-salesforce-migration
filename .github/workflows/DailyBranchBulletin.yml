@@ -1,0 +1,29 @@
+name: Daily Branch Bulletin
+
+on:
+    workflow_dispatch:
+    schedule:
+        - cron: '0 6 * * 1-5'
+
+jobs:
+    compile-daily-branch-bulletin:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Setup bulletin information
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+            - run: |
+                  chmod +x daily_branch_bulletin_setup.sh
+                  ./daily_branch_bulletin_setup.sh
+              working-directory: ./.github/workflows/DailyBranchBulletin
+            - name: Checkout wiki
+              uses: actions/checkout@v3
+              with:
+                  repository: '${{ github.repository }}.wiki'
+                  path: 'wiki'
+            - name: Update wiki report
+              run: |
+                  chmod +x daily_branch_bulletin_report.sh
+                  ./daily_branch_bulletin_report.sh
+              working-directory: ./.github/workflows/DailyBranchBulletin

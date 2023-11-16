@@ -1,17 +1,19 @@
-set +e && git config pull.rebase false && git config user.name "GitHub Actions" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com" && git fetch --prune &>/dev/null && git reset --hard origin/main &>/dev/null
+set -x && git config pull.rebase false && git config user.name "GitHub Actions" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com" && git fetch --prune &>/dev/null && git reset --hard origin/main &>/dev/null
 
 git_branch_is_merged() {
     merge_destination_branch=$1
     merge_source_branch=$2
 
+    git fetch origin "$merge_destination_branch:$merge_destination_branch"
+    git fetch origin "$merge_source_branch:$merge_source_branch"
+
     merge_base=$(git merge-base $merge_destination_branch $merge_source_branch)
     merge_source_current_commit=$(git rev-parse $merge_source_branch)
-    if [[ $merge_base = $merge_source_current_commit ]]; then
-        echo "--> $merge_source_branch is merged into $merge_destination_branch"
-        return 0
+
+    if [[ $merge_base == $merge_source_current_commit ]]; then
+        echo "true"
     else
-        echo "--> $merge_source_branch is not merged into $merge_destination_branch"
-        return 1
+        echo "false"
     fi
 }
 
@@ -24,37 +26,32 @@ for remote in $(git branch -r); do
     if [[ "$remote" != "origin/HEAD" ]] && [[ "$remote" != "->" ]] && [[ "$remote" != "origin/main" ]]; then
         branch="${remote#origin/}"
 
+        git branch -v
+
         if [[ "$branch" != "dev" ]] && [[ "$branch" != "qa" ]] && [[ "$branch" != "uat" ]] && [[ "$branch" != "sync" ]] && [[ "$branch" != "sync-pr" ]]; then
-            git checkout $branch
+            core_branches=("dev" "qa" "uat")
 
             # Determine if the source branch has been merged into dev
             # If yes, keep track of the branch
-            is_merged_into_dev=$(git_branch_is_merged "dev" "$branch")
-            if [ $is_merged_into_dev -eq 0 ]; then
-                is_merged_into_dev="true"
+            is_merged_into_dev=$(git_branch_is_merged "dev" $branch)
+            if [[ $is_merged_into_dev == "true" ]]; then
                 dev_branches+=("$branch")
-            else
-                is_merged_into_dev="false"
             fi
 
             # Determine if the source branch has been merged into qa
             # If yes, keep track of the branch
-            is_merged_into_qa=$(git_branch_is_merged "qa" "$branch")
-            if [ $is_merged_into_qa -eq 0 ]; then
-                is_merged_into_qa="true"
+            is_merged_into_qa=$(git_branch_is_merged "qa" $branch)
+            echo "$is_merged_into_qa"
+            if [[ $is_merged_into_qa == "true" ]]; then
                 qa_branches+=("$branch")
-            else
-                is_merged_into_qa="false"
             fi
 
             # Determine if the source branch has been merged into uat
             # If yes, keep track of the branch
-            is_merged_into_uat=$(git_branch_is_merged "uat" "$branch")
-            if [ $is_merged_into_uat -eq 0 ]; then
-                is_merged_into_uat="true"
+            is_merged_into_uat=$(git_branch_is_merged "uat" $branch)
+            echo "$is_merged_into_uat"
+            if [[ $is_merged_into_uat == "true" ]]; then
                 uat_branches+=("$branch")
-            else
-                is_merged_into_uat="false"
             fi
 
             # Determine if the source branch is completely unmerged into dev, qa & uat

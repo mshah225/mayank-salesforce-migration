@@ -34,10 +34,10 @@ for ((i = 0; i < uat_branches_count; i++)); do
 done
 
 # Create a hash to compare to later (to see if we actually need to update the file)
-old_file_hash=$(md5sum Daily-Branch-Bulletin.md)
-rm -f Daily-Branch-Bulletin.md
+old_file_hash=$(md5sum Feature-Branch-Bulletin.md)
+rm -f Feature-Branch-Bulletin.md
 (
-    for i in $(find . -name 'Daily-Branch-Bulletin.md'); do
+    for i in $(find . -name 'Feature-Branch-Bulletin.md'); do
         filename=$(basename $i)
         filename=${filename/.md/}
         cat $i |
@@ -115,16 +115,16 @@ rm -f Daily-Branch-Bulletin.md
             echo '* NONE'
         fi
     done
-) >Daily-Branch-Bulletin.md
-new_file_hash=$(md5sum Daily-Branch-Bulletin.md)
+) >Feature-Branch-Bulletin.md
+new_file_hash=$(md5sum Feature-Branch-Bulletin.md)
 
 if [ "$old_file_hash" != "$new_file_hash" ]; then
     echo '[[ NEW CHANGES TO FILE ]]'
     git config pull.rebase false
     git config user.name "GitHub Actions"
     git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-    git add Daily-Branch-Bulletin.md
-    git commit -m "Update Daily Branch Bulletin at $(date)"
+    git add Feature-Branch-Bulletin.md
+    git commit -m "Update Feature Branch Bulletin at $(date)"
     git push origin master
 else
     echo '[[ NO CHANGES TO FILE ]]'

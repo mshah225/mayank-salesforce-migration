@@ -126,6 +126,8 @@ if [ "$old_file_hash" != "$new_file_hash" ]; then
     git add Feature-Branch-Bulletin.md
     git commit -m "Update Feature Branch Bulletin at $(date)"
     git push origin master
+
+    curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":newspaper: Updated Feature Branch Bulletin","emoji":true}},{"type":"section","text":{"type":"mrkdwn","text":"A new Feature Branch Bulletin was posted to <https://github.com/ASU/crm-salesforce-enterprise/wiki/Feature-Branch-Bulletin|our repository wiki>."}},{"type":"section","text":{"type":"mrkdwn","text":"<!here|here>"}}]}' https://hooks.slack.com/services/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
 else
     echo '[[ NO CHANGES TO FILE ]]'
 fi

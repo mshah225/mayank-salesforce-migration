@@ -303,7 +303,6 @@ private class MyASUHelpControllerTest {
                     Start_Time__c = now.addDays(-20),
                     End_Time__c = now.addDays(20),
                     Priority__c = 0,
-                    Location__c = 'ASUHelpTab',
                     Is_Active__c = true
                 )
             }
@@ -372,7 +371,6 @@ private class MyASUHelpControllerTest {
                 new ASU_Alert_Messages__mdt(
                     Display_Message__c = 'There is maintenance forever',
                     Priority__c = 0,
-                    Location__c = 'ASUHelpTab',
                     Is_Active__c = true
                 )
             }

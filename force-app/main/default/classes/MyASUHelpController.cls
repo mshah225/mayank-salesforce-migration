@@ -89,7 +89,7 @@ public with sharing class MyASUHelpController {
                 alertMessages = [
                     SELECT Display_Message__c, Url__c, Priority__c, Type__c, Title__c, Start_Time__c, End_Time__c
                     FROM ASU_Alert_Messages__mdt
-                    WHERE Location__c LIKE '%ASUHelpTab%' AND Is_Active__c = TRUE
+                    WHERE Is_Active__c = TRUE
                     ORDER BY Priority__c
                 ];
             } else {

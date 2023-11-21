@@ -119,13 +119,13 @@ public with sharing class MyASUHelpController {
 
             // Set the message type
             if (message.Type__c != null) {
-                if (message.Type__c.equalsIgnoreCase('fatal'))
+                if (message.Type__c.equalsIgnoreCase(customAlert.FATAL))
                     alertType = customAlert.FATAL;
-                else if (message.Type__c.equalsIgnoreCase('info'))
+                else if (message.Type__c.equalsIgnoreCase(customAlert.INFO))
                     alertType = customAlert.INFO;
-                else if (message.Type__c.equalsIgnoreCase('warning'))
+                else if (message.Type__c.equalsIgnoreCase(customAlert.WARNING))
                     alertType = customAlert.WARNING;
-                else if (message.Type__c.equalsIgnoreCase('confirm'))
+                else if (message.Type__c.equalsIgnoreCase(customAlert.CONFIRM))
                     alertType = customAlert.CONFIRM;
             }
 

@@ -948,4 +948,210 @@ private class MyASUHelpControllerTest {
         System.assertNotEquals(null, helptab.getViewAllTechnicalArticlesLink());
         System.assertNotEquals(null, helptab.getViewAllHousingArticlesLink());
     }
+
+    @isTest
+    private static void testAlertDateRanges() {
+        Datetime now = System.now();
+        CustomMetadataHelper.setFakeRecords(
+            'ASU_Alert_Messages__mdt$$ASUHelpTab$$Active',
+            new List<ASU_Alert_Messages__mdt>{
+                new ASU_Alert_Messages__mdt(
+                    Display_Message__c = 'start and end - not started',
+                    Start_Time__c = now.addDays(10),
+                    End_Time__c = now.addDays(20),
+                    Priority__c = 0,
+                    Is_Active__c = true
+                ),
+                new ASU_Alert_Messages__mdt(
+                    Display_Message__c = 'start and end - current',
+                    Start_Time__c = now.addDays(-5),
+                    End_Time__c = now.addDays(5),
+                    Priority__c = 1,
+                    Is_Active__c = true
+                ),
+                new ASU_Alert_Messages__mdt(
+                    Display_Message__c = 'start and end - already finished',
+                    Start_Time__c = now.addDays(-20),
+                    End_Time__c = now.addDays(-10),
+                    Priority__c = 2,
+                    Is_Active__c = true
+                ),
+                new ASU_Alert_Messages__mdt(
+                    Display_Message__c = 'start, no end - not started',
+                    Start_Time__c = now.addDays(20),
+                    Priority__c = 3,
+                    Is_Active__c = true
+                ),
+                new ASU_Alert_Messages__mdt(
+                    Display_Message__c = 'start, no end - current',
+                    Start_Time__c = now.addDays(-20),
+                    Priority__c = 4,
+                    Is_Active__c = true
+                ),
+                new ASU_Alert_Messages__mdt(
+                    Display_Message__c = 'end, no start - current',
+                    End_Time__c = now.addDays(20),
+                    Priority__c = 5,
+                    Is_Active__c = true
+                ),
+                new ASU_Alert_Messages__mdt(
+                    Display_Message__c = 'end, no start - already finished',
+                    End_Time__c = now.addDays(-20),
+                    Priority__c = 6,
+                    Is_Active__c = true
+                ),
+                new ASU_Alert_Messages__mdt(
+                    Display_Message__c = 'no start, no end - current',
+                    Priority__c = 7,
+                    Is_Active__c = true
+                )
+            }
+        );
+
+        /**
+         Create test alerts to check the 8 primary time-relationships.
+         1. For events that have a start and end, and it hasn't started yet
+         2.                                   ... and it is currently ongoing
+         3.                                   ... and it has already finished
+         4. For events that have a start but no end, and it hasn't started yet
+         5.                                      ... and are currently ongoing
+         6. For events that have an end but no start, and are currently ongoing 
+         7.                                       ... and it has already finished
+         8. For events that have neither a start or an end (and it therefore currently ongoing)
+        
+           1          2                   3
+           +  [====== + ==============]   + 
+        
+           4          5
+           +  [====== + ===============>
+
+                      6                   7
+              <====== + ==============]   +
+
+                      8
+              <====== + ===============>
+         */
+
+        User testUser = [
+            SELECT Id, ContactId, FirstName, LastName, EMPLID__c, ASURite_Id__c
+            FROM User
+            WHERE Alias = :testUserAliasBase + '0'
+        ];
+
+        PageReference myASUHelp = Page.studentSC;
+        Test.setCurrentPage(myASUHelp);
+
+        MyASUHelpController helpTab;
+
+        Test.startTest();
+        System.runAs(testUser) {
+            helpTab = new MyASUHelpController();
+        }
+        Test.stopTest();
+
+        Boolean found1 = false,
+            found2 = false,
+            found3 = false,
+            found4 = false,
+            found5 = false,
+            found6 = false,
+            found7 = false,
+            found8 = false;
+        for (CustomAlert c : helpTab.alertHandler.alerts) {
+            if (c.message == 'start and end - not started')
+                found1 = true;
+            if (c.message == 'start and end - current')
+                found2 = true;
+            if (c.message == 'start and end - already finished')
+                found3 = true;
+            if (c.message == 'start, no end - not started')
+                found4 = true;
+            if (c.message == 'start, no end - current')
+                found5 = true;
+            if (c.message == 'end, no start - current')
+                found6 = true;
+            if (c.message == 'end, no start - already finished')
+                found7 = true;
+            if (c.message == 'no start, no end - current')
+                found8 = true;
+        }
+        System.assert(!found1, 'Alert 1 is for a future alert and should not be shown, but it is');
+        System.assert(found2, 'Alert 2 is for a current alert and should be shown, but it is not');
+        System.assert(!found3, 'Alert 3 is for a past alert and should not be shown, but it is');
+
+        System.assert(!found4, 'Alert 4 is for a future event and should not be shown, but it is');
+        System.assert(found5, 'Alert 5 is for a current alert and should be shown, but it is not');
+
+        System.assert(found6, 'Alert 6 is for a current alert and should be shown, but it is not');
+        System.assert(!found7, 'Alert 7 is for a past alert and should not be shown, but it is');
+
+        System.assert(found8, 'Alert 8 is for a current alert and should be shown, but it is not');
+    }
+
+    @isTest
+    private static void testAlertTypes() {
+        Datetime now = System.now();
+        CustomMetadataHelper.setFakeRecords(
+            'ASU_Alert_Messages__mdt$$ASUHelpTab$$Active',
+            new List<ASU_Alert_Messages__mdt>{
+                new ASU_Alert_Messages__mdt(
+                    Display_Message__c = 'info message',
+                    Type__c = 'info',
+                    Priority__c = 0,
+                    Is_Active__c = true
+                ),
+                new ASU_Alert_Messages__mdt(
+                    Display_Message__c = 'fatal message',
+                    Type__c = 'fatal',
+                    Priority__c = 1,
+                    Is_Active__c = true
+                ),
+                new ASU_Alert_Messages__mdt(
+                    Display_Message__c = 'warning message',
+                    Type__c = 'warning',
+                    Priority__c = 2,
+                    Is_Active__c = true
+                ),
+                new ASU_Alert_Messages__mdt(
+                    Display_Message__c = 'confirm message',
+                    Type__c = 'confirm',
+                    Priority__c = 3,
+                    Is_Active__c = true
+                )
+            }
+        );
+
+        User testUser = [
+            SELECT Id, ContactId, FirstName, LastName, EMPLID__c, ASURite_Id__c
+            FROM User
+            WHERE Alias = :testUserAliasBase + '0'
+        ];
+
+        PageReference myASUHelp = Page.studentSC;
+        Test.setCurrentPage(myASUHelp);
+
+        MyASUHelpController helpTab;
+
+        Test.startTest();
+        System.runAs(testUser) {
+            helpTab = new MyASUHelpController();
+        }
+        Test.stopTest();
+
+        Boolean foundInfo, foundFatal, foundWarning, foundConfirm = false;
+        for (CustomAlert c : helpTab.alertHandler.alerts) {
+            if (c.message == 'info message' && c.severity == customAlert.INFO)
+                foundInfo = true;
+            if (c.message == 'fatal message' && c.severity == customAlert.FATAL)
+                foundFatal = true;
+            if (c.message == 'warning message' && c.severity == customAlert.WARNING)
+                foundWarning = true;
+            if (c.message == 'confirm message' && c.severity == customAlert.CONFIRM)
+                foundConfirm = true;
+        }
+        System.assert(foundInfo, 'Should have created info alert - but it did not');
+        System.assert(foundFatal, 'Should have created fatal alert - but it did not');
+        System.assert(foundWarning, 'Should have created warning alert - but it did not');
+        System.assert(foundConfirm, 'Should have created confirmation alert - but it did not');
+    }
 }

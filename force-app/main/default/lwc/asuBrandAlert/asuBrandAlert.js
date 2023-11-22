@@ -1,7 +1,6 @@
 import {LightningElement, api, track} from 'lwc';
 import {loadStyle} from 'lightning/platformResourceLoader';
 import bootstrap4_asu from '@salesforce/resourceUrl/bootstrap_4_asu';
-import font_awesome from '@salesforce/resourceUrl/Font_Awesome_4_7_0';
 import {parseBoolean} from 'c/helperFunctions';
 
 /**
@@ -29,14 +28,6 @@ export default class AsuBrandAlert extends LightningElement {
     }
     _dontLoadASUStyles = false;
 
-    @api set dontLoadIconStyles(val) {
-        this._dontLoadIconStyles = parseBoolean(val);
-    }
-    get dontLoadIconStyles() {
-        return this._dontLoadIconStyles;
-    }
-    _dontLoadIconStyles = false;
-
     counter = 0;
     @track alertList = [];
 
@@ -51,7 +42,6 @@ export default class AsuBrandAlert extends LightningElement {
         }
 
         if (!this.dontLoadASUStyles) loadStyle(this, bootstrap4_asu + '/dist/css/bootstrap-asu.min.css');
-        if (!this.dontLoadIconStyles) loadStyle(this, font_awesome + '/Font_Awesome_4_7_0/css/font-awesome.min.css');
     }
 
     closeAlert(event) {

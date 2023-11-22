@@ -98,7 +98,7 @@ export default class AsuBrandAlert extends LightningElement {
             title: title,
             message: message,
             severity: severity,
-            icon: 'fa fa-icon fa-2x',
+            icon: 'utility:question_mark',
             iconTitle: '',
             classList: 'alert',
             link: link,
@@ -115,30 +115,31 @@ export default class AsuBrandAlert extends LightningElement {
         newAlert.aria.id.message = newAlert.id + '-main-content';
 
         if (severity === 'CONFIRM') {
-            newAlert.icon += ' fa-check-circle';
+            newAlert.icon = 'utility:success';
             newAlert.iconTitle = 'Success';
             newAlert.classList += ' alert-success';
-            newAlert.aria.iconDescription = 'Success Icon';
+            newAlert.aria.iconDescription = 'Success check mark icon';
             newAlert.aria.alertRole = 'alert';
         } else if (severity === 'INFO') {
-            newAlert.icon += ' fa-info-circle';
+            newAlert.icon = 'utility:info';
             newAlert.iconTitle = 'Information';
             newAlert.classList += ' alert-info';
-            newAlert.aria.iconDescription = 'Info Icon';
+            newAlert.aria.iconDescription = 'Info I-icon';
         } else if (severity === 'WARNING') {
-            newAlert.icon += ' fa-bell';
+            newAlert.icon = 'utility:notification';
             newAlert.iconTitle = 'Alert';
             newAlert.classList += ' alert-warning';
-            newAlert.aria.iconDescription = 'Warning Icon';
+            newAlert.aria.iconDescription = 'Warning message bell icon';
         } else if (severity === 'FATAL') {
-            newAlert.icon += ' fa-exclamation-triangle';
+            newAlert.icon = 'utility:warning';
             newAlert.iconTitle = 'Error';
             newAlert.classList += ' alert-danger';
-            newAlert.aria.iconDescription = 'Error Icon';
+            newAlert.aria.iconDescription = 'Error triangle icon';
             newAlert.aria.alertRole = 'alert';
         } else {
-            newAlert.icon += ' fa-question-circle';
+            newAlert.icon = 'utility:question_mark';
             newAlert.iconTitle = title;
+            newAlert.aria.iconDescription = 'Question mark icon';
         }
 
         this.alertList.push(newAlert);

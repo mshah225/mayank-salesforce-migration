@@ -66,9 +66,9 @@
             display: block;
             width: 100%;
             border-top: 0;
-            height: 1px;
+            height: 1.5px;
             margin: 3rem 0;
-            background-color: #d0d0d0;
+            background-color: #747474;
             opacity: 1;
         }
 

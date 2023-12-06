@@ -26,14 +26,68 @@
             value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"
         />
         <c:StudentProfileStyles />
-        <style></style>
+        <style>
+            .alert {
+                margin-top: 20px;
+                color: white;
+                font-family: Arial, Helvetica, 'Nimbus Sans L', 'Liberation Sans', FreeSans, sans-serif !important;
+                font-size: 14px;
+                background: #9f2b50;
+            }
+            .student-360-page-title,
+            .student-search-table-student-name,
+            #student-search-errors {
+                font-weight: bold;
+            }
+
+            #student-search-errors {
+                margin-top: 2em;
+            }
+
+            #student-search-input-field-container > input:nth-child(2) {
+                margin-left: 0.5em;
+                color: #fff;
+                background-color: #8c1d40;
+                border-radius: 5%;
+                border: solid;
+                border-color: #8c1d40 !important;
+            }
+
+            #student-search-input-field-description {
+                font-size: 0.85em;
+            }
+
+            #student-search-results {
+                margin-top: 2em;
+            }
+
+            #student-search-current-search-results-text {
+                font-size: 1.25em;
+                font-weight: bold;
+            }
+
+            #student-search-current-search-count {
+                margin-top: 1em;
+                margin-bottom: -0.5em;
+            }
+
+            #student-search-container hr {
+                display: block;
+                width: 100%;
+                border-top: 0;
+                height: 2px;
+                margin: 1.5rem 0;
+                opacity: 1;
+                background-color: #8c1d40;
+            }
+        </style>
     </head>
 
     <body>
         <!-- @TODO: Adjust these class names -->
         <div class="student-profile-container">
             <div class="student-profile-container-title">
-                <h1 style="float: left">Student 360: Student Search</h1>
+                <h1 style="float: left"><span class="student-360-page-title">Student 360:</span> Student Search</h1>
                 <hr />
             </div>
             <apex:repeat value="{!studentSearchMessages}" var="message">
@@ -57,9 +111,10 @@
                             or "FIRST LAST" format)
                         </div>
                     </div>
-                    <br />
                     <div id="student-search-results" style="display: none">
-                        <strong>Search results for "<span id="student-search-current-search-value"></span>"</strong>
+                        <div id="student-search-current-search-results-text">
+                            Search results for "<span id="student-search-current-search-value"></span>"
+                        </div>
                         <div id="student-search-current-search-count"></div>
                     </div>
                     <div style="overflow: auto; max-height: 400px">
@@ -119,7 +174,9 @@
 
         $j = jQuery.noConflict();
         $j(document).ready(function () {
-            $j('#student-search-errors').text("Start by entering in a search term and then click 'Search'");
+            $j('#student-search-errors').text(
+                "Ready to search. Start by entering a search term and clicking the 'Search' button or pressing ENTER."
+            );
         });
 
         function getStudentSearchResults() {
@@ -142,7 +199,9 @@
             } else {
                 $j('#student-search-results').hide();
                 $j('#student-search-errors').show();
-                $j('#student-search-errors').text("Start by entering in a search term and then click 'Search'");
+                $j('#student-search-errors').text(
+                    "Ready to search. Start by entering a search term and clicking the 'Search' button or pressing ENTER."
+                );
             }
         }
 
@@ -272,15 +331,24 @@
                                                 resultsWithMostRecentProgram.length > 0
                                             ) {
                                                 $j('#student-search-current-search-count').show();
-                                                $j('#student-search-current-search-count').text(
-                                                    'Your search returned ' +
-                                                        resultsWithMostRecentProgram.length +
-                                                        ' results'
-                                                );
+
+                                                if (resultsWithMostRecentProgram.length == 1) {
+                                                    $j('#student-search-current-search-count').text(
+                                                        'Your search returned 1 match'
+                                                    );
+                                                } else {
+                                                    $j('#student-search-current-search-count').text(
+                                                        'Your search returned ' +
+                                                            resultsWithMostRecentProgram.length +
+                                                            ' matches'
+                                                    );
+                                                }
+
                                                 $j('#student-search-container').css('display', 'initial');
 
                                                 let resultTableHtml =
                                                     '' +
+                                                    '<hr>' +
                                                     "<div class='table-responsive'>" +
                                                     "<table id='student_search_table' class='table table-striped table-bordered'> " +
                                                     '<thead>' +
@@ -357,7 +425,7 @@
                                                     resultTableHtml +=
                                                         '' +
                                                         '<tr>' +
-                                                        '<td data-header="Name">' +
+                                                        '<td data-header="Name" class="student-search-table-student-name">' +
                                                         '<a href="' +
                                                         studentProfileUrl +
                                                         '">' +
@@ -390,7 +458,7 @@
                                             } else {
                                                 $j('#student-search-current-search-count').show();
                                                 $j('#student-search-current-search-count').text(
-                                                    'Your search returned 0 results'
+                                                    'Your search returned 0 matches'
                                                 );
                                             }
                                         } else if (event.type === 'exception') {

@@ -251,6 +251,10 @@
                 font-size: 14px;
                 background: #9f2b50;
             }
+
+            .student-360-page-title {
+                font-weight: 600;
+            }
         </style>
     </head>
 
@@ -267,7 +271,7 @@
                 class="student-profile-container-title"
                 style="{!IF(hasStudentCareAndConcernAccess == TRUE, '', 'display:none')}"
             >
-                <h1 style="float: left">Student 360</h1>
+                <h1 style="float: left"><span class="student-360-page-title">Student 360</span></h1>
                 <a class="student-search-button" href="/apex/StudentSearch"> Go to Student Search </a>
                 <hr />
             </div>

@@ -1,3 +1,19 @@
 <template>
-    
+    <lightning-card title="Custom Contact List View">
+        <div slot="actions">
+        </div>
+        <div class="slds-card__body_inner">
+            <p>Selected Contacts: {selectedContactsLen}</p>
+            
+            <lightning-datatable
+            key-field="id"
+            data={contacts}
+            columns={cols}
+            onrowselection={handleRowSelection}
+            onrowaction={handleRowAction}
+            > 
+            </lightning-datatable>
+        </div>
+
+    </lightning-card>
 </template>

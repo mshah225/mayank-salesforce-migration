@@ -19,10 +19,18 @@ public with sharing class CampusVisitController {
         ];
     }
 
-    /*@AuraEnabled
-    public static void deleteContacts(List<Id> contactIds){
-        if(contactIds.size() > 0 ){
-            delete [SELECT Id FROM Contact WHERE Id in: contactIds];
+    @AuraEnabled
+    public static void updateCampaignMembers(List<Id> campaignMemberIds){
+        List<CampaignMember> membersToUpdate = new List<CampaignMember>();
+
+        for (Id memberId : campaignMemberIds) {
+            CampaignMember cm = new CampaignMember();
+            cm.Id = memberId;
+            cm.Status = 'Sent';
+
+            membersToUpdate.add(cm);
         }
-    } */
+
+        update membersToUpdate;
+    } 
 }

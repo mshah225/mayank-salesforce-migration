@@ -2,6 +2,7 @@ import { LightningElement, wire } from 'lwc';
 
 import getCampaignMembers from "@salesforce/apex/CampusVisitController.getCampaignMembers"
 import searchCampaignMembers from "@salesforce/apex/CampusVisitController.searchCampaignMembers"
+import updateCampaignMembers from "@salesforce/apex/CampusVisitController.updateCampaignMembers"
 
 import { NavigationMixin } from 'lightning/navigation';
 import { refreshApex } from '@salesforce/apex';
@@ -89,6 +90,7 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
             this.contacts = searchContacts.map(row => {
                 return this.mapContacts(row);
             })
+
         }
     }
 
@@ -102,6 +104,16 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
                 actionName: 'new'
             }
         });
+    }
+
+    updateSelectedCampaignMembers(){
+        console.log('Entering');
+        const idList = this.selectedContacts.map( row => { return row.Id })
+        updateCampaignMembers({campaignMemberIds : idList}).then( () => {
+            refreshApex(this.wiredContacts);
+        })
+        this.template.querySelector('lightning-datatable').selectedRows = [];
+        this.selectedContacts = undefined;
     }
 
 }

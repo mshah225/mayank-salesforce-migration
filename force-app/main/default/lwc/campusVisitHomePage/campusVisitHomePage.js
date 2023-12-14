@@ -1,6 +1,7 @@
 import { LightningElement, wire } from 'lwc';
 
 import getCampaignMembers from "@salesforce/apex/CampusVisitController.getCampaignMembers"
+import searchCampaignMembers from "@salesforce/apex/CampusVisitController.searchCampaignMembers"
 
 import { NavigationMixin } from 'lightning/navigation';
 import { refreshApex } from '@salesforce/apex';
@@ -77,6 +78,18 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
 
     handleRowSelection(event) {
         this.selectedContacts = event.detail.selectedRows;
+    }
+
+    async handleSearch(event){
+        if(event.target.value == ""){
+            this.contacts = this.baseData
+        }else if(event.target.value.length > 1){
+            const searchContacts = await searchCampaignMembers({searchString: event.target.value})
+
+            this.contacts = searchContacts.map(row => {
+                return this.mapContacts(row);
+            })
+        }
     }
 
 

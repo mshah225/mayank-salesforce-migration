@@ -133,7 +133,7 @@
         let studentSearchWrapper;
         let inConsole = false;
         let userSearchInput;
-        let studentSearchQueryLimit = '300';
+        let studentSearchQueryLimit = '1000';
 
         function setTabTitle() {
             //Set the current tab's title
@@ -536,13 +536,18 @@
                 'Contact__r.Preferred_First_Name__c, Contact__r.LastName, Degree_Conferral_Date__c, Plan_Code__c, ' +
                 'Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c ' +
                 'FROM Student_Program_Plan__c ' +
-                "WHERE Contact__r.Preferred_Full_Name__c LIKE '%" +
+                "WHERE Contact__r.Preferred_Full_Name__c = '" +
                 extractedFullName +
-                "%' OR (Contact__r.Preferred_First_Name__c LIKE '%" +
+                "' OR (Contact__r.Preferred_First_Name__c LIKE '" +
                 extractedFirstName +
-                "%' AND Contact__r.LastName LIKE '%" +
+                "%' AND Contact__r.LastName LIKE '" +
                 extractedLastName +
-                "%') LIMIT " +
+                "%') OR (Contact__r.Preferred_First_Name__c LIKE '" +
+                extractedLastName +
+                "%' AND Contact__r.LastName LIKE '" +
+                extractedFirstName +
+                "%') " +
+                'LIMIT ' +
                 studentSearchQueryLimit
             );
         }

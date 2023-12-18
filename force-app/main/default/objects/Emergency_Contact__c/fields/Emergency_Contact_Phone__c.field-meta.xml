@@ -3,6 +3,7 @@
     <fullName>Emergency_Contact_Phone__c</fullName>
     <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
     <businessStatus>Active</businessStatus>
+    <complianceGroup>FERPA</complianceGroup>
     <description>[PeopleSoft] PS emergency contact phone number, Used in Student 360 Student Profile</description>
     <externalId>false</externalId>
     <label>Emergency Contact Phone</label>

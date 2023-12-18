@@ -3,7 +3,7 @@
     <fullName>Emergency_Contact_Other_Phone__c</fullName>
     <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
     <businessStatus>Active</businessStatus>
-    <complianceGroup>PII</complianceGroup>
+    <complianceGroup>FERPA</complianceGroup>
     <description>[PeopleSoft] From PS table ps_emergency_phone, used in Student 360 Student Profile</description>
     <externalId>false</externalId>
     <label>Emergency Contact Other Phone</label>

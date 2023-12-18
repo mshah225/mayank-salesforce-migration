@@ -3,7 +3,7 @@
     <fullName>Emergency_Primary_Contact__c</fullName>
     <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
     <businessStatus>Active</businessStatus>
-    <complianceGroup>PII</complianceGroup>
+    <complianceGroup>FERPA</complianceGroup>
     <defaultValue>false</defaultValue>
     <description>[PeopleSoft] PS emergency primary contact flag, used in Student 360 Student Profile</description>
     <externalId>false</externalId>

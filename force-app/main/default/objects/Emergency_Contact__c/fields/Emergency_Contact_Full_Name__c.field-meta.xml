@@ -3,7 +3,7 @@
     <fullName>Emergency_Contact_Full_Name__c</fullName>
     <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
     <businessStatus>Active</businessStatus>
-    <complianceGroup>PII</complianceGroup>
+    <complianceGroup>FERPA</complianceGroup>
     <description>[PeopleSoft] PS first and last name of emergency contact from PS_EMERGENCY_CNTCT, used in Student 360 Student Profile</description>
     <externalId>false</externalId>
     <label>Emergency Contact Full Name</label>

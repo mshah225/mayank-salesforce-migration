@@ -3,7 +3,7 @@
     <fullName>Emergency_Contact_State__c</fullName>
     <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
     <businessStatus>Active</businessStatus>
-    <complianceGroup>PII</complianceGroup>
+    <complianceGroup>FERPA</complianceGroup>
     <description>[PeopleSoft] PS emergency contact state, used in Student 360 Student Profile</description>
     <externalId>false</externalId>
     <label>Emergency Contact State</label>

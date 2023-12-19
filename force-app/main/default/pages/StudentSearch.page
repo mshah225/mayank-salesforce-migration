@@ -246,7 +246,7 @@
                         studentSearchQuery = getStudentFormattedQuery();
                     } else {
                         console.log('### SEARCH BY: ASURITE + NAME ###');
-                        studentSearchQuery = getStudentDefaultQuery();
+                        studentSearchQuery = getStudentAsuriteOrPartialNameQuery();
                     }
 
                     console.log('### QUERY ###');
@@ -552,7 +552,7 @@
             );
         }
 
-        function getStudentDefaultQuery() {
+        function getStudentAsuriteOrPartialNameQuery() {
             return (
                 'SELECT Id, Campus__r.Location_Code__c, College_Diploma_Description__c, Contact__c, ' +
                 'Contact__r.ASURite_ID__c, Contact__r.Birthdate, Contact__r.EMPLID__c, Contact__r.Preferred_Full_Name__c, ' +
@@ -561,11 +561,9 @@
                 'FROM Student_Program_Plan__c ' +
                 "WHERE Contact__r.ASURite_ID__c = '" +
                 userSearchInput +
-                "' OR Contact__r.Preferred_Full_Name__c LIKE '%" +
+                "' OR Contact__r.Preferred_First_Name__c LIKE '" +
                 userSearchInput +
-                "%' OR Contact__r.Preferred_First_Name__c LIKE '%" +
-                userSearchInput +
-                "%' OR Contact__r.LastName LIKE '%" +
+                "%' OR Contact__r.LastName LIKE '" +
                 userSearchInput +
                 "%' LIMIT " +
                 studentSearchQueryLimit

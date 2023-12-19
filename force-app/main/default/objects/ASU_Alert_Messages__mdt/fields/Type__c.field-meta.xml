@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type__c</fullName>
+    <defaultValue>"warning"</defaultValue>
+    <description>What type of alert message to show?  This controls the background color and icon for the alert.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>What type of alert message to show?  This controls the background color and icon for the alert.</inlineHelpText>
+    <label>Type</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>warning</fullName>
+                <default>true</default>
+                <label>warning</label>
+            </value>
+            <value>
+                <fullName>info</fullName>
+                <default>false</default>
+                <label>info</label>
+            </value>
+            <value>
+                <fullName>fatal</fullName>
+                <default>false</default>
+                <label>fatal</label>
+            </value>
+            <value>
+                <fullName>confirm</fullName>
+                <default>false</default>
+                <label>confirm</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

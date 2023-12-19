@@ -3,7 +3,7 @@
     <fullName>Emergency_Contact_Country_Name__c</fullName>
     <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
     <businessStatus>Active</businessStatus>
-    <complianceGroup>PII</complianceGroup>
+    <complianceGroup>FERPA</complianceGroup>
     <description>Lookup Country Name using [PeopleSoft] Emergency Contact Country id</description>
     <externalId>false</externalId>
     <formula>Emergency_Contact_Country__r.Name</formula>

@@ -3,7 +3,7 @@
     <fullName>Emergency_Contact_Phone_Type__c</fullName>
     <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
     <businessStatus>Active</businessStatus>
-    <complianceGroup>PII</complianceGroup>
+    <complianceGroup>FERPA</complianceGroup>
     <description>[PeopleSoft] Phone type from PS table ps_emergency_phone, Used in Student 360 Student Profile</description>
     <externalId>false</externalId>
     <label>Emergency Contact Phone Type</label>

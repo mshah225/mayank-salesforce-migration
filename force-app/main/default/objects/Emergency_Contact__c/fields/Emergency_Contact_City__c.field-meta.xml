@@ -3,7 +3,7 @@
     <fullName>Emergency_Contact_City__c</fullName>
     <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
     <businessStatus>Active</businessStatus>
-    <complianceGroup>PII</complianceGroup>
+    <complianceGroup>FERPA</complianceGroup>
     <description>[PeopleSoft] PS emergency contact city</description>
     <externalId>false</externalId>
     <label>Emergency Contact City</label>

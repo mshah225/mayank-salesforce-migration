@@ -3,7 +3,7 @@
     <fullName>Contact__c</fullName>
     <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
     <businessStatus>Active</businessStatus>
-    <complianceGroup>PII</complianceGroup>
+    <complianceGroup>FERPA</complianceGroup>
     <description>[Peoplesoft] Relationship to contact used by Student 360 Profile</description>
     <externalId>false</externalId>
     <label>Contact</label>

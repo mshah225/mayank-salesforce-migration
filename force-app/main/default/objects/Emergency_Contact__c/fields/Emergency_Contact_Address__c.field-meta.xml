@@ -3,7 +3,7 @@
     <fullName>Emergency_Contact_Address__c</fullName>
     <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
     <businessStatus>Active</businessStatus>
-    <complianceGroup>PII</complianceGroup>
+    <complianceGroup>FERPA</complianceGroup>
     <description>[PeopleSoft] PS emergency contact address field - combining address1 and address2 from extract sql PS_EMERGENCY_CNTCT</description>
     <externalId>false</externalId>
     <label>Emergency Contact Address</label>

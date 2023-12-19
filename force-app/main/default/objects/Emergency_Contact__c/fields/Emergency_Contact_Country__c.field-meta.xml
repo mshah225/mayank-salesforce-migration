@@ -3,7 +3,7 @@
     <fullName>Emergency_Contact_Country__c</fullName>
     <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
     <businessStatus>Active</businessStatus>
-    <complianceGroup>PII</complianceGroup>
+    <complianceGroup>FERPA</complianceGroup>
     <deleteConstraint>SetNull</deleteConstraint>
     <description>[PeopleSoft] PS Emergency Contact Country id lookup to Country__c table</description>
     <externalId>false</externalId>

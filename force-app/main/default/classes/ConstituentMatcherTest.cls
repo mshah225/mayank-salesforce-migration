@@ -204,7 +204,7 @@ private class ConstituentMatcherTest {
         }
 
         // Pass constituent details to constituent matcher with different constructor variations
-        ConstituentMatcher matcher = new ConstituentMatcher(listOfConstituents, 'Contact', 'api');
+        ConstituentMatcher matcher = new ConstituentMatcher(listOfConstituents, 'Contact', 'ContactUpload');
         matcher.searchConstituents();
         ConstituentMatcher matcher2 = new ConstituentMatcher(listOfConstituents);
         matcher2.searchConstituents();

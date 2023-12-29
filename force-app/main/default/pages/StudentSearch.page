@@ -44,6 +44,24 @@
                 margin-top: 2em;
             }
 
+            #student-search-input-title {
+                font-weight: bold;
+                font-size: 1.1em;
+            }
+
+            #student-search-input-field-container {
+                max-width: 33%;
+            }
+
+            #student-search-input-field-container > input:nth-child(1) {
+                padding: 0.2em 0.35em;
+            }
+
+            #student-search-input-field-container > input:nth-child(1),
+            #student-search-input-field-description {
+                width: 75%;
+            }
+
             #student-search-input-field-container > input:nth-child(2) {
                 margin-left: 0.5em;
                 color: #fff;
@@ -51,10 +69,16 @@
                 border-radius: 5%;
                 border: solid;
                 border-color: #8c1d40 !important;
+                width: 16%;
+            }
+
+            #student-search-input-field-container .fa-search {
+                margin-left: -25%;
             }
 
             #student-search-input-field-description {
-                font-size: 0.85em;
+                font-size: 0.8em;
+                margin-top: 1em;
             }
 
             #student-search-results {
@@ -95,6 +119,7 @@
             </apex:repeat>
             <apex:form>
                 <apex:pageBlock mode="maindetail">
+                    <div id="student-search-input-title">Search:</div>
                     <div id="student-search-input-field-container">
                         <apex:inputText
                             id="student-search-input-field"
@@ -106,9 +131,10 @@
                             onclick="getStudentSearchResults(); return false;"
                             value="Search"
                         />
+                        <i class="fa fa-search"></i>
                         <div id="student-search-input-field-description">
-                            <strong>Search by</strong> ASURITE, EMPLID, Campus ID, name or partial name ("LAST, FIRST"
-                            or "FIRST LAST" format)
+                            <strong>Search by</strong> ASURITE, EMPLID, Campus ID, name or partial name in "last, first"
+                            or "first last" format
                         </div>
                     </div>
                     <div id="student-search-results" style="display: none">

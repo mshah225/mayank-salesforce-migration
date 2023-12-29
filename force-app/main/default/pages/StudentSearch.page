@@ -53,6 +53,24 @@
                 max-width: 33%;
             }
 
+            @media (max-width: 977px) {
+                #student-search-input-field-container {
+                    max-width: 40%;
+                }
+            }
+
+            @media (max-width: 818px) {
+                #student-search-input-field-container {
+                    max-width: 60%;
+                }
+            }
+
+            @media (max-width: 818px) {
+                #student-search-input-field-container {
+                    max-width: 100%;
+                }
+            }
+
             #student-search-input-field-container > input:nth-child(1) {
                 padding: 0.2em 0.35em;
             }
@@ -69,11 +87,11 @@
                 border-radius: 5%;
                 border: solid;
                 border-color: #8c1d40 !important;
-                width: 16%;
+                width: 64px;
             }
 
             #student-search-input-field-container .fa-search {
-                margin-left: -25%;
+                margin-left: -100px;
             }
 
             #student-search-input-field-description {

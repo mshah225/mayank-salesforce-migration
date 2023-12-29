@@ -1,5 +1,5 @@
 /**
- * An apex page controller that exposes the site login functionality
+ * An Apex page controller that exposes the site login functionality
  */
 public with sharing class CommunitiesLoginController {
     public PageReference forwardToAuthPage() {

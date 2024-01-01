@@ -9,6 +9,22 @@
                 <lightning-input type="search" onchange={handleSearch}></lightning-input>
             </div>
 
+            <lightning-accordion allow-multiple-sections-open>
+
+                <lightning-accordion-section name="Visitor Status" label="Visitor Status">
+                    <lightning-checkbox-group name="Statuses"
+                                label="Statuses"
+                                options={options}
+                                value={value}
+                                onchange={handleChange}></lightning-checkbox-group>
+                    <p>Selected Values are: {selectedValues}</p>
+
+                    <lightning-button label="Neutral" title="Apply Filter" onclick={fetchFilteredRecords} class="slds-m-left_x-small"></lightning-button>
+                </lightning-accordion-section>
+            </lightning-accordion>
+
+            
+
             <lightning-datatable
             key-field="id"
             data={contacts}

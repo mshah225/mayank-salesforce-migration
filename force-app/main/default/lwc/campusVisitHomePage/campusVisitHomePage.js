@@ -32,6 +32,9 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
     wiredContacts;
     selectedContacts;
     baseData;
+    nameSearchString;
+    statusSearchString;
+    value = ['option1'];
 
     get selectedContactsLen() {
         if(this.selectedContacts == undefined) return 0;
@@ -82,16 +85,26 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
     }
 
     async handleSearch(event){
+        this.nameSearchString = event.target.value;
         if(event.target.value == ""){
-            this.contacts = this.baseData
-        }else if(event.target.value.length > 1){
-            const searchContacts = await searchCampaignMembers({searchString: event.target.value})
+            this.contacts = this.baseData;
+        } else if(event.target.value.length > 1){
+            const searchContacts = await searchCampaignMembers({searchString: event.target.value, searchStatus: this.value})
 
             this.contacts = searchContacts.map(row => {
                 return this.mapContacts(row);
             })
 
         }
+    }
+
+    async fetchFilteredRecords(event) {
+        console.log(this.nameSearchString);
+        const searchContacts = await searchCampaignMembers({searchString: this.nameSearchString, searchStatus: this.value})
+
+        this.contacts = searchContacts.map(row => {
+            return this.mapContacts(row);
+        })
     }
 
 
@@ -114,6 +127,27 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
         })
         this.template.querySelector('lightning-datatable').selectedRows = [];
         this.selectedContacts = undefined;
+    }
+
+    get options() {
+        return [
+            { label: 'Ross', value: 'option1' },
+            { label: 'Sent', value: 'Sent' },
+            { label: 'Rachel', value: '3' },
+            { label: 'Rachel', value: '4' },
+            { label: 'Rachel', value: '5' },
+            { label: 'Rachel', value: '6' },
+            { label: 'Rachel', value: '7' },
+            { label: 'Rachel', value: '8' },
+        ];
+    }
+
+    get selectedValues() {
+        return this.value.join(',');
+    }
+
+    handleChange(e) {
+        this.value = e.detail.value;
     }
 
 }

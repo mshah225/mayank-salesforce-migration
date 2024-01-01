@@ -9,12 +9,15 @@ public with sharing class CampusVisitController {
     }
 
     @AuraEnabled(cacheable=True)
-    public static List<CampaignMember> searchCampaignMembers(String searchString){
+    public static List<CampaignMember> searchCampaignMembers(String searchString, List<String> searchStatus){
+        if (searchString == null) {
+            searchString = '';
+        }
         searchString = '%' + searchString + '%';
         return [
             SELECT Name, Id, LeadOrContactID__c, Type, Contact.MailingState, Status, Number_of_Guests__c, Number_of_Attendees__c
             FROM CampaignMember
-            WHERE Name LIKE: searchString
+            WHERE Name LIKE: searchString AND Status IN: searchStatus
             LIMIT 1000
         ];
     }

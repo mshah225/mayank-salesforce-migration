@@ -8,9 +8,9 @@ public with sharing class CampusVisitController {
         ];
     }
 
-    @AuraEnabled(cacheable=True)
+    @AuraEnabled
     public static List<CampaignMember> searchCampaignMembers(String searchString, List<String> searchStatus){
-        if (searchString == null) {
+        if (searchString == null || searchString.length() < 2) {
             searchString = '';
         }
         searchString = '%' + searchString + '%';

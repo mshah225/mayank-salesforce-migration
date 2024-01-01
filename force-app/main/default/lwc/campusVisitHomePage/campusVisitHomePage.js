@@ -32,9 +32,9 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
     wiredContacts;
     selectedContacts;
     baseData;
-    nameSearchString;
+    nameSearchString = '';
     statusSearchString;
-    value = ['option1'];
+    value = ['Responded', 'Sent'];
 
     get selectedContactsLen() {
         if(this.selectedContacts == undefined) return 0;
@@ -44,7 +44,6 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
     @wire(getCampaignMembers)
     contactsWire(result) {
         this.wiredContacts = result;
-        console.log(result);
         if(result.data){
             this.contacts = result.data.map((row) => {
                 return this.mapContacts(row);
@@ -86,20 +85,11 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
 
     async handleSearch(event){
         this.nameSearchString = event.target.value;
-        if(event.target.value == ""){
-            this.contacts = this.baseData;
-        } else if(event.target.value.length > 1){
-            const searchContacts = await searchCampaignMembers({searchString: event.target.value, searchStatus: this.value})
 
-            this.contacts = searchContacts.map(row => {
-                return this.mapContacts(row);
-            })
-
-        }
+        this.fetchFilteredRecords();
     }
 
-    async fetchFilteredRecords(event) {
-        console.log(this.nameSearchString);
+    async fetchFilteredRecords() {
         const searchContacts = await searchCampaignMembers({searchString: this.nameSearchString, searchStatus: this.value})
 
         this.contacts = searchContacts.map(row => {
@@ -120,7 +110,6 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
     }
 
     updateSelectedCampaignMembers(){
-        console.log('Entering');
         const idList = this.selectedContacts.map( row => { return row.Id })
         updateCampaignMembers({campaignMemberIds : idList}).then( () => {
             refreshApex(this.wiredContacts);
@@ -131,14 +120,9 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
 
     get options() {
         return [
-            { label: 'Ross', value: 'option1' },
+            { label: 'Responded', value: 'Responded' },
             { label: 'Sent', value: 'Sent' },
-            { label: 'Rachel', value: '3' },
-            { label: 'Rachel', value: '4' },
-            { label: 'Rachel', value: '5' },
-            { label: 'Rachel', value: '6' },
-            { label: 'Rachel', value: '7' },
-            { label: 'Rachel', value: '8' },
+            { label: 'Checked-In', value: 'Checked-In'}
         ];
     }
 
@@ -148,6 +132,7 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
 
     handleChange(e) {
         this.value = e.detail.value;
+        this.fetchFilteredRecords();
     }
 
 }

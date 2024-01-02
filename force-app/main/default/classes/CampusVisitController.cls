@@ -1,25 +1,34 @@
 public with sharing class CampusVisitController {
     @AuraEnabled(cacheable=True)
-    public static List<CampaignMember> getCampaignMembers(){
-        return [
+    public static List<CampaignMember> getCampaignMembers(String recordId, List<String> searchStatus){
+
+        List<CampaignMember> campaignMembersToDisplay = [
             SELECT Name, Id, LeadOrContactID__c, Type, Contact.MailingState, Status, Number_of_Guests__c, Number_of_Attendees__c
             FROM CampaignMember
+            WHERE Status IN: searchStatus AND CampaignId =: recordId
             LIMIT 1000
         ];
+
+        return campaignMembersToDisplay;
     }
 
     @AuraEnabled
-    public static List<CampaignMember> searchCampaignMembers(String searchString, List<String> searchStatus){
+    public static List<CampaignMember> searchCampaignMembers(String searchString, List<String> searchStatus, String recordId){
         if (searchString == null || searchString.length() < 2) {
             searchString = '';
         }
         searchString = '%' + searchString + '%';
-        return [
+
+        List<CampaignMember> campaignMembersToDisplay = [
             SELECT Name, Id, LeadOrContactID__c, Type, Contact.MailingState, Status, Number_of_Guests__c, Number_of_Attendees__c
             FROM CampaignMember
-            WHERE Name LIKE: searchString AND Status IN: searchStatus
+            WHERE Name LIKE: searchString AND Status IN: searchStatus AND CampaignId =: recordId
             LIMIT 1000
         ];
+
+        System.debug(campaignMembersToDisplay);
+
+        return campaignMembersToDisplay;
     }
 
     @AuraEnabled

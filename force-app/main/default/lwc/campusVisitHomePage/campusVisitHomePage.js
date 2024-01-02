@@ -30,7 +30,7 @@ const COLMS = [
 
 export default class CampusVisitHomePage extends NavigationMixin(LightningElement) {
     @api propertyValue;
-    
+
     cols = COLMS;
     contacts;
     wiredContacts;
@@ -46,8 +46,9 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
         return this.selectedContacts.length
     }
 
-    @wire(getCampaignMembers)
+    @wire(getCampaignMembers, {recordId: '$propertyValue', searchStatus: '$value'})
     contactsWire(result) {
+        console.log('recordId: ' + this.propertyValue);
         this.wiredContacts = result;
         if(result.data){
             this.contacts = result.data.map((row) => {
@@ -95,7 +96,7 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
     }
 
     async fetchFilteredRecords() {
-        const searchContacts = await searchCampaignMembers({searchString: this.nameSearchString, searchStatus: this.value})
+        const searchContacts = await searchCampaignMembers({searchString: this.nameSearchString, searchStatus: this.value, recordId: this.propertyValue})
 
         this.contacts = searchContacts.map(row => {
             return this.mapContacts(row);

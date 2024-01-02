@@ -2,6 +2,7 @@
     <lightning-card title="Campus Visit Check-In">
         <div slot="actions">
             <lightning-button label="Mark Late Selected Campaign Members" onclick={updateSelectedCampaignMembers}></lightning-button>
+            <lightning-button label="Create New Campaign Member" onclick={createCampaignMember}></lightning-button>
         </div>
         <div class="slds-card__body_inner">
 
@@ -20,8 +21,6 @@
                     <p>Selected Values are: {selectedValues}</p>
                 </lightning-accordion-section>
             </lightning-accordion>
-
-            
 
             <lightning-datatable
             key-field="id"

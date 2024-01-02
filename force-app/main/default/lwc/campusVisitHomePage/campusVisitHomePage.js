@@ -3,11 +3,13 @@ import { LightningElement, wire } from 'lwc';
 import getCampaignMembers from "@salesforce/apex/CampusVisitController.getCampaignMembers"
 import searchCampaignMembers from "@salesforce/apex/CampusVisitController.searchCampaignMembers"
 import updateCampaignMembers from "@salesforce/apex/CampusVisitController.updateCampaignMembers"
+import CheckInFormModal from "c/campusVisitCheckInForm"
 
 import { NavigationMixin } from 'lightning/navigation';
 import { refreshApex } from '@salesforce/apex';
 
-const ACTIONS = [{label: 'Delete', name: 'delete'}]
+
+const ACTIONS = [{label: 'Check-In', name: 'Check-In'}]
 
 const COLS = [{label: 'Name', fieldName: 'link', type: 'url', typeAttributes: {label: {fieldName: 'FullName'}}},
             {label: 'Email', fieldName: 'Email'},
@@ -34,6 +36,7 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
     baseData;
     nameSearchString = '';
     statusSearchString;
+    isModalOpen = false;
     value = ['Responded', 'Sent'];
 
     get selectedContactsLen() {
@@ -118,6 +121,15 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
         this.selectedContacts = undefined;
     }
 
+    async createCampaignMember() {      
+        const result = await CheckInFormModal.open({
+            size: 'large',
+            description: 'Accessible description of modal\'s purpose',
+            content: 'Passed into content api',
+        });
+        console.log(result);
+    }
+
     get options() {
         return [
             { label: 'Responded', value: 'Responded' },
@@ -133,6 +145,15 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
     handleChange(e) {
         this.value = e.detail.value;
         this.fetchFilteredRecords();
+    }
+
+    async handleRowAction(event) {
+        const result = await CheckInFormModal.open({
+            size: 'large',
+            description: 'Accessible description of modal\'s purpose',
+            content: event.detail.row.Id,
+        });
+        console.log(result);
     }
 
 }

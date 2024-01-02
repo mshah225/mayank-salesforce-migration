@@ -1,4 +1,4 @@
-import { LightningElement, wire } from 'lwc';
+import { LightningElement, wire, api } from 'lwc';
 
 import getCampaignMembers from "@salesforce/apex/CampusVisitController.getCampaignMembers"
 import searchCampaignMembers from "@salesforce/apex/CampusVisitController.searchCampaignMembers"
@@ -29,6 +29,8 @@ const COLMS = [
 ]
 
 export default class CampusVisitHomePage extends NavigationMixin(LightningElement) {
+    @api propertyValue;
+    
     cols = COLMS;
     contacts;
     wiredContacts;

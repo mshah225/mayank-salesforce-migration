@@ -1,4 +1,5 @@
 import { LightningElement, wire, api } from 'lwc';
+import { EnclosingTabId, setTabLabel, setTabIcon } from 'lightning/platformWorkspaceApi';
 
 import getCampaignMembers from "@salesforce/apex/CampusVisitController.getCampaignMembers"
 import searchCampaignMembers from "@salesforce/apex/CampusVisitController.searchCampaignMembers"
@@ -30,6 +31,7 @@ const COLMS = [
 
 export default class CampusVisitHomePage extends NavigationMixin(LightningElement) {
     @api propertyValue;
+    @wire(EnclosingTabId) enclosingTabId;
 
     cols = COLMS;
     contacts;
@@ -48,13 +50,14 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
 
     @wire(getCampaignMembers, {recordId: '$propertyValue', searchStatus: '$value'})
     contactsWire(result) {
-        console.log('recordId: ' + this.propertyValue);
         this.wiredContacts = result;
         if(result.data){
             this.contacts = result.data.map((row) => {
                 return this.mapContacts(row);
             })
             this.baseData = this.contacts;
+            setTabLabel(this.enclosingTabId, "Check-In Form");
+            setTabIcon(this.enclosingTabId, "utility:checkin");
         }
         if(result.error){
             console.error(result.error);

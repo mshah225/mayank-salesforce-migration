@@ -9,7 +9,6 @@ global class TopFiveArticleControllerAKB {
 
     @HttpPost
     global static List<ArticleInfo> getTopFiveArticles2(String listName) {
-        //string urlPrefix = getPkbSiteUrl();
         List<ArticleInfo> articles = new List<ArticleInfo>();
         integer articleRank = 0;
         List<Id> kavIds = new List<Id>();
@@ -52,10 +51,7 @@ global class TopFiveArticleControllerAKB {
             kavQuery += ' WITH DATA CATEGORY ' + dcGroup + ' AT ' + dataCategory;
         }
 
-        System.debug('KAV QUERY ' + kavQuery);
-
         List<Sobject> kavList = new List<Sobject>(database.query(kavQuery));
-        System.debug('KAV LIST ' + kavList);
 
         for (Sobject so : kavList) {
             KnowledgeArticleVersion kav = (KnowledgeArticleVersion) so;
@@ -78,8 +74,6 @@ global class TopFiveArticleControllerAKB {
             }
         }
 
-        System.debug('ARTICLE IDS ' + articleIds);
-
         for (KnowledgeArticleVersion kav : [
             SELECT id, Title, UrlName, KnowledgeArticleId, PublishStatus, language
             FROM KnowledgeArticleVersion
@@ -93,28 +87,11 @@ global class TopFiveArticleControllerAKB {
             ai.id = kav.KnowledgeArticleId;
             articles.add(ai);
         }
-
-        ArticleInfo allArticleLink = new ArticleInfo();
-        allArticleLink.rank = 0;
-        allArticleLink.title = 'More Articles';
-        allArticleLink.url = getMoreArticlesUrl(dcGroup, dataCategory);
-        allArticleLink.id = 'noId';
-        articles.add(allArticleLink);
-
         return articles;
     }
 
     global static string getArticleUrl(KnowledgeArticleVersion kav) {
         return getUrlPrefix() + '/authkb?id=' + kav.KnowledgeArticleId;
-    }
-
-    global static string getMoreArticlesUrl(string dcGroup, string dataCategory) {
-        String baseUrl = getUrlPrefix() + '/viewAllArticles?q=';
-        String dcgroupFix = dcGroup.replace('__c', '');
-        String dataCategoryGroupFix = dataCategory.replace('__c', '');
-        baseUrl += dcgroupFix.replace('_', '+') + '+' + dataCategoryGroupFix.replace('_', '+');
-
-        return baseUrl;
     }
 
     global static string getUrlPrefix() {

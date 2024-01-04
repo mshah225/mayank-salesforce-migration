@@ -1,49 +1,68 @@
 public class ViewAllArticlesController {
     private ApexPages.StandardSetController con;
 
-    public string searchString { get; set; }
+    public String searchString { get; set; }
+    public String searchLanguage {
+        get {
+            if (searchLanguage == null) {
+                searchLanguage = 'en_US';
+            }
+            return searchLanguage;
+        }
+        set;
+    }
     public List<KnowledgeArticleVersion> articleList { get; set; }
 
     public ViewAllArticlesController() {
-        setUp();
+        initialize();
     }
     public ViewAllArticlesController(MyASUHelpController controller) {
-        setUp();
+        initialize();
     }
 
-    public void setUp() {
+    public void initialize() {
         String q = ApexPages.currentPage().getParameters().get('q');
         if (q != null) {
             searchString = q;
             startSearch();
+        } else {
+            String l = ApexPages.currentPage().getParameters().get('l');
+            String c = ApexPages.currentPage().getParameters().get('c');
+            if (l != null && c != null) {
+                searchLanguage = l;
+                searchString = c;
+                startSearch();
+            }
         }
     }
 
     /** Method to get data result based on search word and on click on search button **/
     public void startSearch() {
         String querySOSL = '';
-        String querySQL = '';
-        String queryString = String.escapeSingleQuotes(searchstring);
+        String querySOQL = '';
+        String queryString = String.escapeSingleQuotes(searchString);
 
-        querySQL = 'SELECT KnowledgeArticleId, Id, Title, LastModifiedDate ' + 'FROM KnowledgeArticleVersion';
+        querySOQL = 'SELECT KnowledgeArticleId, Id, Title, LastModifiedDate ' + 'FROM KnowledgeArticleVersion';
 
-        querySosl =
+        querySOSL =
             'FIND \'' +
             queryString +
             '*\'' +
             'IN ALL FIELDS ' +
             'RETURNING KnowledgeArticleVersion (Id, KnowledgeArticleId, ' +
             'Title, LastModifiedDate ' +
-            'WHERE PublishStatus = \'Online\' AND Language = \'en_US\')';
+            'WHERE PublishStatus = \'Online\' AND Language = \'' +
+            searchLanguage +
+            '\')';
 
-        system.debug('=====' + QuerySOSL);
+        system.debug('=====' + querySOSL);
 
         List<List<KnowledgeArticleVersion>> resultListOfList = search.query(querySOSL);
 
         if (resultListOfList[0] != null && resultListOfList[0].size() > 0) {
-            querySQL = querySQL + ' where id in (' + getRecordIds(resultListOfList[0]) + ')';
-            system.debug('=====QUERYSQL' + QuerySQL);
-            con = new ApexPages.StandardSetController(Database.getQueryLocator(querySQL));
+            querySOQL = querySOQL + ' WHERE Id IN (' + getRecordIds(resultListOfList[0]) + ')';
+            system.debug('=====querySOQL' + querySOQL);
+            con = new ApexPages.StandardSetController(Database.getQueryLocator(querySOQL));
             system.debug('!!!CON' + con);
             con.setPageSize(20);
             articleList = new List<KnowledgeArticleVersion>();
@@ -56,9 +75,9 @@ public class ViewAllArticlesController {
     }
 
     /** method to concatenate ids of search results **/
-    private string getRecordIds(List<KnowledgeArticleVersion> KnowledgeArticleVersionList) {
-        string ids = '';
-        integer i = 0;
+    private String getRecordIds(List<KnowledgeArticleVersion> KnowledgeArticleVersionList) {
+        String ids = '';
+        Integer i = 0;
         for (KnowledgeArticleVersion nextObj : KnowledgeArticleVersionList) {
             i = i + 1;
 

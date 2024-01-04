@@ -8,7 +8,7 @@ global class TopFiveArticleControllerAKB {
     }
 
     @HttpPost
-    global static List<ArticleInfo> getTopFiveArticles2(String listName) {
+    global static List<ArticleInfo> getTopFiveArticles(String listName) {
         List<ArticleInfo> articles = new List<ArticleInfo>();
         integer articleRank = 0;
         List<Id> kavIds = new List<Id>();

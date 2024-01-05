@@ -36,7 +36,6 @@ export default class CampusVisitCheckInForm extends LightningModal {
     campaignMember(result) {
         this.campMem = result.data;
 
-        console.log(result.data);
         getOtherEvents({personId: this.campMem?.LeadOrContactID__c, currentCampaignMemberId: this.campMem?.Id, eventDate: this.campMem?.Campaign?.Event_Start_Date__c})
         .then(eventResults => {
             this.otherEvents = eventResults;

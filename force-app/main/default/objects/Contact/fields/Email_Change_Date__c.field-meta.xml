@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Email_Change_Date__c</fullName>
+    <description>[Peoplesoft] - Date and time of email change</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The date and time the Contact's primary Email was changed. For the reason, see "Email Change Reason".</inlineHelpText>
+    <label>Email Change Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>DateTime</type>
+</CustomField>

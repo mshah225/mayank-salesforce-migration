@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Teaching_Assistant__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>(PeopleSoft) PS_JOBS.TEACHING_ASSISTANT (based on job codes)</description>
+    <externalId>false</externalId>
+    <label>Teaching Assistant</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

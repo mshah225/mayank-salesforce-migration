@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Change_Date__c</fullName>
+    <description>The most recent change in the student's persistence outlook</description>
+    <externalId>false</externalId>
+    <label>Most Recent Outlook Change Date</label>
+    <summarizedField>Persistence_Outlook__c.Change_Date__c</summarizedField>
+    <summaryForeignKey>Persistence_Outlook__c.Contact__c</summaryForeignKey>
+    <summaryOperation>max</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <type>Summary</type>
+</CustomField>

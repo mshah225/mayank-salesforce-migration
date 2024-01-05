@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Last_College_Attended__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>[Peoplesoft, or import] - Name of last college attended</description>
+    <externalId>false</externalId>
+    <label>Last College Attended</label>
+    <referenceTo>Account</referenceTo>
+    <relationshipLabel>Contacts (Last College Attended)</relationshipLabel>
+    <relationshipName>Contacts_HS</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

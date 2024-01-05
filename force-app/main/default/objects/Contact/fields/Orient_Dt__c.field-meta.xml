@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Orient_Dt__c</fullName>
+    <description>(Data Warehouse) ASUDW.OR_RESERVATIONS_V W.CREATEDDATETIME</description>
+    <externalId>false</externalId>
+    <label>Orientation Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Date</type>
+</CustomField>

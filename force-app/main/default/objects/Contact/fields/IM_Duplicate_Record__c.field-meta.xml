@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>IM_Duplicate_Record__c</fullName>
+    <description>Field used for the Identity Management team to merge duplicate Contact records. Can use in conjunction with DemandTools matching scenarios. JIRA Ticket number (PSDUP) to track PeopleSoft duplicate process approval.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>JIRA Ticket (PSDUP) number to track PeopleSoft duplicate process approval.</inlineHelpText>
+    <label>IM Duplicate Record</label>
+    <length>50</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

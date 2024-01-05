@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All</fullName>
+    <columns>NAME</columns>
+    <columns>CREATED_DATE</columns>
+    <columns>Contact__c</columns>
+    <columns>Emergency_Contact_Relationship__c</columns>
+    <columns>Emergency_Primary_Contact__c</columns>
+    <columns>Emergency_Contact_Full_Name__c</columns>
+    <columns>Emergency_Contact_Phone__c</columns>
+    <columns>Emergency_Contact_Phone_Type__c</columns>
+    <columns>Emergency_Contact_Other_Phone__c</columns>
+    <columns>Emergency_Contact_Other_Phone_Type__c</columns>
+    <columns>Emergency_Contact_Address__c</columns>
+    <columns>Emergency_Contact_City__c</columns>
+    <columns>Emergency_Contact_State__c</columns>
+    <columns>Emergency_Contact_Zip__c</columns>
+    <columns>Emergency_Contact_Country__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Emergency_Contact_Phone_Type__c</field>
+        <operation>notEqual</operation>
+    </filters>
+    <label>All</label>
+</ListView>

@@ -1,0 +1,617 @@
+<apex:page
+    id="StudentSearch"
+    controller="StudentSearchController"
+    cache="false"
+    showHeader="false"
+    sideBar="false"
+    standardStylesheets="false"
+    docType="HTML-5.0"
+    action="{!init}"
+>
+    <apex:includeScript value="/support/console/42.0/integration.js" />
+    <apex:includeScript value="{!URLFOR($Resource.jsForce)}" />
+
+    <head>
+        <title>Student Search</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+            integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+            crossorigin="anonymous"
+        />
+        <link href="https://fonts.googleapis.com/css?family=Roboto:normal,medium" rel="stylesheet" type="text/css" />
+        <apex:stylesheet
+            value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"
+        />
+        <c:StudentProfileStyles />
+        <style>
+            .alert {
+                margin-top: 20px;
+                color: white;
+                font-family: Arial, Helvetica, 'Nimbus Sans L', 'Liberation Sans', FreeSans, sans-serif !important;
+                font-size: 14px;
+                background: #9f2b50;
+            }
+            .student-360-page-title,
+            .student-search-table-student-name,
+            #student-search-errors {
+                font-weight: bold;
+            }
+
+            #student-search-errors {
+                margin-top: 2em;
+            }
+
+            #student-search-input-title {
+                font-weight: bold;
+                font-size: 1.1em;
+            }
+
+            #student-search-input-field-container {
+                max-width: 33%;
+            }
+
+            @media (max-width: 977px) {
+                #student-search-input-field-container {
+                    max-width: 40%;
+                }
+            }
+
+            @media (max-width: 818px) {
+                #student-search-input-field-container {
+                    max-width: 60%;
+                }
+            }
+
+            @media (max-width: 818px) {
+                #student-search-input-field-container {
+                    max-width: 100%;
+                }
+            }
+
+            #student-search-input-field-container > input:nth-child(1) {
+                padding: 0.2em 0.35em;
+            }
+
+            #student-search-input-field-container > input:nth-child(1),
+            #student-search-input-field-description {
+                width: 75%;
+            }
+
+            #student-search-input-field-container > input:nth-child(2) {
+                margin-left: 0.5em;
+                color: #fff;
+                background-color: #8c1d40;
+                border-radius: 5%;
+                border: solid;
+                border-color: #8c1d40 !important;
+                width: 64px;
+            }
+
+            #student-search-input-field-container .fa-search {
+                margin-left: -100px;
+            }
+
+            #student-search-input-field-description {
+                font-size: 0.8em;
+                margin-top: 1em;
+            }
+
+            #student-search-results {
+                margin-top: 2em;
+            }
+
+            #student-search-current-search-results-text {
+                font-size: 1.25em;
+                font-weight: bold;
+            }
+
+            #student-search-current-search-count {
+                margin-top: 1em;
+                margin-bottom: -0.5em;
+            }
+
+            #student-search-container hr {
+                display: block;
+                width: 100%;
+                border-top: 0;
+                height: 2px;
+                margin: 1.5rem 0;
+                opacity: 1;
+                background-color: #8c1d40;
+            }
+        </style>
+    </head>
+
+    <body>
+        <!-- @TODO: Adjust these class names -->
+        <div class="student-profile-container">
+            <div class="student-profile-container-title">
+                <h1 style="float: left"><span class="student-360-page-title">Student 360:</span> Student Search</h1>
+                <hr />
+            </div>
+            <apex:repeat value="{!studentSearchMessages}" var="message">
+                <div class="alert">{!message}</div>
+            </apex:repeat>
+            <apex:form>
+                <apex:pageBlock mode="maindetail">
+                    <div id="student-search-input-title">Search:</div>
+                    <div id="student-search-input-field-container">
+                        <apex:inputText
+                            id="student-search-input-field"
+                            styleClass="slds-select"
+                            value="{!textToSearch}"
+                        />
+                        <apex:commandButton
+                            id="student-search-input-button"
+                            onclick="getStudentSearchResults(); return false;"
+                            value="Search"
+                        />
+                        <i class="fa fa-search"></i>
+                        <div id="student-search-input-field-description">
+                            <strong>Search by</strong> ASURITE, EMPLID, Campus ID, name or partial name in "last, first"
+                            or "first last" format
+                        </div>
+                    </div>
+                    <div id="student-search-results" style="display: none">
+                        <div id="student-search-current-search-results-text">
+                            Search results for "<span id="student-search-current-search-value"></span>"
+                        </div>
+                        <div id="student-search-current-search-count"></div>
+                    </div>
+                    <div style="overflow: auto; max-height: 400px">
+                        <div id="student-search-container" style="display: none"></div>
+                    </div>
+                    <div id="student-search-errors"></div>
+                </apex:pageBlock>
+            </apex:form>
+        </div>
+    </body>
+
+    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}" />
+
+    <script type="text/javascript">
+        let studentSearchResults;
+        let studentSearchWrapper;
+        let inConsole = false;
+        let userSearchInput;
+        let studentSearchQueryLimit = '1000';
+
+        function setTabTitle() {
+            //Set the current tab's title
+            if (sforce.console.isInConsole() || window.location.href.includes('FrameOrigin')) {
+                sforce.console.setTabTitle('Student Search');
+                inConsole = true;
+            }
+        }
+
+        let pageLoad = window.onload;
+        window.onload = function () {
+            if (pageLoad) {
+                pageLoad();
+            }
+            setTabTitle();
+        };
+
+        function openNewSubtab(subtabUrl, subtabTitle) {
+            let openSubtab = function (result) {
+                if (result.id === 'null') {
+                    window.open(subtabUrl);
+                    return;
+                }
+
+                if (subtabTitle !== 'null') {
+                    sforce.console.openSubtab(result.id, subtabUrl, true, subtabTitle, null);
+                } else {
+                    sforce.console.openSubtab(result.id, subtabUrl, true);
+                }
+            };
+
+            if (inConsole) {
+                sforce.console.getEnclosingPrimaryTabId(openSubtab);
+            } else {
+                window.open(subtabUrl);
+            }
+        }
+
+        $j = jQuery.noConflict();
+        $j(document).ready(function () {
+            $j('#student-search-errors').text(
+                "Ready to search. Start by entering a search term and clicking the 'Search' button or pressing ENTER."
+            );
+        });
+
+        function getStudentSearchResults() {
+            if (studentSearchResults != null) {
+                $j('#student-search-container').hide();
+                $j('#student-search-results').hide();
+            }
+
+            $j('#student-search-errors').show();
+            $j('#student-search-errors').html("<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>");
+
+            userSearchInput = $j('[id$=student-search-input-field]').val().trim();
+
+            if (userSearchInput !== '') {
+                userSearchInput = userSearchInput.trim();
+                $j('#student-search-results').show();
+                $j('#student-search-errors').hide();
+                $j('#student-search-current-search-value').text(userSearchInput);
+                renderStudentSearchResults();
+            } else {
+                $j('#student-search-results').hide();
+                $j('#student-search-errors').show();
+                $j('#student-search-errors').text(
+                    "Ready to search. Start by entering a search term and clicking the 'Search' button or pressing ENTER."
+                );
+            }
+        }
+
+        function renderStudentSearchResults() {
+            let campusLocationQuery = 'SELECT Id, Location_Code__c FROM Location__c WHERE Location_Status__c = true';
+            let campusLocationRecords = [];
+
+            let conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
+            conn.query(campusLocationQuery, function (locationError, locationResponse) {
+                if (locationError) {
+                    $j('#student-search-errors').html(locationError);
+                } else {
+                    let studentSearchQuery;
+                    let campusCodeList = [];
+                    let isSearchingByCampus;
+                    const isEmplid = (str) => /^[0-9]{10}$/gi.test(str);
+
+                    $j('#student-search-current-search-count').hide();
+                    $j('#student-search-errors').show();
+                    $j('#student-search-errors').html(
+                        "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>"
+                    );
+
+                    campusLocationRecords = locationResponse.records;
+                    campusLocationRecords.forEach(function (record) {
+                        delete record.attributes;
+                        campusCodeList.push(record.Location_Code__c.trim());
+                    });
+                    isSearchingByCampus = campusCodeList.includes(userSearchInput) ? true : false;
+
+                    if (isSearchingByCampus) {
+                        console.log('### SEARCH BY: CAMPUS ###');
+                        studentSearchQuery = getStudentCampusQuery();
+                    } else if (isEmplid(userSearchInput)) {
+                        console.log('### SEARCH BY: EMPLID ###');
+                        studentSearchQuery = getStudentEmplidQuery();
+                    } else if (userSearchInput.includes(',')) {
+                        console.log('### SEARCH BY: NAME + COMMA ###');
+                        studentSearchQuery = getStudentFormattedQuery();
+                    } else if (userSearchInput.includes(' ')) {
+                        console.log('### SEARCH BY: NAME + SPACE ###');
+                        studentSearchQuery = getStudentFormattedQuery();
+                    } else {
+                        console.log('### SEARCH BY: ASURITE + NAME ###');
+                        studentSearchQuery = getStudentAsuriteOrPartialNameQuery();
+                    }
+
+                    console.log('### QUERY ###');
+                    console.log(studentSearchQuery);
+                    console.log('### QUERY LIMIT ###');
+                    console.log(studentSearchQueryLimit);
+
+                    if (studentSearchQuery !== null) {
+                        conn.query(studentSearchQuery, function (studentSearchQueryError, response) {
+                            if (studentSearchQueryError) {
+                                $j('#student-search-errors').html(studentSearchQueryError);
+                            } else {
+                                let studentSearchResponse = response.records;
+
+                                studentSearchResponse.forEach(function (record) {
+                                    delete record.attributes;
+                                    delete record.Campus__r.attributes;
+                                    delete record.Contact__r.attributes;
+                                });
+                                studentSearchResponse = JSON.stringify(studentSearchResponse);
+
+                                $j('#student-search-errors').hide();
+                                $j('#student-search-errors').text('');
+
+                                Visualforce.remoting.Manager.invokeAction(
+                                    '{!$RemoteAction.StudentSearchController.getStudentSearchResults}',
+                                    studentSearchResponse,
+                                    function (result, event) {
+                                        if (event.status) {
+                                            studentSearchResults = result;
+                                            studentSearchWrapper = result.studentProgramPlanData;
+
+                                            let resultsWithoutDuplicates = result.studentProgramPlanData.reduce(
+                                                (unique, obj) => {
+                                                    if (
+                                                        !unique.some(
+                                                            (compare) =>
+                                                                compare.Contact__r.EMPLID__c ===
+                                                                    obj.Contact__r.EMPLID__c &&
+                                                                compare.Degree_Conferral_Date__c ===
+                                                                    obj.Degree_Conferral_Date__c &&
+                                                                compare.Plan_Code__c === obj.Plan_Code__c
+                                                        )
+                                                    ) {
+                                                        unique.push(obj);
+                                                    }
+                                                    return unique;
+                                                },
+                                                []
+                                            );
+
+                                            let resultsWithMostRecentProgram = Object.values(
+                                                resultsWithoutDuplicates.reduce((r, o) => {
+                                                    if (
+                                                        !r[o.Contact__r.EMPLID__c] ||
+                                                        o.Primary_Flag__c ||
+                                                        o.Degree_Conferral_Date__c >
+                                                            r[o.Contact__r.EMPLID__c].Degree_Conferral_Date__c
+                                                    ) {
+                                                        r[o.Contact__r.EMPLID__c] = o;
+                                                    }
+
+                                                    return r;
+                                                }, {})
+                                            );
+
+                                            resultsWithMostRecentProgram.sort((a, b) =>
+                                                a.Contact__r.Preferred_Full_Name__c >
+                                                b.Contact__r.Preferred_Full_Name__c
+                                                    ? 1
+                                                    : b.Contact__r.Preferred_Full_Name__c >
+                                                      a.Contact__r.Preferred_Full_Name__c
+                                                    ? -1
+                                                    : 0
+                                            );
+
+                                            console.log('### RESULTS WITH MOST RECENT PROGRAM ###');
+                                            console.log(resultsWithMostRecentProgram);
+
+                                            if (
+                                                !Object.getOwnPropertyNames(resultsWithMostRecentProgram).length == 0 &&
+                                                resultsWithMostRecentProgram.length > 0
+                                            ) {
+                                                $j('#student-search-current-search-count').show();
+
+                                                if (resultsWithMostRecentProgram.length == 1) {
+                                                    $j('#student-search-current-search-count').text(
+                                                        'Your search returned 1 match'
+                                                    );
+                                                } else {
+                                                    $j('#student-search-current-search-count').text(
+                                                        'Your search returned ' +
+                                                            resultsWithMostRecentProgram.length +
+                                                            ' matches'
+                                                    );
+                                                }
+
+                                                $j('#student-search-container').css('display', 'initial');
+
+                                                let resultTableHtml =
+                                                    '' +
+                                                    '<hr>' +
+                                                    "<div class='table-responsive'>" +
+                                                    "<table id='student_search_table' class='table table-striped table-bordered'> " +
+                                                    '<thead>' +
+                                                    '<tr style="cursor:pointer">' +
+                                                    '<th scope="col">Name</th>' +
+                                                    '<th scope="col">EMPLID</th>' +
+                                                    '<th scope="col">ASURITE</th>' +
+                                                    '<th scope="col">DOB</th>' +
+                                                    '<th scope="col">Campus</th>' +
+                                                    '<th scope="col">Plan</th>' +
+                                                    '<th scope="col">Program</th>' +
+                                                    '</tr>' +
+                                                    '</thead>' +
+                                                    '<tbody>';
+
+                                                for (let i = 0; i < resultsWithMostRecentProgram.length; i++) {
+                                                    let fullName =
+                                                        resultsWithMostRecentProgram[i].Contact__r
+                                                            .Preferred_Full_Name__c;
+
+                                                    let emplid = resultsWithMostRecentProgram[i].Contact__r.EMPLID__c;
+
+                                                    let asurite =
+                                                        resultsWithMostRecentProgram[i].Contact__r.ASURite_ID__c != null
+                                                            ? resultsWithMostRecentProgram[i].Contact__r.ASURite_ID__c
+                                                            : '--';
+
+                                                    let birthdate =
+                                                        resultsWithMostRecentProgram[i].Contact__r.Birthdate != null
+                                                            ? new Date(
+                                                                  resultsWithMostRecentProgram[i].Contact__r.Birthdate
+                                                              )
+                                                            : '--';
+                                                    birthdate =
+                                                        birthdate != '--'
+                                                            ? birthdate.getMonth() +
+                                                              1 +
+                                                              '/' +
+                                                              (birthdate.getDate() + 1) +
+                                                              '/' +
+                                                              birthdate.getFullYear()
+                                                            : birthdate;
+
+                                                    let campus =
+                                                        resultsWithMostRecentProgram[i].Campus__r.Location_Code__c !=
+                                                        null
+                                                            ? resultsWithMostRecentProgram[i].Campus__r.Location_Code__c
+                                                            : '--';
+
+                                                    let plan =
+                                                        resultsWithMostRecentProgram[i]
+                                                            .Plan_Transcript_Description__c != null
+                                                            ? resultsWithMostRecentProgram[i]
+                                                                  .Plan_Transcript_Description__c
+                                                            : '--';
+
+                                                    let program = '--';
+                                                    if (
+                                                        resultsWithMostRecentProgram[i]
+                                                            .College_Diploma_Description__c != null
+                                                    ) {
+                                                        program =
+                                                            resultsWithMostRecentProgram[i]
+                                                                .College_Diploma_Description__c;
+                                                    } else if (
+                                                        resultsWithMostRecentProgram[i].Program_Description__c != null
+                                                    ) {
+                                                        program =
+                                                            resultsWithMostRecentProgram[i].Program_Description__c;
+                                                    }
+
+                                                    let studentProfileUrl = '/apex/StudentProfile?contactId=' + emplid;
+
+                                                    resultTableHtml +=
+                                                        '' +
+                                                        '<tr>' +
+                                                        '<td data-header="Name" class="student-search-table-student-name">' +
+                                                        '<a href="' +
+                                                        studentProfileUrl +
+                                                        '">' +
+                                                        fullName +
+                                                        '</a>' +
+                                                        '</td>' +
+                                                        '<td data-header="EMPLID">' +
+                                                        emplid +
+                                                        '</td>' +
+                                                        '<td data-header="ASURITE">' +
+                                                        asurite +
+                                                        '</td>' +
+                                                        '<td data-header="DOB">' +
+                                                        birthdate +
+                                                        '</td>' +
+                                                        '<td data-header="Campus">' +
+                                                        campus +
+                                                        '</td>' +
+                                                        '<td data-header="Plan">' +
+                                                        plan +
+                                                        '</td>' +
+                                                        '<td data-header="Program">' +
+                                                        program +
+                                                        '</td>' +
+                                                        '</tr>';
+                                                }
+
+                                                resultTableHtml += '</tbody></table></div>';
+                                                $j('#student-search-container').html(resultTableHtml);
+                                            } else {
+                                                $j('#student-search-current-search-count').show();
+                                                $j('#student-search-current-search-count').text(
+                                                    'Your search returned 0 matches'
+                                                );
+                                            }
+                                        } else if (event.type === 'exception') {
+                                            $j('#student-search-errors').html(
+                                                event.message + '<br/>\n<pre>' + event.where + '</pre>'
+                                            );
+                                        } else {
+                                            $j('#student-search-errors').html(event.message);
+                                        }
+                                    },
+                                    {buffer: false, escape: true, timeout: 120000}
+                                );
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        function getStudentCampusQuery() {
+            return (
+                'SELECT Id, Campus__r.Location_Code__c, College_Diploma_Description__c, Contact__c, ' +
+                'Contact__r.ASURite_ID__c, Contact__r.Birthdate, Contact__r.EMPLID__c, Contact__r.Preferred_Full_Name__c, ' +
+                'Contact__r.Preferred_First_Name__c, Contact__r.LastName, Degree_Conferral_Date__c, Plan_Code__c, ' +
+                'Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c ' +
+                'FROM Student_Program_Plan__c ' +
+                "WHERE Campus__r.Location_Code__c = '" +
+                userSearchInput +
+                "' LIMIT " +
+                studentSearchQueryLimit
+            );
+        }
+
+        function getStudentEmplidQuery() {
+            return (
+                'SELECT Id, Campus__r.Location_Code__c, College_Diploma_Description__c, Contact__c, ' +
+                'Contact__r.ASURite_ID__c, Contact__r.Birthdate, Contact__r.EMPLID__c, Contact__r.Preferred_Full_Name__c, ' +
+                'Contact__r.Preferred_First_Name__c, Contact__r.LastName, Degree_Conferral_Date__c, Plan_Code__c, ' +
+                'Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c ' +
+                'FROM Student_Program_Plan__c ' +
+                "WHERE Contact__r.EMPLID__c = '" +
+                userSearchInput +
+                "' LIMIT " +
+                studentSearchQueryLimit
+            );
+        }
+
+        function getStudentFormattedQuery() {
+            let extractedNames;
+            let extractedFirstName;
+            let extractedLastName;
+            let extractedFullName;
+
+            if (userSearchInput.includes(',')) {
+                extractedNames = userSearchInput.split(',');
+                extractedLastName = extractedNames[0].trim();
+                extractedFirstName = extractedNames[1].trim();
+            } else if (userSearchInput.includes(' ')) {
+                extractedNames = userSearchInput.split(' ');
+                for (let i = 0; i < extractedNames.length; i++) {
+                    if (i === 0) {
+                        extractedFirstName = extractedNames[i].trim();
+                    } else if (i === 1) {
+                        extractedLastName = extractedNames[i].trim();
+                    } else {
+                        extractedLastName += ' ' + extractedNames[i].trim();
+                    }
+                }
+            }
+            extractedFullName = (extractedFirstName + ' ' + extractedLastName).trim();
+
+            return (
+                'SELECT Id, Campus__r.Location_Code__c, College_Diploma_Description__c, Contact__c, ' +
+                'Contact__r.ASURite_ID__c, Contact__r.Birthdate, Contact__r.EMPLID__c, Contact__r.Preferred_Full_Name__c, ' +
+                'Contact__r.Preferred_First_Name__c, Contact__r.LastName, Degree_Conferral_Date__c, Plan_Code__c, ' +
+                'Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c ' +
+                'FROM Student_Program_Plan__c ' +
+                "WHERE Contact__r.Preferred_Full_Name__c = '" +
+                extractedFullName +
+                "' OR (Contact__r.Preferred_First_Name__c LIKE '" +
+                extractedFirstName +
+                "%' AND Contact__r.LastName LIKE '" +
+                extractedLastName +
+                "%') OR (Contact__r.Preferred_First_Name__c LIKE '" +
+                extractedLastName +
+                "%' AND Contact__r.LastName LIKE '" +
+                extractedFirstName +
+                "%') " +
+                'LIMIT ' +
+                studentSearchQueryLimit
+            );
+        }
+
+        function getStudentAsuriteOrPartialNameQuery() {
+            return (
+                'SELECT Id, Campus__r.Location_Code__c, College_Diploma_Description__c, Contact__c, ' +
+                'Contact__r.ASURite_ID__c, Contact__r.Birthdate, Contact__r.EMPLID__c, Contact__r.Preferred_Full_Name__c, ' +
+                'Contact__r.Preferred_First_Name__c, Contact__r.LastName, Degree_Conferral_Date__c, Plan_Code__c, ' +
+                'Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c ' +
+                'FROM Student_Program_Plan__c ' +
+                "WHERE Contact__r.ASURite_ID__c = '" +
+                userSearchInput +
+                "' OR Contact__r.Preferred_First_Name__c LIKE '" +
+                userSearchInput +
+                "%' OR Contact__r.LastName LIKE '" +
+                userSearchInput +
+                "%' LIMIT " +
+                studentSearchQueryLimit
+            );
+        }
+    </script>
+</apex:page>

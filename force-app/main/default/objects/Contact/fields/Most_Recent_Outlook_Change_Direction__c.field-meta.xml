@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Most_Recent_Outlook_Change_Direction__c</fullName>
+    <description>The direction of change between -2 (for null previous values) to 1 (for positive changes) for the students civitas persistence score</description>
+    <externalId>false</externalId>
+    <label>Most Recent Outlook Change Direction</label>
+    <summarizedField>Persistence_Outlook__c.Change_Direction__c</summarizedField>
+    <summaryForeignKey>Persistence_Outlook__c.Contact__c</summaryForeignKey>
+    <summaryOperation>max</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <type>Summary</type>
+</CustomField>

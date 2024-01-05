@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SMS_Magic_Permission_to_Text__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Custom field for SMS Magic Converse app. Used to denote for the app if a contact has opted-in.
+Update SMS Opt Out when this is updated.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Update this field to will trigger an update to field SMS Opt Out</inlineHelpText>
+    <label>SMS Magic Permission to Text</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Checkbox</type>
+</CustomField>

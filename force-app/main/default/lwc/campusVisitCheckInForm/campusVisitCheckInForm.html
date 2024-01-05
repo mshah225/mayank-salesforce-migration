@@ -8,7 +8,7 @@
                     <lightning-input type="text" read-only="true" label="Campaign Name" value={campMem.Campaign.Name}> </lightning-input>
                 </div>
                 <div class="slds-col slds-size_1-of-2">
-                    <lightning-combobox label="Status" options={memberStatusPicklistValues} value={campMem.Status}></lightning-combobox>
+                    <lightning-combobox label="Status" options={memberStatusPicklistValues} value={campMem.Status} onchange={handleStatusChange}></lightning-combobox>
                 </div>
                 <div class="slds-col slds-size_1-of-2">
                     <lightning-input type="text" read-only="true" label="Event Start Date" value={campMem.Campaign.Event_Start_Date__c}> </lightning-input>    
@@ -24,7 +24,7 @@
                         <lightning-input type="text" read-only="true" label="Name" value={campMem.Name}> </lightning-input>
                     </div>
                     <div class="slds-col slds-size_1-of-2">
-                        <lightning-input type="text" label="Badge Name" value={campMem.Badge_Name__c}> </lightning-input>
+                        <lightning-input type="text" label="Badge Name" value={campMem.Badge_Name__c} onchange={handleBadgeNameChange}> </lightning-input>
                     </div>
                     <div class="slds-col slds-size_1-of-2">
                         <lightning-input type="text" read-only="true" label="Mailing State" value={campMem.Contact.MailingState}> </lightning-input>    
@@ -44,25 +44,25 @@
             <lightning-card title="Event Attendee Information">
                 <div class="slds-grid slds-wrap">
                     <div class="slds-col slds-size_1-of-2">
-                        <lightning-input type="text" label="Number of Guests" value={campMem.Number_of_Guests__c}> </lightning-input>
+                        <lightning-input type="text" label="Number of Guests" value={campMem.Number_of_Guests__c} onchange={handleGuestsChange}> </lightning-input>
                     </div>
                     <div class="slds-col slds-size_1-of-2">
                         <lightning-input type="text" read-only="true" label="Number of Attendees" value={campMem.Number_of_Attendees__c}> </lightning-input>
                     </div>
                     <div class="slds-col slds-size_1-of-2">
-                        <lightning-input type="text" label="Academic Session" value={campMem.Academic_Session__c}> </lightning-input>    
+                        <lightning-input type="text" label="Academic Session" value={campMem.Academic_Session__c} onchange={handleAcaSessionChange}> </lightning-input>    
                     </div>
                     <div class="slds-col slds-size_1-of-2">
-                        <lightning-input type="text" label="Comments" value={campMem.Comments__c}> </lightning-input>    
+                        <lightning-input type="text" label="Comments" value={campMem.Comments__c} onchange={handleCommentsChange}> </lightning-input>    
                     </div>
                     <div class="slds-col slds-size_1-of-2">
-                        <lightning-input type="checkbox" variant="label-stacked" label="Barrett Session" value={campMem.Barrett_Session__c}> </lightning-input>    
+                        <lightning-input type="checkbox" variant="label-stacked" label="Barrett Session" value={campMem.Barrett_Session__c} onchange={handleBarrettChange}> </lightning-input>    
                     </div>
                     <div class="slds-col slds-size_1-of-2">
-                        <lightning-input type="checkbox" variant="label-stacked" label="Housing Tour" value={campMem.Housing_Tour__c}> </lightning-input>    
+                        <lightning-input type="checkbox" variant="label-stacked" label="Housing Tour" value={campMem.Housing_Tour__c} onchange={handleHousingTourChange}> </lightning-input>    
                     </div>
                     <div class="slds-col slds-size_1-of-2">
-                        <lightning-input type="text" label="Additional Tour Information" value={campMem.Additional_Tour_Information__c}> </lightning-input>    
+                        <lightning-input type="text" label="Additional Tour Information" value={campMem.Additional_Tour_Information__c} onchange={handleAddTourChange}> </lightning-input>    
                     </div>
                 </div>
             </lightning-card>
@@ -83,6 +83,15 @@
                     </div>
                 </div>
             </lightning-card>
+            <lightning-card title="Other Sessions">
+                <lightning-datatable
+                key-field="id"
+                data={otherEvents}
+                columns={otherEventColumns}
+                hide-checkbox-column="true">
+                </lightning-datatable>
+            </lightning-card>
+            
         </template>
 
     </lightning-modal-body>

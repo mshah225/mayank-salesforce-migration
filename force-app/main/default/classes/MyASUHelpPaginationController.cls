@@ -1,5 +1,26 @@
 public with sharing class MyASUHelpPaginationController {
     public String textToSearch { get; set; }
+    public String articleLanguage {
+        get {
+            if (articleLanguage == null) {
+                articleLanguage = 'en_US';
+            }
+            return articleLanguage;
+        }
+        set;
+    }
+    public String articleCategory { get; set; }
+    public String articleCategoryName {
+        get {
+            if (articleCategory.contains('My_ASU_Classes')) {
+                articleCategoryName = 'My Classes';
+            } else if (articleCategory.contains(My_ASU_Programs_and)) {
+                articleCategoryName = 'My Programs';
+            }
+            return articleCategoryName;
+        }
+        set;
+    }
     public String mostRecentSearchText { get; set; }
     public Integer pageSize;
     public Integer currentPage;
@@ -36,9 +57,16 @@ public with sharing class MyASUHelpPaginationController {
     }
 
     private void checkSearchParams() {
-        String searchParams = ApexPages.currentPage().getParameters().get('q');
-        if (searchParams != null) {
-            textToSearch = (searchParams.length() > 99) ? searchParams.substring(0, 99) : searchParams;
+        String q = ApexPages.currentPage().getParameters().get('q');
+        if (q != null) {
+            textToSearch = (q.length() > 99) ? q.substring(0, 99) : q;
+        } else {
+            String l = ApexPages.currentPage().getParameters().get('l');
+            String c = ApexPages.currentPage().getParameters().get('c');
+            if (l != null && c != null) {
+                articleLanguage = l;
+                articleCategory = c;
+            }
         }
     }
 
@@ -49,9 +77,9 @@ public with sharing class MyASUHelpPaginationController {
             String queryString = String.escapeSingleQuotes(textToSearch);
             Search.SearchResults searchResults = Search.find(
                 'FIND \'' +
-                queryString +
-                '*\'' +
-                'IN ALL FIELDS RETURNING KnowledgeArticleVersion(Id, KnowledgeArticleId, Title, LastModifiedDate WHERE PublishStatus = \'Online\' AND Language = \'en_US\')'
+                    queryString +
+                    '*\'' +
+                    'IN ALL FIELDS RETURNING KnowledgeArticleVersion(Id, KnowledgeArticleId, Title, LastModifiedDate WHERE PublishStatus = \'Online\' AND Language = \'en_US\')'
             );
             List<Search.SearchResult> articlelist = searchResults.get('KnowledgeArticleVersion');
             numberOfResults = articlelist.size();

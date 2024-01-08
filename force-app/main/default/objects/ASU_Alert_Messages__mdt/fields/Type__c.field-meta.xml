@@ -7,7 +7,7 @@
     <description>What type of alert message to show?  This controls the background color and icon for the alert.</description>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <inlineHelpText>What type of alert message to show?  This controls the background color and icon for the alert.</inlineHelpText>
+    <inlineHelpText>This controls the background color and icon for the alert. Warning = Orange background with a message bell icon; Info = Blue background with a info icon; Fatal = Red background with a error triangle icon; Confirm = Green background with a check mark icon; None = Orange background with a message bell icon.</inlineHelpText>
     <label>Type</label>
     <required>false</required>
     <securityClassification>Internal</securityClassification>

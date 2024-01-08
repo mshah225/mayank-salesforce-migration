@@ -6,7 +6,7 @@
     <description>A url to link people to in the message</description>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
-    <inlineHelpText>Optional Url for detailed information</inlineHelpText>
+    <inlineHelpText>Optional Url for detailed information; Make sure to include http://</inlineHelpText>
     <label>Url</label>
     <length>255</length>
     <required>false</required>

@@ -1,5 +1,27 @@
 public with sharing class MyASUHelpPaginationController {
+    public Integer pageSize;
+    public Integer currentPage;
+    public Integer lastPage;
+    public Boolean onFirstPage;
+    public Boolean onLastPage;
+    public Integer numberOfResults;
+    public Integer extraRows;
+    public List<KnowledgeArticleVersion> articleList;
     public String textToSearch { get; set; }
+    public String mostRecentSearchText { get; set; }
+    public String articleCategory { get; set; }
+
+    public String articleCategoryName {
+        get {
+            if (articleCategory.contains('My_ASU_Classes')) {
+                articleCategoryName = 'My Classes';
+            } else if (articleCategory.contains('My_ASU_Programs_and')) {
+                articleCategoryName = 'My Programs';
+            }
+            return articleCategoryName;
+        }
+        set;
+    }
     public String articleLanguage {
         get {
             if (articleLanguage == null) {
@@ -9,28 +31,33 @@ public with sharing class MyASUHelpPaginationController {
         }
         set;
     }
-    public String articleCategory { get; set; }
-    public String articleCategoryName {
+    private Boolean isTextSearchQuery {
         get {
-            if (articleCategory.contains('My_ASU_Classes')) {
-                articleCategoryName = 'My Classes';
-            } else if (articleCategory.contains(My_ASU_Programs_and)) {
-                articleCategoryName = 'My Programs';
+            if (textToSearch == '' || textToSearch == null) {
+                isTextSearchQuery = false;
+            } else {
+                isTextSearchQuery = true;
             }
-            return articleCategoryName;
+            return isTextSearchQuery;
         }
         set;
     }
-    public String mostRecentSearchText { get; set; }
-    public Integer pageSize;
-    public Integer currentPage;
-    public Integer lastPage;
-    public Integer numberOfResults;
-    public Integer extraRows;
-    public List<KnowledgeArticleVersion> articleList;
-
-    public Boolean onFirstPage;
-    public Boolean onLastPage;
+    private Boolean isCategorySearchQuery {
+        get {
+            if (
+                articleCategory == '' ||
+                articleCategory == null ||
+                articleCategoryName == '' ||
+                articleCategoryName == null
+            ) {
+                isCategorySearchQuery = false;
+            } else {
+                isCategorySearchQuery = true;
+            }
+            return isCategorySearchQuery;
+        }
+        set;
+    }
 
     public MyASUHelpPaginationController() {
         setupPagination();
@@ -48,8 +75,9 @@ public with sharing class MyASUHelpPaginationController {
         setLastPageNumber();
         setFirstAndLastPageStatuses();
     }
-    public String getForceRecalculatePaginationValues() {
-        // When you attempt to {!forceRecalculatePaginationValues} - this will force the pagination values to all be recalculated.
+
+    // Force pagination value recalculation with {!refreshPagination}
+    public String getRefreshPagination() {
         setNumberOfResults();
         setLastPageNumber();
         setFirstAndLastPageStatuses();
@@ -71,18 +99,39 @@ public with sharing class MyASUHelpPaginationController {
     }
 
     private void setNumberOfResults() {
-        if (textToSearch == '' || textToSearch == null) {
+        if (!isTextSearchQuery && !isCategorySearchQuery) {
             numberOfResults = 0;
-        } else {
+        } else if (isTextSearchQuery && !isCategorySearchQuery) {
             String queryString = String.escapeSingleQuotes(textToSearch);
-            Search.SearchResults searchResults = Search.find(
+            Search.SearchResults kavResults = Search.find(
                 'FIND \'' +
                     queryString +
                     '*\'' +
                     'IN ALL FIELDS RETURNING KnowledgeArticleVersion(Id, KnowledgeArticleId, Title, LastModifiedDate WHERE PublishStatus = \'Online\' AND Language = \'en_US\')'
             );
-            List<Search.SearchResult> articlelist = searchResults.get('KnowledgeArticleVersion');
-            numberOfResults = articlelist.size();
+            numberOfResults = kavResults.get('KnowledgeArticleVersion').size();
+        } else if (!isTextSearchQuery && isCategorySearchQuery) {
+            if (articleCategoryName == 'My Classes') {
+                dataCategoryGroup = 'Academics__c';
+                dataCategory = 'My_ASU_Classes__c';
+            } else if (articleCategoryName == 'My Programs') {
+                dataCategoryGroup = 'Academics__c';
+                dataCategory = 'My_ASU_Programs_and__c';
+            }
+
+            String kavResults =
+                'SELECT COUNT() ' +
+                'FROM KnowledgeArticleVersion ' +
+                'WHERE PublishStatus=\'Online\' ' +
+                'AND Language =\'' +
+                articleLanguage +
+                '\' ' +
+                'AND IsVisibleInPkb = true ' +
+                'WITH DATA CATEGORY ' +
+                dataCategoryGroup +
+                ' AT ' +
+                dataCategory;
+            numberOfResults = Database.countQuery(kavResults);
         }
     }
 

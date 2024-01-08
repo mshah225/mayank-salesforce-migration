@@ -48,7 +48,7 @@
                 <apex:actionRegion id="alius-format912">
                     <apex:pageBlock id="myasu-help-region-faq-search-results-block" mode="maindetail">
                         <apex:outputPanel rendered="{!AND(articleCategory != '', EmbedLocation == 'viewAllArticles')}">
-                            <div class="d-none" aria-hidden="true">{!forceRecalculatePaginationValues}</div>
+                            <div class="d-none" aria-hidden="true">{!refreshPagination}</div>
                             <h3 class="lead">Showing all results for '{!articleCategoryName}'</h3>
                             <ul class="pt-1 pb-1 revert-blockquote-to-ul">
                                 <knowledge:articleList
@@ -59,12 +59,12 @@
                                     pageNumber="{!currentPageNumber}"
                                     pageSize="{!IF(articleCategory != '', pageSize, 0)}"
                                 >
-                                    <li>
+                                    <li style="{!IF({!article.IsVisibleInPkb} == true, '', 'display:none')}">
                                         <apex:outputLink
                                             styleClass="c-text-black underline d-inline-block mt-1 mb-1"
-                                            value="/authkb?id={!article.id}"
+                                            value="/authkb?id={!article.Id}"
                                         >
-                                            {!article.title}
+                                            {!article.Title}
                                         </apex:outputLink>
                                     </li>
                                 </knowledge:articleList>
@@ -106,7 +106,7 @@
                             >
                         </apex:outputPanel>
                         <apex:outputPanel rendered="{!AND(textToSearch != '', EmbedLocation == 'viewAllArticles')}">
-                            <div class="d-none" aria-hidden="true">{!forceRecalculatePaginationValues}</div>
+                            <div class="d-none" aria-hidden="true">{!refreshPagination}</div>
                             <h3 class="lead">Showing all results for '{!textToSearch}'</h3>
                             <ul class="pt-1 pb-1 revert-blockquote-to-ul">
                                 <knowledge:articleList
@@ -119,9 +119,9 @@
                                     <li>
                                         <apex:outputLink
                                             styleClass="c-text-black underline d-inline-block mt-1 mb-1"
-                                            value="/authkb?id={!article.id}"
+                                            value="/authkb?id={!article.Id}"
                                         >
-                                            {!article.title}
+                                            {!article.Title}
                                         </apex:outputLink>
                                     </li>
                                 </knowledge:articleList>

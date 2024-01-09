@@ -13,9 +13,9 @@ public with sharing class MyASUHelpPaginationController {
 
     public String articleCategoryName {
         get {
-            if (articleCategory.contains('My_ASU_Classes')) {
+            if (articleCategory.contains('Academics') && articleCategory.contains('My_ASU_Classes')) {
                 articleCategoryName = 'My Classes';
-            } else if (articleCategory.contains('My_ASU_Programs_and')) {
+            } else if (articleCategory.contains('Academics') && articleCategory.contains('My_ASU_Programs_and')) {
                 articleCategoryName = 'My Programs';
             }
             return articleCategoryName;

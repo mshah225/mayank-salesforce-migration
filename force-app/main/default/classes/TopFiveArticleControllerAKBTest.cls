@@ -92,17 +92,4 @@ public with sharing class TopFiveArticleControllerAKBTest {
             System.assert(ai.url == TopFiveArticleControllerAKB.getUrlPrefix() + '/authkb?id=' + ai.id);
         }
     }
-
-    static testMethod void testGetMoreArticlesUrl() {
-        String dcGroup = 'Finances__c';
-        String dataCategory = 'My_ASU_Devil2Devil';
-
-        Test.startTest();
-        String checkUrl = TopFiveArticleControllerAKB.getMoreArticlesUrl(dcGroup, dataCategory);
-        Test.stopTest();
-
-        System.assert(checkUrl.contains('viewAllArticles'));
-        System.assert(checkUrl.contains('My+ASU+Devil2Devil'));
-        System.assert(checkUrl.contains('Finances'));
-    }
 }

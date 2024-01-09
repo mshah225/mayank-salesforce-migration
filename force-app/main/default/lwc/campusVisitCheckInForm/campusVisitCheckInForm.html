@@ -70,7 +70,9 @@
                         <lightning-input type="text" read-only="true" label="Number of Attendees" value={campMem.Number_of_Attendees__c}> </lightning-input>
                     </div>
                     <div class="slds-col slds-size_1-of-2">
-                        <lightning-input type="text" label="Academic Session" value={campMem.Academic_Session__c} onchange={handleAcaSessionChange}> </lightning-input>    
+                        <lightning-record-edit-form object-api-name="CampaignMember" record-id={content}>
+                            <lightning-input-field field-name="Academic_Session__c" onchange={handleAcaSessionChange}></lightning-input-field>
+                        </lightning-record-edit-form>
                     </div>
                     <div class="slds-col slds-size_1-of-2">
                         <lightning-input type="text" label="Comments" value={campMem.Comments__c} onchange={handleCommentsChange}> </lightning-input>    
@@ -83,7 +85,7 @@
                     </div>
                     <div class="slds-col slds-size_1-of-2">
                         <lightning-input type="text" label="Additional Tour Information" value={campMem.Additional_Tour_Information__c} onchange={handleAddTourChange}> </lightning-input>    
-                    </div>
+                    </div>                    
                 </div>
             </lightning-card>
 

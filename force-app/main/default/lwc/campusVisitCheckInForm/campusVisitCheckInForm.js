@@ -13,7 +13,6 @@ const otherEventColumns = [
     { label: 'Event Start Date', fieldName: 'eventStartTime'}
 ];
 
-
 export default class CampusVisitCheckInForm extends LightningModal {
     @api content;    
 
@@ -75,9 +74,9 @@ export default class CampusVisitCheckInForm extends LightningModal {
     handleGuestsChange(e) {
         this.campaignMemberGuests = e.detail.value;
     }
-    
+
     handleAcaSessionChange(e) {
-        this.campaignMemberAcademicSession = e.detail.value;
+        this.campaignMemberAcademicSession = e.detail.value[0];
     }
     
     handleCommentsChange(e) {

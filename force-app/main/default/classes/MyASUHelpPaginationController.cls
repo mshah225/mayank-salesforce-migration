@@ -85,7 +85,7 @@ public with sharing class MyASUHelpPaginationController {
     }
 
     public void getForceRecalculatePaginationValues() {
-        // DELETE THIS METHOD
+        // DELETE THIS METHOD AFTER APRIL 2024
     }
 
     private void checkSearchParams() {
@@ -126,6 +126,7 @@ public with sharing class MyASUHelpPaginationController {
                 dataCategory = 'My_ASU_Programs_and__c';
             }
 
+            // Wanted to use IsVisibleInPkb to filter further, but not available for filtering in accompanying knowledge:articleList in MyASUHelpFAQ
             if (dataCategory != '' && dataCategoryGroup != '') {
                 String kavResults =
                     'SELECT COUNT() ' +
@@ -134,7 +135,6 @@ public with sharing class MyASUHelpPaginationController {
                     'AND Language =\'' +
                     articleLanguage +
                     '\' ' +
-                    // 'AND IsVisibleInPkb = true ' +
                     'WITH DATA CATEGORY ' +
                     dataCategoryGroup +
                     ' AT ' +

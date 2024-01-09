@@ -61,13 +61,11 @@
                                     pageNumber="{!currentPageNumber}"
                                     pageSize="{!IF(articleCategoryName != '', pageSize, 0)}"
                                 >
-                                    <!-- <li style="{!IF(article.IsVisibleInPkb == true, '', 'display:none')}"> -->
                                     <li>
                                         <apex:outputLink
                                             styleClass="c-text-black underline d-inline-block mt-1 mb-1"
                                             value="/authkb?id={!article.Id}"
                                         >
-                                            <!-- {!IF(article.IsVisibleInPkb, 'article.Title', '')} -->
                                             {!article.Title}
                                         </apex:outputLink>
                                     </li>

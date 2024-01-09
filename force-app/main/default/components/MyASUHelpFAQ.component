@@ -61,6 +61,7 @@
                                     pageNumber="{!currentPageNumber}"
                                     pageSize="{!IF(articleCategory != '', pageSize, 0)}"
                                 >
+                                    <!-- style="{!IF({!article.IsVisibleInPkb} == true, '', 'display:none')}" -->
                                     <li>
                                         <apex:outputLink
                                             styleClass="c-text-black underline d-inline-block mt-1 mb-1"

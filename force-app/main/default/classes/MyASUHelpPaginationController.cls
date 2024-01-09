@@ -84,6 +84,10 @@ public with sharing class MyASUHelpPaginationController {
         return System.now().format('HH:mm:ss');
     }
 
+    public void getForceRecalculatePaginationValues() {
+        // DELETE THIS METHOD
+    }
+
     private void checkSearchParams() {
         String q = ApexPages.currentPage().getParameters().get('q');
         if (q != null) {

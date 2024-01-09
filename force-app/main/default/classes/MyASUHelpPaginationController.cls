@@ -130,7 +130,7 @@ public with sharing class MyASUHelpPaginationController {
                     'AND Language =\'' +
                     articleLanguage +
                     '\' ' +
-                    'AND IsVisibleInPkb = true ' +
+                    // 'AND IsVisibleInPkb = true ' +
                     'WITH DATA CATEGORY ' +
                     dataCategoryGroup +
                     ' AT ' +

@@ -111,6 +111,9 @@ public with sharing class MyASUHelpPaginationController {
             );
             numberOfResults = kavResults.get('KnowledgeArticleVersion').size();
         } else if (!isTextSearchQuery && isCategorySearchQuery) {
+            String dataCategoryGroup = '';
+            String dataCategory = '';
+
             if (articleCategoryName == 'My Classes') {
                 dataCategoryGroup = 'Academics__c';
                 dataCategory = 'My_ASU_Classes__c';
@@ -119,19 +122,23 @@ public with sharing class MyASUHelpPaginationController {
                 dataCategory = 'My_ASU_Programs_and__c';
             }
 
-            String kavResults =
-                'SELECT COUNT() ' +
-                'FROM KnowledgeArticleVersion ' +
-                'WHERE PublishStatus=\'Online\' ' +
-                'AND Language =\'' +
-                articleLanguage +
-                '\' ' +
-                'AND IsVisibleInPkb = true ' +
-                'WITH DATA CATEGORY ' +
-                dataCategoryGroup +
-                ' AT ' +
-                dataCategory;
-            numberOfResults = Database.countQuery(kavResults);
+            if (dataCategory != '' && dataCategoryGroup != '') {
+                String kavResults =
+                    'SELECT COUNT() ' +
+                    'FROM KnowledgeArticleVersion ' +
+                    'WHERE PublishStatus=\'Online\' ' +
+                    'AND Language =\'' +
+                    articleLanguage +
+                    '\' ' +
+                    'AND IsVisibleInPkb = true ' +
+                    'WITH DATA CATEGORY ' +
+                    dataCategoryGroup +
+                    ' AT ' +
+                    dataCategory;
+                numberOfResults = Database.countQuery(kavResults);
+            } else {
+                numberOfResults = 0;
+            }
         }
     }
 

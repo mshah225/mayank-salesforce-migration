@@ -47,7 +47,9 @@
             <apex:form id="myasu-help-region-faq-search-results" styleClass="p-2">
                 <apex:actionRegion id="alius-format912">
                     <apex:pageBlock id="myasu-help-region-faq-search-results-block" mode="maindetail">
-                        <apex:outputPanel rendered="{!AND(articleCategory != '', EmbedLocation == 'viewAllArticles')}">
+                        <apex:outputPanel
+                            rendered="{!AND(articleCategoryName != '', EmbedLocation == 'viewAllArticles')}"
+                        >
                             <div class="d-none" aria-hidden="true">{!refreshPagination}</div>
                             <h3 class="lead">Showing all results for '{!articleCategoryName}'</h3>
                             <ul class="pt-1 pb-1 revert-blockquote-to-ul">
@@ -59,7 +61,7 @@
                                     pageNumber="{!currentPageNumber}"
                                     pageSize="{!IF(articleCategory != '', pageSize, 0)}"
                                 >
-                                    <li style="{!IF({!article.IsVisibleInPkb} == true, '', 'display:none')}">
+                                    <li>
                                         <apex:outputLink
                                             styleClass="c-text-black underline d-inline-block mt-1 mb-1"
                                             value="/authkb?id={!article.Id}"

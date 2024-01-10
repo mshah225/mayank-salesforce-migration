@@ -41,7 +41,7 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
     nameSearchString = '';
     statusSearchString;
     isModalOpen = false;
-    value = ['Responded', 'Sent'];
+    value = ['Registered', 'Registered - Late'];
 
     get selectedContactsLen() {
         if(this.selectedContacts == undefined) return 0;
@@ -138,9 +138,13 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
 
     get options() {
         return [
-            { label: 'Responded', value: 'Responded' },
-            { label: 'Sent', value: 'Sent' },
-            { label: 'Checked-In', value: 'Checked-In'}
+            { label: 'Invited', value: 'Invited' },
+            { label: 'Registered', value: 'Registered' },
+            { label: 'Registered - Attended', value: 'Registered - Attended'},
+            { label: 'Not Registered - Attended', value: 'Not Registered - Attended'},
+            { label: 'Registered - Not Attended', value: 'Registered - Not Attended'},
+            { label: 'Registered - Cancelled', value: 'Registered - Cancelled'},
+            { label: 'Registered - Late', value: 'Registered - Late'}
         ];
     }
 

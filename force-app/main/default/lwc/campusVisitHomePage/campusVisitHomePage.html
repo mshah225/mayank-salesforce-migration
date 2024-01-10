@@ -1,0 +1,35 @@
+<template>
+    <lightning-card title="Campus Visit Check-In">
+        <div slot="actions">
+            <lightning-button label="Mark Late Selected Campaign Members" onclick={updateSelectedCampaignMembers}></lightning-button>
+            <lightning-button label="Create New Campaign Member" onclick={createCampaignMember}></lightning-button>
+        </div>
+        <div class="slds-card__body_inner">
+
+            <div class="slds-grid slds-gutters slds-p-bottom_x-small slds-p-left_x-small">
+                <lightning-input type="search" onchange={handleSearch}></lightning-input>
+            </div>
+
+            <lightning-accordion allow-multiple-sections-open>
+
+                <lightning-accordion-section name="Visitor Status" label="Visitor Status">
+                    <lightning-checkbox-group name="Statuses"
+                                label="Statuses"
+                                options={options}
+                                value={value}
+                                onchange={handleChange}></lightning-checkbox-group>
+                </lightning-accordion-section>
+            </lightning-accordion>
+
+            <lightning-datatable
+            key-field="id"
+            data={contacts}
+            columns={cols}
+            onrowselection={handleRowSelection}
+            onrowaction={handleRowAction}
+            > 
+            </lightning-datatable>
+        </div>
+
+    </lightning-card>
+</template>

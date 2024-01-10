@@ -38,7 +38,7 @@ public with sharing class CampusVisitController {
         for (Id memberId : campaignMemberIds) {
             CampaignMember cm = new CampaignMember();
             cm.Id = memberId;
-            cm.Status = 'Sent';
+            cm.Status = 'Registered - Late';
 
             membersToUpdate.add(cm);
         }

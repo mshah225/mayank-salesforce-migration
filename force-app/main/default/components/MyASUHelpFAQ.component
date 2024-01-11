@@ -47,7 +47,7 @@
             <apex:form id="myasu-help-region-faq-search-results" styleClass="p-2">
                 <apex:actionRegion id="alius-format912">
                     <apex:pageBlock id="myasu-help-region-faq-search-results-block" mode="maindetail">
-                        <apex:outputPanel
+                        <!-- <apex:outputPanel
                             rendered="{!AND(articleCategoryName != '', EmbedLocation == 'viewAllArticles')}"
                         >
                             <div class="d-none" aria-hidden="true">{!refreshPagination}</div>
@@ -106,7 +106,7 @@
                             <a class="c-text-maroon underline d-inline-block mt-1 mb-1" href="/"
                                 >Back to Frequently Asked Questions</a
                             >
-                        </apex:outputPanel>
+                        </apex:outputPanel> -->
                         <apex:outputPanel rendered="{!AND(textToSearch != '', EmbedLocation == 'viewAllArticles')}">
                             <div class="d-none" aria-hidden="true">{!refreshPagination}</div>
                             <h3 class="lead">Showing all results for '{!textToSearch}'</h3>
@@ -191,9 +191,7 @@
                                 </li>
                             </ul>
                         </apex:outputPanel>
-                        <apex:outputPanel
-                            rendered="{!textToSearch == '' && articleCategoryName == null && !isSearchingWithFunctionalGroup}"
-                        >
+                        <apex:outputPanel rendered="{!textToSearch == '' && !isSearchingWithFunctionalGroup}">
                             <h3 class="lead mb-4 mt-0">Browse common questions</h3>
                             <div>
                                 <h4 class="c-p9rem font-weight-bold mb-2">Finances</h4>

@@ -17,6 +17,8 @@ public with sharing class MyASUHelpPaginationController {
                 articleCategoryName = 'My Classes';
             } else if (articleCategory.contains('Academics') && articleCategory.contains('My_ASU_Programs_and')) {
                 articleCategoryName = 'My Programs';
+            } else {
+                articleCategoryName = '';
             }
             return articleCategoryName;
         }
@@ -176,6 +178,18 @@ public with sharing class MyASUHelpPaginationController {
             }
         }
     }
+
+    // public String getArticleCategory() {
+    //     return articleCategory;
+    // }
+
+    // public String getArticleCategoryName() {
+    //     return articleCategoryName;
+    // }
+
+    // public String getArticleLanguage() {
+    //     return articleLanguage;
+    // }
 
     public Boolean getOnFirstPage() {
         return onFirstPage;

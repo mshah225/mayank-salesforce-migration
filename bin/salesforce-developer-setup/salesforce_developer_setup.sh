@@ -10,7 +10,6 @@ if [ "$(uname)" == "Darwin" ]; then
 fi
 
 # Keep npm up-to-date
-npm list --location=global | grep sfdx-cli || npm install --location=global sfdx-cli
 npm list --location=global | grep prettier || npm install --location=global -D -E prettier
 npm list --location=global | grep prettier-plugin-apex || npm install --location=global -D -E prettier-plugin-apex
 npm list | grep prettier || npm install --save-dev prettier && npm install --save-dev --save-exact prettier

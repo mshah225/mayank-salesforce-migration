@@ -9,14 +9,26 @@ public with sharing class MyASUHelpPaginationController {
     public List<KnowledgeArticleVersion> articleList;
     public String textToSearch { get; set; }
     public String mostRecentSearchText { get; set; }
-    public String articleCategory { get; set; }
 
+    public String articleCategory {
+        get {
+            if (articleCategory == null) {
+                articleCategory = '';
+            }
+            return articleCategory;
+        }
+        set;
+    }
     public String articleCategoryName {
         get {
-            if (articleCategory.contains('Academics') && articleCategory.contains('My_ASU_Classes')) {
-                articleCategoryName = 'My Classes';
-            } else if (articleCategory.contains('Academics') && articleCategory.contains('My_ASU_Programs_and')) {
-                articleCategoryName = 'My Programs';
+            if (articleCategoryName == null || articleCategoryName == '') {
+                if (articleCategory.contains('Academics') && articleCategory.contains('My_ASU_Classes')) {
+                    articleCategoryName = 'My Classes';
+                } else if (articleCategory.contains('Academics') && articleCategory.contains('My_ASU_Programs_and')) {
+                    articleCategoryName = 'My Programs';
+                } else {
+                    articleCategoryName = '';
+                }
             }
             return articleCategoryName;
         }

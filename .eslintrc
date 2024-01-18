@@ -25,7 +25,8 @@
                 "@lwc/lwc/no-document-query": "warn",
                 "@lwc/lwc/no-leading-uppercase-api-name": "warn",
                 "@lwc/lwc/consistent-component-name": "warn",
-                "no-unused-vars": "warn"
+                "no-unused-vars": "warn",
+                "no-console": "off"
             }
         },
         {

@@ -191,7 +191,9 @@
                                 </li>
                             </ul>
                         </apex:outputPanel>
-                        <apex:outputPanel rendered="{!textToSearch == '' && !isSearchingWithFunctionalGroup}">
+                        <apex:outputPanel
+                            rendered="{!textToSearch == '' && articleCategoryName == null && !isSearchingWithFunctionalGroup}"
+                        >
                             <h3 class="lead mb-4 mt-0">Browse common questions</h3>
                             <div>
                                 <h4 class="c-p9rem font-weight-bold mb-2">Finances</h4>

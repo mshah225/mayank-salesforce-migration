@@ -2,26 +2,42 @@
 <template>
     <div class="alert-list">
         <template for:each={alertList} for:item="alert">
-            <div key={alert.id} class={alert.classList} role="alert" data-key={alert.id}>
-                <div class="alert-icon">
-                    <i title={alert.iconTitle} class={alert.icon}></i>
+            <div key={alert.id} class={alert.classList} role={alert.aria.alertRole} data-key={alert.id}>
+                <div class="alert-icon slds-scope">
+                    <lightning-icon
+                        icon-name={alert.icon}
+                        alternative-text={alert.aria.iconDescription}
+                        title={alert.iconTitle}
+                    >
+                    </lightning-icon>
                 </div>
                 <div class="alert-content">
-                    <strong>{alert.title}</strong>
-                    {alert.message}
-                    <template if:true={alert.linkNotNull}>
-                        &nbsp;
-                        <a href={alert.link} target="_blank"><i class="fa fa-icon fa-external-link"></i></a>
-                    </template>
+                    <strong aria-describedby={alert.aria.id.message}> {alert.title} </strong>
+                    <span id={alert.aria.id.message}>
+                        {alert.message}
+                        <template if:true={alert.linkNotNull}>
+                            &nbsp;
+                            <a href={alert.link} target="_blank" class="slds-scope alert-link">
+                                <lightning-icon
+                                    icon-name="utility:new_window"
+                                    size="x-small"
+                                    alternative-text="For more information, follow this external link"
+                                    title="For more information, follow this external link"
+                                >
+                                </lightning-icon>
+                            </a>
+                        </template>
+                    </span>
                 </div>
-                <div class="alert-close">
-                    <button
-                        type="button"
-                        class="btn btn-circle btn-circle-alt-white close"
-                        aria-label="Close"
-                        onclick={closeAlert}
-                    >
-                        <i class="fa fa-times"></i>
+                <div class="alert-close slds-scope">
+                    <button class="btn btn-circle btn-circle-alt-white close" onclick={closeAlert}>
+                        <lightning-icon
+                            icon-name="utility:close"
+                            size="x-small"
+                            alternative-text="Close alert"
+                            title="Close alert"
+                        >
+                        </lightning-icon>
                     </button>
                 </div>
             </div>

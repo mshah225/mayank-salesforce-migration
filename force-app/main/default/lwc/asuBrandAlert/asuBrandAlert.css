@@ -1,9 +1,14 @@
-:host a:hover {
-    color: #d23153 !important;
+:host .alert-link {
+    --slds-c-icon-color-foreground-default: #8c1d40;
 }
-.alert-close .btn {
-    display: inline-flex;
-    align-items: center;
-    padding-left: 0.5rem;
-    font-size: 18px;
+:host .alert-link:hover {
+    --slds-c-icon-color-foreground-default: #d23153;
+}
+
+:host .alert-close .btn {
+    --slds-c-icon-color-foreground-default: gray;
+}
+
+:host .alert-icon {
+    --slds-c-icon-color-foreground-default: black;
 }

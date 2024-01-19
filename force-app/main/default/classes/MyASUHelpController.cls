@@ -83,36 +83,54 @@ public with sharing class MyASUHelpController {
     private void loadStudentSCAlerts() {
         // Only loaded on studentSC page
         if (ApexPages.currentPage().getUrl().toLowerCase().contains(Page.studentSC.getUrl().toLowerCase())) {
-            List<Service_Center_Maintenance__c> scmList = [
-                SELECT Message__c, Start_Time__c, End_Time__c
-                FROM Service_Center_Maintenance__c
-                WHERE Displayed__c = TRUE
-            ];
-            if (scmList.size() > 0) {
-                if (
-                    (scmList[0].Start_Time__c <= System.now() && scmList[0].End_Time__c >= System.now()) ||
-                    (scmList[0].Start_Time__c == null &&
-                    scmList[0].End_Time__c == null)
-                ) {
-                    alertHandler.newAlert(customAlert.WARNING, ' ', scmList[0].Message__c, '');
-                }
-            }
+            List<ASU_Alert_Messages__mdt> alertMessages;
 
-            List<ASU_Alert_Messages__mdt> alertMessages = [
-                SELECT Display_Message__c, url__c, Priority__c
-                FROM ASU_Alert_Messages__mdt
-                WHERE MasterLabel LIKE '%ASUHelpTab%' AND Is_Active__c = true
-                ORDER BY Priority__c
-            ];
-
-            for (ASU_Alert_Messages__mdt message : alertMessages) {
-                alertHandler.newAlert(
-                    customAlert.WARNING,
-                    ' ',
-                    message.Display_Message__c,
-                    message.url__c
+            if (CustomMetadataHelper.isNotTest()) {
+                alertMessages = [
+                    SELECT Display_Message__c, Url__c, Priority__c, Type__c, Title__c, Start_Time__c, End_Time__c
+                    FROM ASU_Alert_Messages__mdt
+                    WHERE Is_Active__c = TRUE
+                    ORDER BY Priority__c
+                ];
+            } else {
+                alertMessages = (List<ASU_Alert_Messages__mdt>) CustomMetadataHelper.getFakeRecords(
+                    'ASU_Alert_Messages__mdt$$ASUHelpTab$$Active'
                 );
             }
+
+            processAlerts(alertMessages);
+        }
+    }
+
+    private void processAlerts(List<ASU_Alert_Messages__mdt> alertMessages) {
+        for (ASU_Alert_Messages__mdt message : alertMessages) {
+            // If has not started yet or if has already ended - then skip
+            // this cannot be part of the SOQL query due to SF not supporting OR disjunctions for custom metadata
+            if (message.Start_Time__c != null && message.Start_Time__c > System.now())
+                continue;
+            if (message.End_Time__c != null && message.End_Time__c < System.now())
+                continue;
+
+            // Setup required fields
+            String alertType = customAlert.WARNING;
+            String alertTitle = message.Title__c != null ? message.Title__c : ' ';
+            String alertMessage = message.Display_Message__c;
+            String alertUrl = message.Url__c;
+
+            // Set the message type
+            if (message.Type__c != null) {
+                if (message.Type__c.equalsIgnoreCase(customAlert.FATAL))
+                    alertType = customAlert.FATAL;
+                else if (message.Type__c.equalsIgnoreCase(customAlert.INFO))
+                    alertType = customAlert.INFO;
+                else if (message.Type__c.equalsIgnoreCase(customAlert.WARNING))
+                    alertType = customAlert.WARNING;
+                else if (message.Type__c.equalsIgnoreCase(customAlert.CONFIRM))
+                    alertType = customAlert.CONFIRM;
+            }
+
+            // Add the alert to the list
+            alertHandler.newAlert(alertType, alertTitle, alertMessage, alertUrl);
         }
     }
 
@@ -510,7 +528,7 @@ public with sharing class MyASUHelpController {
         }
 
         Case createdCase = MyASUHelpEmailService.submitCase(newCase, userContact);
-        
+
         if (createdCase.Id != null) {
             ApexPages.currentPage().getParameters().put('caseId', newCase.Id);
             confirmPage = viewCase();

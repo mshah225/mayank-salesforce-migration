@@ -41,13 +41,6 @@ public class AKBControllerTest {
 
         insert termB;
 
-        Service_Center_Maintenance__c scm = new Service_Center_Maintenance__c(
-            Name = 'The Test Message',
-            Displayed__c = true,
-            Message__c = 'There is maintenance'
-        );
-        insert scm;
-
         Contact testContact = ContactService.createTestContact();
 
         insert testContact;

@@ -34,7 +34,6 @@ private class EmailAPIServiceTest {
         testCAR = new Case_Assignment_Rule__c(
             Priority__c = 8888,
             Queue_ID__c = contactId,
-            Customer_Notice_Email_From_Name__c = 'test test',
             Email_Template_ID__c = templateId
         );
         insert testCAR;

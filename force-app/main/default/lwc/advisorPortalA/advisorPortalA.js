@@ -408,7 +408,7 @@ export default class AdvisorPortalA extends LightningElement {
                     false
                 );
                 break;
-            case 'studentprofile':
+            case 'StudentProfile':
                 contactId = detail.params.contactId;
                 contactName = detail.params.contactName;
                 profileURL = '/apex/StudentProfile?contactId=' + contactId;

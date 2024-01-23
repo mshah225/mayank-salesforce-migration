@@ -60,22 +60,22 @@ public with sharing class TopFiveArticleControllerAKBTest {
         RestContext.response = res;
 
         Test.startTest();
-        List<TopFiveArticleControllerAKB.ArticleInfo> postResults1 = TopFiveArticleControllerAKB.getTopFiveArticles2(
+        List<TopFiveArticleControllerAKB.ArticleInfo> postResults1 = TopFiveArticleControllerAKB.getTopFiveArticles(
             'Classes'
         );
-        List<TopFiveArticleControllerAKB.ArticleInfo> postResults2 = TopFiveArticleControllerAKB.getTopFiveArticles2(
+        List<TopFiveArticleControllerAKB.ArticleInfo> postResults2 = TopFiveArticleControllerAKB.getTopFiveArticles(
             'Programs and eAdvisor'
         );
-        List<TopFiveArticleControllerAKB.ArticleInfo> postResults3 = TopFiveArticleControllerAKB.getTopFiveArticles2(
+        List<TopFiveArticleControllerAKB.ArticleInfo> postResults3 = TopFiveArticleControllerAKB.getTopFiveArticles(
             'Application Status'
         );
-        List<TopFiveArticleControllerAKB.ArticleInfo> postResults4 = TopFiveArticleControllerAKB.getTopFiveArticles2(
+        List<TopFiveArticleControllerAKB.ArticleInfo> postResults4 = TopFiveArticleControllerAKB.getTopFiveArticles(
             'Devil2Devil'
         );
-        List<TopFiveArticleControllerAKB.ArticleInfo> postResults5 = TopFiveArticleControllerAKB.getTopFiveArticles2(
+        List<TopFiveArticleControllerAKB.ArticleInfo> postResults5 = TopFiveArticleControllerAKB.getTopFiveArticles(
             'Account Charges'
         );
-        List<TopFiveArticleControllerAKB.ArticleInfo> postResults6 = TopFiveArticleControllerAKB.getTopFiveArticles2(
+        List<TopFiveArticleControllerAKB.ArticleInfo> postResults6 = TopFiveArticleControllerAKB.getTopFiveArticles(
             'Financial Aid and Scholarships'
         );
         Test.stopTest();
@@ -91,18 +91,5 @@ public with sharing class TopFiveArticleControllerAKBTest {
             TopFiveArticleControllerAKB.ArticleInfo ai = postResults6.get(x);
             System.assert(ai.url == TopFiveArticleControllerAKB.getUrlPrefix() + '/authkb?id=' + ai.id);
         }
-    }
-
-    static testMethod void testGetMoreArticlesUrl() {
-        String dcGroup = 'Finances__c';
-        String dataCategory = 'My_ASU_Devil2Devil';
-
-        Test.startTest();
-        String checkUrl = TopFiveArticleControllerAKB.getMoreArticlesUrl(dcGroup, dataCategory);
-        Test.stopTest();
-
-        System.assert(checkUrl.contains('viewAllArticles'));
-        System.assert(checkUrl.contains('My+ASU+Devil2Devil'));
-        System.assert(checkUrl.contains('Finances'));
     }
 }

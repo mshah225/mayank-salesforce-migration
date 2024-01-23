@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Active_Checklist_Items__c</fullName>
+    <description>Count of the number of Checklist Item records where the Checklist Status equals initiated</description>
+    <externalId>false</externalId>
+    <label>Active Checklist Items</label>
+    <summaryFilterItems>
+        <field>Checklist_Item__c.Checklist_Item_Status__c</field>
+        <operation>equals</operation>
+        <value>Initiated</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Checklist_Item__c.Contact__c</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <type>Summary</type>
+</CustomField>

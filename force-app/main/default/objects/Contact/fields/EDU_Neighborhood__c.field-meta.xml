@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>EDU_Neighborhood__c</fullName>
+    <description>[CollegeBoard] - Geodemographic Tag based socioeconomic data and educationally related information</description>
+    <externalId>false</externalId>
+    <label>EDU Neighborhood</label>
+    <precision>2</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>PS_Preferred_First_Name__c</fullName>
+    <businessOwnerGroup>Data_Owner_Campus_Community</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>Directory</complianceGroup>
+    <description>Peoplesoft preferred name - source table PS_S_Names
+[MDM] - Read/Write - Critical to MDM</description>
+    <externalId>false</externalId>
+    <inlineHelpText>PeopleSoft 'Preferred Name' value</inlineHelpText>
+    <label>PS Preferred First Name</label>
+    <length>40</length>
+    <required>false</required>
+    <securityClassification>Public</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

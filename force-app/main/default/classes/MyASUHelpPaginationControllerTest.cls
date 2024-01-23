@@ -144,7 +144,7 @@ private class MyASUHelpPaginationControllerTest {
         vf.getCurrentPageNumber();
         vf.textToSearch = 'Test';
         vf.getCurrentPageNumber();
-        vf.getForceRecalculatePaginationValues();
+        vf.getRefreshPagination();
         Test.stopTest();
 
         System.assertEquals('Test', vf.textToSearch);

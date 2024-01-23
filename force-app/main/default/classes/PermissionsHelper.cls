@@ -1,4 +1,4 @@
-public with sharing class PermissionsHelper {
+public class PermissionsHelper {
     public static List<Profile_Ids__c> profileIds {
         get {
             if (profileIds == null) {
@@ -60,7 +60,12 @@ public with sharing class PermissionsHelper {
         return (profileName != null &&
             profileName != '' &&
             userId != null &&
-            ([SELECT Profile.Name FROM User WHERE Id = :userId].Profile.Name == profileName))
+            ([
+                SELECT Profile.Name
+                FROM User
+                WHERE Id = :userId
+            ]
+            .Profile.Name == profileName))
             ? true
             : false;
     }
@@ -72,7 +77,12 @@ public with sharing class PermissionsHelper {
     public static Boolean userHasProfileId(Id profileId, Id userId) {
         return (profileId != null &&
             userId != null &&
-            ([SELECT Profile.Id FROM User WHERE Id = :userId].Profile.Id == profileId))
+            ([
+                SELECT Profile.Id
+                FROM User
+                WHERE Id = :userId
+            ]
+            .Profile.Id == profileId))
             ? true
             : false;
     }

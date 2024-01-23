@@ -70,7 +70,6 @@ public class FeedbackButtonControllerTest {
 
         car = new Case_Assignment_Rule__c(
             Priority__c = 1,
-            Customer_Notice_Email_From_Name__c = 'ASU Student-Centric Initiatives',
             Queue_ID__c = string.valueOf(testGroup.Id).left(15),
             CC_Functional_Group__c = functionalGroup,
             CC_Category__c = category,

@@ -25,7 +25,6 @@ public without sharing class CaseAssignmentRuleAccessor {
             priority = 10000;
         }
 
-        defaultCar.Customer_Notice_Email_From_Name__c = 'ASU Salesforce Support';
         defaultCar.Queue_ID__c = QueueId.left(15);
         defaultCar.Priority__c = priority;
 

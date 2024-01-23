@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SF_Birthdate__c</fullName>
+    <businessOwnerGroup>Data_Owner_Admission_Services</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>PII</complianceGroup>
+    <description>[MDM] - Read</description>
+    <externalId>false</externalId>
+    <label>SF.Birthdate</label>
+    <required>false</required>
+    <securityClassification>Sensitive</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Date</type>
+</CustomField>

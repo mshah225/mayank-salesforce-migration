@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Last_Case_Survey_Sent_Date__c</fullName>
+    <description>The most recent date and time a Case follow up survey was sent to this Contact.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The most recent date and time a Case follow up survey was sent to this Contact.</inlineHelpText>
+    <label>Last Case Survey Sent Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>DateTime</type>
+</CustomField>

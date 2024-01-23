@@ -21,7 +21,7 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
             return getRenewableAid();
         } else if (req.getEndPoint().contains('/ebpo')) {
             return getBookPayment();
-        } 
+        }
         return null;
     }
 
@@ -97,60 +97,61 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
 
     private HTTPResponse getFinancialAidAwardStatus() {
         HttpResponse res = new HttpResponse();
-        String json=		'{'+
-            '    "aid_years": ['+
-            '        {'+
-            '            "financial_year": "2013-2014",'+
-            '            "term_awards": ['+
-            '                {'+
-            '                    "term_description": "2013 Fall",'+
-            '                    "total_current_amount": 5000,'+
-            '                    "total_accepted_amount": 5000,'+
-            '                    "total_disbursed_amount": 5000,'+
-            '                    "award_details": ['+
-            '                        {'+
-            '                            "award_name": "NAmU - President",'+
-            '                            "current_offer": 4750,'+
-            '                            "accept_balance": 4750,'+
-            '                            "disbursed_balance": 4750,'+
-            '                            "disbursement_status": "Applied to Account",'+
-            '                            "category_description": "Scholarship",'+
-            '                            "aid_year": "2014",'+
-            '                            "item_type": "920303519344"'+
-            '                        },'+
-            '                        {'+
-            '                            "award_name": "Combs HS Booster Club Coyotes",'+
-            '                            "current_offer": 250,'+
-            '                            "accept_balance": 250,'+
-            '                            "disbursed_balance": 250,'+
-            '                            "disbursement_status": "Applied to Account",'+
-            '                            "category_description": "Scholarship",'+
-            '                            "aid_year": "2014",'+
-            '                            "item_type": "920705299992"'+
-            '                        }'+
-            '                    ]'+
-            '                },'+
-            '                {'+
-            '                    "term_description": "2014 Spring",'+
-            '                    "total_current_amount": 4750,'+
-            '                    "total_accepted_amount": 4750,'+
-            '                    "total_disbursed_amount": 4750,'+
-            '                    "award_details": ['+
-            '                        {'+
-            '                            "award_name": "NAmU - President",'+
-            '                            "current_offer": 4750,'+
-            '                            "accept_balance": 4750,'+
-            '                            "disbursed_balance": 4750,'+
-            '                            "disbursement_status": "Applied to Account",'+
-            '                            "category_description": "Scholarship",'+
-            '                            "aid_year": "2014",'+
-            '                            "item_type": "920303519344"'+
-            '                        }'+
-            '                    ]'+
-            '                }'+
-            '            ]'+
-            '        }'+
-            '    ]'+
+        String json =
+            '{' +
+            '    "aid_years": [' +
+            '        {' +
+            '            "financial_year": "2013-2014",' +
+            '            "term_awards": [' +
+            '                {' +
+            '                    "term_description": "2013 Fall",' +
+            '                    "total_current_amount": 5000,' +
+            '                    "total_accepted_amount": 5000,' +
+            '                    "total_disbursed_amount": 5000,' +
+            '                    "award_details": [' +
+            '                        {' +
+            '                            "award_name": "NAmU - President",' +
+            '                            "current_offer": 4750,' +
+            '                            "accept_balance": 4750,' +
+            '                            "disbursed_balance": 4750,' +
+            '                            "disbursement_status": "Applied to Account",' +
+            '                            "category_description": "Scholarship",' +
+            '                            "aid_year": "2014",' +
+            '                            "item_type": "920303519344"' +
+            '                        },' +
+            '                        {' +
+            '                            "award_name": "Combs HS Booster Club Coyotes",' +
+            '                            "current_offer": 250,' +
+            '                            "accept_balance": 250,' +
+            '                            "disbursed_balance": 250,' +
+            '                            "disbursement_status": "Applied to Account",' +
+            '                            "category_description": "Scholarship",' +
+            '                            "aid_year": "2014",' +
+            '                            "item_type": "920705299992"' +
+            '                        }' +
+            '                    ]' +
+            '                },' +
+            '                {' +
+            '                    "term_description": "2014 Spring",' +
+            '                    "total_current_amount": 4750,' +
+            '                    "total_accepted_amount": 4750,' +
+            '                    "total_disbursed_amount": 4750,' +
+            '                    "award_details": [' +
+            '                        {' +
+            '                            "award_name": "NAmU - President",' +
+            '                            "current_offer": 4750,' +
+            '                            "accept_balance": 4750,' +
+            '                            "disbursed_balance": 4750,' +
+            '                            "disbursement_status": "Applied to Account",' +
+            '                            "category_description": "Scholarship",' +
+            '                            "aid_year": "2014",' +
+            '                            "item_type": "920303519344"' +
+            '                        }' +
+            '                    ]' +
+            '                }' +
+            '            ]' +
+            '        }' +
+            '    ]' +
             '}';
         res.setHeader('Content-Type', 'application/json');
         res.setBody(json);
@@ -160,24 +161,25 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
 
     private HTTPResponse getFinancialAidEditMessages() {
         HttpResponse res = new HttpResponse();
-        String json=		'{'+
-		'    "emplid": "1206104779",'+
-		'    "edit_messages": ['+
-		'        {'+
-		'            "academic_year": "2022 - 2023",'+
-		'            "aid_year": "2023",'+
-		'            "message_details": ['+
-		'                {'+
-		'                    "term": "2227",'+
-		'                    "action_description": "Action Pending",'+
-		'                    "description": "Insufficient Bananes",'+
-		'                    "item_type": "970542099901",'+
-		'                    "edit_message_type": "E"'+
-		'                }'+
-		'            ]'+
-		'        }'+
-		'    ]'+
-		'}';
+        String json =
+            '{' +
+            '    "emplid": "1206104779",' +
+            '    "edit_messages": [' +
+            '        {' +
+            '            "academic_year": "2022 - 2023",' +
+            '            "aid_year": "2023",' +
+            '            "message_details": [' +
+            '                {' +
+            '                    "term": "2227",' +
+            '                    "action_description": "Action Pending",' +
+            '                    "description": "Insufficient Bananes",' +
+            '                    "item_type": "970542099901",' +
+            '                    "edit_message_type": "E"' +
+            '                }' +
+            '            ]' +
+            '        }' +
+            '    ]' +
+            '}';
         res.setHeader('Content-Type', 'application/json');
         res.setBody(json);
         res.setStatusCode(200);
@@ -186,58 +188,59 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
 
     private HTTPResponse getFinancialAidChargeHistory() {
         HttpResponse res = new HttpResponse();
-        String json=		'{'+
-		'    "charges": ['+
-		'        {'+
-		'            "term_name": "2022 Spring",'+
-		'            "term_code": "2221",'+
-		'            "total_charges": 10011,'+
-		'            "total_payment": 10011,'+
-		'            "total_balance": 0,'+
-		'            "charge_details": ['+
-		'                {'+
-		'                    "description": "FA Trust ASUOnline B",'+
-		'                    "charge": 27,'+
-		'                    "payment": 27,'+
-		'                    "balance": 0'+
-		'                },'+
-		'                {'+
-		'                    "description": "Undergraduate College Fee 4-B",'+
-		'                    "charge": 720,'+
-		'                    "payment": 720,'+
-		'                    "balance": 0'+
-		'                },'+
-		'                {'+
-		'                    "description": "Tuition UG NonRes Online - B",'+
-		'                    "charge": 3246,'+
-		'                    "payment": 3246,'+
-		'                    "balance": 0'+
-		'                }'+
-		'            ]'+
-		'        },'+
-		'        {'+
-		'            "term_name": "2023 Spring",'+
-		'            "term_code": "2231",'+
-		'            "total_charges": 6587,'+
-		'            "total_payment": 6587,'+
-		'            "total_balance": 0,'+
-		'            "charge_details": ['+
-		'                {'+
-		'                    "description": "Undergraduate College Fee 4-B",'+
-		'                    "charge": 60,'+
-		'                    "payment": 60,'+
-		'                    "balance": 0'+
-		'                },'+
-		'                {'+
-		'                    "description": "FA Trust ASUOnline B",'+
-		'                    "charge": 27,'+
-		'                    "payment": 27,'+
-		'                    "balance": 0'+
-		'                }'+
-		'            ]'+
-		'        }'+
-		'    ]'+
-		'}';
+        String json =
+            '{' +
+            '    "charges": [' +
+            '        {' +
+            '            "term_name": "2022 Spring",' +
+            '            "term_code": "2221",' +
+            '            "total_charges": 10011,' +
+            '            "total_payment": 10011,' +
+            '            "total_balance": 0,' +
+            '            "charge_details": [' +
+            '                {' +
+            '                    "description": "FA Trust ASUOnline B",' +
+            '                    "charge": 27,' +
+            '                    "payment": 27,' +
+            '                    "balance": 0' +
+            '                },' +
+            '                {' +
+            '                    "description": "Undergraduate College Fee 4-B",' +
+            '                    "charge": 720,' +
+            '                    "payment": 720,' +
+            '                    "balance": 0' +
+            '                },' +
+            '                {' +
+            '                    "description": "Tuition UG NonRes Online - B",' +
+            '                    "charge": 3246,' +
+            '                    "payment": 3246,' +
+            '                    "balance": 0' +
+            '                }' +
+            '            ]' +
+            '        },' +
+            '        {' +
+            '            "term_name": "2023 Spring",' +
+            '            "term_code": "2231",' +
+            '            "total_charges": 6587,' +
+            '            "total_payment": 6587,' +
+            '            "total_balance": 0,' +
+            '            "charge_details": [' +
+            '                {' +
+            '                    "description": "Undergraduate College Fee 4-B",' +
+            '                    "charge": 60,' +
+            '                    "payment": 60,' +
+            '                    "balance": 0' +
+            '                },' +
+            '                {' +
+            '                    "description": "FA Trust ASUOnline B",' +
+            '                    "charge": 27,' +
+            '                    "payment": 27,' +
+            '                    "balance": 0' +
+            '                }' +
+            '            ]' +
+            '        }' +
+            '    ]' +
+            '}';
         res.setHeader('Content-Type', 'application/json');
         res.setBody(json);
         res.setStatusCode(200);
@@ -246,14 +249,15 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
 
     private HTTPResponse getFinancialAidAccountBalance() {
         HttpResponse res = new HttpResponse();
-        String json=		'{'+
-		'    "emplid": "1206104779",'+
-		'    "balances": {'+
-		'        "due_amount": 0,'+
-		'        "balance_amount": 0,'+
-		'        "total_amount": 0'+
-		'    }'+
-		'}';
+        String json =
+            '{' +
+            '    "emplid": "1206104779",' +
+            '    "balances": {' +
+            '        "due_amount": 0,' +
+            '        "balance_amount": 0,' +
+            '        "total_amount": 0' +
+            '    }' +
+            '}';
         res.setHeader('Content-Type', 'application/json');
         res.setBody(json);
         res.setStatusCode(200);
@@ -262,19 +266,20 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
 
     private HTTPResponse getFinancialAidRefunds() {
         HttpResponse res = new HttpResponse();
-        String json=		'{'+
-		'    "emplid": "1206104779",'+
-		'    "refunds": ['+
-		'        {'+
-		'            "refund_date": "2023-01-13",'+
-		'            "id": 3514350,'+
-		'            "applied_amount": 2164,'+
-		'            "refund_format": "P",'+
-		'            "refund_type": "Paper Check"'+
-		'        }'+
-		'    ],'+
-		'    "total_refunds": 2164'+
-		'}';
+        String json =
+            '{' +
+            '    "emplid": "1206104779",' +
+            '    "refunds": [' +
+            '        {' +
+            '            "refund_date": "2023-01-13",' +
+            '            "id": 3514350,' +
+            '            "applied_amount": 2164,' +
+            '            "refund_format": "P",' +
+            '            "refund_type": "Paper Check"' +
+            '        }' +
+            '    ],' +
+            '    "total_refunds": 2164' +
+            '}';
         res.setHeader('Content-Type', 'application/json');
         res.setBody(json);
         res.setStatusCode(200);
@@ -283,53 +288,55 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
 
     private HTTPResponse getDepositStatus() {
         HttpResponse res = new HttpResponse();
-        String json=		'{'+
-		'    "emplid": "1206104779",'+
-		'    "deposits": ['+
-		'        {'+
-		'            "last_update_date": "2021-06-26",'+
-		'            "pre_notification_code": "C",'+
-		'            "pre_notification_date": "2021-06-26",'+
-		'            "campus_id": "995888422",'+
-		'            "pre_notification_status": "Completed",'+
-		'            "deposit_status": "Active",'+
-		'            "days_since_prenote_date": 584'+
-		'        },'+
-		'        {'+
-		'            "last_update_date": "2021-06-26",'+
-		'            "pre_notification_code": "C",'+
-		'            "pre_notification_date": "2021-06-26",'+
-		'            "campus_id": "995888422",'+
-		'            "pre_notification_status": "Completed",'+
-		'            "deposit_status": "Active",'+
-		'            "days_since_prenote_date": 584'+
-		'        }'+
-		'    ]'+
-		'}';
+        String json =
+            '{' +
+            '    "emplid": "1206104779",' +
+            '    "deposits": [' +
+            '        {' +
+            '            "last_update_date": "2021-06-26",' +
+            '            "pre_notification_code": "C",' +
+            '            "pre_notification_date": "2021-06-26",' +
+            '            "campus_id": "995888422",' +
+            '            "pre_notification_status": "Completed",' +
+            '            "deposit_status": "Active",' +
+            '            "days_since_prenote_date": 584' +
+            '        },' +
+            '        {' +
+            '            "last_update_date": "2021-06-26",' +
+            '            "pre_notification_code": "C",' +
+            '            "pre_notification_date": "2021-06-26",' +
+            '            "campus_id": "995888422",' +
+            '            "pre_notification_status": "Completed",' +
+            '            "deposit_status": "Active",' +
+            '            "days_since_prenote_date": 584' +
+            '        }' +
+            '    ]' +
+            '}';
         res.setHeader('Content-Type', 'application/json');
         res.setBody(json);
         res.setStatusCode(200);
         return res;
     }
-    
+
     private HTTPResponse getRenewableAid() {
         HttpResponse res = new HttpResponse();
 
-		String json =		'{' +
-		'    "emplid": "1206104779",' +
-		'    "aid_years": [' +
-		'        {' +
-		'            "aid_year": "2017",' +
-		'            "name": "ARIZONA GRADUATE SCHOLAR AWARD",' +
-		'            "terms_used": "0 of 4 terms",' +
-		'            "current_award": "2000",' +
-		'            "awards_description": "Funds for this program may be comprised of one or more named awards</br></br>",' +
-		'            "renewal_status": "New Award (100%)",' +
-		'            "measurement_description": "Measurement as of 06/06/2018:</br></br>",' +
-		'            "max_amount": "2000"' +
-		'        }' +
-		'    ]' +
-		'}';
+        String json =
+            '{' +
+            '    "emplid": "1206104779",' +
+            '    "aid_years": [' +
+            '        {' +
+            '            "aid_year": "2017",' +
+            '            "name": "ARIZONA GRADUATE SCHOLAR AWARD",' +
+            '            "terms_used": "0 of 4 terms",' +
+            '            "current_award": "2000",' +
+            '            "awards_description": "Funds for this program may be comprised of one or more named awards</br></br>",' +
+            '            "renewal_status": "New Award (100%)",' +
+            '            "measurement_description": "Measurement as of 06/06/2018:</br></br>",' +
+            '            "max_amount": "2000"' +
+            '        }' +
+            '    ]' +
+            '}';
 
         res.setHeader('Content-Type', 'application/json');
         res.setBody(json);
@@ -340,20 +347,21 @@ global class StudentProfileCalloutMock implements HttpCalloutMock {
     private HTTPResponse getBookPayment() {
         HttpResponse res = new HttpResponse();
 
-		String json =		'{'+
-		'    "emplid": "1206104779",'+
-		'    "aid_years": ['+
-		'        {'+
-		'            "aid_year": "2023",'+
-		'            "term": "2227",'+
-		'            "term_description": "2022 Fall",'+
-		'            "amount": 150,'+
-		'            "begin_date": "2022-09-21",'+
-		'            "end_date": "2022-10-26",'+
-		'            "description": "Pacific Dental students use your book scholarship at the ASU Bookstore"'+
-		'        }'+
-		'    ]'+
-		'}';
+        String json =
+            '{' +
+            '    "emplid": "1206104779",' +
+            '    "aid_years": [' +
+            '        {' +
+            '            "aid_year": "2023",' +
+            '            "term": "2227",' +
+            '            "term_description": "2022 Fall",' +
+            '            "amount": 150,' +
+            '            "begin_date": "2022-09-21",' +
+            '            "end_date": "2022-10-26",' +
+            '            "description": "Pacific Dental students use your book scholarship at the ASU Bookstore"' +
+            '        }' +
+            '    ]' +
+            '}';
 
         res.setHeader('Content-Type', 'application/json');
         res.setBody(json);

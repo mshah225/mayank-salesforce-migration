@@ -1,15 +1,75 @@
 public with sharing class MyASUHelpPaginationController {
-    public String textToSearch { get; set; }
-    public String mostRecentSearchText { get; set; }
     public Integer pageSize;
     public Integer currentPage;
     public Integer lastPage;
+    public Boolean onFirstPage;
+    public Boolean onLastPage;
     public Integer numberOfResults;
     public Integer extraRows;
     public List<KnowledgeArticleVersion> articleList;
+    public String textToSearch { get; set; }
+    public String mostRecentSearchText { get; set; }
 
-    public Boolean onFirstPage;
-    public Boolean onLastPage;
+    public String articleCategory {
+        get {
+            if (articleCategory == null) {
+                articleCategory = '';
+            }
+            return articleCategory;
+        }
+        set;
+    }
+    public String articleCategoryName {
+        get {
+            if (articleCategoryName == null || articleCategoryName == '') {
+                if (articleCategory.contains('Academics') && articleCategory.contains('My_ASU_Classes')) {
+                    articleCategoryName = 'My Classes';
+                } else if (articleCategory.contains('Academics') && articleCategory.contains('My_ASU_Programs_and')) {
+                    articleCategoryName = 'My Programs';
+                } else {
+                    articleCategoryName = '';
+                }
+            }
+            return articleCategoryName;
+        }
+        set;
+    }
+    public String articleLanguage {
+        get {
+            if (articleLanguage == null) {
+                articleLanguage = 'en_US';
+            }
+            return articleLanguage;
+        }
+        set;
+    }
+    private Boolean isTextSearchQuery {
+        get {
+            if (textToSearch == '' || textToSearch == null) {
+                isTextSearchQuery = false;
+            } else {
+                isTextSearchQuery = true;
+            }
+            return isTextSearchQuery;
+        }
+        set;
+    }
+    private Boolean isCategorySearchQuery {
+        get {
+            if (
+                articleCategory == '' ||
+                articleCategory == null ||
+                articleCategoryName == '' ||
+                articleCategoryName == null
+            ) {
+                isCategorySearchQuery = false;
+            } else {
+                isCategorySearchQuery = true;
+            }
+            return isCategorySearchQuery;
+        }
+        set;
+    }
 
     public MyASUHelpPaginationController() {
         setupPagination();
@@ -27,34 +87,74 @@ public with sharing class MyASUHelpPaginationController {
         setLastPageNumber();
         setFirstAndLastPageStatuses();
     }
-    public String getForceRecalculatePaginationValues() {
-        // When you attempt to {!forceRecalculatePaginationValues} - this will force the pagination values to all be recalculated.
+
+    // Force pagination value recalculation with {!refreshPagination}
+    public String getRefreshPagination() {
         setNumberOfResults();
         setLastPageNumber();
         setFirstAndLastPageStatuses();
         return System.now().format('HH:mm:ss');
     }
 
+    public void getForceRecalculatePaginationValues() {
+        // DELETE THIS METHOD AFTER APRIL 2024
+    }
+
     private void checkSearchParams() {
-        String searchParams = ApexPages.currentPage().getParameters().get('q');
-        if (searchParams != null) {
-            textToSearch = (searchParams.length() > 99) ? searchParams.substring(0, 99) : searchParams;
+        String q = ApexPages.currentPage().getParameters().get('q');
+        if (q != null) {
+            textToSearch = (q.length() > 99) ? q.substring(0, 99) : q;
+        } else {
+            String l = ApexPages.currentPage().getParameters().get('l');
+            String c = ApexPages.currentPage().getParameters().get('c');
+            if (l != null && c != null) {
+                articleLanguage = l;
+                articleCategory = c;
+            }
         }
     }
 
     private void setNumberOfResults() {
-        if (textToSearch == '' || textToSearch == null) {
+        if (!isTextSearchQuery && !isCategorySearchQuery) {
             numberOfResults = 0;
-        } else {
+        } else if (isTextSearchQuery && !isCategorySearchQuery) {
             String queryString = String.escapeSingleQuotes(textToSearch);
-            Search.SearchResults searchResults = Search.find(
+            Search.SearchResults kavResults = Search.find(
                 'FIND \'' +
-                queryString +
-                '*\'' +
-                'IN ALL FIELDS RETURNING KnowledgeArticleVersion(Id, KnowledgeArticleId, Title, LastModifiedDate WHERE PublishStatus = \'Online\' AND Language = \'en_US\')'
+                    queryString +
+                    '*\'' +
+                    'IN ALL FIELDS RETURNING KnowledgeArticleVersion(Id, KnowledgeArticleId, Title, LastModifiedDate WHERE PublishStatus = \'Online\' AND Language = \'en_US\')'
             );
-            List<Search.SearchResult> articlelist = searchResults.get('KnowledgeArticleVersion');
-            numberOfResults = articlelist.size();
+            numberOfResults = kavResults.get('KnowledgeArticleVersion').size();
+        } else if (!isTextSearchQuery && isCategorySearchQuery) {
+            String dataCategoryGroup = '';
+            String dataCategory = '';
+
+            if (articleCategoryName == 'My Classes') {
+                dataCategoryGroup = 'Academics__c';
+                dataCategory = 'My_ASU_Classes__c';
+            } else if (articleCategoryName == 'My Programs') {
+                dataCategoryGroup = 'Academics__c';
+                dataCategory = 'My_ASU_Programs_and__c';
+            }
+
+            // Wanted to use IsVisibleInPkb to filter further, but not available for filtering in accompanying knowledge:articleList in MyASUHelpFAQ
+            if (dataCategory != '' && dataCategoryGroup != '') {
+                String kavResults =
+                    'SELECT COUNT() ' +
+                    'FROM KnowledgeArticleVersion ' +
+                    'WHERE PublishStatus=\'Online\' ' +
+                    'AND Language =\'' +
+                    articleLanguage +
+                    '\' ' +
+                    'WITH DATA CATEGORY ' +
+                    dataCategoryGroup +
+                    ' AT ' +
+                    dataCategory;
+                numberOfResults = Database.countQuery(kavResults);
+            } else {
+                numberOfResults = 0;
+            }
         }
     }
 

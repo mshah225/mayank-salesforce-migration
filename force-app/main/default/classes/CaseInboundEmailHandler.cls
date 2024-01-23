@@ -227,6 +227,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
                 theCase.Subject = limitLength(email.Subject, 255);
                 theCase.Description = '';
+                theCase.Inbound_Email_Checksum__c = generateChecksum(
+                    String.isNotBlank(email.plainTextBody)
+                        ? email.plainTextBody
+                        : String.isNotBlank(email.htmlBody) ? email.htmlBody : '' + theCase.Subject
+                );
 
                 if (email.plainTextBody != null) {
                     theCase.Description = limitLength(email.plainTextBody, 31500);
@@ -288,9 +293,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
                 // Multiple matches - require further filtering using name
                 if (contacts.size() > 1) {
-
                     theCase.Description =
-                            'Note: there is more than one Contact with this email address. ' + theCase.Description;
+                        'Note: there is more than one Contact with this email address. ' + theCase.Description;
 
                     List<Contact> filteredContacts = new List<Contact>();
 
@@ -599,7 +603,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         Integer attachmentLimit = Integer.valueOf(getConfigurationSetting('Attachment Limit'));
         Set<String> validFileExtensionSet = new Set<String>(validFileExtensionList);
 
-        Integer attachmentsOnCase = [SELECT COUNT() FROM Attachment WHERE ParentId =: parentObject.Id];
+        Integer attachmentsOnCase = [SELECT COUNT() FROM Attachment WHERE ParentId = :parentObject.Id];
 
         if (loggingSettings.Attachment_Limit_Logging__c && attachmentsOnCase >= attachmentLimit) {
             response.success = false;
@@ -873,7 +877,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         Boolean attachSuccess = handleAttachments(lostEmail, email).success;
         lostEmail.RejectedAttachments__c = !attachSuccess;
         if (!attachSuccess) {
-            String attachmentInfo = '\n**********\nCase ID: ' + (theCase != null ? String.valueOf(theCase.Id) : 'SPAM: Not Created') + '\n\n*****List of Attachments*****\n';
+            String attachmentInfo =
+                '\n**********\nCase ID: ' +
+                (theCase != null ? String.valueOf(theCase.Id) : 'SPAM: Not Created') +
+                '\n\n*****List of Attachments*****\n';
             if (email.binaryAttachments != null) {
                 for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments) {
                     attachmentInfo +=
@@ -985,8 +992,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             }
         }
         if (!filtersToUpdate.isEmpty()) {
-
-            if (configMap.get('Filter Rejection Count On') != null && configMap.get('Filter Rejection Count On') == 'true') {
+            if (
+                configMap.get('Filter Rejection Count On') != null &&
+                configMap.get('Filter Rejection Count On') == 'true'
+            ) {
                 update filtersToUpdate;
             }
 

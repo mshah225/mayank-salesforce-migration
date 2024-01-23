@@ -88,7 +88,7 @@ private class StudentProfileControllerTest {
         Database.insert(testGroup);
 
         Test.startTest();
-        Test.setCurrentPage(Page.StudentProfile);
+        Test.setCurrentPage(Page.studentProfile);
         ApexPages.currentPage().getParameters().put('contactId', testContact.Id);
         StudentProfileController profile = new StudentProfileController();
         profile.init();
@@ -111,7 +111,7 @@ private class StudentProfileControllerTest {
         Database.insert(testGroup);
 
         Test.startTest();
-        Test.setCurrentPage(Page.StudentProfile);
+        Test.setCurrentPage(Page.studentProfile);
         ApexPages.currentPage().getParameters().put('contactId', testContact.Id);
         StudentProfileController profile = new StudentProfileController();
         profile.init();
@@ -190,7 +190,7 @@ private class StudentProfileControllerTest {
 
     @IsTest
     private static void testSortClasses() {
-        List<StudentProfileSortClasses> sortedClasses;
+        List<SortableClass> sortedClasses;
         String listOfClassesJSON =
             '[' +
             '{' +
@@ -244,7 +244,7 @@ private class StudentProfileControllerTest {
 
     @IsTest
     private static void testSortExams() {
-        List<StudentProfileSortExams> sortedExams;
+        List<SortableCreditByExam> sortedExams;
         String listOfExamsJSON =
             '[' +
             '{' +

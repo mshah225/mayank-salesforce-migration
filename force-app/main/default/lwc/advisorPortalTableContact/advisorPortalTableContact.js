@@ -70,7 +70,7 @@ export default class AdvisorPortalTableContact extends LightningElement {
     }
 
     openStudentProfile() {
-        this.sendNavigateEvent('StudentProfile', {
+        this.sendNavigateEvent('studentprofile', {
             contactId: this.contactWrapper.portalContact.Id,
             contactName: this.contactWrapper.portalContact.Name,
         });

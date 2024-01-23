@@ -1,15 +1,11 @@
 <apex:component id="StudentProfileStyles">
     <style>
         * {
-            font-family: Arial, Helvetica, "Nimbus Sans L", "Liberation Sans", FreeSans, sans-serif !important;
+            font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
         }
 
         .fa {
             font-family: FontAwesome !important;
-        }
-
-        h1 {
-            font-size: 30px !important;
         }
 
         h2 {
@@ -55,7 +51,7 @@
             margin-bottom: -76px;
         }
 
-        .student-profile-container {
+        .mainCont {
             max-width: 1200px;
             margin: auto;
             /* Adjust for tabbable view in coach portal */
@@ -66,62 +62,10 @@
             }
         }
 
-        .student-profile-container-title hr {
-            display: block;
-            width: 100%;
-            border-top: 0;
-            height: 1.5px;
-            margin: 3rem 0;
-            background-color: #747474;
-            opacity: 1;
-        }
-
-        .student-profile-container-quick-ref-links hr {
-            display: block;
-            width: 100%;
-            border-top: 0;
-            height: 2px;
-            margin: 3rem 0;
-            background-color: #8c1d40;
-            opacity: 1;
-        }
-
-        .student-search-button,
-        .student-profile-container-feedback-button {
-            padding-left: 2rem;
-            padding-right: 2rem;
-            padding-top: 1rem;
-            padding-bottom: 1rem;
-            color: white !important;
-            background-color: #8c1d40;
-            border-radius: 400rem;
-            font-weight: bold;
-            text-decoration: none;
-            white-space: nowrap;
-            width: max-content !important;
-            font-size: 1.5rem;
-            float: right;
-        }
-
-        .student-search-button {
-            margin-top: 1em;
-        }
-
-        .student-profile-container-feedback-button {
-            margin-bottom: 0.5em;
-            margin-top: -0.5em;
-        }
-
-        .student-search-button:hover,
-        .student-profile-container-feedback-button:hover {
-            transform: scale(1.05) !important;
-            color: white;
-            text-decoration: none !important;
-        }
-
 
         .tab-content {
             padding: 0px 20px 20px 20px;
+            /* SFE-6494 */
             font-size: 10pt;
             background-color: #fff;
             border: 1px solid #ddd;
@@ -138,6 +82,7 @@
 
         .mainTab {
             padding-top: 40px;
+            /*background-color: #fed039;*/
             padding: 20px;
         }
 
@@ -455,23 +400,8 @@
             display: inline-block;
         }
 
-        #psEnrolledClassesErrors,
-        #psDroppedWithdrawnClassesErrors,
-        #psCreditByExamErrors,
-        #psTransferWorkErrors,
-        #psAdvisingNotesResponseErrors,
-        #psCommentsResponseErrors,
-        #psGuestAccessResponseErrors,
-        #sr_asr_errors,
-        #psTranscriptErrors,
-        #grpsTranscriptErrors,
-        #academic-integrity-errors,
-        #emergency-contacts-errors {
-            margin-bottom: 1em;
-        }
-
         @media screen and (max-width: 1170px) {
-            .student-profile-container {
+            .mainCont {
                 padding: 24px 35px 20px 35px !important;
             }
         }
@@ -513,7 +443,7 @@
                 display: none;
             }
 
-            .student-profile-container {
+            .mainCont {
                 padding: 76px 10px 20px 10px !important;
             }
 
@@ -533,7 +463,7 @@
                 margin-top: 10px;
             }
 
-            .student-profile-container {
+            .mainCont {
                 padding: 76px 0px 20px 0px;
             }
 

@@ -230,7 +230,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 theCase.Inbound_Email_Checksum__c = generateChecksum(
                     String.isNotBlank(email.plainTextBody) ? email.plainTextBody :
                     String.isNotBlank(email.htmlBody) ? email.htmlBody :
-                    ''
+                    '' + theCase.Subject
                 );
 
                 if (email.plainTextBody != null) {

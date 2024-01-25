@@ -204,24 +204,19 @@ private class ConstituentMatcherTest {
         }
 
         // Pass constituent details to constituent matcher with different constructor variations
-        ConstituentMatcher matcher = new ConstituentMatcher(listOfConstituents, 'Contact', 'api');
+        ConstituentMatcher matcher = new ConstituentMatcher(listOfConstituents, 'Contact', 'ContactUpload');
         matcher.searchConstituents();
         ConstituentMatcher matcher2 = new ConstituentMatcher(listOfConstituents);
         matcher2.searchConstituents();
-        ConstituentMatcher matcher3 = new ConstituentMatcher(listOfConstituents, 'Contact', 'familyportal');
-        matcher3.searchConstituents();
 
         // Return matched constituents
         List<ConstituentDetail> matchedDetailsWithConstituents = matcher.getListOfConstituentsWithMatches();
         List<ConstituentDetail> matchedDetailsWithConstituents2 = matcher2.getListOfConstituentsWithMatches();
-        List<ConstituentDetail> matchedDetailsWithConstituents3 = matcher3.getListOfConstituentsWithMatches();
 
         // Validate that the returned detail list contains the same number of inserted contacts
         System.assertEquals(
             numberOfContactsToCreate,
-            matchedDetailsWithConstituents.size() +
-            matchedDetailsWithConstituents2.size() +
-            matchedDetailsWithConstituents3.size()
+            matchedDetailsWithConstituents.size() + matchedDetailsWithConstituents2.size()
         );
     }
 

@@ -91,7 +91,7 @@ export default class AsuBrandHeader extends LightningElement {
         // Additional header params to investigate:
         // buttons
         // logoutLink (need to set custom for SF here)
-        // loginLink (need to set custom for sites that don't have users already logged in, like Family Portal)
+        // loginLink (need to set custom for sites that don't have users already logged in)
 
         // Always have these props
         let props = {

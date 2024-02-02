@@ -1723,4 +1723,49 @@ public with sharing class CaseInboundEmailHandlerTest {
         List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
         System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
     }
+
+    @isTest
+    static void emailChecksum() {
+        Test.startTest();
+        Contact c = new Contact(
+            FirstName = 'First',
+            LastName = 'Last',
+            Email = 'user@acme.com.test',
+            Personal_Email__c = 'user2@acme.com.test'
+        );
+        insert c;
+
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+        Messaging.InboundEmail.BinaryAttachment inAtt = new Messaging.InboundEmail.BinaryAttachment();
+
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('service12345123451234512345@test.test');
+        email.toAddresses = toAddresses;
+        email.subject = 'test';
+        email.fromAddress = 'user2@acme.com.test';
+        email.fromName = 'Last, First';
+        env.fromAddress = 'user@acme.com.test';
+        email.plainTextBody = 'This is a test';
+
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.handleInboundEmail(email, env);
+
+        // Verify that the case status was updated
+        Case createdCase = [
+            SELECT Id, Subject, Description, Status, CC_Functional_Group__c, Inbound_Email_Checksum__c
+            FROM Case
+            WHERE ContactId = :c.Id
+            LIMIT 1
+        ];
+
+        String checksum = emailServiceObj.generateChecksum(email.plainTextBody+email.subject);
+
+        System.assertEquals(checksum, createdCase.Inbound_Email_Checksum__c);
+        Test.stopTest();
+
+        List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
+        System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
+    }
 }

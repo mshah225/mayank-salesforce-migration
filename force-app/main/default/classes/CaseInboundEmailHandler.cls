@@ -227,6 +227,11 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
                 theCase.Subject = limitLength(email.Subject, 255);
                 theCase.Description = '';
+                theCase.Inbound_Email_Checksum__c = generateChecksum(
+                    (String.isNotBlank(email.plainTextBody) ? email.plainTextBody :
+                    String.isNotBlank(email.htmlBody) ? email.htmlBody :
+                    '') + theCase.Subject
+                );
 
                 if (email.plainTextBody != null) {
                     theCase.Description = limitLength(email.plainTextBody, 31500);
@@ -404,7 +409,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 // Check to make sure we are not about to spawn an auto reply loop
                 try {
                     recentCase = [
-                        SELECT Id, Description, Subject, OwnerId
+                        SELECT Id, Description, Subject, OwnerId, Inbound_Email_Checksum__c
                         FROM Case
                         WHERE ContactId = :emailContact.Id
                         ORDER BY CreatedDate DESC
@@ -436,7 +441,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                                 return result;
                             }
                         } else {
-                            if (recentCase.Subject.equals(theCase.Subject)) {
+                            if (recentCase.Inbound_Email_Checksum__c == theCase.Inbound_Email_Checksum__c) {
                                 return result;
                             }
                         }
@@ -1304,6 +1309,13 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         htmlBody = removeAllWhitespaces(htmlBody);
 
         return String.isBlank(htmlBody);
+    }
+    
+    @TestVisible
+    public String generateChecksum(String input) {
+        Blob inputBlob = Blob.valueOf(input);
+        Blob sha256Hash = Crypto.generateDigest('SHA-256', inputBlob);
+        return EncodingUtil.convertToHex(sha256Hash);
     }
 
     private class AttachmentResult {

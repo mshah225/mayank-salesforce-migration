@@ -223,7 +223,7 @@ public with sharing class CoachPortalMainPageController {
                         (RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Coach')
                         OR RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Financial_Intake')
                         OR RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Reentry')
-                        OR RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Career Coach'))
+                        OR RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Career_Coach'))
                         AND Resource__c != :ownerId
                         AND isActive__c = TRUE
                     ORDER BY Resource_Name__c ASC
@@ -270,7 +270,7 @@ public with sharing class CoachPortalMainPageController {
     private Id careerCoachStudentRTID {
         get {
             if (careerCoachStudentRTID == null) {
-                careerCoachStudentRTID = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Career Coach');
+                careerCoachStudentRTID = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Career_Coach');
             }
             return careerCoachStudentRTID;
         }

@@ -13,12 +13,10 @@ public class LeadDispatcher implements TriggerDispatcherInterface {
 
     public void beforeInsert() {
         LeadService.setLeadAssignmentNumber(newList);
-        TerritoryAssignmentLead ta = new TerritoryAssignmentLead();
-        ta.assignTerritory();
+        LeadService.assignTerritory(newList, oldMap);
     }
     public void beforeUpdate() {
-        TerritoryAssignmentLead ta = new TerritoryAssignmentLead();
-        ta.assignTerritory();
+        LeadService.assignTerritory(newList, oldMap);
     }
     public void beforeDelete() {
     }

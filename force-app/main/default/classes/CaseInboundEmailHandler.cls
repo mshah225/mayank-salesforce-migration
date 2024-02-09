@@ -10,7 +10,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
     }
 
     global Messaging.InboundEmailResult handleInboundEmail(
-        Messaging.inboundEmail email,
+        Messaging.InboundEmail email,
         Messaging.InboundEnvelope env
     ) {
         Messaging.InboundEmailResult result = new Messaging.InboundEmailResult();
@@ -106,11 +106,27 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
                             // Case will reopen to the currently associated user if no group can be found
                             try {
-                                groupToReopen = GroupService.getGroupDetails(groupName);
-
-                                this.theCase.OwnerId = groupToReopen.Id;
+                                this.theCase.OwnerId = GroupService.getGroupDetails(groupName).Id;
                             } catch (Exception e) {
-                                // Option to do something else
+                                List<String> vars = new List<String>();
+                                vars.add(ErrorLogger.convertSObjectToJSON('case', theCase));
+
+                                if (groupName != null) {
+                                    vars.add(
+                                        ErrorLogger.convertStringToJSON(
+                                            'error',
+                                            'Could not assign group as case owner: ' + groupName
+                                        )
+                                    );
+                                } else {
+                                    vars.add(
+                                        ErrorLogger.convertStringToJSON(
+                                            'error',
+                                            'Could not assign null group as case owner'
+                                        )
+                                    );
+                                }
+                                ErrorLogger.log(e, vars, false);
                             }
 
                             if (this.theCase.CC_Most_Recent_Functional_Group__c == null) {
@@ -228,9 +244,9 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 theCase.Subject = limitLength(email.Subject, 255);
                 theCase.Description = '';
                 theCase.Inbound_Email_Checksum__c = generateChecksum(
-                    (String.isNotBlank(email.plainTextBody) ? email.plainTextBody :
-                    String.isNotBlank(email.htmlBody) ? email.htmlBody :
-                    '') + theCase.Subject
+                    (String.isNotBlank(email.plainTextBody)
+                        ? email.plainTextBody
+                        : String.isNotBlank(email.htmlBody) ? email.htmlBody : '') + theCase.Subject
                 );
 
                 if (email.plainTextBody != null) {
@@ -293,9 +309,8 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
                 // Multiple matches - require further filtering using name
                 if (contacts.size() > 1) {
-
                     theCase.Description =
-                            'Note: there is more than one Contact with this email address. ' + theCase.Description;
+                        'Note: there is more than one Contact with this email address. ' + theCase.Description;
 
                     List<Contact> filteredContacts = new List<Contact>();
 
@@ -406,16 +421,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                     this.theCase.Subject = 'Email Received From: ' + email.fromAddress.trim();
                 }
 
-                // Check to make sure we are not about to spawn an auto reply loop
-                try {
-                    recentCase = [
-                        SELECT Id, Description, Subject, OwnerId, Inbound_Email_Checksum__c
-                        FROM Case
-                        WHERE ContactId = :emailContact.Id
-                        ORDER BY CreatedDate DESC
-                        LIMIT 1
-                    ];
-
+                for (Case recentCaseFromEmail : [
+                    SELECT Id, Description, Subject, OwnerId, Inbound_Email_Checksum__c
+                    FROM Case
+                    WHERE ContactId = :emailContact.Id
+                    ORDER BY CreatedDate DESC
+                    LIMIT 1
+                ]) {
+                    recentCase = recentCaseFromEmail;
                     if (recentCase.Description == null) {
                         recentCase.Description = '';
                     }
@@ -446,9 +459,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                             }
                         }
                     }
-                } catch (QueryException e) {
                 }
-
                 insert this.theCase;
             } else {
                 // Grab the contact record from the existing case
@@ -510,8 +521,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 sendAutoReply(theCase, emailContact, caseAssignmentInfo.templateId, caseAssignmentInfo);
             }
         } catch (Exception e) {
-            // Catch any exceptions and create a lost email.
             String error = e.getMessage() + '\n' + e.getStackTraceString();
+            List<String> vars = new List<String>();
+            if (email != null) {
+                vars.add(ErrorLogger.convertInboundEmailToJSON('email', email));
+            }
+            vars.add(ErrorLogger.convertSObjectToJSON('case', theCase));
+            vars.add(ErrorLogger.convertStringToJSON('error', error));
+            ErrorLogger.log(e, vars, false);
             generateLostEmail(email, theCase, error);
         }
         return result;
@@ -604,7 +621,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         Integer attachmentLimit = Integer.valueOf(getConfigurationSetting('Attachment Limit'));
         Set<String> validFileExtensionSet = new Set<String>(validFileExtensionList);
 
-        Integer attachmentsOnCase = [SELECT COUNT() FROM Attachment WHERE ParentId =: parentObject.Id];
+        Integer attachmentsOnCase = [SELECT COUNT() FROM Attachment WHERE ParentId = :parentObject.Id];
 
         if (loggingSettings.Attachment_Limit_Logging__c && attachmentsOnCase >= attachmentLimit) {
             response.success = false;
@@ -772,14 +789,32 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             } else {
                 mail.setOrgWideEmailAddressId(defaultOwea.Id);
             }
+
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertSingleEmailMessageToJSON('email', mail));
+            vars.add(ErrorLogger.convertSObjectToJSON('case', emailCase));
+            vars.add(ErrorLogger.convertSObjectToJSON('contact', emailContact));
+            vars.add(ErrorLogger.convertStringToJSON('emailTemplate', emailTemplateId));
+            ErrorLogger.log(e, vars, false);
         }
 
-        //Send the email
+        // Send the email
         try {
             Messaging.reserveSingleEmailCapacity(1);
             Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ mail });
         } catch (Exception e) {
-            //Most likely SINGLE_EMAIL_LIMIT_EXCEEDED; catching so the transaction will continue
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertSingleEmailMessageToJSON('email', mail));
+            vars.add(ErrorLogger.convertSObjectToJSON('case', emailCase));
+            vars.add(ErrorLogger.convertSObjectToJSON('contact', emailContact));
+            vars.add(ErrorLogger.convertStringToJSON('emailTemplate', emailTemplateId));
+            vars.add(
+                ErrorLogger.convertStringToJSON(
+                    'note',
+                    'Potentially due to SINGLE_EMAIL_LIMIT_EXCEEDED; may need investigation'
+                )
+            );
+            ErrorLogger.log(e, vars, false);
         }
     }
 
@@ -841,6 +876,13 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             } else {
                 mail.setOrgWideEmailAddressId(defaultOwea.Id);
             }
+
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertSingleEmailMessageToJSON('email', mail));
+            vars.add(ErrorLogger.convertSObjectToJSON('case', emailCase));
+            vars.add(ErrorLogger.convertSObjectToJSON('contact', emailContact));
+            vars.add(ErrorLogger.convertStringToJSON('emailTemplate', emailTemplateId));
+            ErrorLogger.log(e, vars, false);
         }
 
         //Send the email
@@ -848,68 +890,90 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             Messaging.reserveSingleEmailCapacity(1);
             Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ mail });
         } catch (Exception e) {
-            //Most likely SINGLE_EMAIL_LIMIT_EXCEEDED; catching so the transaction will continue
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertSingleEmailMessageToJSON('email', mail));
+            vars.add(ErrorLogger.convertSObjectToJSON('case', emailCase));
+            vars.add(ErrorLogger.convertSObjectToJSON('contact', emailContact));
+            vars.add(ErrorLogger.convertStringToJSON('emailTemplate', emailTemplateId));
+            vars.add(
+                ErrorLogger.convertStringToJSON(
+                    'note',
+                    'Potentially due to SINGLE_EMAIL_LIMIT_EXCEEDED; may need investigation'
+                )
+            );
+            ErrorLogger.log(e, vars, false);
         }
     }
 
     @TestVisible
-    private LostEmail__C generateLostEmail(Messaging.InboundEmail email, Case theCase, String error) {
+    private LostEmail__c generateLostEmail(Messaging.InboundEmail email, Case theCase, String error) {
         LostEmail__c lostEmail = new LostEmail__c();
-        insert lostEmail; // need to insert early since needs to be assigned an id for handleAttachments function
-        lostEmail.Sender__c = limitLength(email.fromAddress, 255);
-        lostEmail.Subject__c = limitLength(email.subject, 255);
-        lostEmail.PlainTextBody__c = limitLength(email.plainTextBody, 31500);
-        lostEmail.HtmlTextBody__c = limitLength(email.htmlBody, 31500);
-        lostEmail.Cause__c = limitLength(error, 255);
+        try {
+            insert lostEmail; // need to insert early since needs to be assigned an id for handleAttachments function
+            lostEmail.Sender__c = limitLength(email.fromAddress, 255);
+            lostEmail.Subject__c = limitLength(email.subject, 255);
+            lostEmail.PlainTextBody__c = limitLength(email.plainTextBody, 31500);
+            lostEmail.HtmlTextBody__c = limitLength(email.htmlBody, 31500);
+            lostEmail.Cause__c = limitLength(error, 255);
 
-        // Convert the List into a concatenated string
-        String recipientsString = '';
-        if (email.toAddresses != null) {
-            recipientsString = String.join(email.toAddresses, ', ');
-        }
-        lostEmail.Recipient__c = recipientsString;
+            // Convert the List into a concatenated string
+            String recipientsString = '';
+            if (email.toAddresses != null) {
+                recipientsString = String.join(email.toAddresses, ', ');
+            }
+            lostEmail.Recipient__c = recipientsString;
 
-        String carbonCopiesString = '';
-        if (email.ccAddresses != null) {
-            carbonCopiesString = String.join(email.CCAddresses, ', ');
-        }
-        lostEmail.CarbonCopies__c = carbonCopiesString;
+            String carbonCopiesString = '';
+            if (email.ccAddresses != null) {
+                carbonCopiesString = String.join(email.CCAddresses, ', ');
+            }
+            lostEmail.CarbonCopies__c = carbonCopiesString;
 
-        Boolean attachSuccess = handleAttachments(lostEmail, email).success;
-        lostEmail.RejectedAttachments__c = !attachSuccess;
-        if (!attachSuccess) {
-            String attachmentInfo = '\n**********\nCase ID: ' + (theCase != null ? String.valueOf(theCase.Id) : 'SPAM: Not Created') + '\n\n*****List of Attachments*****\n';
-            if (email.binaryAttachments != null) {
-                for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments) {
-                    attachmentInfo +=
-                        'FileName: ' +
-                        bAttachment.fileName +
-                        ' File Size: ' +
-                        bAttachment.body.size() / 1000.00 +
-                        ' kB\n';
+            Boolean attachSuccess = handleAttachments(lostEmail, email).success;
+            lostEmail.RejectedAttachments__c = !attachSuccess;
+            if (!attachSuccess) {
+                String attachmentInfo =
+                    '\n**********\nCase ID: ' +
+                    (theCase != null ? String.valueOf(theCase.Id) : 'SPAM: Not Created') +
+                    '\n\n*****List of Attachments*****\n';
+                if (email.binaryAttachments != null) {
+                    for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments) {
+                        attachmentInfo +=
+                            'FileName: ' +
+                            bAttachment.fileName +
+                            ' File Size: ' +
+                            bAttachment.body.size() / 1000.00 +
+                            ' kB\n';
+                    }
+                }
+                if (email.textAttachments != null) {
+                    for (Messaging.Inboundemail.TextAttachment tAttachment : email.textAttachments) {
+                        attachmentInfo +=
+                            'FileName: ' +
+                            tAttachment.fileName +
+                            ' File Size: ' +
+                            tAttachment.body.length() / 1000.00 +
+                            ' kB\n';
+                    }
+                }
+                lostEmail.PlainTextBody__c += attachmentInfo;
+            }
+
+            if (loggingSettings.Header_Logging__c) {
+                if (email.headers != null) {
+                    lostEmail.Headers__c = parseHeaders(email);
                 }
             }
-            if (email.textAttachments != null) {
-                for (Messaging.Inboundemail.TextAttachment tAttachment : email.textAttachments) {
-                    attachmentInfo +=
-                        'FileName: ' +
-                        tAttachment.fileName +
-                        ' File Size: ' +
-                        tAttachment.body.length() / 1000.00 +
-                        ' kB\n';
-                }
-            }
-            lostEmail.PlainTextBody__c += attachmentInfo;
+
+            update lostEmail;
+        } catch (Exception e) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertInboundEmailToJSON('email', email));
+            vars.add(ErrorLogger.convertSObjectToJSON('case', theCase));
+            vars.add(ErrorLogger.convertStringToJSON('error', error));
+            vars.add(ErrorLogger.convertSObjectToJSON('lostEmail', lostEmail));
+            ErrorLogger.log(e, vars, false);
         }
-
-        if (loggingSettings.Header_Logging__c) {
-            if (email.headers != null) {
-                lostEmail.Headers__c = parseHeaders(email);
-            }
-        }
-
-        update lostEmail;
-
         return lostEmail;
     }
 
@@ -927,6 +991,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             try {
                 caseId = Cases.getCaseIdFromEmailThreadId(caseReference);
             } catch (Exception e) {
+                List<String> vars = new List<String>();
+                vars.add(ErrorLogger.convertStringToJSON('caseReference', caseReference));
+                vars.add(ErrorLogger.convertStringToJSON('searchText', searchText));
+                ErrorLogger.log(e, vars, false);
                 return null;
             }
             return caseId;
@@ -990,8 +1058,10 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             }
         }
         if (!filtersToUpdate.isEmpty()) {
-
-            if (configMap.get('Filter Rejection Count On') != null && configMap.get('Filter Rejection Count On') == 'true') {
+            if (
+                configMap.get('Filter Rejection Count On') != null &&
+                configMap.get('Filter Rejection Count On') == 'true'
+            ) {
                 update filtersToUpdate;
             }
 
@@ -1310,7 +1380,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
 
         return String.isBlank(htmlBody);
     }
-    
+
     @TestVisible
     public String generateChecksum(String input) {
         Blob inputBlob = Blob.valueOf(input);

@@ -559,6 +559,7 @@ public with sharing class CaseInboundEmailHandlerTest {
 
     @isTest
     static void existingContactDefaultRule() {
+        Test.startTest();
         Contact c = new Contact(
             FirstName = 'First',
             LastName = 'Last',
@@ -583,7 +584,6 @@ public with sharing class CaseInboundEmailHandlerTest {
         CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
         emailServiceObj.handleInboundEmail(email, env);
         email.subject = 'Test 2';
-        Test.startTest();
         emailServiceObj.handleInboundEmail(email, env);
         Test.stopTest();
 
@@ -1760,12 +1760,187 @@ public with sharing class CaseInboundEmailHandlerTest {
             LIMIT 1
         ];
 
-        String checksum = emailServiceObj.generateChecksum(email.plainTextBody+email.subject);
+        String checksum = emailServiceObj.generateChecksum(email.plainTextBody + email.subject);
 
         System.assertEquals(checksum, createdCase.Inbound_Email_Checksum__c);
         Test.stopTest();
 
         List<LostEmail__c> lostEmails = [SELECT Id FROM LostEmail__c];
         System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
+    }
+
+    @isTest
+    static void testNullGroupName() {
+        Contact c = new Contact(FirstName = 'First', LastName = 'Last', Email = 'user@acme.com.test');
+        insert c;
+
+        // Create a test case with our contact
+        List<Case> testCases = CaseService.createTestCases(1, c);
+        Case createdCase = testCases.get(0);
+        createdCase.Status = 'Closed: Resolved';
+        Id CFG = TestDataFactory.createFunctionalGroup('CaseFuncGroup').Id;
+        Id EU = TestDataFactory.createFunctionalGroup('External Unit').Id;
+        createdCase.Most_Recent_Queue__c = null;
+        createdCase.CC_Most_Recent_Functional_Group__c = CFG;
+        createdCase.CC_Functional_Group__c = EU;
+
+        insert createdCase;
+
+        // Reopen the case via email
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('service12345123451234512345@test.test');
+        email.toAddresses = toAddresses;
+
+        email.subject = 'test email';
+        email.fromName = 'Last, First';
+        email.plainTextBody =
+            'Test Body' +
+            '\n\n' +
+            GenerateReferenceIdOnEmailBody.addReferenceIdToEmailBody(createdCase.Id);
+        email.fromAddress = 'user@acme.com.test';
+
+        Test.startTest();
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.handleInboundEmail(email, env);
+        Test.stopTest();
+
+        List<Case> RecentErrorLoggerCases = [
+            SELECT Id, Subject, Description, CreatedDate
+            FROM Case
+            ORDER BY CreatedDate DESC
+            LIMIT 10 // Fetching the top 10 most recent Cases as an example
+        ];
+
+        System.assertNotEquals(0, RecentErrorLoggerCases.size(), 'At least one case should have been logged.');
+
+        String expected_error_string = 'Could not assign null group as case owner';
+
+        Case errorLoggerCase = null;
+        for (Case errorCase : RecentErrorLoggerCases) {
+            if (
+                errorCase.Description != null &&
+                errorCase.Description.contains('Class.CaseInboundEmailHandler') &&
+                errorCase.Description.contains(expected_error_string)
+            ) {
+                errorLoggerCase = errorCase;
+                break;
+            }
+        }
+
+        System.assertNotEquals(null, errorLoggerCase, 'Error not logged for null groupname');
+    }
+
+    @isTest
+    static void testInvalidGroupName() {
+        Contact c = new Contact(FirstName = 'First', LastName = 'Last', Email = 'user@acme.com.test');
+        insert c;
+
+        // Create a test case with our contact
+        List<Case> testCases = CaseService.createTestCases(1, c);
+        Case createdCase = testCases.get(0);
+        createdCase.Status = 'Closed: Resolved';
+        Id CFG = TestDataFactory.createFunctionalGroup('CaseFuncGroup').Id;
+        Id EU = TestDataFactory.createFunctionalGroup('External Unit').Id;
+        createdCase.Most_Recent_Queue__c = 'INVALID_QUEUE_NAME';
+        createdCase.CC_Most_Recent_Functional_Group__c = CFG;
+        createdCase.CC_Functional_Group__c = EU;
+
+        insert createdCase;
+
+        // Reopen the case via email
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('service12345123451234512345@test.test');
+        email.toAddresses = toAddresses;
+        email.subject = 'test email';
+        email.fromName = 'Last, First';
+        email.plainTextBody =
+            'Test Body' +
+            '\n\n' +
+            GenerateReferenceIdOnEmailBody.addReferenceIdToEmailBody(createdCase.Id);
+        email.fromAddress = 'user@acme.com.test';
+
+        Test.startTest();
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.handleInboundEmail(email, env);
+        Test.stopTest();
+
+        List<Case> RecentErrorLoggerCases = [
+            SELECT Id, Subject, Description, CreatedDate
+            FROM Case
+            ORDER BY CreatedDate DESC
+            LIMIT 10 // Fetching the top 10 most recent Cases as an example
+        ];
+
+        System.assertNotEquals(0, RecentErrorLoggerCases.size(), 'At least one case should have been logged.');
+
+        String expected_error_string = 'Could not assign group as case owner: INVALID_QUEUE_NAME';
+
+        Case errorLoggerCase = null;
+        for (Case errorCase : RecentErrorLoggerCases) {
+            if (
+                errorCase.Description != null &&
+                errorCase.Description.contains('Class.CaseInboundEmailHandler') &&
+                errorCase.Description.contains(expected_error_string)
+            ) {
+                errorLoggerCase = errorCase;
+                break;
+            }
+        }
+
+        System.assertNotEquals(null, errorLoggerCase, 'Error not logged for invalid groupname');
+    }
+
+    @isTest
+    static void testInvalidRefIdinReply() {
+        ContactFactory factory = new ContactFactory(ContactFactory.DEFAULT_CONTACT);
+        Contact sender = factory.createOne();
+
+        Messaging.InboundEmail email = new Messaging.InboundEmail();
+        Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
+
+        List<string> toAddresses = new List<string>();
+        toAddresses.add('service12345123451234512345@test.test');
+        email.toAddresses = toAddresses;
+        email.subject = 'test email';
+        email.fromName = 'Last, First';
+        email.plainTextBody = 'Test Body' + '\n\n' + 'ref:' + 'INVALID_CASE_REFERENCE' + ':ref';
+        env.fromAddress = sender.Personal_Email__c;
+
+        Test.startTest();
+        // call the class and test it with the data in the testMethod
+        CaseInboundEmailHandler emailServiceObj = new CaseInboundEmailHandler();
+        emailServiceObj.handleInboundEmail(email, env);
+        Test.stopTest();
+
+        List<Case> RecentErrorLoggerCases = [
+            SELECT Id, Subject, Description, CreatedDate
+            FROM Case
+            ORDER BY CreatedDate DESC
+            LIMIT 10 // Fetching the top 10 most recent Cases as an example
+        ];
+
+        System.assertNotEquals(0, RecentErrorLoggerCases.size(), 'At least one case should have been logged.');
+
+        Case errorLoggerCase = null;
+        for (Case errorCase : RecentErrorLoggerCases) {
+            if (
+                errorCase.Description != null &&
+                errorCase.Description.contains('Class.CaseInboundEmailHandler') &&
+                errorCase.Description.contains('INVALID_CASE_REFERENCE')
+            ) {
+                errorLoggerCase = errorCase;
+                break;
+            }
+        }
+
+        System.assertNotEquals(null, errorLoggerCase, 'Error not logged for invalid case reference id.');
     }
 }

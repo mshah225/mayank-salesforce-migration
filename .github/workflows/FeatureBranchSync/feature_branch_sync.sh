@@ -15,11 +15,16 @@ abortedMergeCoreArray=()
 dev="dev"
 qa="qa"
 uat="uat"
+wpc="wpc"
 
 for remote in $(git branch -r); do
 	if [[ "$remote" != "origin/HEAD" ]] && [[ "$remote" != "->" ]] && [[ "$remote" != "origin/main" ]]; then
 		branch="${remote#origin/}"
 		git checkout $branch
+
+		if [[ "$branch" == "wpc-config" ]]; then
+			continue
+		fi
 
 		if [[ "$branch" == "sync" ]] || [[ "$branch" == "sync-pr" ]]; then
 			git reset --hard origin/main
@@ -42,7 +47,7 @@ for remote in $(git branch -r); do
 		git pull --no-edit origin main
 		if [ $? -eq 0 ]; then
 			git push origin $branch
-			if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]]; then
+			if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]] || [[ "$branch" == "wpc" ]]; then
 				cleanMergeCoreArray+=("$branch")
 				cleanMergeCoreCount=$((cleanMergeCoreCount + 1))
 			else
@@ -51,7 +56,7 @@ for remote in $(git branch -r); do
 			fi
 		else
 			git merge --abort
-			if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]]; then
+			if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]] || [[ "$branch" == "wpc" ]]; then
 				abortedMergeCoreArray+=("$branch")
 				abortedMergeCoreCount=$((abortedMergeCoreCount + 1))
 			else
@@ -223,6 +228,56 @@ else
 		},'
 fi
 blocks="$blocks$uatBranchBlocks"
+
+wpcBranchBlocks=''
+if [[ "${cleanMergeCoreArray[*]}" =~ "${wpc}" ]]; then
+	wpcBranchBlocks='
+        {
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "→ *wpc*"
+			},
+			"accessory": {
+				"type": "button",
+				"text": {
+					"type": "plain_text",
+					"text": ":canvas-check: PASSING",
+					"emoji": true
+				},
+				"value": "wpc",
+				"url": "https://github.com/ASU/crm-salesforce-enterprise/tree/wpc",
+				"action_id": "button-action"
+			}
+		},
+        {
+			"type": "divider"
+		},'
+else
+	wpcBranchBlocks='
+        {
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "→ *wpc*"
+			},
+			"accessory": {
+				"type": "button",
+				"text": {
+					"type": "plain_text",
+					"text": ":exclamation: FAILING",
+					"emoji": true
+				},
+				"value": "wpc",
+				"url": "https://github.com/ASU/crm-salesforce-enterprise/tree/wpc",
+				"action_id": "button-action"
+			}
+		},
+        {
+			"type": "divider"
+		},'
+fi
+blocks="$blocks$wpcBranchBlocks"
 
 deletedBranchBlocks=''
 if [ ${#deletedBranchArray[@]} -gt 0 ]; then

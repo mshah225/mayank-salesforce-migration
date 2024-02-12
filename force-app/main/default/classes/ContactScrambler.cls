@@ -59,6 +59,10 @@ public class ContactScrambler implements ObjectScramble {
         if (!String.isEmpty(contactToScramble.Personal_Email__c)) {
             formattedString += contactToScramble.Personal_Email__c;
         }
+        formattedString += ',';
+        if (!String.isEmpty(contactToScramble.ASU_Gmail__c)) {
+            formattedString += contactToScramble.ASU_Gmail__c;
+        }
 
         formattedString += ',#N/A';
 
@@ -89,6 +93,9 @@ public class ContactScrambler implements ObjectScramble {
         );
         contactToScramble.Personal_Email__c = Scrambler.carefullyScrambleEmailOrUsername(
             contactToScramble.Personal_Email__c
+        );
+        contactToScramble.ASU_Gmail__c = Scrambler.carefullyScrambleEmailOrUsername(
+            contactToScramble.ASU_Gmail__c
         );
     }
 

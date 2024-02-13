@@ -15,6 +15,7 @@ private class ContactScramblerTest {
             me3hs_User_ID__c = 'test.contact@test.test',
             Parent_Email__c = 'test.contact@test.test',
             Personal_Email__c = 'test.contact@test.test',
+            ASU_Gmail__c = 'test.contact@test.test',
             Birthdate = System.today()
         );
 
@@ -36,6 +37,7 @@ private class ContactScramblerTest {
                 me3hs_User_ID__c,
                 Parent_Email__c,
                 Personal_Email__c,
+                ASU_Gmail__c,
                 Birthdate,
                 silverpop__Silverpop_RecipientID__c
             FROM Contact
@@ -84,6 +86,7 @@ private class ContactScramblerTest {
                 me3hs_User_ID__c,
                 Parent_Email__c,
                 Personal_Email__c,
+                ASU_Gmail__c,
                 Birthdate,
                 silverpop__Silverpop_RecipientID__c
             FROM Contact

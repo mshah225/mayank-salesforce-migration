@@ -6,9 +6,9 @@ private class ObjectScrambleServiceTest {
 
         System.assertEquals(
             'SELECT Email, Corporate_Relations_Email__c, EPO_Email__c, ASU_Email__c, ' +
-            'Last_Case_Email_Used__c, Lead_Email__c, Lead_Secondary_Email__c, me3hs_User_ID__c, ' +
-            'Parent_Email__c, Personal_Email__c, Birthdate FROM Contact WHERE ' +
-            ObjectScrambleService.generateNotLikeSandboxDomainStatement('Email'),
+                'Last_Case_Email_Used__c, Lead_Email__c, Lead_Secondary_Email__c, me3hs_User_ID__c, ' +
+                'Parent_Email__c, Personal_Email__c, Birthdate, ASU_Gmail__c FROM Contact WHERE ' +
+                ObjectScrambleService.generateNotLikeSandboxDomainStatement('Email'),
             scrambleService.getQueryFromObject()
         );
     }
@@ -19,7 +19,7 @@ private class ObjectScrambleServiceTest {
 
         System.assertEquals(
             'Id,Birthdate,Email,Corporate_Relations_Email__c,EPO_Email__c,ASU_Email__c,Last_Case_Email_Used__c,Lead_Email__c,' +
-            'Lead_Secondary_Email__c,me3hs_User_ID__c,Parent_Email__c,Personal_Email__c,silverpop__Silverpop_RecipientID__c\n',
+            'Lead_Secondary_Email__c,me3hs_User_ID__c,Parent_Email__c,Personal_Email__c,ASU_Gmail__c,silverpop__Silverpop_RecipientID__c\n',
             scrambleService.getObjectHeader()
         );
     }

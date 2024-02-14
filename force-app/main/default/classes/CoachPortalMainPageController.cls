@@ -222,7 +222,8 @@ public with sharing class CoachPortalMainPageController {
                     WHERE
                         (RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Coach')
                         OR RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Financial_Intake')
-                        OR RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Reentry'))
+                        OR RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Reentry')
+                        OR RecordTypeId = :RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Career_Coach'))
                         AND Resource__c != :ownerId
                         AND isActive__c = TRUE
                     ORDER BY Resource_Name__c ASC
@@ -266,6 +267,16 @@ public with sharing class CoachPortalMainPageController {
         set;
     }
 
+    private Id careerCoachStudentRTID {
+        get {
+            if (careerCoachStudentRTID == null) {
+                careerCoachStudentRTID = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Career_Coach');
+            }
+            return careerCoachStudentRTID;
+        }
+        set;
+    }
+
     /*
      * ASU Coach Outreach Case Record Type Id
      */
@@ -301,6 +312,9 @@ public with sharing class CoachPortalMainPageController {
                     }
                     when 'Reentry' {
                         myStudentsRTID = reentryStudentRTID;
+                    }
+                    when 'Career_Coach' {
+                        myStudentsRTID = careerCoachStudentRTID;
                     }
                     when else {
                         myStudentsRTID = coachStudentRTID;

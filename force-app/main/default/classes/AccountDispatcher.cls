@@ -17,12 +17,10 @@ public class AccountDispatcher implements TriggerDispatcherInterface {
     }
 
     public void beforeInsert() {
-        TerritoryAssignmentAccount ta = new TerritoryAssignmentAccount();
-        ta.assignTerritory();
+        AccountService.assignTerritory(newList, oldMap);
     }
     public void beforeUpdate() {
-        TerritoryAssignmentAccount ta = new TerritoryAssignmentAccount();
-        ta.assignTerritory();
+        AccountService.assignTerritory(newList, oldMap);
     }
     public void beforeDelete() {
     }

@@ -312,79 +312,79 @@ public class ErrorLoggerTest {
      * Tests for converting SObjects to JSON strings
      */
     public static testMethod void Test_convertSObjectToJSON() {
-        string fakeName = 'SObject';
+        String fakeName = 'SObject';
         Lead fakeValue = [SELECT Id FROM Lead LIMIT 1];
-        string result = ErrorLogger.convertSObjectToJSON(fakeName, fakeValue);
-        string expected = '{' + fakeName + ':{' + String.valueOf(fakeValue) + '}}';
+        String result = ErrorLogger.convertSObjectToJSON(fakeName, fakeValue);
+        String expected = '{' + fakeName + ':{' + String.valueOf(fakeValue) + '}}';
 
-        system.assertEquals(expected, result);
+        System.assertEquals(expected, result);
     }
 
     /**
      * Tests for converting Id values to JSON strings
      */
     public static testMethod void Test_convertIdToJSON() {
-        string fakeName = 'objectId';
+        String fakeName = 'objectId';
         Id fakeValue = userinfo.getUserId();
-        string result = ErrorLogger.convertIdToJSON(fakeName, fakeValue);
+        String result = ErrorLogger.convertIdToJSON(fakeName, fakeValue);
 
-        system.assertEquals('{' + fakeName + ':' + fakeValue + '}', result);
+        System.assertEquals('{' + fakeName + ':' + fakeValue + '}', result);
     }
 
     /**
      * Tests for converting Double values to JSON strings
      */
     public static testMethod void Test_convertDoubleToJSON() {
-        string fakeName = 'myBankAccount';
-        double fakeValue = 0.00;
-        string result = ErrorLogger.convertDoubleToJSON(fakeName, fakeValue);
+        String fakeName = 'myBankAccount';
+        Double fakeValue = 0.00;
+        String result = ErrorLogger.convertDoubleToJSON(fakeName, fakeValue);
 
-        system.assertEquals('{' + fakeName + ':' + fakeValue + '}', result);
+        System.assertEquals('{' + fakeName + ':' + fakeValue + '}', result);
     }
 
     /**
      * Tests for converting Integer values to JSON strings
      */
     public static testMethod void Test_convertIntegerToJSON() {
-        string fakeName = 'longestRelationshipInDays';
-        integer fakeValue = 3;
-        string result = ErrorLogger.convertIntegerToJSON(fakeName, fakeValue);
+        String fakeName = 'longestRelationshipInDays';
+        Integer fakeValue = 3;
+        String result = ErrorLogger.convertIntegerToJSON(fakeName, fakeValue);
 
-        system.assertEquals('{' + fakeName + ':' + fakeValue + '}', result);
+        System.assertEquals('{' + fakeName + ':' + fakeValue + '}', result);
     }
 
     /**
      * Tests for converting Boolean values to JSON strings
      */
     public static testMethod void Test_convertBooleanToJSON() {
-        string fakeName = 'amIGettingFiredForDoingThis';
+        String fakeName = 'amIGettingFiredForDoingThis';
         boolean fakeValue = true;
-        string result = ErrorLogger.convertBooleanToJSON(fakeName, fakeValue);
+        String result = ErrorLogger.convertBooleanToJSON(fakeName, fakeValue);
 
-        system.assertEquals('{' + fakeName + ':' + fakeValue + '}', result);
+        System.assertEquals('{' + fakeName + ':' + fakeValue + '}', result);
     }
 
     /**
      * Tests for converting maps to JSON strings - ID to Integer overload
      */
     public static testMethod void Test_convertMapToJSON_Id_To_Int() {
-        string expected;
-        string result;
-        string fakeName = 'leadMap';
+        String expected;
+        String result;
+        String fakeName = 'leadMap';
         Map<Id, Integer> fakeMap;
         List<Lead> testLeads = [SELECT Id FROM Lead LIMIT 3];
 
         // Test 1 - validate a null map
         result = ErrorLogger.convertMapToJSON(fakeName, fakeMap);
         expected = '{' + fakeName + ':null}';
-        system.assertEquals(expected, result);
+        System.assertEquals(expected, result);
 
         // Test 2 - validate a non-null map with 0 entries
         fakeMap = new Map<Id, Integer>();
 
         result = ErrorLogger.convertMapToJSON(fakeName, fakeMap);
         expected = '{' + fakeName + ':{size:0, objects[]}}';
-        system.assertEquals(expected, result);
+        System.assertEquals(expected, result);
 
         // Test 3 - validate a non null map containing 3 values
         for (Lead l : testLeads) {
@@ -392,31 +392,31 @@ public class ErrorLoggerTest {
         }
 
         result = ErrorLogger.convertMapToJSON(fakeName, fakeMap);
-        expected = '{' + fakeName + ':[' + string.valueOf(fakeMap) + ']}';
-        system.assertEquals(expected, result);
+        expected = '{' + fakeName + ':[' + String.valueOf(fakeMap) + ']}';
+        System.assertEquals(expected, result);
     }
 
     /**
      * Tests for converting maps to JSON strings - ID to SObject overload
      */
     public static testMethod void Test_convertMapToJSON_Id_To_SObject() {
-        string expected;
-        string result;
-        string fakeName = 'leadMap';
+        String expected;
+        String result;
+        String fakeName = 'leadMap';
         Map<Id, Lead> fakeMap;
         List<Lead> testLeads = [SELECT Id FROM Lead LIMIT 3];
 
         // Test 1 - validate a null map
         result = ErrorLogger.convertMapToJSON(fakeName, fakeMap);
         expected = '{' + fakeName + ':null}';
-        system.assertEquals(expected, result);
+        System.assertEquals(expected, result);
 
         // Test 2 - validate a non-null map with 0 entries
         fakeMap = new Map<Id, Lead>();
 
         result = ErrorLogger.convertMapToJSON(fakeName, fakeMap);
         expected = '{' + fakeName + ':{size:0, objects[]}}';
-        system.assertEquals(expected, result);
+        System.assertEquals(expected, result);
 
         // Test 3 - validate a non null map containing 3 values
         for (Lead l : testLeads) {
@@ -424,31 +424,31 @@ public class ErrorLoggerTest {
         }
 
         result = ErrorLogger.convertMapToJSON(fakeName, fakeMap);
-        expected = '{' + fakeName + ':[' + string.valueOf(fakeMap) + ']}';
-        system.assertEquals(expected, result);
+        expected = '{' + fakeName + ':[' + String.valueOf(fakeMap) + ']}';
+        System.assertEquals(expected, result);
     }
 
     /**
      * Tests for converting sets to JSON strings - ID overload
      */
     public static testMethod void Test_convertSetToJSON_Id() {
-        string expected;
-        string result;
-        string fakeName = 'leadSet';
+        String expected;
+        String result;
+        String fakeName = 'leadSet';
         Set<Id> fakeSet;
         List<Lead> testLeads = [SELECT Id FROM Lead LIMIT 3];
 
         // Test 1 - validate a null set
         result = ErrorLogger.convertSetToJSON(fakeName, fakeSet);
         expected = '{' + fakeName + ':null}';
-        system.assertEquals(expected, result);
+        System.assertEquals(expected, result);
 
         // Test 2 - validate a non-null set with 0 entries
         fakeSet = new Set<Id>();
 
         result = ErrorLogger.convertSetToJSON(fakeName, fakeSet);
         expected = '{' + fakeName + ':{size:0, objects[]}}';
-        system.assertEquals(expected, result);
+        System.assertEquals(expected, result);
 
         // Test 3 - validate a non null set containing 3 values
         for (Lead l : testLeads) {
@@ -456,31 +456,31 @@ public class ErrorLoggerTest {
         }
 
         result = ErrorLogger.convertSetToJSON(fakeName, fakeSet);
-        expected = '{' + fakeName + ':[' + string.valueOf(fakeSet) + ']}';
-        system.assertEquals(expected, result);
+        expected = '{' + fakeName + ':[' + String.valueOf(fakeSet) + ']}';
+        System.assertEquals(expected, result);
     }
 
     /**
      * Tests for converting lists to JSON strings - ID overload
      */
     public static testMethod void Test_convertListToJSON_Id() {
-        string expected;
-        string result;
-        string fakeName = 'leadList';
+        String expected;
+        String result;
+        String fakeName = 'leadList';
         List<Id> fakeList;
         List<Lead> testLeads = [SELECT Id FROM Lead LIMIT 3];
 
         // Test 1 - validate a null set
         result = ErrorLogger.convertListToJSON(fakeName, fakeList);
         expected = '{' + fakeName + ':null}';
-        system.assertEquals(expected, result);
+        System.assertEquals(expected, result);
 
         // Test 2 - validate a non-null set with 0 entries
         fakeList = new List<Id>();
 
         result = ErrorLogger.convertListToJSON(fakeName, fakeList);
         expected = '{' + fakeName + ':{size:0, objects[]}}';
-        system.assertEquals(expected, result);
+        System.assertEquals(expected, result);
 
         // Test 3 - validate a non null set containing 3 values
         for (Lead l : testLeads) {
@@ -488,37 +488,37 @@ public class ErrorLoggerTest {
         }
 
         result = ErrorLogger.convertListToJSON(fakeName, fakeList);
-        expected = '{' + fakeName + ':[' + string.valueOf(fakeList) + ']}';
-        system.assertEquals(expected, result);
+        expected = '{' + fakeName + ':[' + String.valueOf(fakeList) + ']}';
+        System.assertEquals(expected, result);
     }
 
     /**
      * Tests for converting lists to JSON strings - SObject overload
      */
     public static testMethod void Test_convertListToJSON_SObject() {
-        string expected;
-        string result;
-        string fakeName = 'leadList';
+        String expected;
+        String result;
+        String fakeName = 'leadList';
         List<Lead> fakeList;
         List<Lead> testLeads = [SELECT Id FROM Lead LIMIT 3];
 
         // Test 1 - validate a null set
         result = ErrorLogger.convertListToJSON(fakeName, fakeList);
         expected = '{' + fakeName + ':null}';
-        system.assertEquals(expected, result);
+        System.assertEquals(expected, result);
 
         // Test 2 - validate a non-null set with 0 entries
         fakeList = new List<Lead>();
 
         result = ErrorLogger.convertListToJSON(fakeName, fakeList);
         expected = '{' + fakeName + ':{size:0, objects[]}}';
-        system.assertEquals(expected, result);
+        System.assertEquals(expected, result);
 
         // Test 3 - validate a non null set containing 3 values
         fakeList = testLeads;
 
         result = ErrorLogger.convertListToJSON(fakeName, fakeList);
-        expected = '{' + fakeName + ':[' + string.valueOf(fakeList) + ']}';
-        system.assertEquals(expected, result);
+        expected = '{' + fakeName + ':[' + String.valueOf(fakeList) + ']}';
+        System.assertEquals(expected, result);
     }
 }

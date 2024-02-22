@@ -1,4 +1,4 @@
-public without sharing class TerritoryAssignmentService {
+public without sharing class TerritoryAssignmentHelper {
     private static Map<String, List<PS_Country_Map__c>> psCountryMap;
     private static Boolean debug = false;
 
@@ -44,16 +44,6 @@ public without sharing class TerritoryAssignmentService {
         }
     }
 
-    public static String fieldsToString() {
-        String tarFields = null;
-
-        Map<String, SObjectField> tarFieldMap = ObjectService.getObjectFieldMap('Territory_Assignment_Rule__c');
-
-        tarFields = ObjectService.objectFieldsToString(tarFieldMap);
-
-        return tarFields;
-    }
-
     public static Map<String, List<Territory_Assignment_Rule__c>> mapTerritoryAssignmentRulesToRuleKey() {
         Map<String, List<Territory_Assignment_Rule__c>> tarMap = new Map<String, List<Territory_Assignment_Rule__c>>();
 
@@ -67,7 +57,7 @@ public without sharing class TerritoryAssignmentService {
                 'FROM Territory_Assignment_Rule__c';
             tars = Database.query(selectAllTars);
         } catch (Exception e) {
-            throw new TerritoryAssignmentServiceException(
+            throw new TerritoryAssignmentHelperException(
                 '!!!ERROR!!!: An error occurred trying to get all of the Territory Assignment Rules in this Org.\n' +
                 e.getMessage()
             );
@@ -83,6 +73,13 @@ public without sharing class TerritoryAssignmentService {
         }
 
         return tarMap;
+    }
+
+    public static String fieldsToString() {
+        String tarFields = null;
+        Map<String, SObjectField> tarFieldMap = ObjectService.getObjectFieldMap('Territory_Assignment_Rule__c');
+        tarFields = ObjectService.objectFieldsToString(tarFieldMap);
+        return tarFields;
     }
 
     public static Territory_Assignment_Rule__c getTerritoryAssignmentRule(
@@ -116,6 +113,6 @@ public without sharing class TerritoryAssignmentService {
         return tarToReturn;
     }
 
-    public class TerritoryAssignmentServiceException extends Exception {
+    public class TerritoryAssignmentHelperException extends Exception {
     }
 }

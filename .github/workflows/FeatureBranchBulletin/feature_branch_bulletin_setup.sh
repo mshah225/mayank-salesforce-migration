@@ -28,7 +28,7 @@ for remote in $(git branch -r); do
 
         git branch -v
 
-        if [[ "$branch" != "dev" ]] && [[ "$branch" != "qa" ]] && [[ "$branch" != "uat" ]] && [[ "$branch" != "sync" ]] && [[ "$branch" != "sync-pr" ]]; then
+        if [[ "$branch" != "dev" ]] && [[ "$branch" != "qa" ]] && [[ "$branch" != "uat" ]] && [[ "$branch" != "wpc" ]] && [[ "$branch" != "wpc-config" ]] && [[ "$branch" != "sync" ]] && [[ "$branch" != "sync-pr" ]]; then
             core_branches=("dev" "qa" "uat")
 
             # Determine if the source branch has been merged into dev

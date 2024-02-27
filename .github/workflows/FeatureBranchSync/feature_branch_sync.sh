@@ -1,5 +1,5 @@
 set +e
-curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":sync: Syncing Feature Branches","emoji":true}},{"type":"section","text":{"type":"mrkdwn","text":"This was automatically triggered by a push to the primary branch or manually run by a repository administrator. Please *do not* make any changes to feature branches until this is complete, and then make sure to update your local copy of the repository."}},{"type":"section","text":{"type":"mrkdwn","text":"<!here|here>"}}]}' https://hooks.slack.com/services/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
+curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":sync: Syncing Feature Branches","emoji":true}},{"type":"section","text":{"type":"mrkdwn","text":"This was automatically triggered by a push to the primary branch or manually run by a repository administrator. Please *do not* make any changes to feature branches until this is complete, and then make sure to update your local copy of the repository. Last known HEAD commit SHAs are provided next to branch names within brackets."}},{"type":"section","text":{"type":"mrkdwn","text":"<!here|here>"}}]}' https://hooks.slack.com/services/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
 git config pull.rebase false && git config user.name "GitHub Actions" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com" && git fetch --prune &>/dev/null && git reset --hard origin/main &>/dev/null
 
 deletedBranchCount=0
@@ -19,8 +19,12 @@ wpc="wpc"
 
 for remote in $(git branch -r); do
 	if [[ "$remote" != "origin/HEAD" ]] && [[ "$remote" != "->" ]] && [[ "$remote" != "origin/main" ]]; then
+		# Determine branch name and checkout said branch
 		branch="${remote#origin/}"
 		git checkout $branch
+
+		# Define the current SHA prior to making changes otherwise it's not useful
+		sha=$(git rev-parse --short HEAD)
 
 		# Branches to ignore
 		if [[ "$branch" == "wpc-config" ]]; then
@@ -31,7 +35,6 @@ for remote in $(git branch -r); do
 		if [[ "$branch" == "sync" ]] || [[ "$branch" == "sync-pr" ]]; then
 			git reset --hard origin/main
 			git push -f origin $branch
-			sha=$(git rev-parse --short HEAD)
 			cleanMergeArray+=("$branch [$sha]")
 			cleanMergeCount=$((cleanMergeCount + 1))
 			continue
@@ -40,7 +43,6 @@ for remote in $(git branch -r); do
 		# IF the branch contains no file changes compared to main, delete it
 		# ELSE attempt to update the branch, but abort if necessary
 		if git diff-index --quiet origin/main --; then
-			sha=$(git rev-parse --short HEAD)
 			git checkout -f main
 			git branch -D $branch
 			git push origin --delete $branch
@@ -89,7 +91,7 @@ blocks='{
 			"fields": [
 				{
 					"type": "mrkdwn",
-					"text": ":code-brackets: *CORE BRANCHES PASSING:* '"$cleanMergeCoreCount"' of 3"
+					"text": ":code-brackets: *CORE BRANCHES PASSING:* '"$cleanMergeCoreCount"' of 4"
 				}
 			]
 		},'
@@ -202,9 +204,6 @@ if [[ "${cleanMergeCoreArray[*]}" =~ "${uat}" ]]; then
 				"url": "https://github.com/ASU/crm-salesforce-enterprise/tree/uat",
 				"action_id": "button-action"
 			}
-		},
-        {
-			"type": "divider"
 		},'
 else
 	uatBranchBlocks='
@@ -225,9 +224,6 @@ else
 				"url": "https://github.com/ASU/crm-salesforce-enterprise/tree/uat",
 				"action_id": "button-action"
 			}
-		},
-        {
-			"type": "divider"
 		},'
 fi
 blocks="$blocks$uatBranchBlocks"

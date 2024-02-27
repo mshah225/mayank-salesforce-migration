@@ -15,20 +15,30 @@ abortedMergeCoreArray=()
 dev="dev"
 qa="qa"
 uat="uat"
+wpc="wpc"
 
 for remote in $(git branch -r); do
 	if [[ "$remote" != "origin/HEAD" ]] && [[ "$remote" != "->" ]] && [[ "$remote" != "origin/main" ]]; then
 		branch="${remote#origin/}"
 		git checkout $branch
 
+		# Branches to ignore
+		if [[ "$branch" == "wpc-config" ]]; then
+			continue
+		fi
+
+		# Reset sync and sync-pr branches back to the same state as main
 		if [[ "$branch" == "sync" ]] || [[ "$branch" == "sync-pr" ]]; then
 			git reset --hard origin/main
 			git push -f origin $branch
-			cleanMergeArray+=("$branch")
+			sha=$(git rev-parse --short HEAD)
+			cleanMergeArray+=("$branch [$sha]")
 			cleanMergeCount=$((cleanMergeCount + 1))
 			continue
 		fi
 
+		# IF the branch contains no file changes compared to main, delete it
+		# ELSE attempt to update the branch, but abort if necessary
 		if git diff-index --quiet origin/main --; then
 			sha=$(git rev-parse --short HEAD)
 			git checkout -f main
@@ -36,30 +46,28 @@ for remote in $(git branch -r); do
 			git push origin --delete $branch
 			deletedBranchArray+=("$branch [$sha]")
 			deletedBranchCount=$((deletedBranchCount + 1))
-			continue
-		fi
-
-		git pull --no-edit origin main
-		if [ $? -eq 0 ]; then
-			git push origin $branch
-			if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]]; then
-				cleanMergeCoreArray+=("$branch")
-				cleanMergeCoreCount=$((cleanMergeCoreCount + 1))
-			else
-				cleanMergeArray+=("$branch")
-				cleanMergeCount=$((cleanMergeCount + 1))
-			fi
 		else
-			git merge --abort
-			if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]]; then
-				abortedMergeCoreArray+=("$branch")
-				abortedMergeCoreCount=$((abortedMergeCoreCount + 1))
+			git pull --no-edit origin main
+			if [ $? -eq 0 ]; then
+				git push origin $branch
+				if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]] || [[ "$branch" == "wpc" ]]; then
+					cleanMergeCoreArray+=("$branch [$sha]")
+					cleanMergeCoreCount=$((cleanMergeCoreCount + 1))
+				else
+					cleanMergeArray+=("$branch [$sha]")
+					cleanMergeCount=$((cleanMergeCount + 1))
+				fi
 			else
-				abortedMergeArray+=("$branch")
-				abortedMergeCount=$((abortedMergeCount + 1))
+				git merge --abort
+				if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]] || [[ "$branch" == "wpc" ]]; then
+					abortedMergeCoreArray+=("$branch [$sha]")
+					abortedMergeCoreCount=$((abortedMergeCoreCount + 1))
+				else
+					abortedMergeArray+=("$branch [$sha]")
+					abortedMergeCount=$((abortedMergeCount + 1))
+				fi
 			fi
 		fi
-
 	fi
 done
 
@@ -223,6 +231,56 @@ else
 		},'
 fi
 blocks="$blocks$uatBranchBlocks"
+
+wpcBranchBlocks=''
+if [[ "${cleanMergeCoreArray[*]}" =~ "${wpc}" ]]; then
+	wpcBranchBlocks='
+        {
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "→ *wpc*"
+			},
+			"accessory": {
+				"type": "button",
+				"text": {
+					"type": "plain_text",
+					"text": ":canvas-check: PASSING",
+					"emoji": true
+				},
+				"value": "wpc",
+				"url": "https://github.com/ASU/crm-salesforce-enterprise/tree/wpc",
+				"action_id": "button-action"
+			}
+		},
+        {
+			"type": "divider"
+		},'
+else
+	wpcBranchBlocks='
+        {
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "→ *wpc*"
+			},
+			"accessory": {
+				"type": "button",
+				"text": {
+					"type": "plain_text",
+					"text": ":exclamation: FAILING",
+					"emoji": true
+				},
+				"value": "wpc",
+				"url": "https://github.com/ASU/crm-salesforce-enterprise/tree/wpc",
+				"action_id": "button-action"
+			}
+		},
+        {
+			"type": "divider"
+		},'
+fi
+blocks="$blocks$wpcBranchBlocks"
 
 deletedBranchBlocks=''
 if [ ${#deletedBranchArray[@]} -gt 0 ]; then

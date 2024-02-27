@@ -1769,7 +1769,7 @@ public with sharing class CaseInboundEmailHandlerTest {
         System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
     }
 
-    @IsTest
+    @isTest
     static void testNullGroupName() {
         Contact c = new Contact(FirstName = 'First', LastName = 'Last', Email = 'user@acme.com.test');
         insert c;
@@ -1793,6 +1793,7 @@ public with sharing class CaseInboundEmailHandlerTest {
         List<string> toAddresses = new List<string>();
         toAddresses.add('service12345123451234512345@test.test');
         email.toAddresses = toAddresses;
+
         email.subject = 'test email';
         email.fromName = 'Last, First';
         email.plainTextBody =

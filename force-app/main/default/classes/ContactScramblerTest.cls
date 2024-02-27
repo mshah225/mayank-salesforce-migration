@@ -117,6 +117,8 @@ private class ContactScramblerTest {
             contactToScramble.Parent_Email__c +
             ',' +
             contactToScramble.Personal_Email__c +
+            ',' +
+            contactToScramble.ASU_Gmail__c +
             ',#N/A\n';
 
         ContactScrambler scrambler = new ContactScrambler(contactToScramble);

@@ -47,23 +47,23 @@ for remote in $(git branch -r); do
 			git checkout -f main
 			git branch -D $branch
 			git push origin --delete $branch
-			deletedBranchArray+=("*$branch \`$sha\`*")
+			deletedBranchArray+=("$branch [$sha]")
 			deletedBranchCount=$((deletedBranchCount + 1))
 		else
 			git pull --no-edit origin main
 			if [ $? -eq 0 ]; then
 				if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]] || [[ "$branch" == "wpc" ]]; then
 					git push origin $branch
-					mergeableCoreBranchArray+=("*$branch \`$sha\`*")
+					mergeableCoreBranchArray+=("$branch [$sha]")
 					mergeableCoreBranchCount=$((mergeableCoreBranchCount + 1))
 				fi
 			else
 				git merge --abort
 				if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]] || [[ "$branch" == "wpc" ]]; then
-					conflictedCoreBranchArray+=("*$branch \`$sha\`*")
+					conflictedCoreBranchArray+=("$branch [$sha]")
 					conflictedCoreBranchCount=$((conflictedCoreBranchCount + 1))
 				else
-					conflictedBranchArray+=("*$branch \`$sha\`*")
+					conflictedBranchArray+=("$branch [$sha]")
 					conflictedBranchCount=$((conflictedBranchCount + 1))
 				fi
 			fi

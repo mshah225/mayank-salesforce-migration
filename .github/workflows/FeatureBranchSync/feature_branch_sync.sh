@@ -1,21 +1,23 @@
 set +e
-curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":sync: Syncing Feature Branches","emoji":true}},{"type":"section","text":{"type":"mrkdwn","text":"This was automatically triggered by a push to the primary branch or manually run by a repository administrator. Please *do not* make any changes to feature branches until this is complete, and then make sure to update your local copy of the repository. Last known HEAD commit SHAs are provided next to branch names within brackets."}},{"type":"section","text":{"type":"mrkdwn","text":"<!here|here>"}}]}' https://hooks.slack.com/services/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
+curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":sync: Syncing Feature Branches","emoji":true}},{"type":"section","text":{"type":"mrkdwn","text":"This was automatically triggered by a push to the primary branch or manually run by a repository administrator. Please *do not* make any changes to feature branches until this is complete, and then make sure to check the CONFLICTS section for any relevant branches that should be fixed. Last known HEAD commit SHAs are provided next to branch names within brackets."}},{"type":"section","text":{"type":"mrkdwn","text":"<!here|here>"}}]}' https://hooks.slack.com/services/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
 git config pull.rebase false && git config user.name "GitHub Actions" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com" && git fetch --prune &>/dev/null && git reset --hard origin/main &>/dev/null
 
 deletedBranchCount=0
-cleanMergeCount=0
-cleanMergeCoreCount=0
-abortedMergeCount=0
-abortedMergeCoreCount=0
+mergeableCoreBranchCount=0
+conflictedBranchCount=0
+conflictedCoreBranchCount=0
 deletedBranchArray=()
-cleanMergeArray=()
-cleanMergeCoreArray=()
-abortedMergeArray=()
-abortedMergeCoreArray=()
+mergeableCoreBranchArray=()
+conflictedBranchArray=()
+conflictedCoreBranchArray=()
+
 dev="dev"
 qa="qa"
 uat="uat"
 wpc="wpc"
+
+coreBranches=("$dev" "$qa" "$uat" "$wpc")
+coreBranchesCount="${#coreBranches[@]}"
 
 for remote in $(git branch -r); do
 	if [[ "$remote" != "origin/HEAD" ]] && [[ "$remote" != "->" ]] && [[ "$remote" != "origin/main" ]]; then
@@ -35,38 +37,34 @@ for remote in $(git branch -r); do
 		if [[ "$branch" == "sync" ]] || [[ "$branch" == "sync-pr" ]]; then
 			git reset --hard origin/main
 			git push -f origin $branch
-			cleanMergeArray+=("$branch [$sha]")
-			cleanMergeCount=$((cleanMergeCount + 1))
 			continue
 		fi
 
 		# IF the branch contains no file changes compared to main, delete it
-		# ELSE attempt to update the branch, but abort if necessary
+		# ELSE if it's a core branch, attempt to update the branch
+		# ELSE if it's not a core branch, only report if it has conflicts
 		if git diff-index --quiet origin/main --; then
 			git checkout -f main
 			git branch -D $branch
 			git push origin --delete $branch
-			deletedBranchArray+=("$branch [$sha]")
+			deletedBranchArray+=("*$branch \`$sha\`*")
 			deletedBranchCount=$((deletedBranchCount + 1))
 		else
 			git pull --no-edit origin main
 			if [ $? -eq 0 ]; then
-				git push origin $branch
 				if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]] || [[ "$branch" == "wpc" ]]; then
-					cleanMergeCoreArray+=("$branch [$sha]")
-					cleanMergeCoreCount=$((cleanMergeCoreCount + 1))
-				else
-					cleanMergeArray+=("$branch [$sha]")
-					cleanMergeCount=$((cleanMergeCount + 1))
+					git push origin $branch
+					mergeableCoreBranchArray+=("*$branch \`$sha\`*")
+					mergeableCoreBranchCount=$((mergeableCoreBranchCount + 1))
 				fi
 			else
 				git merge --abort
 				if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]] || [[ "$branch" == "wpc" ]]; then
-					abortedMergeCoreArray+=("$branch [$sha]")
-					abortedMergeCoreCount=$((abortedMergeCoreCount + 1))
+					conflictedCoreBranchArray+=("*$branch \`$sha\`*")
+					conflictedCoreBranchCount=$((conflictedCoreBranchCount + 1))
 				else
-					abortedMergeArray+=("$branch [$sha]")
-					abortedMergeCount=$((abortedMergeCount + 1))
+					conflictedBranchArray+=("*$branch \`$sha\`*")
+					conflictedBranchCount=$((conflictedBranchCount + 1))
 				fi
 			fi
 		fi
@@ -91,13 +89,13 @@ blocks='{
 			"fields": [
 				{
 					"type": "mrkdwn",
-					"text": ":code-brackets: *CORE BRANCHES PASSING:* '"$cleanMergeCoreCount"' of 4"
+					"text": ":code-brackets: *CORE BRANCHES PASSING:* '"$mergeableCoreBranchCount"' of '"$coreBranchesCount"'"
 				}
 			]
 		},'
 
 devBranchBlocks=''
-if [[ "${cleanMergeCoreArray[*]}" =~ "${dev}" ]]; then
+if [[ "${mergeableCoreBranchArray[*]}" =~ "${dev}" ]]; then
 	devBranchBlocks='
         {
 			"type": "section",
@@ -141,7 +139,7 @@ fi
 blocks="$blocks$devBranchBlocks"
 
 qaBranchBlocks=''
-if [[ "${cleanMergeCoreArray[*]}" =~ "${qa}" ]]; then
+if [[ "${mergeableCoreBranchArray[*]}" =~ "${qa}" ]]; then
 	qaBranchBlocks='
         {
 			"type": "section",
@@ -185,7 +183,7 @@ fi
 blocks="$blocks$qaBranchBlocks"
 
 uatBranchBlocks=''
-if [[ "${cleanMergeCoreArray[*]}" =~ "${uat}" ]]; then
+if [[ "${mergeableCoreBranchArray[*]}" =~ "${uat}" ]]; then
 	uatBranchBlocks='
         {
 			"type": "section",
@@ -229,7 +227,7 @@ fi
 blocks="$blocks$uatBranchBlocks"
 
 wpcBranchBlocks=''
-if [[ "${cleanMergeCoreArray[*]}" =~ "${wpc}" ]]; then
+if [[ "${mergeableCoreBranchArray[*]}" =~ "${wpc}" ]]; then
 	wpcBranchBlocks='
         {
 			"type": "section",
@@ -338,15 +336,15 @@ else
 fi
 blocks="$blocks$deletedBranchBlocks"
 
-abortedMergeBlocks=''
-if [ ${#abortedMergeArray[@]} -gt 0 ]; then
-	abortedMergeBlocks='
+conflictedBranchBlocks=''
+if [ ${#conflictedBranchArray[@]} -gt 0 ]; then
+	conflictedBranchBlocks='
         {
 			"type": "section",
 			"fields": [
 				{
 					"type": "mrkdwn",
-					"text": ":warning-badge: *ABORTED MERGES:* '"$abortedMergeCount"'"
+					"text": ":warning-badge: *CONFLICTS:* '"$conflictedBranchCount"'"
 				}
 			]
 		},
@@ -357,12 +355,12 @@ if [ ${#abortedMergeArray[@]} -gt 0 ]; then
                     "type": "rich_text_list",
                     "elements": ['
 
-	for index in "${!abortedMergeArray[@]}"; do
-		branch="${abortedMergeArray[$index]}"
-		abortedMergeBlocks=''"$abortedMergeBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":"'"$branch"'"}]},'
+	for index in "${!conflictedBranchArray[@]}"; do
+		branch="${conflictedBranchArray[$index]}"
+		conflictedBranchBlocks=''"$conflictedBranchBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":"'"$branch"'"}]},'
 	done
 
-	abortedMergeBlocks=''"$abortedMergeBlocks"'
+	conflictedBranchBlocks=''"$conflictedBranchBlocks"'
                     ],
                     "style": "bullet",
                     "indent": 1
@@ -373,13 +371,13 @@ if [ ${#abortedMergeArray[@]} -gt 0 ]; then
 			"type": "divider"
 		},'
 else
-	abortedMergeBlocks='
+	conflictedBranchBlocks='
         {
 			"type": "section",
 			"fields": [
 				{
 					"type": "mrkdwn",
-					"text": ":warning-badge: *ABORTED MERGES:* '"$abortedMergeCount"'"
+					"text": ":warning-badge: *ABORTED MERGES:* '"$conflictedBranchCount"'"
 				}
 			]
 		},
@@ -396,61 +394,7 @@ else
 			"type": "divider"
 		},'
 fi
-blocks="$blocks$abortedMergeBlocks"
-
-cleanMergeBlocks=''
-if [ ${#cleanMergeArray[@]} -gt 0 ]; then
-	cleanMergeBlocks='
-        {
-			"type": "section",
-			"fields": [
-				{
-					"type": "mrkdwn",
-					"text": ":checkmark: *CLEAN MERGES:* '"$cleanMergeCount"'"
-				}
-			]
-		},
-        {
-            "type": "rich_text",
-            "elements": [
-                {
-                    "type": "rich_text_list",
-                    "elements": ['
-
-	for index in "${!cleanMergeArray[@]}"; do
-		branch="${cleanMergeArray[$index]}"
-		cleanMergeBlocks=''"$cleanMergeBlocks"'{"type":"rich_text_section","elements":[{"type":"text","text":"'"$branch"'"}]},'
-	done
-
-	cleanMergeBlocks=''"$cleanMergeBlocks"'
-                    ],
-                    "style": "bullet",
-                    "indent": 1
-                }
-            ]
-        },'
-else
-	cleanMergeBlocks='
-        {
-			"type": "section",
-			"fields": [
-				{
-					"type": "mrkdwn",
-					"text": ":checkmark: *CLEAN MERGES:* '"$cleanMergeCount"'"
-				},
-			]
-		},
-        {
-			"type": "section",
-			"fields": [
-                {
-                    "type": "mrkdwn",
-                    "text": "  → No branches to list."
-                }
-            ]
-        },'
-fi
-blocks="$blocks$cleanMergeBlocks"
+blocks="$blocks$conflictedBranchBlocks"
 
 blocks=''"$blocks"'
     ]

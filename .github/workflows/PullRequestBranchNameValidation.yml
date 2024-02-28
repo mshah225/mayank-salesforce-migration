@@ -12,10 +12,10 @@ jobs:
             - name: Branch Name Validation
               uses: AlbertHernandez/branch-name-action@v1.0.2
               with:
-                  branch_pattern: '${{ github.actor }}.'
-                  comment_for_invalid_branch_name: 'The branch will need to be named `${{ github.actor }}.${{ github.event.pull_request.head.ref }}` in order to pass validation, or utilize one of the approved branch patterns. Please rename the branch and then reopen a new pull request.'
+                  branch_pattern: '.|/'
+                  comment_for_invalid_branch_name: 'The branch will need to be named using an approved branch name pattern in order to pass validation. Please rename the branch and then reopen a new pull request. Examples: `${{ github.actor }}.${{ github.event.pull_request.head.ref }}` + `${{ github.actor }}/${{ github.event.pull_request.head.ref }}`. Other acceptable branch patterns: `chore/<name>` `bugfix/<name>` `feature/<name>` `hotfix/<name>` `migration-vYY.MM.DD` `migration/vYY.MM.DD` `project.` `test/<name>` `release/vYY.MM.DD`.'
                   fail_if_invalid_branch_name: 'true'
-                  ignore_branch_pattern: 'dev|qa|uat|wpc|wpc-config|test.|project.|hotfix.|migration-|main'
+                  ignore_branch_pattern: 'dev|qa|uat|wpc|wpc-config|main|chore/|bugfix/|feature/|hotfix/|migration-|migration/|project.|test/|release/'
             - name: Close Pull Request
               if: failure()
               run: gh pr close "${{ github.event.number }}"

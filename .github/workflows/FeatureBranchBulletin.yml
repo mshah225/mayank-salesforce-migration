@@ -3,7 +3,7 @@ name: Feature Branch Bulletin
 on:
     workflow_dispatch:
     schedule:
-        - cron: '0 6 * * 1-5'
+        - cron: '0 15 * * 1'
 
 jobs:
     compile-feature-branch-bulletin:

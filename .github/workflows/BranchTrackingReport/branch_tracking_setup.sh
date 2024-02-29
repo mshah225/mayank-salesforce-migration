@@ -25,6 +25,8 @@ uat_branches=()
 for remote in $(git branch -r); do
     if [[ "$remote" != "origin/HEAD" ]] && [[ "$remote" != "->" ]] && [[ "$remote" != "origin/main" ]]; then
         branch="${remote#origin/}"
+        sha=$(git rev-parse --short origin/$branch)
+        branch="$branch:$sha"
 
         git branch -v
 

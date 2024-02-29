@@ -1,4 +1,4 @@
-name: Pull Request Auto Review
+name: Pull Request Review
 
 on:
     pull_request_target:
@@ -7,17 +7,17 @@ on:
             - 'dev'
             - 'qa'
             - 'uat'
-            - 'migration-**'
+            - 'migration**'
             - '**Migration**'
             - 'main'
 
 jobs:
-    pull-request-auto-review:
-        name: Pull Request Auto Review
+    pull-request-review:
+        name: Pull Request Review
         runs-on: ubuntu-latest
         steps:
             - name: Request review based on set criteria
               uses: necojackarc/auto-request-review@v0.10.0
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
-                  config: .github/workflows/PullRequestAutoReview/reviewers.yml
+                  config: .github/workflows/PullRequestReview/reviewers.yml

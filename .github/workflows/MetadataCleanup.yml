@@ -1,4 +1,4 @@
-name: Metadata Auto Cleanup
+name: Metadata Cleanup
 
 on:
     workflow_dispatch:
@@ -7,7 +7,7 @@ on:
             - main
 
 jobs:
-    metadata-auto-cleanup:
+    metadata-cleanup:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3

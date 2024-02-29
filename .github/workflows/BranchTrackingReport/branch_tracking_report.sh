@@ -50,7 +50,7 @@ rm -f Branch-Tracking-Report.md
         if [ ${#dev_branches_to_report[@]} -gt 0 ]; then
             for index in "${!dev_branches_to_report[@]}"; do
                 branch="${dev_branches_to_report[$index]}"
-                echo "* $branch"
+                echo "* `$branch`"
             done
         else
             echo '* NONE'
@@ -61,7 +61,7 @@ rm -f Branch-Tracking-Report.md
         if [ ${#qa_branches_to_report[@]} -gt 0 ]; then
             for index in "${!qa_branches_to_report[@]}"; do
                 branch="${qa_branches_to_report[$index]}"
-                echo "* $branch"
+                echo "* `$branch`"
             done
         else
             echo '* NONE'
@@ -72,7 +72,7 @@ rm -f Branch-Tracking-Report.md
         if [ ${#uat_branches_to_report[@]} -gt 0 ]; then
             for index in "${!uat_branches_to_report[@]}"; do
                 branch="${uat_branches_to_report[$index]}"
-                echo "* $branch"
+                echo "* `$branch`"
             done
         else
             echo '* NONE'
@@ -88,8 +88,10 @@ rm -f Branch-Tracking-Report.md
 
                 for i in "${!branch_details[@]}"; do
                     if [[ $i == 0 ]]; then
-                        branch="${branch_details[$i]}"
-                    elif [[ $i == 1 ]]; then
+                        branch="`${branch_details[$i]}`"
+                    if [[ $i == 1 ]]; then
+                        sha="${branch_details[$i]}"
+                    elif [[ $i == 2 ]]; then
                         core_branch_details="${branch_details[$i]}"
                         if [[ "$core_branch_details" =~ "none" ]]; then
                             core_branches=""
@@ -98,7 +100,7 @@ rm -f Branch-Tracking-Report.md
                             for j in "${!branch_detail[@]}"; do
                                 core_branch="${branch_detail[$j]}"
                                 if [[ $j == 0 ]]; then
-                                    core_branches+="&rarr; $core_branch"
+                                    core_branches+="$core_branch"
                                 else
                                     core_branches+=", $core_branch"
                                 fi
@@ -109,7 +111,7 @@ rm -f Branch-Tracking-Report.md
                     fi
                 done
 
-                echo "* $branch$core_branches"
+                echo "* `$branch` [_[$sha](https://github.com/ASU/crm-salesforce-enterprise/commit/$sha)_] `$core_branches`"
             done
         else
             echo '* NONE'
@@ -127,7 +129,7 @@ if [ "$old_file_hash" != "$new_file_hash" ]; then
     git commit -m "Update Branch Tracking Report at $(date)"
     git push origin master
 
-    curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":newspaper: Updated Branch Tracking Report","emoji":true}},{"type":"section","text":{"type":"mrkdwn","text":"A new branch tracking report was posted to <https://github.com/ASU/crm-salesforce-enterprise/wiki/Branch-Tracking-Report|our repository wiki>."}},{"type":"section","text":{"type":"mrkdwn","text":"<!here|here>"}}]}' https://hooks.slack.com/services/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
+    curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":newspaper: Updated Branch Tracking Report","emoji":true}},{"type":"section","text":{"type":"mrkdwn","text":"A new branch tracking report was posted to <https://github.com/ASU/crm-salesforce-enterprise/wiki/Branch-Tracking-Report|our repository wiki>."}}]}' https://hooks.slack.com/services/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
 else
     echo '[[ NO CHANGES TO FILE ]]'
 fi

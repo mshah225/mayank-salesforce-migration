@@ -54,16 +54,16 @@ for remote in $(git branch -r); do
 			if [ $? -eq 0 ]; then
 				if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]] || [[ "$branch" == "wpc" ]]; then
 					git push origin $branch
-					mergeableCoreBranchArray+=("$branch [$sha]")
+					mergeableCoreBranchArray+=("$branch")
 					mergeableCoreBranchCount=$((mergeableCoreBranchCount + 1))
 				fi
 			else
 				git merge --abort
 				if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]] || [[ "$branch" == "wpc" ]]; then
-					conflictedCoreBranchArray+=("$branch [$sha]")
+					conflictedCoreBranchArray+=("$branch")
 					conflictedCoreBranchCount=$((conflictedCoreBranchCount + 1))
 				else
-					conflictedBranchArray+=("$branch [$sha]")
+					conflictedBranchArray+=("$branch")
 					conflictedBranchCount=$((conflictedBranchCount + 1))
 				fi
 			fi

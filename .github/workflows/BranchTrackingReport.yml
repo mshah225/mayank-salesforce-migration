@@ -1,0 +1,29 @@
+name: Branch Tracking Report
+
+on:
+    workflow_dispatch:
+    schedule:
+        - cron: '0 15 * * 1'
+
+jobs:
+    compile-branch-tracking-report:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Setup tracking information
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+            - run: |
+                  chmod +x branch_tracking_setup.sh
+                  ./branch_tracking_setup.sh
+              working-directory: ./.github/workflows/BranchTrackingReport
+            - name: Checkout repository wiki
+              uses: actions/checkout@v3
+              with:
+                  repository: '${{ github.repository }}.wiki'
+                  path: 'wiki'
+            - name: Update tracking report
+              run: |
+                  chmod +x branch_tracking_report.sh
+                  ./branch_tracking_report.sh
+              working-directory: ./.github/workflows/BranchTrackingReport

@@ -1,5 +1,5 @@
 set +e
-curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":sync: Syncing Feature Branches","emoji":true}},{"type":"section","text":{"type":"mrkdwn","text":"This was automatically triggered by a push to the primary branch or manually run by a repository administrator. Please *do not* make any changes to feature branches until this is complete, and then make sure to check the CONFLICTS section for any relevant branches that should be fixed. Last known HEAD commit SHAs are provided next to branch names within brackets."}},{"type":"section","text":{"type":"mrkdwn","text":"<!here|here>"}}]}' https://hooks.slack.com/services/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
+curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":sync: Evaluating Upstream Mergeability","emoji":true}},{"type":"section","text":{"type":"mrkdwn","text":"This was automatically triggered by a push to the primary branch or manually run by a repository administrator. Please *do not* make any changes to feature branches until this is complete, and then make sure to check the *CONFLICTS* section for any relevant branches that should be fixed. Last known HEAD commit SHAs are provided next to branch names within brackets."}},{"type":"section","text":{"type":"mrkdwn","text":"<!here|here>"}}]}' https://hooks.slack.com/services/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
 git config pull.rebase false && git config user.name "GitHub Actions" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com" && git fetch --prune &>/dev/null && git reset --hard origin/main &>/dev/null
 
 deletedBranchCount=0
@@ -33,8 +33,8 @@ for remote in $(git branch -r); do
 			continue
 		fi
 
-		# Reset sync and sync-pr branches back to the same state as main
-		if [[ "$branch" == "sync" ]] || [[ "$branch" == "sync-pr" ]]; then
+		# Reset sync and prod branches back to the same state as main
+		if [[ "$branch" == "sync" ]] || [[ "$branch" == "prod" ]]; then
 			git reset --hard origin/main
 			git push -f origin $branch
 			continue
@@ -77,7 +77,7 @@ blocks='{
 			"type": "header",
 			"text": {
 				"type": "plain_text",
-				"text": ":verified-badge: Feature Branch Sync Results",
+				"text": ":verified-badge: Branch Status Report",
 				"emoji": true
 			}
 		},

@@ -1,4 +1,4 @@
-name: Production Metadata Cleanup
+name: Metadata Auto Cleanup
 
 on:
     workflow_dispatch:
@@ -7,7 +7,7 @@ on:
             - main
 
 jobs:
-    production-metadata-cleanup:
+    metadata-auto-cleanup:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
@@ -100,9 +100,9 @@ jobs:
             - name: Create pull request
               uses: peter-evans/create-pull-request@v5
               with:
-                  commit-message: 'Metadata cleanup after deployment'
+                  commit-message: 'Automatic metadata cleanup after deployment'
                   title: 'GITHUB-ACTIONS[BOT]: METADATA CLEANUP'
                   body: 'Clean up, clean up, everybody everywhere. Clean up, clean up, everybody do your share.'
-                  reviewers: mgilardi, jdsanch8
+                  reviewers: mgilardi, jdsanch8, rnordmanASU
                   branch: cleanup
                   delete-branch: true

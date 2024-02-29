@@ -1,4 +1,4 @@
-name: Production Metadata Sync
+name: Metadata Auto Sync
 
 on:
     workflow_dispatch:
@@ -7,7 +7,7 @@ on:
             - sync
 
 jobs:
-    production-metadata-sync:
+    metadata-auto-sync:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
@@ -23,9 +23,9 @@ jobs:
             - name: Create pull request
               uses: peter-evans/create-pull-request@v5
               with:
-                  commit-message: 'Metadata sync from SF PROD to GitHub'
-                  title: 'GITHUB-ACTIONS[BOT]: PRODUCTION METADATA SYNC'
+                  commit-message: 'Automatic metadata sync from Enterprise Salesforce to GitHub'
+                  title: 'GITHUB-ACTIONS[BOT]: METADATA SYNC'
                   body: "Comparison is the fastest way to feel unhappy. Luckily, I'm not human, so I'm immune to your biological ailments."
-                  reviewers: mgilardi, jdsanch8
-                  branch: sync-pr
+                  reviewers: mgilardi, jdsanch8, rnordmanASU
+                  branch: prod
                   delete-branch: true

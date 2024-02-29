@@ -34,10 +34,10 @@ for ((i = 0; i < uat_branches_count; i++)); do
 done
 
 # Create a hash to compare to later (to see if we actually need to update the file)
-old_file_hash=$(md5sum Feature-Branch-Bulletin.md)
-rm -f Feature-Branch-Bulletin.md
+old_file_hash=$(md5sum Branch-Tracking-Report.md)
+rm -f Branch-Tracking-Report.md
 (
-    for i in $(find . -name 'Feature-Branch-Bulletin.md'); do
+    for i in $(find . -name 'Branch-Tracking-Report.md'); do
         filename=$(basename $i)
         filename=${filename/.md/}
         cat $i |
@@ -115,19 +115,19 @@ rm -f Feature-Branch-Bulletin.md
             echo '* NONE'
         fi
     done
-) >Feature-Branch-Bulletin.md
-new_file_hash=$(md5sum Feature-Branch-Bulletin.md)
+) >Branch-Tracking-Report.md
+new_file_hash=$(md5sum Branch-Tracking-Report.md)
 
 if [ "$old_file_hash" != "$new_file_hash" ]; then
     echo '[[ NEW CHANGES TO FILE ]]'
     git config pull.rebase false
     git config user.name "GitHub Actions"
     git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-    git add Feature-Branch-Bulletin.md
-    git commit -m "Update Feature Branch Bulletin at $(date)"
+    git add Branch-Tracking-Report.md
+    git commit -m "Update Branch Tracking Report at $(date)"
     git push origin master
 
-    curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":newspaper: Updated Feature Branch Bulletin","emoji":true}},{"type":"section","text":{"type":"mrkdwn","text":"A new Feature Branch Bulletin was posted to <https://github.com/ASU/crm-salesforce-enterprise/wiki/Feature-Branch-Bulletin|our repository wiki>."}},{"type":"section","text":{"type":"mrkdwn","text":"<!here|here>"}}]}' https://hooks.slack.com/services/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
+    curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":newspaper: Updated Branch Tracking Report","emoji":true}},{"type":"section","text":{"type":"mrkdwn","text":"A new branch tracking report was posted to <https://github.com/ASU/crm-salesforce-enterprise/wiki/Branch-Tracking-Report|our repository wiki>."}},{"type":"section","text":{"type":"mrkdwn","text":"<!here|here>"}}]}' https://hooks.slack.com/services/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
 else
     echo '[[ NO CHANGES TO FILE ]]'
 fi

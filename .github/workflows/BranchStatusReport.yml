@@ -1,0 +1,19 @@
+name: Branch Status Report
+
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - main
+
+jobs:
+    run-branch-status-report:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Run Branch Status Report
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+            - run: |
+                  chmod +x "${GITHUB_WORKSPACE}/.github/workflows/BranchStatusReport/branch_status_report.sh"
+                  "${GITHUB_WORKSPACE}/.github/workflows/BranchStatusReport/branch_status_report.sh"

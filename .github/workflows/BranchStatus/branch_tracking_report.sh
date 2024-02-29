@@ -50,10 +50,10 @@ rm -f Branch-Tracking-Report.md
         if [ ${#dev_branches_to_report[@]} -gt 0 ]; then
             for index in "${!dev_branches_to_report[@]}"; do
                 branch="${dev_branches_to_report[$index]}"
-                echo "* '\`$branch\`'"
+                echo "* \`$branch\`"
             done
         else
-            echo "* '\`NONE\`'"
+            echo "* \`NONE\`"
         fi
         echo '---'
 
@@ -61,10 +61,10 @@ rm -f Branch-Tracking-Report.md
         if [ ${#qa_branches_to_report[@]} -gt 0 ]; then
             for index in "${!qa_branches_to_report[@]}"; do
                 branch="${qa_branches_to_report[$index]}"
-                echo "* '\`$branch\`'"
+                echo "* \`$branch\`"
             done
         else
-            echo "* '\`NONE\`'"
+            echo "* \`NONE\`"
         fi
         echo '---'
 
@@ -72,31 +72,30 @@ rm -f Branch-Tracking-Report.md
         if [ ${#uat_branches_to_report[@]} -gt 0 ]; then
             for index in "${!uat_branches_to_report[@]}"; do
                 branch="${uat_branches_to_report[$index]}"
-                echo "* '\`$branch\`'"
+                echo "* \`$branch\`"
             done
         else
-            echo "* '\`NONE\`'"
+            echo "* \`NONE\`"
         fi
         echo '---'
 
         echo "### [Branches à la carte]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/branches)"
         if [ ${#all_branches_to_report[@]} -gt 0 ]; then
             for index in "${!all_branches_to_report[@]}"; do
-                core_branches=" "
+                core_branches=""
                 branch="${all_branches_to_report[$index]}"
                 sha="000000"
                 IFS=':' read -ra branch_details <<<"$branch"
 
                 for i in "${!branch_details[@]}"; do
                     if [[ $i == 0 ]]; then
-                        branch="${branch_details[$i]}"
+                        branch="\`${branch_details[$i]}\`"
                     elif [[ $i == 1 ]]; then
-                        sha="${branch_details[$i]}"
+                        sha="[${branch_details[$i]}]"
+                        sha=" [[$sha](https://github.com/ASU/crm-salesforce-enterprise/commit/$sha)]"
                     elif [[ $i == 2 ]]; then
                         core_branch_details="${branch_details[$i]}"
-                        if [[ "$core_branch_details" =~ "none" ]]; then
-                            core_branches=""
-                        elif [[ "$core_branch_details" =~ "," ]]; then
+                        if [[ "$core_branch_details" =~ "," ]]; then
                             IFS=',' read -ra branch_detail <<<"$core_branch_details"
                             for j in "${!branch_detail[@]}"; do
                                 core_branch="${branch_detail[$j]}"
@@ -106,16 +105,17 @@ rm -f Branch-Tracking-Report.md
                                     core_branches+=", $core_branch"
                                 fi
                             done
+                            core_branches=" \`$core_branches\`"
                         else
-                            core_branches+="$core_branch_details"
+                            core_branches=" \`$core_branch_details\`"
                         fi
                     fi
                 done
 
-                echo "* '\`$branch\`' [_[$sha](https://github.com/ASU/crm-salesforce-enterprise/commit/$sha)_] '\`$core_branches\`'"
+                echo "* $branch$sha$core_branches"
             done
         else
-            echo "* '\`NONE\`'"
+            echo "* \`NONE\`"
         fi
     done
 ) >Branch-Tracking-Report.md

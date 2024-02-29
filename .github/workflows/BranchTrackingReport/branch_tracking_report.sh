@@ -84,12 +84,13 @@ rm -f Branch-Tracking-Report.md
             for index in "${!all_branches_to_report[@]}"; do
                 core_branches=" "
                 branch="${all_branches_to_report[$index]}"
+                sha="000000"
                 IFS=':' read -ra branch_details <<<"$branch"
 
                 for i in "${!branch_details[@]}"; do
                     if [[ $i == 0 ]]; then
                         branch="${branch_details[$i]}"
-                    if [[ $i == 1 ]]; then
+                    elif [[ $i == 1 ]]; then
                         sha="${branch_details[$i]}"
                     elif [[ $i == 2 ]]; then
                         core_branch_details="${branch_details[$i]}"
@@ -106,7 +107,7 @@ rm -f Branch-Tracking-Report.md
                                 fi
                             done
                         else
-                            core_branches+="&rarr; $core_branch_details"
+                            core_branches+="$core_branch_details"
                         fi
                     fi
                 done

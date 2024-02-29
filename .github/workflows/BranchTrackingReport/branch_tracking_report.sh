@@ -50,10 +50,10 @@ rm -f Branch-Tracking-Report.md
         if [ ${#dev_branches_to_report[@]} -gt 0 ]; then
             for index in "${!dev_branches_to_report[@]}"; do
                 branch="${dev_branches_to_report[$index]}"
-                echo "* `$branch`"
+                echo "* '\`$branch\`'"
             done
         else
-            echo '* NONE'
+            echo "* '\`NONE\`'"
         fi
         echo '---'
 
@@ -61,10 +61,10 @@ rm -f Branch-Tracking-Report.md
         if [ ${#qa_branches_to_report[@]} -gt 0 ]; then
             for index in "${!qa_branches_to_report[@]}"; do
                 branch="${qa_branches_to_report[$index]}"
-                echo "* `$branch`"
+                echo "* '\`$branch\`'"
             done
         else
-            echo '* NONE'
+            echo "* '\`NONE\`'"
         fi
         echo '---'
 
@@ -72,10 +72,10 @@ rm -f Branch-Tracking-Report.md
         if [ ${#uat_branches_to_report[@]} -gt 0 ]; then
             for index in "${!uat_branches_to_report[@]}"; do
                 branch="${uat_branches_to_report[$index]}"
-                echo "* `$branch`"
+                echo "* '\`$branch\`'"
             done
         else
-            echo '* NONE'
+            echo "* '\`NONE\`'"
         fi
         echo '---'
 
@@ -88,7 +88,7 @@ rm -f Branch-Tracking-Report.md
 
                 for i in "${!branch_details[@]}"; do
                     if [[ $i == 0 ]]; then
-                        branch="`${branch_details[$i]}`"
+                        branch="'\`${branch_details[$i]}\`'"
                     if [[ $i == 1 ]]; then
                         sha="${branch_details[$i]}"
                     elif [[ $i == 2 ]]; then
@@ -111,10 +111,10 @@ rm -f Branch-Tracking-Report.md
                     fi
                 done
 
-                echo "* `$branch` [_[$sha](https://github.com/ASU/crm-salesforce-enterprise/commit/$sha)_] `$core_branches`"
+                echo "* '\`$branch\`' [_[$sha](https://github.com/ASU/crm-salesforce-enterprise/commit/$sha)_] '\`$core_branches\`'"
             done
         else
-            echo '* NONE'
+            echo "* '\`NONE\`'"
         fi
     done
 ) >Branch-Tracking-Report.md

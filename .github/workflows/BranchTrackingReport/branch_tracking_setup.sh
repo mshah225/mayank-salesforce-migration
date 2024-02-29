@@ -26,7 +26,6 @@ for remote in $(git branch -r); do
     if [[ "$remote" != "origin/HEAD" ]] && [[ "$remote" != "->" ]] && [[ "$remote" != "origin/main" ]]; then
         branch="${remote#origin/}"
         sha=$(git rev-parse --short origin/$branch)
-        branch="$branch:$sha"
 
         git branch -v
 
@@ -59,7 +58,7 @@ for remote in $(git branch -r); do
             # Determine if the source branch is completely unmerged into dev, qa & uat
             # If there is a valid merge, keep track of which branches have been merged into the core branches at a higher level
             if [[ $is_merged_into_dev == "false" ]] && [[ $is_merged_into_qa == "false" ]] && [[ $is_merged_into_uat == "false" ]]; then
-                all_branches+=("$branch:none")
+                all_branches+=("$branch:$sha:none")
             else
                 merged_branches=()
                 merged_branches_string=""
@@ -82,7 +81,7 @@ for remote in $(git branch -r); do
                     delimiter=","
                 done
 
-                all_branches+=("$branch:$merged_branches_string")
+                all_branches+=("$branch:$sha:$merged_branches_string")
             fi
 
         fi
@@ -91,7 +90,7 @@ for remote in $(git branch -r); do
 done
 
 # FOR TESTING
-# all_branches=('SFE-00000:dev,qa' 'SFE-00001:dev' 'SFE-00002:dev,qa' 'SFE-00003:dev,uat' 'SFE-00004:dev,uat')
+# all_branches=('SFE-00000:224571d:dev,qa' 'SFE-00001:224571d:dev' 'SFE-00002:224571d:dev,qa' 'SFE-00003:224571d:dev,uat' 'SFE-00004:224571d:dev,uat')
 # dev_branches=('SFE-00000' 'SFE-00001' 'SFE-00002' 'SFE-00003' 'SFE-00004')
 # qa_branches=('SFE-00000' 'SFE-00002')
 # uat_branches=('SFE-00003' 'SFE-00004')

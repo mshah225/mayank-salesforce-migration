@@ -88,7 +88,7 @@ rm -f Branch-Tracking-Report.md
 
                 for i in "${!branch_details[@]}"; do
                     if [[ $i == 0 ]]; then
-                        branch="'\`${branch_details[$i]}\`'"
+                        branch="${branch_details[$i]}"
                     if [[ $i == 1 ]]; then
                         sha="${branch_details[$i]}"
                     elif [[ $i == 2 ]]; then

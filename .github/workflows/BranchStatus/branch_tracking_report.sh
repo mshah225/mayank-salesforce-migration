@@ -91,11 +91,13 @@ rm -f Branch-Tracking-Report.md
                     if [[ $i == 0 ]]; then
                         branch="\`${branch_details[$i]}\`"
                     elif [[ $i == 1 ]]; then
-                        sha="[${branch_details[$i]}]"
+                        sha="${branch_details[$i]}"
                         sha=" [[$sha](https://github.com/ASU/crm-salesforce-enterprise/commit/$sha)]"
                     elif [[ $i == 2 ]]; then
                         core_branch_details="${branch_details[$i]}"
-                        if [[ "$core_branch_details" =~ "," ]]; then
+                        if [[ "$core_branch_details" =~ "none" ]]; then
+                            core_branches=""
+                        elif [[ "$core_branch_details" =~ "," ]]; then
                             IFS=',' read -ra branch_detail <<<"$core_branch_details"
                             for j in "${!branch_detail[@]}"; do
                                 core_branch="${branch_detail[$j]}"

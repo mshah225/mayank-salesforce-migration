@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Campaign_Member_Upsert_ID__c</fullName>
+    <caseSensitive>false</caseSensitive>
+    <externalId>true</externalId>
+    <inlineHelpText>Set to the &lt;&lt;CampaignID&gt;&gt;.&lt;&lt;ContactID OR LeadID&gt;&gt;</inlineHelpText>
+    <label>Campaign Member Upsert ID</label>
+    <length>31</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

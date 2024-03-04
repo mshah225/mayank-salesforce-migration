@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Inbound_Interaction_Term__c</fullName>
+    <externalId>false</externalId>
+    <inlineHelpText>The Term of the associated Opportunity, at the time this Campaign member was first considered an Inbound Interaction. Set via Workflow.</inlineHelpText>
+    <label>Inbound Interaction Term</label>
+    <length>15</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

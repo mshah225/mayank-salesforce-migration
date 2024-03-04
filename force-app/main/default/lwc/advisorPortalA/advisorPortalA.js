@@ -11,8 +11,6 @@ import getCaseClassificationPicklistValues from '@salesforce/apex/AdvisorPortalF
 import getAcademicProgramPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicProgramPicklistValues';
 import getSchoolDepartmentPicklistVaues from '@salesforce/apex/AdvisorPortalFilterSectionController.getSchoolDepartmentPicklistVaues';
 import getAcademicPlanPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicPlanPicklistValues';
-import {loadScript} from 'lightning/platformResourceLoader';
-import integration_v54_js from '@salesforce/resourceUrl/integration_v54_js';
 import {buildPicklistOptionsArray, falseWireRun} from 'c/helperFunctions';
 import LightningCaseTransferModal from 'c/lightningCaseTransferModal';
 import AdvisorPortalModalMassEmail from 'c/advisorPortalModalMassEmail';
@@ -164,17 +162,8 @@ export default class AdvisorPortalA extends LightningElement {
     connectedCallback() {
         this.loadMore(); // loadMore for retrieving allowed to use mass transfer
         this.loadMore(); // loadMore for retrieving default filter
-
-        loadScript(this, integration_v54_js)
-            .then(() => {
-                // eslint-disable-next-line no-undef
-                this.sforce = getSforce();
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-
         this.loadMore(); // for any picklist options that don't depend on anything
+
         Promise.all([
             this.refreshResidencyPicklistValues(),
             this.refreshCaseStatusSettings(),
@@ -390,36 +379,19 @@ export default class AdvisorPortalA extends LightningElement {
         const detail = e.detail;
 
         const location = detail.location;
-        let contactId, contactName, caseId, caseNumber, profileURL;
 
         switch (location) {
             case 'viewcase':
-                contactId = detail.params.contactId;
-                contactName = detail.params.contactName;
-                caseId = detail.params.caseId;
-                caseNumber = detail.params.caseNumber;
-                this.openPrimaryAndSubTab(
-                    contactId,
-                    contactName,
-                    '/' + contactId,
-                    caseId,
-                    caseNumber,
-                    '/' + caseId,
-                    false
-                );
-                break;
             case 'studentprofile':
-                contactId = detail.params.contactId;
-                contactName = detail.params.contactName;
-                profileURL = '/apex/StudentProfile?contactId=' + contactId;
-                this.openPrimaryAndSubTab(
-                    contactId,
-                    contactName,
-                    '/' + contactId,
-                    profileURL,
-                    contactName + "'s Profile",
-                    profileURL,
-                    false
+                // Raise these events to VF event handler (since wrapper layers prevent direct usage of workspace api)
+                // And we need the layering to support Advisor Portal in SF classic
+                this.dispatchEvent(
+                    new CustomEvent('navigate', {
+                        detail: {
+                            location: location,
+                            params: detail.params,
+                        },
+                    })
                 );
                 break;
             case '%reload%':
@@ -429,70 +401,6 @@ export default class AdvisorPortalA extends LightningElement {
                 // eslint-disable-next-line no-console
                 console.error('navagation location unsupported', event);
                 break;
-        }
-    }
-    openPrimaryAndSubTab(primaryTabId, primaryTabName, primaryTabURL, subTabId, subTabName, subTabURL, openPrimary) {
-        if (this.sforce.console.isInConsole()) {
-            this.sforce.console.focusPrimaryTabByName(primaryTabId, (focusPrimaryTabResponse) => {
-                if (!focusPrimaryTabResponse.success) {
-                    this.sforce.console.openPrimaryTab(
-                        null,
-                        primaryTabURL,
-                        true,
-                        primaryTabName,
-                        (openPrimaryTabResponse) => {
-                            this.sforce.console.openSubtab(
-                                openPrimaryTabResponse.id,
-                                subTabURL,
-                                true,
-                                subTabName,
-                                null,
-                                (openSubTabResponse) => {
-                                    if (!openSubTabResponse.success) {
-                                        this.sforce.console.focusSubTabByNameAndPrimaryTabId(
-                                            subTabId,
-                                            openSubTabResponse.id
-                                        );
-                                    }
-                                },
-                                subTabId
-                            );
-                        },
-                        primaryTabId
-                    );
-                } else {
-                    this.sforce.console.getFocusedPrimaryTabId((primaryFocusResponse) => {
-                        this.sforce.console.focusSubtabByNameAndPrimaryTabId(
-                            subTabId,
-                            primaryFocusResponse.id,
-                            (focusSubTabResponse) => {
-                                if (!focusSubTabResponse.success) {
-                                    this.sforce.console.openSubtab(
-                                        primaryFocusResponse.id,
-                                        subTabURL,
-                                        true,
-                                        subTabName,
-                                        null,
-                                        (openSubTabResponse) => {
-                                            if (!openSubTabResponse.success) {
-                                                this.sforce.console.focusSubTabByNameAndPrimaryTabId(
-                                                    subTabId,
-                                                    openSubTabResponse.id
-                                                );
-                                            }
-                                        },
-                                        subTabId
-                                    );
-                                }
-                            }
-                        );
-                    });
-                }
-            });
-        } else if (!openPrimary) {
-            window.open(subTabURL, '_blank');
-        } else {
-            window.open(primaryTabURL, '_blank');
         }
     }
 

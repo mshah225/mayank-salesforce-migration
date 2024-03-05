@@ -1,0 +1,457 @@
+<template>
+    <lightning-modal-header label="Walk-In Form"></lightning-modal-header>
+
+    <lightning-modal-body>
+        <template lwc:if={pageOne}>
+            <template lwc:if={invalidParameters}>
+                <div style="padding: 0.5rem; background: #e00606; border-radius: 10px; margin-bottom: 15px">
+                    <div class="slds-text-color_inverse">
+                        <p>
+                            Please check the required fields and try again.
+                        </p>
+                    </div>
+                </div>
+            </template>
+            <div style="padding: 0.5rem; background: #16325c; border-radius: 10px">
+                <div class="slds-text-color_inverse">
+                    Please enter either an ASURITE ID OR First Name, Last Name and any number of the following: Email, Phone,
+                    Zip Code or Date of Birth
+                </div>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-input
+                    type="text"
+                    label="ASURITE"
+                    value={contactRecord.ASURite_ID__c}
+                    onchange={handleAsuriteChange}
+                >
+                </lightning-input>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-input
+                    type="text"
+                    label="First Name"
+                    value={contactRecord.FirstName}
+                    onchange={handleFirstNameChange}
+                >
+                </lightning-input>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-input
+                    type="text"
+                    label="Last Name"
+                    value={contactRecord.LastName}
+                    onchange={handleLastNameChange}
+                >
+                </lightning-input>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-input
+                    type="text"
+                    label="Phone Number"
+                    value={contactRecord.Phone}
+                    onchange={handlePhoneChange}
+                >
+                </lightning-input>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-input
+                    type="text"
+                    label="Zip Code"
+                    value={contactRecord.zipCode}
+                    onchange={handleZipCodeChange}
+                >
+                </lightning-input>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-input
+                    type="text"
+                    label="Email Address"
+                    value={contactRecord.Email}
+                    onchange={handleEmailChange}
+                >
+                </lightning-input>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-input
+                    type="date"
+                    label="Date of Birth"
+                    value={contactRecord.Birthdate}
+                    onchange={handleDateOfBirthChange}
+                >
+                </lightning-input>
+            </div>
+        </template>
+        <template lwc:elseif={pageTwo}>
+            <template lwc:if={multipleConData}>
+                <div class="slds-text-align_center slds-text-heading_medium slds-m-bottom_small">
+                    One or more contact(s) have been found, please select one below:
+                </div>
+                <lightning-datatable
+                    key-field="id"
+                    data={multipleConData}
+                    columns={conColumns}
+                    max-row-selection="1"
+                    onrowselection={handleContactRowSelection}
+                ></lightning-datatable>
+            </template>
+            <template lwc:elseif={contactRecord.Id}>
+                <div class="slds-text-align_center slds-text-heading_medium slds-m-bottom_small">
+                    Contact Record found for: {contactRecord.FirstName} {contactRecord.LastName}
+                </div>
+
+                <template lwc:if={noOpportunityResults}>
+                    <div class="slds-text-align_center slds-text-heading_medium">
+                        No Opportunity records found for this contact. Please click next to continue.
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div class="slds-text-align_center slds-text-heading_medium">
+                        You may select an existing Opportunity below or click next without selecting one to create a new
+                        Opportunity.
+                    </div>
+                </template>
+                <div class="slds-clearfix">
+                    <lightning-button-icon
+                        icon-name="utility:refresh"
+                        class="slds-p-bottom_small slds-float_right"
+                        size="medium"
+                        onclick={refreshTable}
+                    ></lightning-button-icon>
+                </div>
+                <lightning-datatable
+                    key-field="id"
+                    data={oppData}
+                    columns={oppColumns}
+                    max-row-selection="1"
+                    onrowselection={handleRowSelection}
+                ></lightning-datatable>
+            </template>            
+        </template>
+        <template lwc:elseif={pageThree}>
+            <template lwc:if={submissionError}>
+                <div style="padding: 0.5rem; margin-bottom: 15px; background: #16325c; border-radius: 10px">
+                    <div class="slds-text-color_inverse slds-text-heading_small">{submissionError}</div>
+                </div>
+                <div style="padding: 0.5rem; background: #16325c; border-radius: 10px">
+                    <div class="slds-text-color_inverse slds-text-heading_small">
+                        Please check the details in the fields below and try again. If you continue experience
+                        difficulties, please reach out to salesforce.support@asu.edu
+                    </div>
+                </div>
+            </template>
+            <template lwc:if={invalidSubmissionParameters}>
+                <div style="padding: 0.5rem; margin-bottom: 15px; background: #16325c; border-radius: 10px">
+                    <div class="slds-text-color_inverse slds-text-heading_small">
+                        <p>The following records need to be completed:</p>
+                        <ul class="slds-m-around_medium">
+                            <template for:each={missingFields} for:item="missingField">
+                                <li key={missingField}>{missingField}</li>
+                            </template>
+                        </ul>
+                    </div>
+                </div>
+                <div style="padding: 0.5rem; background: #16325c; border-radius: 10px">
+                    <div class="slds-text-color_inverse slds-text-heading_small">
+                        <p>
+                            Please check the details in the fields below and try again. If you continue experience
+                            difficulties, please reach out to salesforce.support@asu.edu
+                        </p>
+                    </div>
+                </div>
+            </template>
+            <template lwc:elseif={noContactResults}>
+                <div style="padding: 0.5rem; background: #16325c; border-radius: 10px">
+                    <div class="slds-text-color_inverse slds-text-heading_small">
+                        <p>
+                            No existing contact record found. Please either go back and edit the details or completing this form will create a new contact.
+                        </p>
+                    </div>
+                </div>
+            </template>
+            <lightning-card title="Campaign Information">
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input type="text" read-only="true" label="Campaign Name" value={campaignRecord.Name}>
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input
+                            type="text"
+                            read-only="true"
+                            label="Status"
+                            value={campaignMemberRecord.Status}
+                        >
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input
+                            type="text"
+                            read-only="true"
+                            label="Event Start Date"
+                            value={campaignRecord.Event_Start_Date__c}
+                        >
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input
+                            type="text"
+                            read-only="true"
+                            label="Event Start Time"
+                            value={campaignRecord.Event_Start_Time__c}
+                        >
+                        </lightning-input>
+                    </div>
+                </div>
+            </lightning-card>
+
+            <lightning-card title="Member Information">
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input
+                            type="text"
+                            label="First Name"
+                            value={contactRecord.FirstName}
+                            onchange={handleFirstNameChange}
+                            style="max-width: 95%"
+                            required
+                            
+                        >
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input
+                            type="text"
+                            label="Last Name"
+                            value={contactRecord.LastName}
+                            onchange={handleLastNameChange}
+                            required
+                        >
+                        </lightning-input>
+                    </div>                    
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input
+                            type="text"
+                            label="Email"
+                            value={contactRecord.Email}
+                            onchange={handleEmailChange}
+                            style="max-width: 95%"
+                            required
+                        >
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input
+                            type="text"
+                            label="Phone Number"
+                            value={contactRecord.Phone}
+                            onchange={handlePhoneChange}
+                        >
+                        </lightning-input>
+                    </div>                    
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input
+                            type="date"
+                            label="Date of Birth"
+                            value={contactRecord.Birthdate}
+                            onchange={handleDateOfBirthChange}
+                            style="max-width: 95%"
+                        >
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input
+                            type="text"
+                            label="Badge Name"
+                            value={campaignMemberRecord.Badge_Name__c}
+                            onchange={handleBadgeNameChange}
+                        >
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-combobox
+                            name="Career"
+                            label="Career"
+                            placeholder="Choose Career"
+                            value={opportunityRecord.Career__c}
+                            onchange={handleCareerChange}
+                            options={careerOptions}
+                            style="max-width: 95%"
+                            required
+                        >
+                        </lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-record-picker
+                            label="Opportunity Term"
+                            placeholder="Search Terms..."
+                            object-api-name="Term__c"
+                            value={opportunityRecord.Term__c}
+                            onchange={handleTermChange}
+                            required
+                        >
+                        </lightning-record-picker>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <template lwc:if={isUndergrad}>
+                            <lightning-combobox
+                            name="Opportunity Type"
+                            label="Opportunity Type"
+                            placeholder="Choose an Opportunity Type"
+                            value={opportunityRecord.Type}
+                            onchange={handleTypeChange}
+                            options={opportunityUndergradTypeOptions}
+                            style="max-width: 95%"
+                            required>
+                            </lightning-combobox>
+                        </template>
+                        <template lwc:else>
+                            <lightning-combobox
+                            name="Opportunity Type"
+                            label="Opportunity Type"
+                            placeholder="Choose an Opportunity Type"
+                            value={opportunityRecord.Type}
+                            onchange={handleTypeChange}
+                            options={opportunityGradTypeOptions}
+                            style="max-width: 95%"
+                            required>
+                            </lightning-combobox>
+                        </template>                        
+                    </div>        
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-record-picker
+                            label="Country Of Citzenship"
+                            placeholder="Search Countries..."
+                            object-api-name="Country__c"
+                            value={contactRecord.Country_of_Citizenship__c}
+                            onchange={handleCountryChange}
+                        >
+                        </lightning-record-picker>
+                    </div>          
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input
+                            type="checkbox"
+                            variant="label-stacked"
+                            label="International Student"
+                            value={opportunityRecord.International_Student__c}
+                            onchange={handleIntStudentChange}
+                        >
+                        </lightning-input>               
+                    </div>                             
+                    <div class="slds-col slds-size_2-of-2" style="margin-top: 10px">
+                        <template lwc:if={contactRecordId}>
+                            <lightning-record-edit-form object-api-name="Contact" record-id={contactRecordId}>
+                                <lightning-input-field
+                                    field-name="MailingAddress"
+                                    onchange={handleMailingAddressChange}
+                                ></lightning-input-field>
+                            </lightning-record-edit-form>
+                        </template>
+                        <template lwc:else>
+                            <lightning-record-edit-form object-api-name="Contact">
+                                <lightning-input-field
+                                    field-name="MailingAddress"
+                                    onchange={handleMailingAddressChange}
+                                ></lightning-input-field>
+                            </lightning-record-edit-form>
+                        </template>
+                    </div>
+                </div>
+            </lightning-card>
+
+            <lightning-card title="Event Information">
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input
+                            type="text"
+                            label="Number of Guests"
+                            value={campaignMemberRecord.Number_of_Guests__c}
+                            onchange={handleNumOfGuestsChange}
+                            style="max-width: 95%"
+                            required
+                        >
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-record-edit-form object-api-name="CampaignMember">
+                            <lightning-input-field
+                                field-name="Academic_Session__c"
+                                onchange={handleAcaSessionChange}
+                                style="max-width: 95%"
+                            ></lightning-input-field>
+                        </lightning-record-edit-form>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input
+                            type="text"
+                            label="Comments"
+                            value={campaignMemberRecord.Comments__c}
+                            onchange={handleCommentsChange}
+                            style="max-width: 95%"
+                        >
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4">
+                        <lightning-input
+                            type="Checkbox"
+                            variant="label-stacked"
+                            label="Barett Session"
+                            value={campaignMemberRecord.Barrett_Session__c}
+                            onchange={handleBarrettChange}
+                        >
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4">
+                        <lightning-input
+                            type="Checkbox"
+                            variant="label-stacked"
+                            label="Housing Tour"
+                            value={campaignMemberRecord.Housing_Tour__c}
+                            onchange={handleHousingTourChange}
+                        >
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input
+                            type="text"
+                            label="Additional Tour Information"
+                            value={campaignMemberRecord.Additional_Tour_Information__c}
+                            onchange={handleAddTourInfoChange}
+                            style="max-width: 95%"
+                        >
+                        </lightning-input>
+                    </div>
+                </div>
+            </lightning-card>
+        </template>
+    </lightning-modal-body>
+
+    <lightning-modal-footer>
+        <template lwc:if={pageOne}>
+            <lightning-button label="Next" onclick={goToPageTwo}></lightning-button>
+        </template>
+        <template lwc:elseif={pageTwo}>
+            <lightning-button style="margin-right: 10px" label="Go Back" onclick={goToPageOne}></lightning-button>
+            <lightning-button label="Next" onclick={goToPageThree}></lightning-button>
+        </template>
+        <template lwc:else>
+            <lightning-button
+                style="margin-right: 10px"
+                label="Go Back"
+                onclick={goBackFromPageThree}
+            ></lightning-button>
+
+            <template lwc:if={loading}>
+                <span class="slds-icon-typing slds-is-animated" title="Loading">
+                    <span class="slds-icon-typing__dot"></span>
+                    <span class="slds-icon-typing__dot"></span>
+                    <span class="slds-icon-typing__dot"></span>
+                    <span class="slds-assistive-text">Loading</span>
+                </span>
+            </template>
+            <template lwc:else>
+                <lightning-button label="Submit" onclick={handleSave}></lightning-button>
+            </template>
+        </template>
+    </lightning-modal-footer>
+</template>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Academic_Session__c</fullName>
+    <businessOwnerGroup>Data_Owner_Admission_Services</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>This field describes campus tour check in process by monitoring the academic sessions students wish to join.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Supports the campus tour check-in by tracking the academic session the student plans to attend based on student’s program of interest.</inlineHelpText>
+    <label>Academic Session</label>
+    <lookupFilter>
+        <active>true</active>
+        <filterItems>
+            <field>Program__c.Program_Status__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </filterItems>
+        <filterItems>
+            <field>Program__c.Career__c</field>
+            <operation>equals</operation>
+            <value>Undergraduate</value>
+        </filterItems>
+        <isOptional>false</isOptional>
+    </lookupFilter>
+    <referenceTo>Program__c</referenceTo>
+    <relationshipLabel>Campaign Members</relationshipLabel>
+    <relationshipName>Campaign_Members</relationshipName>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <type>Lookup</type>
+</CustomField>

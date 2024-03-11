@@ -1,0 +1,74 @@
+<apex:component>
+    <apex:includeScript value="/support/console/60.0/integration.js" />
+    <script>
+        function focusPrimaryTabById(id) {
+            return new Promise((resolve, reject) => {
+                try {
+                    sforce.console.focusPrimaryTabById(id, resolve);
+                } catch (err) {
+                    reject(err);
+                }
+            });
+        }
+
+        function focusSubtabById(id) {
+            return new Promise((resolve, reject) => {
+                try {
+                    sforce.console.focusSubtabById(id, resolve);
+                } catch (err) {
+                    reject(err);
+                }
+            });
+        }
+
+        function getPageInfo(id) {
+            return new Promise((resolve, reject) => {
+                try {
+                    sforce.console.getPageInfo(id, resolve);
+                } catch (err) {
+                    reject(err);
+                }
+            });
+        }
+
+        function getPrimaryTabIds() {
+            return new Promise((resolve, reject) => {
+                try {
+                    sforce.console.getPrimaryTabIds(resolve);
+                } catch (err) {
+                    reject(err);
+                }
+            });
+        }
+
+        function getSubtabIds(primaryTabId) {
+            return new Promise((resolve, reject) => {
+                try {
+                    sforce.console.getSubtabIds(primaryTabId, resolve);
+                } catch (err) {
+                    reject(err);
+                }
+            });
+        }
+
+        function openPrimaryTab(id, url, active, tabLabel) {
+            return new Promise((resolve, reject) => {
+                try {
+                    sforce.console.openPrimaryTab(id, url, active, tabLabel, resolve);
+                } catch (err) {
+                    reject(err);
+                }
+            });
+        }
+
+        function openSubtab(primaryTabId, url, active, tabLabel, id) {
+            return new Promise((resolve, reject) => {
+                try {
+                    sforce.console.openSubtab(primaryTabId, url, active, tabLabel, id, resolve);
+                } catch (err) {
+                    reject(err);
+                }
+            });
+        }
+    </script>
+</apex:component>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>edX_Enrollment_Date__c</fullName>
+    <description>edX Enrollment Date</description>
+    <externalId>false</externalId>
+    <inlineHelpText>edX Enrollment Date</inlineHelpText>
+    <label>edX Campaign Member Enrollment Date</label>
+    <required>false</required>
+    <type>Date</type>
+</CustomField>

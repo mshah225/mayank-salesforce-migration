@@ -1,12 +1,24 @@
-name: Branch Tracking Report
+name: Branch Status
 
 on:
     workflow_dispatch:
-    schedule:
-        - cron: '0 15 * * 1'
+    push:
+        branches:
+            - main
 
 jobs:
+    run-branch-status-report:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Run Branch Status Report
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+            - run: |
+                  chmod +x "${GITHUB_WORKSPACE}/.github/workflows/BranchStatus/branch_status_report.sh"
+                  "${GITHUB_WORKSPACE}/.github/workflows/BranchStatus/branch_status_report.sh"
     compile-branch-tracking-report:
+        needs: run-branch-status-report
         runs-on: ubuntu-latest
         steps:
             - name: Setup tracking information
@@ -16,7 +28,7 @@ jobs:
             - run: |
                   chmod +x branch_tracking_setup.sh
                   ./branch_tracking_setup.sh
-              working-directory: ./.github/workflows/BranchTrackingReport
+              working-directory: ./.github/workflows/BranchStatus
             - name: Checkout repository wiki
               uses: actions/checkout@v3
               with:
@@ -26,4 +38,4 @@ jobs:
               run: |
                   chmod +x branch_tracking_report.sh
                   ./branch_tracking_report.sh
-              working-directory: ./.github/workflows/BranchTrackingReport
+              working-directory: ./.github/workflows/BranchStatus

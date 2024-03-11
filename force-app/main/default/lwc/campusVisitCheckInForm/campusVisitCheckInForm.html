@@ -1,0 +1,295 @@
+<template>
+    <lightning-modal-header label="Check-In Form"></lightning-modal-header>
+
+    <lightning-modal-body>
+        <template lwc:if={campMem}>
+            <lightning-card title="Campaign Information">
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-2">
+                        <template lwc:if={campMem}>
+                            <template lwc:if={campMem.Campaign}>
+                                <lightning-input
+                                    type="text"
+                                    read-only="true"
+                                    label="Campaign Name"
+                                    value={campMem.Campaign.Name}
+                                >
+                                </lightning-input>
+                            </template>
+                        </template>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <template lwc:if={campMem}>
+                            <lightning-combobox
+                                label="Status"
+                                options={memberStatusPicklistValues}
+                                value="Registered - Attended"
+                                onchange={handleStatusChange}
+                            ></lightning-combobox>
+                        </template>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <template lwc:if={campMem}>
+                            <template lwc:if={campMem.Campaign}>
+                                <lightning-input
+                                    type="text"
+                                    read-only="true"
+                                    label="Event Start Date"
+                                    value={campaignDate}
+                                >
+                                </lightning-input>
+                            </template>
+                        </template>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <template lwc:if={campMem}>
+                            <template lwc:if={campMem.Campaign}>
+                                <lightning-input
+                                    type="text"
+                                    read-only="true"
+                                    label="Event Start Time"
+                                    value={campMem.Campaign.Event_Start_Time__c}
+                                >
+                                </lightning-input>
+                            </template>
+                        </template>
+                    </div>
+                </div>
+            </lightning-card>
+
+            <lightning-card title="Applied Student Information">
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-2">
+                        <template lwc:if={campMem}>
+                            <lightning-input type="text" read-only="true" label="Name" value={campMem.Name}>
+                            </lightning-input>
+                        </template>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input
+                            type="text"
+                            label="Badge Name"
+                            value={campMem.Badge_Name__c}
+                            onchange={handleBadgeNameChange}
+                        >
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <template lwc:if={campMem.Contact}>
+                            <lightning-input
+                                type="text"
+                                read-only="true"
+                                label="Mailing State"
+                                value={campMem.Contact.MailingState}
+                            >
+                            </lightning-input>
+                        </template>
+                        <template lwc:else>
+                            <lightning-input type="text" read-only="true" label="Mailing State" value="--">
+                            </lightning-input>
+                        </template>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <template lwc:if={campMem.Opportunity__r}>
+                            <lightning-input
+                                type="text"
+                                read-only="true"
+                                label="Career"
+                                value={campMem.Opportunity__r.Career__c}
+                            >
+                            </lightning-input>
+                        </template>
+                        <template lwc:else>
+                            <lightning-input type="text" read-only="true" label="Career" value="--"> </lightning-input>
+                        </template>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <template lwc:if={campMem.Opportunity__r}>
+                            <lightning-input
+                                type="text"
+                                read-only="true"
+                                label="Type"
+                                value={campMem.Opportunity__r.Type}
+                            >
+                            </lightning-input>
+                        </template>
+                        <template lwc:else>
+                            <lightning-input type="text" read-only="true" label="Type" value="--"> </lightning-input>
+                        </template>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <template lwc:if={campMem.Opportunity__r}>
+                            <lightning-input
+                                type="text"
+                                read-only="true"
+                                label="Stage"
+                                value={campMem.Opportunity__r.StageName}
+                            >
+                            </lightning-input>
+                        </template>
+                        <template lwc:else>
+                            <lightning-input type="text" read-only="true" label="Stage" value="--"> </lightning-input>
+                        </template>
+                    </div>
+                </div>
+            </lightning-card>
+
+            <lightning-card title="Event Attendee Information">
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input
+                            type="text"
+                            style="max-width: 95%"
+                            label="Number of Guests"
+                            value={campMem.Number_of_Guests__c}
+                            onchange={handleGuestsChange}
+                        >
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input
+                            type="text"
+                            read-only="true"
+                            label="Number of Attendees"
+                            value={campMem.Number_of_Attendees__c}
+                        >
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input
+                            type="text"
+                            style="max-width: 95%"
+                            label="Comments"
+                            value={campMem.Comments__c}
+                            onchange={handleCommentsChange}
+                        >
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-record-edit-form object-api-name="CampaignMember" record-id={content}>
+                            <lightning-input-field
+                                field-name="Academic_Session__c"
+                                onchange={handleAcaSessionChange}
+                            ></lightning-input-field>
+                        </lightning-record-edit-form>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input
+                            type="text"
+                            style="max-width: 95%"
+                            label="Additional Tour Information"
+                            value={campMem.Additional_Tour_Information__c}
+                            onchange={handleAddTourChange}
+                        >
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4">
+                        <lightning-input
+                            type="checkbox"
+                            variant="label-stacked"
+                            label="Barrett Session"
+                            value={campMem.Barrett_Session__c}
+                            onchange={handleBarrettChange}
+                        >
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4">
+                        <lightning-input
+                            type="checkbox"
+                            variant="label-stacked"
+                            label="Housing Tour"
+                            value={campMem.Housing_Tour__c}
+                            onchange={handleHousingTourChange}
+                        >
+                        </lightning-input>
+                    </div>
+                </div>
+            </lightning-card>
+
+            <lightning-card title="Member Information">
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-2">
+                        <template lwc:if={campMem.Opportunity__r}>
+                            <lightning-input
+                                type="text"
+                                read-only="true"
+                                label="Location"
+                                value={campMem.Opportunity__r.Current_Location__c}
+                            >
+                            </lightning-input>
+                        </template>
+                        <template lwc:else>
+                            <lightning-input type="text" read-only="true" label="Location" value="--">
+                            </lightning-input>
+                        </template>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <template lwc:if={campMem.Opportunity__r}>
+                            <template lwc:if={campMem.Opportunity__r.College__r}>
+                                <lightning-input
+                                    type="text"
+                                    read-only="true"
+                                    label="College"
+                                    value={campMem.Opportunity__r.College__r.Name}
+                                >
+                                </lightning-input>
+                            </template>
+                            <template lwc:else>
+                                <lightning-input type="text" read-only="true" label="College" value="--">
+                                </lightning-input>
+                            </template>
+                        </template>
+                        <template lwc:else>
+                            <lightning-input type="text" read-only="true" label="College" value="--"> </lightning-input>
+                        </template>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <template lwc:if={campMem.Opportunity__r}>
+                            <lightning-input
+                                type="text"
+                                read-only="true"
+                                label="Plan"
+                                value={campMem.Opportunity__r.Plan__c}
+                            >
+                            </lightning-input>
+                        </template>
+                        <template lwc:else>
+                            <lightning-input type="text" read-only="true" label="Plan" value="--"> </lightning-input>
+                        </template>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <template lwc:if={campMem.Opportunity__r}>
+                            <lightning-input
+                                type="text"
+                                read-only="true"
+                                label="Barrett Application Status"
+                                value={campMem.Opportunity__r.Barrett_Application_Status__c}
+                            ></lightning-input>
+                        </template>
+                        <template lwc:else>
+                            <lightning-input
+                                type="text"
+                                read-only="true"
+                                label="Barrett Application Status"
+                                value="--"
+                            ></lightning-input>
+                        </template>
+                    </div>
+                </div>
+            </lightning-card>
+            <lightning-card title="Other Sessions">
+                <lightning-datatable
+                    key-field="id"
+                    data={otherEvents}
+                    columns={otherEventColumns}
+                    hide-checkbox-column="true"
+                >
+                </lightning-datatable>
+            </lightning-card>
+        </template>
+    </lightning-modal-body>
+
+    <lightning-modal-footer>
+        <lightning-button label="Save" onclick={handleOkay}></lightning-button>
+    </lightning-modal-footer>
+</template>

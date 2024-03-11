@@ -344,7 +344,7 @@ if [ ${#conflictedBranchArray[@]} -gt 0 ]; then
 			"fields": [
 				{
 					"type": "mrkdwn",
-					"text": ":warning-badge: *CONFLICTS:* '"$conflictedBranchCount"'"
+					"text": ":warning-badge: *BRANCHES OF SHAME:* '"$conflictedBranchCount"'"
 				}
 			]
 		},

@@ -129,6 +129,11 @@
             </template>            
         </template>
         <template lwc:elseif={pageThree}>
+            <div style="padding: 0.5rem; margin-bottom: 15px; background: #16325c; border-radius: 10px">
+                <div class="slds-text-color_inverse slds-text-heading_small">
+                    You must fill out these required fields in order to save the prospect: First Name, Last Name, Email, and one of these two fields: Phone or Zip Code and Country
+                </div>
+            </div>
             <template lwc:if={submissionError}>
                 <div style="padding: 0.5rem; margin-bottom: 15px; background: #16325c; border-radius: 10px">
                     <div class="slds-text-color_inverse slds-text-heading_small">{submissionError}</div>
@@ -214,6 +219,7 @@
                             value={contactRecord.FirstName}
                             onchange={handleFirstNameChange}
                             style="max-width: 95%"
+                            read-only={isContactSelected}
                             required
                             
                         >
@@ -225,6 +231,7 @@
                             label="Last Name"
                             value={contactRecord.LastName}
                             onchange={handleLastNameChange}
+                            read-only={isContactSelected}
                             required
                         >
                         </lightning-input>
@@ -236,6 +243,7 @@
                             value={contactRecord.Email}
                             onchange={handleEmailChange}
                             style="max-width: 95%"
+                            read-only={isContactSelected}
                             required
                         >
                         </lightning-input>
@@ -246,6 +254,7 @@
                             label="Phone Number"
                             value={contactRecord.Phone}
                             onchange={handlePhoneChange}
+                            read-only={isContactSelected}
                         >
                         </lightning-input>
                     </div>                    
@@ -256,6 +265,7 @@
                             value={contactRecord.Birthdate}
                             onchange={handleDateOfBirthChange}
                             style="max-width: 95%"
+                            read-only={isContactSelected}
                         >
                         </lightning-input>
                     </div>
@@ -277,20 +287,30 @@
                             onchange={handleCareerChange}
                             options={careerOptions}
                             style="max-width: 95%"
+                            read-only={isOpportunitySelected}
                             required
                         >
                         </lightning-combobox>
                     </div>
                     <div class="slds-col slds-size_1-of-2">
-                        <lightning-record-picker
-                            label="Opportunity Term"
-                            placeholder="Search Terms..."
-                            object-api-name="Term__c"
-                            value={opportunityRecord.Term__c}
-                            onchange={handleTermChange}
-                            required
-                        >
-                        </lightning-record-picker>
+                        <template lwc:if={isOpportunitySelected}>
+                            <lightning-record-view-form
+                                record-id={opportunityRecord.Id}
+                                object-api-name="Opportunity">
+                                <lightning-output-field field-name="Term__c"> </lightning-output-field>
+                            </lightning-record-view-form>
+                        </template>
+                        <template lwc:else>
+                            <lightning-record-picker
+                                label="Opportunity Term"
+                                placeholder="Search Terms..."
+                                object-api-name="Term__c"
+                                value={opportunityRecord.Term__c}
+                                onchange={handleTermChange}
+                                required
+                            >
+                            </lightning-record-picker>
+                        </template>
                     </div>
                     <div class="slds-col slds-size_1-of-2">
                         <template lwc:if={isUndergrad}>
@@ -302,6 +322,7 @@
                             onchange={handleTypeChange}
                             options={opportunityUndergradTypeOptions}
                             style="max-width: 95%"
+                            read-only={isOpportunitySelected}
                             required>
                             </lightning-combobox>
                         </template>
@@ -314,6 +335,7 @@
                             onchange={handleTypeChange}
                             options={opportunityGradTypeOptions}
                             style="max-width: 95%"
+                            read-only={isOpportunitySelected}
                             required>
                             </lightning-combobox>
                         </template>                        
@@ -395,7 +417,7 @@
                         <lightning-input
                             type="Checkbox"
                             variant="label-stacked"
-                            label="Barett Session"
+                            label="Barrett Session"
                             value={campaignMemberRecord.Barrett_Session__c}
                             onchange={handleBarrettChange}
                         >

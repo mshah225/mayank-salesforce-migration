@@ -39,11 +39,13 @@ export default class CampusVisitWalkInForm extends LightningModal {
     oppColumns = oppColumns;
     conColumns = conColumns;
     selectedOpp;
+    contactRecordId;
     invalidParameters = false;
     noOpportunityResults = false;
     noContactResults = false;
     isUndergrad = true;
-    contactRecordId;
+    isContactSelected = false;
+    isOpportunitySelected = false;
 
     error;
     submissionError;
@@ -80,11 +82,17 @@ export default class CampusVisitWalkInForm extends LightningModal {
         this.pageOne = true;
         this.pageTwo = false;
         this.pageThree = false;
+
+        this.isContactSelected = false;
+        this.isOpportunitySelected = false;
+
     }
 
     goToPageTwo() {
         if (this.verifyContactSearchInputs()) {
             this.invalidParameters = false;
+            this.isContactSelected = false;
+            this.isOpportunitySelected = false;
         } else {
             this.invalidParameters = true;
             return;
@@ -287,6 +295,7 @@ export default class CampusVisitWalkInForm extends LightningModal {
     handleRowSelection(event) {
         this.selectedOpp = event.detail.selectedRows[0];
         this.opportunityRecord = event.detail.selectedRows[0];
+        this.isOpportunitySelected = true;
         if (this.opportunityRecord.Career__c != 'Undergraduate') {
             this.isUndergrad = false;
         } else {
@@ -297,6 +306,7 @@ export default class CampusVisitWalkInForm extends LightningModal {
     handleContactRowSelection(event) {
         this.contactRecord = event.detail.selectedRows[0];
         this.contactRecordId = this.contactRecord.Id;
+        this.isContactSelected = true;
         getOpportunities({contactId: this.contactRecord.Id})
             .then((oppResult) => {
                 if (oppResult === null || oppResult.length < 1) {
@@ -346,11 +356,12 @@ export default class CampusVisitWalkInForm extends LightningModal {
     }
 
     verifyContactSearchInputs() {
-        if (this.contactRecord.ASURite_ID__c != null) {
+        
+        if (this.contactRecord.ASURite_ID__c) {
             return true;
         }
 
-        if (this.contactRecord.FirstName != null && this.contactRecord.LastName != null) {
+        if (this.contactRecord.FirstName  && this.contactRecord.LastName) {
             return true;
         }
 

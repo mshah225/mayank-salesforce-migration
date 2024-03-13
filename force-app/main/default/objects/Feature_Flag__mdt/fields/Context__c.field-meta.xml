@@ -13,42 +13,9 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Campaign Trigger</fullName>
-                <default>true</default>
-                <label>Campaign Trigger</label>
-            </value>
-            <value>
-                <fullName>Portal Email Trigger</fullName>
-                <default>false</default>
-                <label>Portal Email Trigger</label>
-            </value>
-            <value>
                 <fullName>Email Message Trigger</fullName>
-                <default>false</default>
+                <default>true</default>
                 <label>Email Message Trigger</label>
-            </value>
-            <value>
-                <fullName>Attachment Trigger</fullName>
-                <default>false</default>
-                <label>Attachment Trigger</label>
-            </value>
-            <value>
-                <fullName>Case Trigger</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>Case Trigger</label>
-            </value>
-            <value>
-                <fullName>Contact Trigger</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>Contact Trigger</label>
-            </value>
-            <value>
-                <fullName>Email Handler</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>Email Handler</label>
             </value>
         </valueSetDefinition>
     </valueSet>

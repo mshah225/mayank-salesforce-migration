@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Context__c</fullName>
+    <description>What scenario is this feature flag for? If it controls functionality as part of the contact trigger, this should be "Contact Trigger". Is it instead controls whether the email handler checks for duplicates it might be "Email Handler".</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>What scenario is this feature flag for? If it controls functionality as part of the contact trigger, this should be "Contact Trigger". Is it instead controls whether the email handler checks for duplicates it might be "Email Handler".</inlineHelpText>
+    <label>Context</label>
+    <required>true</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Campaign Trigger</fullName>
+                <default>true</default>
+                <label>Campaign Trigger</label>
+            </value>
+            <value>
+                <fullName>Portal Email Trigger</fullName>
+                <default>false</default>
+                <label>Portal Email Trigger</label>
+            </value>
+            <value>
+                <fullName>Email Message Trigger</fullName>
+                <default>false</default>
+                <label>Email Message Trigger</label>
+            </value>
+            <value>
+                <fullName>Attachment Trigger</fullName>
+                <default>false</default>
+                <label>Attachment Trigger</label>
+            </value>
+            <value>
+                <fullName>Case Trigger</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Case Trigger</label>
+            </value>
+            <value>
+                <fullName>Contact Trigger</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Contact Trigger</label>
+            </value>
+            <value>
+                <fullName>Email Handler</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Email Handler</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

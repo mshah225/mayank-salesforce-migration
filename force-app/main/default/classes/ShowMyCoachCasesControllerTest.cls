@@ -68,30 +68,26 @@ public with sharing class ShowMyCoachCasesControllerTest {
             Student__c = contacts[0].Id,
             Coaching_Student__c = true,
             Is_Active__c = true,
-            Time_Zone__c = 'Arizona (AZ)',
             RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Coach')
         );
         // 2nd Student - Not Coaching Student
         Success_Student__c student2 = new Success_Student__c(
             Student__c = contacts[1].Id,
             Coaching_Student__c = false,
-            Is_Active__c = true,
-            Time_Zone__c = 'Alaska (AK)'
+            Is_Active__c = true
         );
         // 3rd Student - Not Active
         Success_Student__c student3 = new Success_Student__c(
             Student__c = contacts[2].Id,
             Coaching_Student__c = true,
             Is_Active__c = false,
-            Time_Zone__c = 'Hawaii-Hilo (HI)',
             RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Coach')
         );
-        // 4th Student - No Time Zone
+        // 4th Student - General Case #2
         Success_Student__c student4 = new Success_Student__c(
             Student__c = contacts[3].Id,
             Coaching_Student__c = true,
             Is_Active__c = true,
-            Time_Zone__c = null,
             RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Coach')
         );
         // 5th/6th Students - Multiple Students Associated with Single Contact
@@ -100,14 +96,12 @@ public with sharing class ShowMyCoachCasesControllerTest {
             Student__c = contacts[4].Id,
             Coaching_Student__c = true,
             Is_Active__c = true,
-            Time_Zone__c = null,
             RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Coach')
         );
         Success_Student__c student6 = new Success_Student__c(
             Student__c = contacts[4].Id,
             Coaching_Student__c = true,
             Is_Active__c = true,
-            Time_Zone__c = 'Mountain (MST)',
             RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Coach')
         );
         insert new List<Success_Student__c>{ student1, student2, student3, student4, student5, student6 };

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>When an email message record's status is changed to a value (such as when it is set to "Sent"), what status should the corresponding case's status be set to?</description>
+    <label>Email Message Case Status</label>
+    <pluralLabel>Email Message Case Statuses</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

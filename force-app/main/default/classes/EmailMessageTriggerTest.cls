@@ -1,99 +1,395 @@
 @isTest
 public class EmailMessageTriggerTest {
-    private static Integer numberOfCases;
+    @TestSetup
+    private static void testSetup() {
+        Contact testContact = new Contact(FirstName = 'Jesse', LastName = 'Faden', Email = 'jesse.faden@test.test');
+        insert testContact;
 
-    static {
-        numberOfCases = 3;
-    }
-
-    @testSetup
-    public static void testSetup() {
-        List<Contact> contacts = TestDataFactory.createContacts(numberOfCases);
-
-        // Lets make sure contacts have emails
-        for (Contact c : contacts) {
-            c.email = c.firstName + '.' + c.lastName + '@test.com';
+        List<Case> testCases = new List<Case>();
+        // Insert UGRD Advisor cases
+        for (Integer i = 0; i < 5; i++) {
+            testCases.add(
+                new Case(
+                    ContactId = testContact.Id,
+                    Subject = 'Example Advisor Cae (UGRD)',
+                    Status = 'New',
+                    RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
+                )
+            );
         }
-
-        insert contacts;
-
-        List<Case> cases = TestDataFactory.createCases(contacts.size());
-
-        for (integer x = 0; x < contacts.size(); x++) {
-            cases[x].contactId = contacts[x].id;
-            if (math.mod(x, 2) == 0) {
-                cases[x].recordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
-            }
-        }
-
-        insert cases;
-
-        List<EmailMessage> messages = new List<EmailMessage>();
-
-        for (Case c : cases) {
-            messages.add(
-                new EmailMessage(
-                    FromAddress = 'salesforce.support@asu.edu',
-                    ToAddress = c.contact.email,
-                    Subject = 'test email',
-                    textBody = 'test email',
-                    HTMLBody = 'test email',
-                    parentId = c.Id
+        // Insert GRAD Advisor cases
+        for (Integer i = 0; i < 5; i++) {
+            testCases.add(
+                new Case(
+                    ContactId = testContact.Id,
+                    Subject = 'Example Advisor Cae (GRD)',
+                    Status = 'New',
+                    RecordTypeId = RecordIdHelper.getRecordTypeId('Case', 'ASU_Graduate_Advisor_Portal')
                 )
             );
         }
 
-        insert messages;
+        insert testCases;
     }
 
-    /*
-     * Tests the trigger's ability to set the status of advisor cases
+    /**
+     * Tests the happy path, case status is updated when EmailMessage is inserted
+     * with correct status (and Case Record Type matches metadata)
      */
-    public static testMethod void test_setAdvisorStatus() {
-        for (Case c : [SELECT Status, RecordTypeId FROM Case]) {
-            if (c.recordTypeId == RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')) {
-                system.assertEquals('Email Sent', c.status);
-            } else {
-                system.assertEquals('New', c.status);
-            }
+    @isTest
+    private static void testUpdateCaseStatus() {
+        // Add a metadata for converting advisor case status to "Email Sent" whenever EmailMessage is sent
+        EmailMessageService.statusMetadataRecords = new List<Email_Message_Case_Status__mdt>{
+            new Email_Message_Case_Status__mdt(
+                Case_Record_Type__c = 'ASU_Advisor_Outreach',
+                Email_Message_Status__c = 'Sent',
+                Case_Status__c = 'Email Sent'
+            )
+        };
+        // Enable feature
+        FeatureFlagService.overrideTestDefault('Email Message Trigger', 'Update Case Status', true);
+
+        Contact testContact = [SELECT Id, Email FROM Contact LIMIT 1];
+        List<Case> testCases = [SELECT Id, Status FROM Case WHERE RecordType.DeveloperName = 'ASU_Advisor_Outreach'];
+        Assert.areEqual(false, testCases.isEmpty(), 'Need at least one case for test to be meaningful');
+
+        // Insert Email Message records
+        List<EmailMessage> emailMessages = new List<EmailMessage>();
+        for (Case testCase : testCases) {
+            emailMessages.add(
+                new EmailMessage(
+                    FromAddress = 'salesforce.support@asu.edu',
+                    ToAddress = testContact.email,
+                    Subject = 'test email',
+                    textBody = 'test email',
+                    HTMLBody = 'test email',
+                    ParentId = testCase.Id,
+                    Status = EmailMessageService.emailMessageStatusMap.get('Sent')
+                )
+            );
+        }
+        insert emailMessages;
+
+        // Get updated Cases
+        Set<Id> testCaseIds = new Map<Id, Case>(testCases).keySet();
+        testCases = [SELECT Id, Status FROM Case WHERE Id IN :testCaseIds];
+        Assert.areEqual(false, testCases.isEmpty(), 'Need at least one case for test to be meaningful');
+
+        // Check case statuses
+        for (Case testCase : testCases) {
+            Assert.areEqual('Email Sent', testCase.Status);
         }
     }
 
-    /*
-     * This test provides code coverage for the trigger events that have no code in them.
-     *
-     * <p>
-     * note: cannot test update on email message as all fields are read only once the record is inserted.
-     * </p>
+    /**
+     * Tests the happy path, case status is updated when EmailMessage is updated
+     * with correct status (and Case Record Type matches metadata)
+     * (this simulates how EmailMessages work in Lightning, as they are usually saved as a Draft before layer being updated to Sent)
      */
-    public static testMethod void Test_deleteUndelete() {
-        List<EmailMessage> messages = [SELECT Id FROM EmailMessage LIMIT 2];
+    @isTest
+    private static void testUpdateCaseStatusOnEmailMessageUpdate() {
+        // Add a metadata for converting advisor case status to "Email Sent" whenever EmailMessage is sent
+        EmailMessageService.statusMetadataRecords = new List<Email_Message_Case_Status__mdt>{
+            new Email_Message_Case_Status__mdt(
+                Case_Record_Type__c = 'ASU_Advisor_Outreach',
+                Email_Message_Status__c = 'Sent',
+                Case_Status__c = 'Email Sent'
+            )
+        };
+        // Enable feature
+        FeatureFlagService.overrideTestDefault('Email Message Trigger', 'Update Case Status', true);
 
-        delete messages;
-        undelete messages;
+        Contact testContact = [SELECT Id, Email FROM Contact LIMIT 1];
+        List<Case> testCases = [SELECT Id, Status FROM Case WHERE RecordType.DeveloperName = 'ASU_Advisor_Outreach'];
+        Assert.areEqual(false, testCases.isEmpty(), 'Need at least one case for test to be meaningful');
+
+        // Insert Email Message records
+        List<EmailMessage> emailMessages = new List<EmailMessage>();
+        for (Case testCase : testCases) {
+            emailMessages.add(
+                new EmailMessage(
+                    FromAddress = 'salesforce.support@asu.edu',
+                    ToAddress = testContact.email,
+                    Subject = 'test email',
+                    textBody = 'test email',
+                    HTMLBody = 'test email',
+                    ParentId = testCase.Id,
+                    Status = EmailMessageService.emailMessageStatusMap.get('Draft')
+                )
+            );
+        }
+        insert emailMessages;
+
+        // Get (not yet) updated Cases
+        Set<Id> testCaseIds = new Map<Id, Case>(testCases).keySet();
+        testCases = [SELECT Id, Status FROM Case WHERE Id IN :testCaseIds];
+        Assert.areEqual(false, testCases.isEmpty(), 'Need at least one case for test to be meaningful');
+
+        // Check case statuses (not updated yet)
+        for (Case testCase : testCases) {
+            Assert.areEqual('New', testCase.Status);
+        }
+
+        // Send the drafts!
+        for (EmailMessage emailMessage : emailMessages) {
+            emailMessage.Status = EmailMessageService.emailMessageStatusMap.get('Sent');
+        }
+        update emailMessages;
+
+        // Get updated Cases
+        testCases = [SELECT Id, Status FROM Case WHERE Id IN :testCaseIds];
+        Assert.areEqual(false, testCases.isEmpty(), 'Need at least one case for test to be meaningful');
+
+        // Check case statuses
+        for (Case testCase : testCases) {
+            Assert.areEqual('Email Sent', testCase.Status);
+        }
     }
 
-    /*
-     * This tests the services ability to log errors.
+    /**
+     * Tests that case status is NOT updated on cases if the Case's record type does not
+     * match custom metadata
      */
-    public static testMethod void Test_ExceptionHandling() {
-        List<Case> errorCases;
-        Test.startTest();
-        EmailMessageService.updateCasesFromEmailMessages(null);
+    @isTest
+    private static void testDontUpdateCaseStatus_WrongRecordType() {
+        // Add a metadata for converting advisor case status to "Email Sent" whenever EmailMessage is sent
+        EmailMessageService.statusMetadataRecords = new List<Email_Message_Case_Status__mdt>{
+            new Email_Message_Case_Status__mdt(
+                Case_Record_Type__c = 'ASU_Advisor_Outreach',
+                Email_Message_Status__c = 'Sent',
+                Case_Status__c = 'Email Sent'
+            )
+        };
+        // Enable feature
+        FeatureFlagService.overrideTestDefault('Email Message Trigger', 'Update Case Status', true);
 
-        errorCases = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
+        Contact testContact = [SELECT Id, Email FROM Contact LIMIT 1];
+        List<Case> testCases = [SELECT Id, Status FROM Case WHERE RecordType.DeveloperName != 'ASU_Advisor_Outreach'];
+        Assert.areEqual(false, testCases.isEmpty(), 'Need at least one case for test to be meaningful');
 
-        system.assertEquals(1, errorCases.size());
+        // Insert Email Message records
+        List<EmailMessage> emailMessages = new List<EmailMessage>();
+        for (Case testCase : testCases) {
+            emailMessages.add(
+                new EmailMessage(
+                    FromAddress = 'salesforce.support@asu.edu',
+                    ToAddress = testContact.email,
+                    Subject = 'test email',
+                    textBody = 'test email',
+                    HTMLBody = 'test email',
+                    ParentId = testCase.Id,
+                    Status = EmailMessageService.emailMessageStatusMap.get('Sent')
+                )
+            );
+        }
+        insert emailMessages;
 
-        delete errorCases;
+        // Get updated Cases
+        Set<Id> testCaseIds = new Map<Id, Case>(testCases).keySet();
+        testCases = [SELECT Id, Status FROM Case WHERE Id IN :testCaseIds];
+        Assert.areEqual(false, testCases.isEmpty(), 'Need at least one case for test to be meaningful');
 
-        EmailMessageService.setAdvisorCaseStatus(null);
+        // Check case statuses
+        for (Case testCase : testCases) {
+            Assert.areEqual('New', testCase.Status);
+        }
+    }
 
-        errorCases = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
+    /**
+     * Tests that case status is NOT updated on cases if the EmailMessage's status does not match
+     * custom metadata
+     */
+    @isTest
+    private static void testDontUpdateCaseStatus_WrongStatus() {
+        // Add a metadata for converting advisor case status to "Email Sent" whenever EmailMessage is sent
+        EmailMessageService.statusMetadataRecords = new List<Email_Message_Case_Status__mdt>{
+            new Email_Message_Case_Status__mdt(
+                Case_Record_Type__c = 'ASU_Advisor_Outreach',
+                Email_Message_Status__c = 'Sent',
+                Case_Status__c = 'Email Sent'
+            )
+        };
+        // Enable feature
+        FeatureFlagService.overrideTestDefault('Email Message Trigger', 'Update Case Status', true);
 
-        system.assertEquals(1, errorCases.size());
+        Contact testContact = [SELECT Id, Email FROM Contact LIMIT 1];
+        List<Case> testCases = [SELECT Id, Status FROM Case WHERE RecordType.DeveloperName = 'ASU_Advisor_Outreach'];
+        Assert.areEqual(false, testCases.isEmpty(), 'Need at least one case for test to be meaningful');
 
-        delete errorCases;
-        Test.stopTest();
+        // Insert Email Message records
+        List<EmailMessage> emailMessages = new List<EmailMessage>();
+        for (Case testCase : testCases) {
+            emailMessages.add(
+                new EmailMessage(
+                    FromAddress = 'salesforce.support@asu.edu',
+                    ToAddress = testContact.email,
+                    Subject = 'test email',
+                    textBody = 'test email',
+                    HTMLBody = 'test email',
+                    ParentId = testCase.Id,
+                    Status = EmailMessageService.emailMessageStatusMap.get('Draft')
+                )
+            );
+        }
+        insert emailMessages;
+
+        // Get updated Cases
+        Set<Id> testCaseIds = new Map<Id, Case>(testCases).keySet();
+        testCases = [SELECT Id, Status FROM Case WHERE Id IN :testCaseIds];
+        Assert.areEqual(false, testCases.isEmpty(), 'Need at least one case for test to be meaningful');
+
+        // Check case statuses
+        for (Case testCase : testCases) {
+            Assert.areEqual('New', testCase.Status);
+        }
+    }
+
+    /**
+     * Tests that if there are multiple rules for the same status (but differing record types),
+     * the cases status is updated properly
+     */
+    @isTest
+    private static void testUpdateCaseStatusMultipleRulesForSameStatus() {
+        // Add a metadata for converting advisor case status to "Email Sent" whenever EmailMessage is sent
+        EmailMessageService.statusMetadataRecords = new List<Email_Message_Case_Status__mdt>{
+            new Email_Message_Case_Status__mdt(
+                Case_Record_Type__c = 'ASU_Advisor_Outreach',
+                Email_Message_Status__c = 'Sent',
+                Case_Status__c = 'Email Sent'
+            ),
+            new Email_Message_Case_Status__mdt(
+                Case_Record_Type__c = 'ASU_Graduate_Advisor_Portal',
+                Email_Message_Status__c = 'Sent',
+                Case_Status__c = 'Closed: SPAM'
+            )
+        };
+        // Enable feature
+        FeatureFlagService.overrideTestDefault('Email Message Trigger', 'Update Case Status', true);
+
+        Contact testContact = [SELECT Id, Email FROM Contact LIMIT 1];
+        List<Case> testCases = [
+            SELECT Id, Status
+            FROM Case
+            WHERE RecordType.DeveloperName IN ('ASU_Advisor_Outreach', 'ASU_Graduate_Advisor_Portal')
+        ];
+        Assert.areEqual(false, testCases.isEmpty(), 'Need at least one case for test to be meaningful');
+
+        // Insert Email Message records
+        List<EmailMessage> emailMessages = new List<EmailMessage>();
+        for (Case testCase : testCases) {
+            emailMessages.add(
+                new EmailMessage(
+                    FromAddress = 'salesforce.support@asu.edu',
+                    ToAddress = testContact.email,
+                    Subject = 'test email',
+                    textBody = 'test email',
+                    HTMLBody = 'test email',
+                    ParentId = testCase.Id,
+                    Status = EmailMessageService.emailMessageStatusMap.get('Sent')
+                )
+            );
+        }
+        insert emailMessages;
+
+        // Get updated Cases
+        Set<Id> testCaseIds = new Map<Id, Case>(testCases).keySet();
+        testCases = [SELECT Id, RecordType.DeveloperName, Status FROM Case WHERE Id IN :testCaseIds];
+        Assert.areEqual(false, testCases.isEmpty(), 'Need at least one case for test to be meaningful');
+
+        // Check case statuses
+        for (Case testCase : testCases) {
+            if (testCase.RecordType.DeveloperName == 'ASU_Advisor_Outreach')
+                Assert.areEqual('Email Sent', testCase.Status);
+            else if (testCase.RecordType.DeveloperName == 'ASU_Graduate_Advisor_Portal')
+                Assert.areEqual('Closed: SPAM', testCase.Status);
+        }
+    }
+
+    /**
+     * Tests that if there are multiple rules for the same record type (but differing status),
+     * the cases status is updated properly
+     */
+    @isTest
+    private static void testUpdateCaseStatusMultipleRulesForSameRecordType() {
+        // Add a metadata for converting advisor case status to "Email Sent" whenever EmailMessage is sent
+        EmailMessageService.statusMetadataRecords = new List<Email_Message_Case_Status__mdt>{
+            new Email_Message_Case_Status__mdt(
+                Case_Record_Type__c = 'ASU_Advisor_Outreach',
+                Email_Message_Status__c = 'Sent',
+                Case_Status__c = 'Email Sent'
+            ),
+            new Email_Message_Case_Status__mdt(
+                Case_Record_Type__c = 'ASU_Advisor_Outreach',
+                Email_Message_Status__c = 'Draft',
+                Case_Status__c = 'Closed: SPAM'
+            )
+        };
+        // Enable feature
+        FeatureFlagService.overrideTestDefault('Email Message Trigger', 'Update Case Status', true);
+
+        Contact testContact = [SELECT Id, Email FROM Contact LIMIT 1];
+        List<Case> testCases = [SELECT Id, Status FROM Case WHERE RecordType.DeveloperName = 'ASU_Advisor_Outreach'];
+        Assert.areEqual(false, testCases.isEmpty(), 'Need at least one case for test to be meaningful');
+
+        // Split cases into two groups
+        List<Case> casesSent = new List<Case>();
+        List<Case> casesDraft = new List<Case>();
+        for (Integer i = 0; i < testCases.size(); i++) {
+            Case testCase = testCases[i];
+
+            if (math.mod(i, 2) == 0)
+                casesSent.add(testCase);
+            else
+                casesDraft.add(testCase);
+        }
+        Assert.areEqual(false, casesSent.isEmpty(), 'Need at least one case for test to be meaningful');
+        Assert.areEqual(false, casesDraft.isEmpty(), 'Need at least one case for test to be meaningful');
+
+        List<EmailMessage> emailMessages = new List<EmailMessage>();
+
+        // Insert Email Message records
+        for (Case testCase : casesSent) {
+            emailMessages.add(
+                new EmailMessage(
+                    FromAddress = 'salesforce.support@asu.edu',
+                    ToAddress = testContact.email,
+                    Subject = 'test email',
+                    textBody = 'test email',
+                    HTMLBody = 'test email',
+                    ParentId = testCase.Id,
+                    Status = EmailMessageService.emailMessageStatusMap.get('Sent')
+                )
+            );
+        }
+        for (Case testCase : casesDraft) {
+            emailMessages.add(
+                new EmailMessage(
+                    FromAddress = 'salesforce.support@asu.edu',
+                    ToAddress = testContact.email,
+                    Subject = 'test email',
+                    textBody = 'test email',
+                    HTMLBody = 'test email',
+                    ParentId = testCase.Id,
+                    Status = EmailMessageService.emailMessageStatusMap.get('Draft')
+                )
+            );
+        }
+        insert emailMessages;
+
+        // Get updated Cases
+        Set<Id> casesSentIds = new Map<Id, Case>(casesSent).keySet();
+        casesSent = [SELECT Id, Status FROM Case WHERE Id IN :casesSentIds];
+        Assert.areEqual(false, casesSent.isEmpty(), 'Need at least one case for test to be meaningful');
+        Set<Id> casesDraftIds = new Map<Id, Case>(casesDraft).keySet();
+        casesDraft = [SELECT Id, Status FROM Case WHERE Id IN :casesDraftIds];
+        Assert.areEqual(false, casesDraft.isEmpty(), 'Need at least one case for test to be meaningful');
+
+        // Check case statuses
+        for (Case testCase : casesSent) {
+            Assert.areEqual('Email Sent', testCase.Status);
+        }
+        for (Case testCase : casesDraft) {
+            Assert.areEqual('Closed: SPAM', testCase.Status);
+        }
     }
 }

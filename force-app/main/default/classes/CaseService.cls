@@ -553,6 +553,19 @@ public class CaseService {
         }
     }
 
+    public static void setMaskedDataFields(List<Case> newList, Map<Id, Case> oldMap) {
+        for (Case caseToCheck : newList) {
+            if (caseToCheck.Masked_Data__c != null && caseToCheck.Masked_Data__c != '') {
+                caseToCheck.Masked_Data_Exists__c = true;
+                if (oldMap == null || (caseToCheck.Masked_Data__c != oldMap.get(caseToCheck.Id).Masked_Data__c)) {
+                    caseToCheck.Masked_Data_Date__c = System.today();
+                }
+            } else {
+                caseToCheck.Masked_Data_Exists__c = false;
+            }
+        }
+    }
+
     public static void updateAccountIdFromContact(List<Case> updatedCases, Map<Id, Case> previousCasesMap) {
         Map<Id, Id> contactsToTrackMap = new Map<Id, Id>();
         Map<Id, Id> casesToUpdateMap = new Map<Id, Id>();

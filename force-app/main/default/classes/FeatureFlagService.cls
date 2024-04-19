@@ -51,12 +51,12 @@ public with sharing class FeatureFlagService {
             if (!cachedFlags.containsKey(context)) {
                 throw new FeatureFlagServiceException(
                     'Could not verify if feature flag ' +
-                    context +
-                    ':' +
-                    feature +
-                    ' is enabled or not. Context ' +
-                    context +
-                    ' is invalid'
+                        context +
+                        ':' +
+                        feature +
+                        ' is enabled or not. Context ' +
+                        context +
+                        ' is invalid'
                 );
             }
 
@@ -64,12 +64,12 @@ public with sharing class FeatureFlagService {
             if (!cachedFlags.get(context).containsKey(feature))
                 throw new FeatureFlagServiceException(
                     'Could not verify if feature flag ' +
-                    context +
-                    ':' +
-                    feature +
-                    ' is enabled or not. Feature ' +
-                    feature +
-                    ' is invalid'
+                        context +
+                        ':' +
+                        feature +
+                        ' is enabled or not. Feature ' +
+                        feature +
+                        ' is invalid'
                 );
 
             // The context override - if it exists and is false, then all features for that context are disabled

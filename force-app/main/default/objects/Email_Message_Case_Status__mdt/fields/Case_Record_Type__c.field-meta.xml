@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Case_Record_Type__c</fullName>
+    <description>Rule applies to only the case record type specified here.  This should be the record type's "Record Type Name".</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Rule applies to only the case record type specified here.  This should be the record type's "Record Type Name".</inlineHelpText>
+    <label>Case Record Type</label>
+    <length>255</length>
+    <required>true</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

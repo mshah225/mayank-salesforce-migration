@@ -308,6 +308,23 @@ public without sharing class ErrorLogger {
     }
 
     /**
+     * Convert Supplied List of Strings to a JSON string
+     *
+     * @param String Name of the list being passed to lable the object
+     * @param List<String> List of string to be converted to JSON string
+     * @return String JSON string from converted list
+     */
+    public static string convertListToJSON(String varName, List<String> stringList) {
+        if (stringList != null && stringList.size() > 0) {
+            return '{' + varName + ':[' + string.valueOf(stringList) + ']}';
+        } else if (stringList == null) {
+            return '{' + varName + ':null}';
+        } else {
+            return '{' + varName + ':{size:0, objects[]}}';
+        }
+    }
+
+    /**
      * Convert Supplied Set of Ids to a JSON string
      *
      * @param String Name of the list being passed to lable the object

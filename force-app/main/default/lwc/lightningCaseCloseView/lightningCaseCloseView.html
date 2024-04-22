@@ -1,0 +1,77 @@
+<template>
+    <!-- An overlay loading icon on initial load and on submit -->
+    <template lwc:if={loading}>
+        <div class="slds-is-relative">
+            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </div>
+    </template>
+
+    <!-- Record Edit Form -->
+    <lightning-record-edit-form
+        object-api-name="Case"
+        record-id={firstCaseId}
+        onload={handleOnFormLoad}
+        onsubmit={handleOnSubmit}
+        onsuccess={handleOnCaseCloseSuccess}
+        onerror={handleOnFormError}
+        lwc:ref="recordEditForm"
+    >
+        <!-- Validation Error -->
+        <template if:true={hasValidationError}>
+            <div class="slds-notify_container slds-is-relative toastzindex">
+                <div class="slds-notify slds-notify_toast slds-theme_error toastnominwidth" role="alert">
+                    <div class="slds-notify__content">
+                        <h2 class="slds-text-heading_small">{validationError.message}</h2>
+                        <p if:true={validationError.detail}>{validationError.detail}</p>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- For Each Input Field (BEFORE Status) -->
+        <template for:each={inputFieldsBefore} for:item="item">
+            <lightning-input-field
+                field-name={item.path}
+                data-name={item.path}
+                key={item.path}
+                id={item.path}
+                required={item.required}
+            >
+            </lightning-input-field>
+        </template>
+
+        <!-- Status Dropdown -->
+        <lightning-combobox
+            label={statusInputLabel}
+            placeholder={statusInputPlaceholder}
+            value={currentStatus}
+            options={statusOptions}
+            onchange={handleOnStatusChange}
+            class="customStatusBox"
+            required
+        ></lightning-combobox>
+
+        <!-- Hidden status field - This needs to exist to handle dependent fields using the input-field updateDependentField method  -->
+        <lightning-input-field
+            field-name="Status"
+            lwc:ref="hiddenStatusField"
+            class="slds-hidden displaynone"
+            data-name="Status"
+        ></lightning-input-field>
+        <!-- /Hidden status field -->
+
+        <!-- For Each Input Field (AFTER Status) -->
+        <template for:each={inputFieldsAfter} for:item="item">
+            <lightning-input-field
+                field-name={item.path}
+                data-name={item.path}
+                key={item.path}
+                id={item.path}
+                required={item.required}
+            >
+            </lightning-input-field>
+        </template>
+
+        <lightning-button class="displaynone" lwc:ref="submitButton" type="submit" label="Submit"> </lightning-button>
+    </lightning-record-edit-form>
+</template>

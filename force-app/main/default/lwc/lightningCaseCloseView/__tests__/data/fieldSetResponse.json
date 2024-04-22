@@ -1,0 +1,61 @@
+{
+    "FIELD_LIST": [
+        {
+            "dbRequired": false,
+            "fieldPath": "Student_Intention__c",
+            "label": "Student's Intention",
+            "required": false,
+            "type": "picklist",
+            "typeApex": "PICKLIST"
+        },
+        {
+            "dbRequired": false,
+            "fieldPath": "Status",
+            "label": "Status",
+            "required": true,
+            "type": "picklist",
+            "typeApex": "PICKLIST"
+        },
+        {
+            "dbRequired": false,
+            "fieldPath": "Recommended_Actions__c",
+            "label": "Recommended Action(s)",
+            "required": false,
+            "type": "multipicklist",
+            "typeApex": "MULTIPICKLIST"
+        },
+        {
+            "dbRequired": false,
+            "fieldPath": "Recommended_Actions_Other__c",
+            "label": "Recommended Action(s) Other",
+            "required": false,
+            "type": "string",
+            "typeApex": "STRING"
+        },
+        {
+            "dbRequired": false,
+            "fieldPath": "What_term_is_the_student_planning_to_ret__c",
+            "label": "What term would the student return?",
+            "required": false,
+            "type": "picklist",
+            "typeApex": "PICKLIST"
+        },
+        {
+            "dbRequired": false,
+            "fieldPath": "Student_Presented_Risk_for__c",
+            "label": "Student Presented Risk for:",
+            "required": false,
+            "type": "picklist",
+            "typeApex": "PICKLIST"
+        },
+        {
+            "dbRequired": false,
+            "fieldPath": "Student_Presented_Risk_for_Other__c",
+            "label": "Student Presented Risk for  Other",
+            "required": false,
+            "type": "string",
+            "typeApex": "STRING"
+        }
+    ],
+    "OBJECT_LABEL": "Case"
+}

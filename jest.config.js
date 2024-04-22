@@ -20,6 +20,8 @@ module.exports = {
         '^lightning/modalHeader$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/modalHeader',
         '^lightning/modalBody$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/modalBody',
         '^lightning/modalFooter$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/modalFooter',
+        '^lightning/combobox$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/combobox',
+        '^lightning/inputField$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/inputField',
     },
-    modulePathIgnorePatterns: ['<rootDir>/.localdevserver']
+    modulePathIgnorePatterns: ['<rootDir>/.localdevserver'],
 };

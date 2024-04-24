@@ -83,8 +83,7 @@ export default class LightningCaseCloseView extends LightningElement {
     record;
     isLoading = true;
     defaultStatus = null;
-    inputFieldsBefore = [];
-    inputFieldsAfter = [];
+    fieldSet = null;
     statusFieldLabel;
     validationError;
     submittedFields = null; // fields on most recent submit attempt
@@ -196,6 +195,11 @@ export default class LightningCaseCloseView extends LightningElement {
         this.isLoading = status;
     }
 
+    // Once field set is ready we can start loading the edit form
+    get fieldSetReady() {
+        return this.fieldSet != null;
+    }
+
     // Case Status Options (Type = Closed)
     @api get statusOptions() {
         return this.caseStatusOptions;
@@ -210,6 +214,40 @@ export default class LightningCaseCloseView extends LightningElement {
     }
     get statusRequired() {
         return this.statusFieldRequired;
+    }
+
+    // All the fields that go before "Status" on the form
+    get inputFieldsBefore() {
+        if (this.fieldSet === null) return [];
+
+        let allFields = this.fieldSet.map((element) => {
+            return {path: element.fieldPath, required: element.required};
+        });
+        let isBeforeStatus = true;
+        let beforeFields = allFields.reduce((prev, cur) => {
+            if (cur.path === 'Status') isBeforeStatus = false; // Added all fields before status
+            if (isBeforeStatus) prev.push(cur);
+            return prev;
+        }, []);
+
+        return beforeFields;
+    }
+
+    // All the fields that go after "Status" on the form
+    get inputFieldsAfter() {
+        if (this.fieldSet === null) return [];
+
+        let allFields = this.fieldSet.map((element) => {
+            return {path: element.fieldPath, required: element.required};
+        });
+        let isAfterStatus = false;
+        let afterFields = allFields.reduce((prev, cur) => {
+            if (isAfterStatus) prev.push(cur);
+            if (cur.path === 'Status') isAfterStatus = true; // Add all fields after Status
+            return prev;
+        }, []);
+
+        return afterFields;
     }
 
     /**
@@ -252,47 +290,23 @@ export default class LightningCaseCloseView extends LightningElement {
         if (data) {
             try {
                 // Vars
-                let hasStatusField = false,
-                    before = [],
-                    after = [],
-                    listOfFields = data.FIELD_LIST;
+                this.fieldSet = data.FIELD_LIST;
 
                 // Error Check
-                if (listOfFields == null) {
+                if (this.fieldSet == null) {
                     throw new Error(`Unable to find Field Set with API name "${this.fieldSetName}"`);
                 }
 
-                // Map list of fields from APEX response
-                listOfFields.map((element) => {
-                    /*
-                        If the current field is not Status and we have not yet encountered the Status field,
-                        add the field to the Before Array. If we have encountered Status field, we add this field
-                        to the After array.
-                    */
-                    if (element.fieldPath !== 'Status') {
-                        if (!hasStatusField) {
-                            before.push({path: element.fieldPath, required: element.required});
-                        } else {
-                            after.push({path: element.fieldPath, required: element.required});
-                        }
-                    } else {
-                        hasStatusField = true;
-                        this.statusFieldLabel = element.label;
-                    }
-                    return null;
-                });
+                let hasStatusField = this.fieldSet.reduce((prev, cur) => {
+                    return prev || cur.fieldPath === 'Status';
+                }, false);
 
                 // Error Check
-                if (before.length === 0 && after.length === 0 && !hasStatusField) {
-                    throw new Error('No fields found in fieldset.');
-                }
                 if (!hasStatusField) {
                     throw new Error(
                         'No Status field defined in fieldset. Please add the Case Status Field to the Field Set.'
                     );
                 }
-                this.inputFieldsBefore = before;
-                this.inputFieldsAfter = after;
             } catch (err) {
                 this.handleGlobalError(err);
             }

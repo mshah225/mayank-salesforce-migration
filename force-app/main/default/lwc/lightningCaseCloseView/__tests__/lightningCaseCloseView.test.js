@@ -8,6 +8,7 @@ import getFieldsFromFieldSet from '@salesforce/apex/FieldSetHelper.getFieldsFrom
 import closeCasesList from '@salesforce/apex/LightningCaseCloseController.closeCasesList';
 import {flushPromises} from 'c/helperFunctions';
 
+import CASE_NUMBER_FIELD from '@salesforce/schema/Case.CaseNumber';
 import RECORD_TYPE_ID_FIELD from '@salesforce/schema/Case.RecordTypeId';
 import STATUS_FIELD from '@salesforce/schema/Case.Status';
 import IS_CLOSED_FIELD from '@salesforce/schema/Case.IsClosed';
@@ -59,10 +60,15 @@ describe('c-lightning-case-close-view', () => {
 
         // Loading icon is shown initially
         expect(element.shadowRoot.querySelector('lightning-spinner')).toBeTruthy();
-        // no form error warning
-        expect(element.shadowRoot.querySelector('div[role="alert"]')).toBeFalsy();
 
-        // Loading has completed
+        // Finished loading fieldset
+        getFieldsFromFieldSet.emit(fieldSetResponseMock);
+        await flushPromises();
+
+        // Loading icon is still shown
+        expect(element.shadowRoot.querySelector('lightning-spinner')).toBeTruthy();
+
+        // Edit form finished loading
         element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(new CustomEvent('load', {}));
         await flushPromises();
 
@@ -84,7 +90,7 @@ describe('c-lightning-case-close-view', () => {
         // Queries for the first case record
         expect(getRecord.getLastConfig()).toEqual({
             recordId: '5005900000BNavNAAT',
-            fields: [STATUS_FIELD, IS_CLOSED_FIELD, RECORD_TYPE_ID_FIELD],
+            fields: [STATUS_FIELD, IS_CLOSED_FIELD, RECORD_TYPE_ID_FIELD, CASE_NUMBER_FIELD],
         });
     });
 
@@ -127,6 +133,7 @@ describe('c-lightning-case-close-view', () => {
         // Uses override record type
         expect(getFieldsFromFieldSet.getLastConfig()).toEqual({
             fieldSetName: 'CQC_RT_ASU_Graduate_Advisor_Portal',
+            objectName: 'Case',
         });
     });
 
@@ -211,10 +218,14 @@ describe('c-lightning-case-close-view', () => {
         // Act
         document.body.appendChild(element);
 
-        // Wire requests return and loading is done
+        // Wire requests return
         getRecord.emit(caseRecordMock);
         graphql.emit(recordTypeInfoMock);
         getPicklistValues.emit(statusOptionsMock);
+        getFieldsFromFieldSet.emit(fieldSetResponseMock);
+        await flushPromises();
+
+        // And edit form is done loading
         element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(new CustomEvent('load', {}));
         await flushPromises();
 
@@ -246,10 +257,14 @@ describe('c-lightning-case-close-view', () => {
         // Act
         document.body.appendChild(element);
 
-        // Wire requests return and loading is done
+        // Wire requests return
         getRecord.emit(caseRecordMock);
         graphql.emit(recordTypeInfoMock);
         getPicklistValues.emit(statusOptionsMock);
+        getFieldsFromFieldSet.emit(fieldSetResponseMock);
+        await flushPromises();
+
+        // And edit form done loading
         element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(new CustomEvent('load', {}));
         await flushPromises();
 
@@ -290,10 +305,14 @@ describe('c-lightning-case-close-view', () => {
         // Act
         document.body.appendChild(element);
 
-        // Wire requests return and loading is done
+        // Wire requests return
         getRecord.emit(caseRecordMock);
         graphql.emit(recordTypeInfoMock);
         getPicklistValues.emit(statusOptionsMock);
+        getFieldsFromFieldSet.emit(fieldSetResponseMock);
+        await flushPromises();
+
+        // And edit form done loading
         element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(new CustomEvent('load', {}));
         await flushPromises();
 
@@ -362,10 +381,14 @@ describe('c-lightning-case-close-view', () => {
         // Act
         document.body.appendChild(element);
 
-        // Wire requests return and loading is done
+        // Wire requests return
         getRecord.emit(caseRecordMock);
         graphql.emit(recordTypeInfoMock);
         getPicklistValues.emit(statusOptionsMock);
+        getFieldsFromFieldSet.emit(fieldSetResponseMock);
+        await flushPromises();
+
+        // And edit form done loading
         element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(new CustomEvent('load', {}));
         await flushPromises();
 
@@ -397,10 +420,14 @@ describe('c-lightning-case-close-view', () => {
         // Act
         document.body.appendChild(element);
 
-        // Wire requests return and loading is done
+        // Wire requests return
         getRecord.emit(caseRecordMock);
         graphql.emit(recordTypeInfoMock);
         getPicklistValues.emit(statusOptionsMock);
+        getFieldsFromFieldSet.emit(fieldSetResponseMock);
+        await flushPromises();
+
+        // And edit form done loading
         element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(new CustomEvent('load', {}));
         await flushPromises();
 
@@ -432,10 +459,14 @@ describe('c-lightning-case-close-view', () => {
         // Act
         document.body.appendChild(element);
 
-        // Wire requests return and loading is done
+        // Wire requests return
         getRecord.emit(caseRecordMock);
         graphql.emit(recordTypeInfoMock);
         getPicklistValues.emit(statusOptionsMock);
+        getFieldsFromFieldSet.emit(fieldSetResponseMock);
+        await flushPromises();
+
+        // And edit form done loading
         element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(new CustomEvent('load', {}));
         await flushPromises();
 
@@ -470,10 +501,14 @@ describe('c-lightning-case-close-view', () => {
         // Act
         document.body.appendChild(element);
 
-        // Wire requests return and loading is done
+        // Wire requests return
         getRecord.emit(caseRecordMock);
         graphql.emit(recordTypeInfoMock);
         getPicklistValues.emit(statusOptionsMock);
+        getFieldsFromFieldSet.emit(fieldSetResponseMock);
+        await flushPromises();
+
+        // And edit form done loading
         element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(new CustomEvent('load', {}));
         await flushPromises();
 
@@ -510,10 +545,14 @@ describe('c-lightning-case-close-view', () => {
         // Act
         document.body.appendChild(element);
 
-        // Wire requests return and loading is done
+        // Wire requests return
         getRecord.emit(caseRecordMock);
         graphql.emit(recordTypeInfoMock);
         getPicklistValues.emit(statusOptionsMock);
+        getFieldsFromFieldSet.emit(fieldSetResponseMock);
+        await flushPromises();
+
+        // And edit form done loading
         element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(new CustomEvent('load', {}));
         await flushPromises();
 

@@ -94,7 +94,6 @@ export default class LightningCaseCloseView extends LightningElement {
     isLoading = true;
     defaultStatus = null;
     fieldSet = null;
-    statusFieldLabel;
     validationError;
     submittedFields = null; // fields on most recent submit attempt
     recordTypeGQLInfo = null;
@@ -217,10 +216,12 @@ export default class LightningCaseCloseView extends LightningElement {
 
     // Label of the status field we are re-creating
     get statusInputLabel() {
-        return this.statusFieldLabel;
+        for (const fieldSetField of this.fieldSet ?? [])
+            if (fieldSetField.fieldPath === 'Status') return fieldSetField.label;
+        return 'Status';
     }
     get statusInputPlaceholder() {
-        return 'Select ' + this.statusFieldLabel;
+        return 'Select ' + this.statusInputLabel;
     }
     get statusRequired() {
         return this.statusFieldRequired;

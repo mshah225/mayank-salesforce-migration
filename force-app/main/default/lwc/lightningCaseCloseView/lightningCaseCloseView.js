@@ -50,6 +50,7 @@ import {parseBoolean, extractErrorMessages} from 'c/helperFunctions';
 // Fields/Objects
 import RECORD_TYPE_ID_FIELD from '@salesforce/schema/Case.RecordTypeId';
 import STATUS_FIELD from '@salesforce/schema/Case.Status';
+import CASE_NUMBER_FIELD from '@salesforce/schema/Case.CaseNumber';
 import IS_CLOSED_FIELD from '@salesforce/schema/Case.IsClosed';
 
 // Vars
@@ -80,6 +81,15 @@ export default class LightningCaseCloseView extends LightningElement {
     }
     _statusEvents = false;
 
+    // Show modals
+    @api set showToasts(val) {
+        this._showToasts = parseBoolean(val);
+    }
+    get showToasts() {
+        return this._showToasts;
+    }
+    _showToasts = true;
+
     record;
     isLoading = true;
     defaultStatus = null;
@@ -97,7 +107,7 @@ export default class LightningCaseCloseView extends LightningElement {
     // Case Record
     @wire(getRecord, {
         recordId: '$firstCaseId',
-        fields: [STATUS_FIELD, IS_CLOSED_FIELD, RECORD_TYPE_ID_FIELD],
+        fields: [STATUS_FIELD, IS_CLOSED_FIELD, RECORD_TYPE_ID_FIELD, CASE_NUMBER_FIELD],
     })
     wiredCase({error, data}) {
         if (error) {
@@ -390,10 +400,8 @@ export default class LightningCaseCloseView extends LightningElement {
 
                 try {
                     await closeCasesList({cases: caseList});
-                    this.loading = false;
                     this.reportSuccesfulCaseClose(event);
                 } catch (err) {
-                    console.error(err);
                     this.loading = false;
                     this.handleGlobalError(err);
                 }
@@ -425,16 +433,20 @@ export default class LightningCaseCloseView extends LightningElement {
                     },
                 })
             );
-        } else {
-            // Otherwise, just open a toast
+        }
+
+        if (this.showToasts) {
             const evt = new ShowToastEvent({
                 title: `${this.massOperation ? 'Cases' : 'Case'} Closed`,
-                message: '',
+                message: this.massOperation
+                    ? ''
+                    : `Case Number: ${getFieldValue(this.record, IS_CLOSED_FIELD) ?? 'UNKNOWN'}`,
                 variant: 'success',
             });
             this.dispatchEvent(evt);
-            this.handleResetForm();
         }
+
+        this.handleResetForm();
     }
 
     /**
@@ -494,18 +506,15 @@ export default class LightningCaseCloseView extends LightningElement {
         console.error('Error During Case Closure', error); // log it
         console.error(extractErrorMessages(error));
 
-        if (this.statusEvents) {
-            // If send error event
-            this.dispatchEvent(
-                new CustomEvent('error', {
-                    detail: {
-                        errors: extractErrorMessages(error),
-                    },
-                })
-            );
-        } else {
-            // Otherwise, just open a toast
+        this.dispatchEvent(
+            new CustomEvent('error', {
+                detail: {
+                    errors: extractErrorMessages(error),
+                },
+            })
+        );
 
+        if (this.showToasts) {
             const messages = extractErrorMessages(error);
             const evt = new ShowToastEvent({
                 title: 'Error During Case Closure',

@@ -171,6 +171,11 @@ export default class AdvisorPortalA extends LightningElement {
         ]).then(() => {
             this.loadLess();
         });
+
+        // Listen for all standard toast events so we can toast using custom component (since normal toast events won't work in LWC-embedded on VF page)
+        this.template.addEventListener('lightning__showtoast', (evnt) => {
+            this.handleToast(evnt);
+        });
     }
 
     // The filter has changed
@@ -506,10 +511,27 @@ export default class AdvisorPortalA extends LightningElement {
 
     // Toast handlers
     handleToast(e) {
-        const title = e.detail.title;
-        const message = e.detail.message;
-        const type = e.detail.type;
-        const duration = e.duration ? e.duration : 5000;
+        let title = '',
+            message = '',
+            type = '',
+            duration = 5000;
+
+        if (e.type === 'lightning__showtoast') {
+            // If this is a standard toast event - use toastAttributes
+            // @recommended
+            title = e?.toastAttributes?.title ?? title;
+            message = e?.toastAttributes?.message ?? message;
+            type = e?.toastAttributes?.type ?? type;
+            duration = e?.toastAttributes?.duration ?? duration;
+        } else {
+            // If it is a custom event, grab from details
+            // @deprecated
+            title = e?.detail?.title ?? title;
+            message = e?.detail?.message ?? message;
+            type = e?.detail?.type ?? type;
+            duration = e?.duration ?? duration;
+        }
+
         this.showToast(title, message, type, duration);
     }
     showToast(title, message, type, duration) {

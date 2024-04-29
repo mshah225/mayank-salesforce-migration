@@ -1,0 +1,38 @@
+{
+    "apiName": "Case",
+    "childRelationships": {},
+    "fields": {
+        "CaseNumber": {"displayValue": null, "value": "22097614"},
+        "Description": {
+            "displayValue": null,
+            "value": "Dark Dragon was defeated and cast into another dimension."
+        },
+        "RecordType": {
+            "displayValue": "(Admin Only) ASU Advisor Outreach",
+            "value": {
+                "apiName": "RecordType",
+                "childRelationships": {},
+                "fields": {"DeveloperName": {"displayValue": null, "value": "ASU_Advisor_Outreach"}},
+                "id": "012d00000021xGKAAY",
+                "lastModifiedById": "005d0000003SdOZAA0",
+                "lastModifiedDate": "2023-03-17T19:20:29.000Z",
+                "recordTypeId": null,
+                "recordTypeInfo": null,
+                "systemModstamp": "2023-03-17T19:20:29.000Z"
+            }
+        },
+        "Subject": {"displayValue": null, "value": "SPAM: Ten centuries of peace ruled the land of Rune"}
+    },
+    "id": "5005900000BNavNAAT",
+    "lastModifiedById": "0050W000007OlNuQAK",
+    "lastModifiedDate": "2024-04-29T17:46:44.000Z",
+    "recordTypeId": "012d00000021xGKAAY",
+    "recordTypeInfo": {
+        "available": true,
+        "defaultRecordTypeMapping": false,
+        "master": false,
+        "name": "(Admin Only) ASU Advisor Outreach",
+        "recordTypeId": "012d00000021xGKAAY"
+    },
+    "systemModstamp": "2024-04-29T17:46:44.000Z"
+}

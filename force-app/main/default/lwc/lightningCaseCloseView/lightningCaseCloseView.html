@@ -1,11 +1,13 @@
 <template>
     <!-- An overlay loading icon on initial load and on submit -->
     <template lwc:if={loading}>
-        <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
+        <div class="slds-m-around_medium">
+            <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
+        </div>
     </template>
+    <!-- /An overlay loading icon on initial load and on submit -->
 
     <template lwc:if={fieldSetReady}>
-        <!-- Record Edit Form -->
         <lightning-record-edit-form
             object-api-name="Case"
             record-id={firstCaseId}
@@ -26,6 +28,7 @@
                     </div>
                 </div>
             </template>
+            <!-- /Validation Error -->
 
             <!-- For Each Input Field (BEFORE Status) -->
             <template for:each={inputFieldsBefore} for:item="item">
@@ -38,6 +41,7 @@
                 >
                 </lightning-input-field>
             </template>
+            <!-- /For Each Input Field (BEFORE Status) -->
 
             <!-- Status Dropdown -->
             <lightning-combobox
@@ -49,8 +53,9 @@
                 class="customStatusBox"
                 required
             ></lightning-combobox>
+            <!-- /Status Dropdown -->
 
-            <!-- Hidden status field - This needs to exist to handle dependent fields using the input-field updateDependentField method  -->
+            <!-- Hidden status field - This needs to exist to handle dependent fields  -->
             <lightning-input-field
                 field-name="Status"
                 lwc:ref="hiddenStatusField"
@@ -70,9 +75,12 @@
                 >
                 </lightning-input-field>
             </template>
+            <!-- /For Each Input Field (AFTER Status) -->
 
+            <!-- Hidden submit button -->
             <lightning-button class="displaynone" lwc:ref="submitButton" type="submit" label="Submit">
             </lightning-button>
+            <!-- /Hidden submit button -->
         </lightning-record-edit-form>
     </template>
 </template>

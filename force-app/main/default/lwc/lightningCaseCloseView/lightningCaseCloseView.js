@@ -9,23 +9,46 @@
  * This view component is primarily responsible for providing the fields that must be filled out in order to close Quick Close the case.
  * It also raises multiple events indicating progress on the form
  *
+ * @api fields/functions:
+ * massOperation: Boolean
+ *      Flag to enable mass operation mode - in mass operation mode the form expects caseIds to have more than 1 record.
+ * caseIds: Array<String>
+ *      List of all case ids that need to be closed by the form.
+ *      The first is closed using lightning-record-edit form and is used for checking validation rules (i.e. no missing required fields)
+ * recordTypeIdOverride: String
+ *      An override to force the close form to use a specific case record type id (since the fieldset used to populate the form is based on case record type)
+ *      If left null, then it uses the record type of the first case in the caseIds list
+ * showToasts: Boolean
+ *      Flag to enable/disable if toasts are shown automatically upon success/error. If this is disabled, the parent LWC should handle notifying the user
+ *      as on events this LWC raises.
+ * commit(): Function<Promise>
+ *      A function that calls the submit function for the lightning-record-edit form
+ *      The parent should implement a submit button and when that is pressed, it should call this.
+ *
+ *
  * The expected interaction with this view is as follows:
  *  PARENT refers to the parent LWC, CHILD refers to this LWC, USER refers to the end user.
  *
  * 1. PARENT pass caseIds.
- * 2. USER fills in form, entering values into fields.
- * 3. USER presses a submit/cancel button in parent component (we don't provide this since formatting differs depending on if this is in a modal or not)
- * 4. PARENT call .commit() on this component
- * 5. CHILD prepare fields on all records based on entered values. Checks form is valid.
- * 6. CHILD raises a status event ("submitting") indcating form submission is in progress.
- * 7. Parent reacts to this and locks the submit button so additional submissions aren't attempted while the first is loading
- * 8. CHILD submits form.
- * 9. If successful, CHILD raises a status event ("success") indcating success, or if statusEvents are disabled, opens a toast alerting the user of success.
- * 10. If unsuccessful, CHILD raises a status event (form_error) indcating form_error and show a warning at the top of the form.
- * 11. If any unexpected errors occur (non validation rule errors), raise an error event, or if statusEvents are disabled expose the errors to USER via error toasts.
+ * 2. CHILD shows Loading icon shown while all items are loaded for form.
+ * 3. Wires complete.
+ * 4. Loading icon hidden and form is shown.
+ * 5. `ready` event is sent.
+ * 6. USER fills in form, entering values into fields.
+ * 7. USER presses a submit/cancel button in parent component (we don't provide this since formatting differs depending on if this is in a modal or not).
+ * 8. PARENT call .commit() on this component.
+ * 9. CHILD prepare fields on all records based on entered values. Checks form is valid.
+ * 10. CHILD raises a `status` event ("submitting") indcating form submission is in progress.
+ * 11. Parent reacts to this and locks the submit button so additional submissions aren't attempted while the first is loading.
+ * 12. CHILD submits form.
+ * 13. If successful, CHILD raises a `status` event ("success") indcating success,
+ * 14. If toasts are enabled, opens a toast alerting the user of success.
+ * 15. If unsuccessful, CHILD raises a `status` event (form_error) indcating form_error and show a warning at the top of the form.
+ * *. If any unexpected errors occur at any stage (non validation rule errors), raise an error event,
+ *
  *
  * Events::
- * status
+ * status - status events are information about the state of the lightning-record-edit form
  * {
  *   detail: {
  *     type: "success"|"form_error"|"submitting",
@@ -33,9 +56,14 @@
  *   }
  * }
  *
- * error
+ * error - any location that causes an unexpected error, such as a failed wire, can cause this
  * {
  *   errors: List<String> // list of human readable error messages.
+ * }
+ *
+ * ready - published once the form has completed the initlal load
+ * {
+ *   detail: {}
  * }
  */
 import {LightningElement, api, wire} from 'lwc';
@@ -72,16 +100,7 @@ export default class LightningCaseCloseView extends LightningElement {
     // When in mass case mode, override which record type is used (since cases may have differing record types)?
     @api recordTypeIdOverride = null;
 
-    // Toggle to enable error/status events - this is useful if you need to react to changes in the form
-    @api set statusEvents(val) {
-        this._statusEvents = parseBoolean(val);
-    }
-    get statusEvents() {
-        return this._statusEvents;
-    }
-    _statusEvents = false;
-
-    // Show modals
+    // Show success/failure toasts
     @api set showToasts(val) {
         this._showToasts = parseBoolean(val);
     }
@@ -210,6 +229,7 @@ export default class LightningCaseCloseView extends LightningElement {
     }
 
     // Case Status Options (Type = Closed)
+    // this only has @api so the tests can verify the status options - do NOT access this from the parent LWC
     @api get statusOptions() {
         return this.caseStatusOptions;
     }
@@ -326,6 +346,7 @@ export default class LightningCaseCloseView extends LightningElement {
 
     /**
      * Submit the edit form. This presses the submit button, this indirectly calling the `handleSubmit` function.
+     * But we call it this way to make sure event.detail.fields is set on the event and so the form can do its extra checks
      */
     @api async commit() {
         try {
@@ -363,16 +384,14 @@ export default class LightningCaseCloseView extends LightningElement {
             this.loading = true;
 
             // Dispatch submitting status event (so parent can disable submit button)
-            if (this.statusEvents) {
-                this.dispatchEvent(
-                    new CustomEvent('status', {
-                        detail: {
-                            type: 'submitting',
-                            event: event,
-                        },
-                    })
-                );
-            }
+            this.dispatchEvent(
+                new CustomEvent('status', {
+                    detail: {
+                        type: 'submitting',
+                        event: event,
+                    },
+                })
+            );
             // Now call the default submit function (this will update record and update LDS)
             this.refs.recordEditForm.submit();
         } catch (err) {
@@ -398,7 +417,6 @@ export default class LightningCaseCloseView extends LightningElement {
 
             if (caseList.length > 0) {
                 // Close the remaining cases if they are still open
-
                 try {
                     await closeCasesList({cases: caseList});
                     this.reportSuccesfulCaseClose(event);
@@ -418,29 +436,28 @@ export default class LightningCaseCloseView extends LightningElement {
     }
 
     /**
-     * After successfully updating all cases, this is called to remove the loading icon and alert the user/PARENT component.
-     * Send a status event indicating success
+     * After successfully updating all cases, this is called.
+     * 1. Remove the loading icon
+     * 2. Alert the user/PARENT component of success
+     * 3. Show success toast
      */
     reportSuccesfulCaseClose(event) {
         this.loading = false;
 
-        if (this.statusEvents) {
-            // Send a success event
-            this.dispatchEvent(
-                new CustomEvent('status', {
-                    detail: {
-                        type: 'success',
-                        event: event,
-                    },
-                })
-            );
-        }
+        this.dispatchEvent(
+            new CustomEvent('status', {
+                detail: {
+                    type: 'success',
+                    event: event,
+                },
+            })
+        );
 
         if (this.showToasts) {
             const evt = new ShowToastEvent({
                 title: `${this.massOperation ? 'Cases' : 'Case'} Closed`,
                 message: this.massOperation
-                    ? ''
+                    ? 'All cases closed.'
                     : `Case Number: ${getFieldValue(this.record, IS_CLOSED_FIELD) ?? 'UNKNOWN'}`,
                 variant: 'success',
             });
@@ -463,23 +480,20 @@ export default class LightningCaseCloseView extends LightningElement {
     }
 
     reportFormError(event) {
-        if (this.statusEvents) {
-            // Send form error status
-            this.dispatchEvent(
-                new CustomEvent('status', {
-                    detail: {
-                        type: 'form_error',
-                        event: event,
-                    },
-                })
-            );
-        }
+        this.dispatchEvent(
+            new CustomEvent('status', {
+                detail: {
+                    type: 'form_error',
+                    event: event,
+                },
+            })
+        );
     }
 
     /**
-     * Reset the form values, clearing entered values and displayed errors
+     * Reset the form values, clearing any displayed errors
      */
-    @api handleResetForm() {
+    handleResetForm() {
         this.loading = false;
         this.hasValidationError = null;
     }
@@ -489,6 +503,12 @@ export default class LightningCaseCloseView extends LightningElement {
      */
     handleOnFormLoad() {
         this.loading = false;
+
+        this.dispatchEvent(
+            new CustomEvent('ready', {
+                detail: {},
+            })
+        );
     }
 
     /**

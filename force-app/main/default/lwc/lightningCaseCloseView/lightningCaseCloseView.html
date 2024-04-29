@@ -1,9 +1,7 @@
 <template>
     <!-- An overlay loading icon on initial load and on submit -->
     <template lwc:if={loading}>
-        <div class="slds-m-around_medium">
-            <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
-        </div>
+        <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
     </template>
     <!-- /An overlay loading icon on initial load and on submit -->
 
@@ -82,5 +80,8 @@
             </lightning-button>
             <!-- /Hidden submit button -->
         </lightning-record-edit-form>
+    </template>
+    <template lwc:else>
+        <div class="slds-p-around_medium"></div>
     </template>
 </template>

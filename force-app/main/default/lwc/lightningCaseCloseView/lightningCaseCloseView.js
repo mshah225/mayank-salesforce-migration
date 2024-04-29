@@ -458,7 +458,7 @@ export default class LightningCaseCloseView extends LightningElement {
                 title: `${this.massOperation ? 'Cases' : 'Case'} Closed`,
                 message: this.massOperation
                     ? 'All cases closed.'
-                    : `Case Number: ${getFieldValue(this.record, IS_CLOSED_FIELD) ?? 'UNKNOWN'}`,
+                    : `Case Number: ${getFieldValue(this.record, CASE_NUMBER_FIELD) ?? 'UNKNOWN'}`,
                 variant: 'success',
             });
             this.dispatchEvent(evt);

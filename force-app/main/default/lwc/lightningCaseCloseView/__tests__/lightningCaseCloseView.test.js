@@ -49,6 +49,38 @@ describe('c-lightning-case-close-view', () => {
         jest.clearAllMocks();
     });
 
+    test('Loads record record type and field set based on each other AND only shows form once field set is ready', async () => {
+        // Arrange
+        const element = createElement('c-lightning-case-close-view', {
+            is: LightningCaseCloseView,
+        });
+        element.caseIds = ['5005900000BNavNAAT'];
+
+        // Act
+        document.body.appendChild(element);
+        await flushPromises();
+
+        // Record done loading and record type info ready
+        expect(getRecord.getLastConfig()?.recordId).toEqual('5005900000BNavNAAT');
+        getRecord.emit(caseRecordMock);
+        graphql.emit(recordTypeInfoMock);
+        await flushPromises();
+
+        // But form is not ready yet
+        expect(element.shadowRoot.querySelector('lightning-record-edit-form')).toBeFalsy();
+
+        // Got field set
+        expect(getFieldsFromFieldSet.getLastConfig()).toEqual({
+            fieldSetName: 'CQC_RT_ASU_Advisor_Outreach',
+            objectName: 'Case',
+        });
+        getFieldsFromFieldSet.emit(fieldSetResponseMock);
+        await flushPromises();
+
+        // Finally read now that field set is loaded
+        expect(element.shadowRoot.querySelector('lightning-record-edit-form')).toBeTruthy();
+    });
+
     test('Loading until ready', async () => {
         // Arrange
         const element = createElement('c-lightning-case-close-view', {
@@ -112,6 +144,7 @@ describe('c-lightning-case-close-view', () => {
         // Uses case record type
         expect(getFieldsFromFieldSet.getLastConfig()).toEqual({
             fieldSetName: 'CQC_RT_ASU_Advisor_Outreach',
+            objectName: 'Case',
         });
     });
 
@@ -206,6 +239,40 @@ describe('c-lightning-case-close-view', () => {
             label: 'In Person Meeting',
             value: 'In Person Meeting',
         });
+    });
+
+    test('ready event raised once form is loaded', async () => {
+        // Arrange
+        const element = createElement('c-lightning-case-close-view', {
+            is: LightningCaseCloseView,
+        });
+        element.caseIds = ['5005900000BNavNAAT'];
+
+        const readyHandler = jest.fn();
+        element.addEventListener('ready', readyHandler);
+
+        // Act
+        document.body.appendChild(element);
+        await flushPromises();
+
+        // Wires are all ready
+        expect(getRecord.getLastConfig()?.recordId).toEqual('5005900000BNavNAAT');
+        getRecord.emit(caseRecordMock);
+        graphql.emit(recordTypeInfoMock);
+        getFieldsFromFieldSet.emit(fieldSetResponseMock);
+        await flushPromises();
+
+        // Finally read now that field set is loaded
+        expect(element.shadowRoot.querySelector('lightning-record-edit-form')).toBeTruthy();
+
+        // The ready handler has not been called yet
+        expect(readyHandler).toHaveBeenCalledTimes(0);
+
+        // And edit form is done loading
+        element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(new CustomEvent('load', {}));
+
+        // The ready handler has now called
+        expect(readyHandler).toHaveBeenCalledTimes(1);
     });
 
     test('Form errors are shown', async () => {
@@ -373,7 +440,6 @@ describe('c-lightning-case-close-view', () => {
             is: LightningCaseCloseView,
         });
         element.caseIds = ['5005900000BNavNAAT'];
-        element.statusEvents = true;
 
         const statusHandler = jest.fn();
         element.addEventListener('status', statusHandler);
@@ -411,7 +477,6 @@ describe('c-lightning-case-close-view', () => {
             is: LightningCaseCloseView,
         });
         element.caseIds = ['5005900000BNavNAAT'];
-        element.statusEvents = true;
         element.massOperation = true;
 
         const statusHandler = jest.fn();
@@ -450,7 +515,6 @@ describe('c-lightning-case-close-view', () => {
             is: LightningCaseCloseView,
         });
         element.caseIds = ['5005900000BNavNAAT', '5005900000BNavO'];
-        element.statusEvents = true;
         element.massOperation = true;
 
         const statusHandler = jest.fn();
@@ -493,7 +557,6 @@ describe('c-lightning-case-close-view', () => {
             is: LightningCaseCloseView,
         });
         element.caseIds = ['5005900000BNavNAAT'];
-        element.statusEvents = true;
 
         const statusHandler = jest.fn();
         element.addEventListener('status', statusHandler);
@@ -537,7 +600,6 @@ describe('c-lightning-case-close-view', () => {
             is: LightningCaseCloseView,
         });
         element.caseIds = ['5005900000BNavNAAT'];
-        element.statusEvents = true;
 
         const statusHandler = jest.fn();
         element.addEventListener('status', statusHandler);

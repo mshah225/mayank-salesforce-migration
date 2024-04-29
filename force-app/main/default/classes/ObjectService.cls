@@ -117,12 +117,13 @@ public class ObjectService {
     /**
      * Returns the keyPrefix of the desired SObjectType
      * @param sot A Schema.SObjectType
+     * @example getKeyPrefix(Case.getSObjectType())
      * @return String The the keyprefix for the passed object type
      */
     public static String getKeyPrefix(Schema.SObjectType sot) {
         return sot.getDescribe().getKeyPrefix();
     }
-
+    
     /**
      * Generates a uuid
      * @return guid A string guid

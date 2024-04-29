@@ -81,6 +81,9 @@ public class PortalEmailTriggerTest {
 
     @isTest
     private static void testDefaultSubject() {
+        // Enable feature
+        FeatureFlagService.overrideTestDefault('Portal Email Trigger', 'Default Subject', true);
+
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         Portal_Email__c testPortalEmailSpecifySubject = new Portal_Email__c(
@@ -130,6 +133,9 @@ public class PortalEmailTriggerTest {
 
     @isTest
     private static void testBodyStatusRelation() {
+        // Enable feature
+        FeatureFlagService.overrideTestDefault('Portal Email Trigger', 'Cancel Empty', true);
+
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         String notCancelled;
@@ -181,6 +187,9 @@ public class PortalEmailTriggerTest {
 
     @isTest
     private static void testSetFromAddressAdvsiorUsingSuccessStudent() {
+        // Enable feature
+        FeatureFlagService.overrideTestDefault('Portal Email Trigger', 'Set From Address and Template, Advisors', true);
+
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         Success_Student__c testSuccessStudent = [
@@ -226,13 +235,11 @@ public class PortalEmailTriggerTest {
 
     @isTest
     private static void testSetFromAddressAdvsiorUsingCaseQueueWhenGroupOwner() {
+        // Enable feature
+        FeatureFlagService.overrideTestDefault('Portal Email Trigger', 'Set From Address and Template, Advisors', true);
+
         Group testGroup = [SELECT Id FROM Group WHERE Name = :testGroupName];
 
-        Success_Student__c testSuccessStudent = [
-            SELECT Id, Success_Pod__c, Success_Pod__r.Primary_Email__c, Success_Pod__r.Email_Template__c
-            FROM Success_Student__c
-            LIMIT 1
-        ];
         Success_Pod__c testPodOwnedByGroup = [
             SELECT Primary_Email__c, Email_Template__c
             FROM Success_Pod__c
@@ -268,14 +275,12 @@ public class PortalEmailTriggerTest {
 
     @isTest
     private static void testSetFromAddressAdvsiorUsingCaseMostRecentQueueWhenUserOwner() {
+        // Enable feature
+        FeatureFlagService.overrideTestDefault('Portal Email Trigger', 'Set From Address and Template, Advisors', true);
+
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
         Group testGroup = [SELECT Id FROM Group WHERE Name = :testGroupName];
 
-        Success_Student__c testSuccessStudent = [
-            SELECT Id, Success_Pod__c, Success_Pod__r.Primary_Email__c, Success_Pod__r.Email_Template__c
-            FROM Success_Student__c
-            LIMIT 1
-        ];
         Success_Pod__c testPodOwnedByGroup = [
             SELECT Primary_Email__c, Email_Template__c
             FROM Success_Pod__c
@@ -315,6 +320,9 @@ public class PortalEmailTriggerTest {
 
     @isTest
     private static void testSetFromAddressCoach() {
+        // Enable feature
+        FeatureFlagService.overrideTestDefault('Portal Email Trigger', 'Set From Address, Coaches', true);
+
         User testUser = [SELECT Id, Recruiter_Email__c FROM User WHERE Alias = :testUserAlias];
 
         Case testCase = [SELECT Id FROM Case LIMIT 1];
@@ -337,26 +345,6 @@ public class PortalEmailTriggerTest {
 
         EmailMessage em = [SELECT Id, FromAddress FROM EmailMessage LIMIT 1];
         System.assertEquals(testUser.Recruiter_Email__c, em.FromAddress);
-    }
-
-    @isTest
-    private static void testErrorLogNullCoach() {
-        Test.startTest();
-        PortalEmailService.enqueueCoach(null);
-        Test.stopTest();
-
-        List<Case> errorList = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
-        System.assertEquals(1, errorList.size());
-    }
-
-    @isTest
-    private static void testErrorLogNullAdvisor() {
-        Test.startTest();
-        PortalEmailService.enqueueAdvisor(null);
-        Test.stopTest();
-
-        List<Case> errorList = [SELECT Id FROM Case WHERE Origin__c = 'Error Logger'];
-        System.assertEquals(1, errorList.size());
     }
 
     // Pads test coverage by running delete/undelete

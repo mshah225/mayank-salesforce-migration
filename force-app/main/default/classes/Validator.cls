@@ -126,4 +126,49 @@ public without sharing class Validator {
     public static void setPrefix(Type t) {
         setPrefix((SObject) t.newInstance());
     }
+
+    /**
+     * Object Oriented Validator
+     */
+
+    String objectPrefix = null;
+
+    /**
+     * Sets the type this Validator object validates
+     * @example new Validator(Group.getSObjectType())
+     * @param Schema.SObjectType The SObjectType of the relevant lass
+     */
+    public Validator(Schema.SObjectType sObjType) {
+        objectPrefix = ObjectService.getKeyPrefix(sObjType);
+    }
+
+    /**
+     * Validate supplied string is a legitimate record Id
+     *
+     * @param String Id that needs validation
+     * @return Boolean True if the Id is valid, false otherwise
+     */
+    public Boolean validId(String idToValidate) {
+        if (idToValidate != null) {
+            idToValidate = String.escapeSingleQuotes(idToValidate);
+            Pattern idPattern = Pattern.compile('^[a-zA-Z0-9]*$');
+            Matcher idMatcher = idPattern.matcher(idToValidate);
+
+            if (idMatcher.matches() && (idToValidate.length() == 15 || idToValidate.length() == 18)) {
+                if (objectPrefix != null) {
+                    if (idToValidate.left(3) == objectPrefix) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 }

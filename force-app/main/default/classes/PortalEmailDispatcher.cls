@@ -17,15 +17,26 @@ public class PortalEmailDispatcher implements TriggerDispatcherInterface {
     }
 
     public void beforeInsert() {
-        PortalEmailService.verifySubject(newList);
-        PortalEmailService.verifyMessageText(newList);
+        // Prevent empty values
+        if (FeatureFlagService.isEnabled('Portal Email Trigger', 'Default Subject'))
+            PortalEmailService.verifySubject(newList);
+        if (FeatureFlagService.isEnabled('Portal Email Trigger', 'Cancel Empty'))
+            PortalEmailService.verifyMessageText(newList);
+
+        // Set template and from address
+        if (FeatureFlagService.isEnabled('Portal Email Trigger', 'Set From Address and Template, Advisors'))
+            PortalEmailService.setFromAndTemplateForAdvisorEmails(newList);
+        if (FeatureFlagService.isEnabled('Portal Email Trigger', 'Set From Address, Coaches'))
+            PortalEmailService.setFromAddressForCoachEmails(newList);
     }
     public void beforeUpdate() {
     }
     public void beforeDelete() {
     }
     public void afterInsert() {
-        PortalEmailService.setFromAddress(newMap);
+        // Create Email records
+        if (FeatureFlagService.isEnabled('Portal Email Trigger', 'Create Corresponding EmailMessages'))
+            PortalEmailService.createEmailMessages(newList);
     }
     public void afterUpdate() {
     }

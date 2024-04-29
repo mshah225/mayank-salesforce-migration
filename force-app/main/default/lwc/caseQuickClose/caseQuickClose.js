@@ -1,27 +1,19 @@
 /**
- * Author: Created by Carl Hussey
- * Date: 11/11/2021
- * Description:
- *  To use, create a fieldset on Case with an API name in the following format:
- *  CQC_RT_RECORD_TYPE_API_NAME (Examples: CQC_RT_ASU_Service, CQC_RT_ASU_Advisor_Outreach)
+ * The case quick close form visible on the case record page.
+ * Supports either filling in the lightning case close form or closing as spam
  */
 import {LightningElement, api, wire} from 'lwc';
 import {getRecord, getFieldValue, updateRecord} from 'lightning/uiRecordApi';
-import {getPicklistValues} from 'lightning/uiObjectInfoApi';
+import {extractErrorMessages} from 'c/helperFunctions';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
-import getFieldsFromFieldSet from '@salesforce/apex/FieldSetHelper.getFieldsFromFieldSet';
 
 // Fields
+import RECORD_TYPE_DEVELOPER_NAME_FIELD from '@salesforce/schema/Case.RecordType.DeveloperName';
 import SUBJECT_FIELD from '@salesforce/schema/Case.Subject';
 import DESCRIPTION_FIELD from '@salesforce/schema/Case.Description';
-import RECORD_TYPE_DEVELOPER_NAME_FIELD from '@salesforce/schema/Case.RecordType.DeveloperName';
 import STATUS_FIELD from '@salesforce/schema/Case.Status';
 import CASE_NUMBER_FIELD from '@salesforce/schema/Case.CaseNumber';
-import IS_CLOSED_FIELD from '@salesforce/schema/Case.IsClosed';
 import ID_FIELD from '@salesforce/schema/Case.Id';
-
-// Vars
-const FIELDSET_PREFIX = 'CQC_RT_';
 
 export default class CaseQuickClose extends LightningElement {
     @api recordId;
@@ -33,32 +25,25 @@ export default class CaseQuickClose extends LightningElement {
     @api closeSpamButtonLabel = 'Close Spam';
     @api closeSpamButtonVariant = 'destructive';
     record;
-    casesStatusOptions = [];
     isLoading = false;
     isFormVisible = false;
     isButtonVisible = true;
     isSpamButtonVisible = true;
-    errorDetail = '';
+    isSubmitting = false;
+    isFormReady = false;
+    errorDetail = null;
     errorContact = 'salesforce.support@asu.edu';
-    selectedStatus = null;
-    defaultStatus = null;
-    inputFieldsBefore = [];
-    inputFieldsAfter = [];
-    statusFieldLabel;
     validationError;
-    allowedCloseCaseSpamRTs = ['ASU_Service', 'ASU_Admission_Services', 'ASU_Secure_Case'];
+    allowedCloseCaseSpamRTs = ['ASU_Service', 'ASU_Admission_Services', 'ASU_Secure_Case', 'ASU_Advisor_Outreach'];
+
+    get recordIdList() {
+        return [this.recordId];
+    }
 
     // Case Record
     @wire(getRecord, {
         recordId: '$recordId',
-        fields: [
-            SUBJECT_FIELD,
-            DESCRIPTION_FIELD,
-            RECORD_TYPE_DEVELOPER_NAME_FIELD,
-            STATUS_FIELD,
-            CASE_NUMBER_FIELD,
-            IS_CLOSED_FIELD,
-        ],
+        fields: [SUBJECT_FIELD, CASE_NUMBER_FIELD, DESCRIPTION_FIELD, RECORD_TYPE_DEVELOPER_NAME_FIELD],
     })
     wiredCase({error, data}) {
         if (error) {
@@ -67,31 +52,6 @@ export default class CaseQuickClose extends LightningElement {
         }
         if (data) {
             this.record = data;
-        }
-    }
-
-    // Case Status Options
-    @wire(getPicklistValues, {
-        recordTypeId: '$record.recordTypeId',
-        fieldApiName: STATUS_FIELD,
-    })
-    wiredStatusOptions({error, data}) {
-        if (error) {
-            this.caseStatusOptions = undefined;
-            this.handleGlobalError(error);
-        }
-        if (data) {
-            this.caseStatusOptions = this.buildStatusOptions(data);
-
-            // If we weren't able to get the status options, set error
-            try {
-                if (this.caseStatusOptions.length === 0) {
-                    throw new Error('Unable to access Status Options for Picklist.');
-                }
-                this.loadFieldset();
-            } catch (e) {
-                this.handleGlobalError(e);
-            }
         }
     }
 
@@ -144,11 +104,6 @@ export default class CaseQuickClose extends LightningElement {
         return this.recordSubmitButtonVariant;
     }
 
-    // Case Status Options (Type = Closed)
-    get statusOptions() {
-        return this.caseStatusOptions;
-    }
-
     // Loading Indicator
     get loading() {
         return this.isLoading;
@@ -165,7 +120,7 @@ export default class CaseQuickClose extends LightningElement {
         this.isFormVisible = isVisible;
     }
 
-    // Button Visibility
+    // Close Case Button Visibility
     get buttonVisible() {
         return this.isButtonVisible;
     }
@@ -181,9 +136,11 @@ export default class CaseQuickClose extends LightningElement {
         this.isSpamButtonVisible = visible;
     }
 
-    // Error
-    get hasError() {
-        return this.errorDetail ? true : false;
+    get formReady() {
+        return this.isFormReady;
+    }
+    set formReady(ready) {
+        this.isFormReady = ready;
     }
 
     // Error Message
@@ -199,114 +156,42 @@ export default class CaseQuickClose extends LightningElement {
         return this.errorContact;
     }
 
-    // Label of the status field we are re-creating
-    get statusInputLabel() {
-        return this.statusFieldLabel;
-    }
-    get statusInputPlaceholder() {
-        return 'Select ' + this.statusFieldLabel;
-    }
-    get statusRequired() {
-        return this.statusFieldRequired;
+    /**
+     * The cases were successfully updated, show a toast indicating this, and close the modal.
+     * We need to enable.disable the submit button during submission
+     */
+    statusHandler(evnt) {
+        console.debug(evnt);
+
+        if (evnt.detail.type === 'success') {
+            this.handleOnCaseCloseSuccess();
+            this.isSubmitting = false;
+        } else if (evnt.detail.type === 'form_error') {
+            this.isSubmitting = false;
+        } else if (evnt.detail.type === 'submitting') {
+            this.isSubmitting = true;
+        }
     }
 
     /**
-     * Get the current status
-     *
-     * This value set on the status input field.
-     * We don't want to pass its status on a non-closed case,
-     * since the option will not be available in the dropdown for setting.
+     * The cases failed to update for an unexpected reason
      */
-    get currentStatus() {
-        let isClosed = getFieldValue(this.record, IS_CLOSED_FIELD);
-        return isClosed ? getFieldValue(this.record, STATUS_FIELD) : this.defaultStatus;
+    errorHandler(evnt) {
+        this.errorMessage = evnt.detail.errors[0];
+        this.isSubmitting = false;
     }
 
-    // Build Status Options Array
-    buildStatusOptions(options) {
-        return options.values
-            .filter((s) => s.attributes.closed === true)
-            .map((element) => {
-                return {
-                    label: element.label,
-                    value: element.value,
-                };
-            });
-    }
-
-    // Load Fieldset
-    loadFieldset() {
-        // Vars
-        const recordTypeDeveloperName = getFieldValue(this.record, RECORD_TYPE_DEVELOPER_NAME_FIELD);
-        const fieldSetName = FIELDSET_PREFIX + recordTypeDeveloperName.replace(/ /g, '_');
-        let hasStatusField = false;
-        let before = [];
-        let after = [];
-
-        // Get Fields
-        getFieldsFromFieldSet({fieldSetName: fieldSetName})
-            .then((data) => {
-                // Vars
-                let objStr = JSON.parse(data),
-                    listOfFields = JSON.parse(Object.values(objStr)[1]);
-
-                // Error Check
-                if (listOfFields == null) {
-                    throw new Error(`Unable to find Field Set with API name "${fieldSetName}"`);
-                }
-
-                // Map list of fields from APEX response
-                listOfFields.map((element) => {
-                    /*
-                        If the current field is not Status and we have not yet encountered the Status field,
-                        add the field to the Before Array. If we have encountered Status field, we add this field
-                        to the After array.
-                    */
-                    if (element.fieldPath !== 'Status') {
-                        if (!hasStatusField) {
-                            before.push({path: element.fieldPath, required: element.required});
-                        } else {
-                            after.push({path: element.fieldPath, required: element.required});
-                        }
-                    } else {
-                        hasStatusField = true;
-                        this.statusFieldLabel = element.label;
-                    }
-                    return null;
-                });
-
-                // Error Check
-                if (before.length === 0 && after.length === 0 && !hasStatusField) {
-                    throw new Error('No fields found in fieldset.');
-                }
-                if (!hasStatusField) {
-                    throw new Error(
-                        'No Status field defined in fieldset. Please add the Case Status Field to the Field Set.'
-                    );
-                }
-                this.inputFieldsBefore = before;
-                this.inputFieldsAfter = after;
-            })
-            .catch((error) => {
-                this.handleGlobalError(error);
-            });
-    }
-
-    // Show Record Edit Form
+    // Show form
     handleOnCaseCloseButton() {
-        this.loading = true;
         this.buttonVisible = false;
         this.spamButtonVisible = false;
-        setTimeout(() => {
-            this.formVisible = true;
-        }, 1200);
+        this.formVisible = true;
     }
 
     // Handle Close Spam Cases
     handleOnCaseCloseSpamButton() {
-        setTimeout(() => {
-            this.handleCloseSpam();
-        }, 1200);
+        this.loading = true;
+        this.handleCloseSpam();
     }
 
     // Close Spam Logic
@@ -316,8 +201,8 @@ export default class CaseQuickClose extends LightningElement {
         fields[STATUS_FIELD.fieldApiName] = 'Closed: SPAM';
 
         // Vars
-        const currentSubject = getFieldValue(this.record, SUBJECT_FIELD);
-        const currentDescription = getFieldValue(this.record, DESCRIPTION_FIELD);
+        const currentSubject = getFieldValue(this.record, SUBJECT_FIELD) ?? '';
+        const currentDescription = getFieldValue(this.record, DESCRIPTION_FIELD) ?? '';
 
         // Modify case details
         if (!currentSubject.startsWith('SPAM:')) {
@@ -332,77 +217,41 @@ export default class CaseQuickClose extends LightningElement {
         // Update the record
         updateRecord(recordInput)
             .then(() => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Case Closed',
+                        message: `Case Number: ${getFieldValue(this.record, CASE_NUMBER_FIELD) ?? 'UNKNOWN'}`,
+                        variant: 'success',
+                    })
+                );
+
                 this.handleOnCaseCloseSuccess();
             })
             .catch((error) => {
                 this.handleGlobalError(error);
+            })
+            .finally(() => {
+                this.loading = false;
             });
     }
 
     // Override Submit
-    handleOnSubmit(event) {
-        // Vars
-        let fields = event.detail.fields;
-        fields.Status = this.selectedStatus;
-        event.preventDefault();
-
-        // Make sure our fields are validated
-        if (!this.validateFields()) {
-            return;
-        }
-
-        this.loading = true;
-
-        // Custom Status Logic
-        if (fields.Status === 'Closed: SPAM') {
-            // Vars
-            const currentSubject = getFieldValue(this.record, SUBJECT_FIELD);
-            const currentDescription = getFieldValue(this.record, DESCRIPTION_FIELD);
-
-            // Modify case details
-            if (!currentSubject.startsWith('SPAM:')) {
-                fields.Subject = 'SPAM: ' + currentSubject;
-            }
-            if (!currentDescription.startsWith('SPAM:')) {
-                fields.Description = 'SPAM: ' + currentDescription;
-            }
-        }
-
-        // Submit
-        this.template.querySelector('lightning-record-edit-form').submit(fields);
+    handleOnSubmit() {
+        // Submit form
+        this.refs.caseCloseView.commit();
     }
 
     // Success
-    handleOnCaseCloseSuccess(event) {
-        const caseNumber = getFieldValue(this.record, CASE_NUMBER_FIELD);
-        const evt = new ShowToastEvent({
-            title: 'Case Closed',
-            message: 'Case Number: ' + caseNumber,
-            variant: 'success',
-        });
-        this.dispatchEvent(evt);
+    handleOnCaseCloseSuccess() {
         this.handleResetForm();
     }
 
     // Reset
     handleResetForm() {
-        this.loading = false;
         this.formVisible = false;
         this.buttonVisible = true;
         this.spamButtonVisible = true;
-        this.errorMessage = '';
-        this.hasValidationError = null;
-    }
-
-    // Form Loaded
-    handleOnFormLoad() {
-        this.loading = false;
-    }
-
-    // Form Error
-    handleOnFormError(event) {
-        this.loading = false;
-        this.hasValidationError = event.detail;
+        this.errorMessage = null;
     }
 
     // Cancel Form
@@ -410,61 +259,12 @@ export default class CaseQuickClose extends LightningElement {
         this.handleResetForm();
     }
 
-    // Status Change
-    handleOnStatusChange(event) {
-        this.selectedStatus = event.detail.value;
-        let hiddenStatusField = this.template.querySelector('[data-id="statusField"]');
-        hiddenStatusField.value = this.selectedStatus;
+    handleFormReady() {
+        this.formReady = true;
     }
 
-    // Global Error
+    // Global Error from any error raising events in this component
     handleGlobalError(error) {
-        this.errorMessage = this.reduceErrors(error);
-    }
-
-    // Reduces one or more LDS errors into a string[] of error messages.
-    reduceErrors(errors) {
-        if (!Array.isArray(errors)) {
-            errors = [errors];
-        }
-
-        return (
-            errors
-                // Remove null/undefined items
-                .filter((error) => !!error)
-                // Extract an error message
-                .map((error) => {
-                    // UI API read errors
-                    if (Array.isArray(error.body)) {
-                        return error.body.map((e) => e.message);
-                    }
-                    // UI API DML, Apex and network errors
-                    else if (error.body && typeof error.body.message === 'string') {
-                        return error.body.message;
-                    }
-                    // JS errors
-                    else if (typeof error.message === 'string') {
-                        return error.message;
-                    }
-                    // Unknown error shape so try HTTP status text
-                    return error.statusText;
-                })
-                // Flatten
-                .reduce((prev, curr) => prev.concat(curr), [])
-                // Remove empty strings
-                .filter((message) => !!message)
-        );
-    }
-
-    // Validate Fields
-    validateFields() {
-        return [
-            ...this.template.querySelectorAll('lightning-input-field'),
-            ...this.template.querySelectorAll('lightning-combobox'),
-        ].reduce((validSoFar, field) => {
-            // Return whether all fields up to this point are valid and whether current field is valid
-            // reportValidity returns validity and also displays/clear message on element based on validity
-            return validSoFar && field.reportValidity();
-        }, true);
+        this.errorMessage = extractErrorMessages(error);
     }
 }

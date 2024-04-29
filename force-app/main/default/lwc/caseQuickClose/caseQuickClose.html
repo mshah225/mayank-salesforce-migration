@@ -19,7 +19,7 @@
             </template>
             <template lwc:else>
                 <!-- Case Close Button -->
-                <template lwc:if={isButtonVisible}>
+                <template lwc:if={buttonVisible}>
                     <lightning-button
                         variant={lwcCloseButtonVariant}
                         label={lwcCloseButtonLabel}
@@ -29,7 +29,7 @@
                 </template>
 
                 <!-- Case Close Spam Button -->
-                <template lwc:if={isSpamButtonVisible}>
+                <template lwc:if={spamButtonVisible}>
                     &nbsp;&nbsp;
                     <lightning-button
                         variant={lwcCloseSpamButtonVariant}

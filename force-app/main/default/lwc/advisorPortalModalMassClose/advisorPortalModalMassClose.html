@@ -6,9 +6,10 @@
             lwc:ref="caseCloseView"
             case-ids={caseIds}
             mass-operation="true"
-            status-events="true"
+            show-toasts="true"
             onerror={errorHandler}
             onstatus={statusHandler}
+            onlightning__showtoast={convertToastHandler}
         ></c-lightning-case-close-view>
     </lightning-modal-body>
     <lightning-modal-footer>

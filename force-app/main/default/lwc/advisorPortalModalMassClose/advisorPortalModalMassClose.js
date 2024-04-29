@@ -61,7 +61,6 @@ export default class AdvisorPortalModalMassClose extends LightningModal {
      * Close the mass close modal
      */
     closeModal() {
-        this.refs.caseCloseView.handleResetForm();
         this.close();
     }
 
@@ -128,6 +127,23 @@ export default class AdvisorPortalModalMassClose extends LightningModal {
                     },
                 })
             );
+        }
+    }
+
+    convertToastHandler(evnt) {
+        let toastType = evnt?.toastAttributes?.type;
+        let toastTitle = evnt?.toastAttributes?.title;
+        let toastMessage = evnt?.toastAttributes?.message;
+
+        if (toastType != null && toastTitle != null && toastMessage != null) {
+            this.makeToast(toastType, toastTitle, toastMessage);
+        } else {
+            this.makeToast(
+                'warning',
+                'Unable to create toast',
+                'A toast was raised but could not be parsed and displayed - see JS console for the toast event object'
+            );
+            console.warn('Un-parsable toast event', evnt);
         }
     }
 }

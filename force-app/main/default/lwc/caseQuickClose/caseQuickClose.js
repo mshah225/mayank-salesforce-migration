@@ -57,7 +57,7 @@ export default class CaseQuickClose extends LightningElement {
 
     // Can this case be closed as spam via button
     get isRTAllowedClosedSpam() {
-        const currentRT = getFieldValue(this.record, RECORD_TYPE_DEVELOPER_NAME_FIELD);
+        const currentRT = getFieldValue(this.record, RECORD_TYPE_DEVELOPER_NAME_FIELD) ?? null;
         return this.allowedCloseCaseSpamRTs.includes(currentRT);
     }
 
@@ -130,7 +130,7 @@ export default class CaseQuickClose extends LightningElement {
 
     // Spam Button Visibility
     get spamButtonVisible() {
-        return this.isSpamButtonVisible;
+        return this.isRTAllowedClosedSpam && this.isSpamButtonVisible;
     }
     set spamButtonVisible(visible) {
         this.isSpamButtonVisible = visible;
@@ -161,8 +161,6 @@ export default class CaseQuickClose extends LightningElement {
      * We need to enable.disable the submit button during submission
      */
     statusHandler(evnt) {
-        console.debug(evnt);
-
         if (evnt.detail.type === 'success') {
             this.handleOnCaseCloseSuccess();
             this.isSubmitting = false;

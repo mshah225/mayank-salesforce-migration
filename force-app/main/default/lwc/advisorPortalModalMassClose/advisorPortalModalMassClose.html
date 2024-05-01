@@ -1,16 +1,28 @@
 <template>
     <lightning-modal-header label="Mass Close"></lightning-modal-header>
     <lightning-modal-body>
-        <!-- Record Edit Form -->
-        <c-lightning-case-close-view
-            lwc:ref="caseCloseView"
-            case-ids={caseIds}
-            mass-operation="true"
-            show-toasts="true"
-            onerror={errorHandler}
-            onstatus={statusHandler}
-            onlightning__showtoast={convertToastHandler}
-        ></c-lightning-case-close-view>
+        <template lwc:if={errorMessage}>
+            <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                <span class="slds-assistive-text">error</span>
+                <h2>
+                    {errorMessage}
+                    <br />
+                    Contact Salesforce Support:
+                    <lightning-formatted-email value={errorContactEmail} hide-icon></lightning-formatted-email>
+                </h2>
+            </div>
+        </template>
+        <template lwc:else>
+            <c-lightning-case-close-view
+                lwc:ref="caseCloseView"
+                case-ids={caseIds}
+                mass-operation="true"
+                show-toasts="true"
+                onerror={errorHandler}
+                onstatus={statusHandler}
+                onlightning__showtoast={convertToastHandler}
+            ></c-lightning-case-close-view>
+        </template>
     </lightning-modal-body>
     <lightning-modal-footer>
         <lightning-button label="Cancel" variant="neutral" onclick={closeModal}></lightning-button>

@@ -1,0 +1,23 @@
+{
+    "uiapi": {
+        "query": {
+            "RecordType": {
+                "edges": [
+                    {"node": {"Id": "0120W000001co6UQAQ", "DeveloperName": {"value": "ASU_Secure_Case"}}},
+                    {
+                        "node": {
+                            "Id": "0126T000001QHKsQAO",
+                            "DeveloperName": {"value": "ASU_Graduate_Advisor_Portal"}
+                        }
+                    },
+                    {"node": {"Id": "012d0000000x2VTAAY", "DeveloperName": {"value": "ASU_Service"}}},
+                    {"node": {"Id": "012d0000000x6giAAA", "DeveloperName": {"value": "ASU_Admission_Services"}}},
+                    {"node": {"Id": "012d0000000xDAiAAM", "DeveloperName": {"value": "ASU_Retention_Outreach"}}},
+                    {"node": {"Id": "012d0000000xFQ8AAM", "DeveloperName": {"value": "ASU_Student_Outreach"}}},
+                    {"node": {"Id": "012d00000021xGKAAY", "DeveloperName": {"value": "ASU_Advisor_Outreach"}}},
+                    {"node": {"Id": "012d00000021xGLAAY", "DeveloperName": {"value": "ASU_Coach_Outreach"}}}
+                ]
+            }
+        }
+    }
+}

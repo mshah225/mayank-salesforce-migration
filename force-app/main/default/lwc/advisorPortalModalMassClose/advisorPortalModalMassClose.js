@@ -1,8 +1,46 @@
+/**
+ * Author: Created by Robert Nordman
+ * Description:
+ * User to close multiple casse at the same time in the Advisor Portal
+ *
+ * @api fields/functions:
+ * selectedContactWrappers: [{cases: [{caseId: String}, ...]}, ...]
+ *      The contact wrappers, contains contacts and cases, for which we need to close each selected case.
+ * gradMode: Boolean
+ *      True or false flag on whether we are in GRAD advisor mode or UGRAD advisor mode
+ * loadingCb: Function(CustomEvent('loading', {detail: Boolean}))
+ *      Callback that is run everytime this component wants to indicate it is busy loading something.
+ *      The detail contains a boolean indicate if the loading counter should be incremented or decremented.
+ *      This is needed because as a LightningModal, this componenet cannot raise events to its parent component
+ * toastCb: Function(
+ *              CustomEvent('showtoast', {detail: {
+ *                  title: String,
+ *                  message: String,
+ *                  type: String,
+ *                  duration: Number}}) |
+ *              ShowToastEvent({
+ *                  title: String,
+ *                  messsage: String,
+ *                  variant: String
+ *              })
+ *          )
+ *      Callback that is run everytime this component wants to show a toast
+ *      This is needed because as a LightningModal, this componenet cannot raise events to its parent component
+ * navCb: Function(
+ *              CustomEvent('navigate', {detail:{
+ *                  location: String,
+ *                  params: Object
+ *              }})
+ *          )
+ *      Callback that is run everytime this component wants to navigate to another place
+ *      This is needed because as a LightningModal, this componenet cannot raise events to its parent component
+ */
+
 import {api, wire} from 'lwc';
-import {getObjectInfo} from 'lightning/uiObjectInfoApi';
-import CASE_OBJECT from '@salesforce/schema/Case';
 import LightningModal from 'lightning/modal';
-import {falseWireRun} from 'c/helperFunctions';
+import {gql, graphql} from 'lightning/uiGraphQLApi';
+import {ShowToastEvent} from 'lightning/platformShowToastEvent';
+import {extractErrorMessages} from 'c/helperFunctions';
 
 export default class AdvisorPortalModalMassClose extends LightningModal {
     @api selectedContactWrappers = [];
@@ -13,7 +51,8 @@ export default class AdvisorPortalModalMassClose extends LightningModal {
     @api navCb;
 
     // Extract case ids from contact wrappers
-    get caseIds() {
+    // has @api annotation to allow tests to verify value - do not get this in parent LWC
+    @api get caseIds() {
         let caseIds = [];
         for (const contactWrapper of this.selectedContactWrappers)
             for (const caseWrapper of contactWrapper.cases) caseIds.push(caseWrapper.caseId);
@@ -21,47 +60,63 @@ export default class AdvisorPortalModalMassClose extends LightningModal {
     }
 
     // Get the Advisor Case Record Type Id
-    get advisorCaseRecordTypeId() {
-        let recordTypeMap = this.caseInfo?.recordTypeInfos ?? {};
-        let advisorCaseRecordTypeId = null;
+    // has @api annotation to allow tests to verify value - do not get this in parent LWC
+    @api get advisorCaseRecordTypeId() {
+        // Filter list of record type info to contain only those of the relevant record type
+        let recordTypeGQLInfo = (this.recordTypeGQLInfo?.uiapi?.query?.RecordType?.edges ?? [])
+            .filter(
+                (v) =>
+                    v?.node?.DeveloperName?.value ===
+                    (this.gradMode ? 'ASU_Graduate_Advisor_Portal' : 'ASU_Advisor_Outreach')
+            )
+            .map((v) => v?.node?.Id);
 
-        for (const recTypeId of Object.keys(recordTypeMap)) {
-            if (this.gradMode) {
-                if (recordTypeMap[recTypeId].name === '(Admin Only) ASU Graduate Advisor Portal')
-                    advisorCaseRecordTypeId = recTypeId;
-            } else {
-                if (recordTypeMap[recTypeId].name === '(Admin Only) ASU Advisor Outreach')
-                    advisorCaseRecordTypeId = recTypeId;
+        // If we found the record type id, return it, otherwise use d
+        return recordTypeGQLInfo.length > 0 ? recordTypeGQLInfo[0] : null;
+    }
+
+    /**
+     * Get the record type names for Case (so we can get dev name for grad vs ugrad)
+     */
+    @wire(graphql, {
+        query: gql`
+            query recordTypes {
+                uiapi {
+                    query {
+                        RecordType(where: {SobjectType: {eq: "Case"}}) {
+                            edges {
+                                node {
+                                    Id
+                                    DeveloperName {
+                                        value
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
+        `,
+    })
+    gotRecordTypeInfoGQL({error, data}) {
+        if (error) {
+            this.handleGlobalError(error);
         }
 
-        // Either use the type for the proper record type (depending on grad or ugrad mode)
-        // Or failing that, use default for the case object
-        // Or failing that, use null
-        return advisorCaseRecordTypeId ?? this.caseInfo?.defaultRecordTypeId ?? null;
-    }
-
-    @wire(getObjectInfo, {objectApiName: CASE_OBJECT})
-    gotCaseInfo(result) {
-        if (falseWireRun(result)) return;
-
-        let {data, error} = result;
-        if (data != null) {
-            this.caseInfo = data;
-        } else if (error != null) {
-            // eslint-disable-next-line no-console
-            console.error(error);
+        if (data) {
+            this.recordTypeGQLInfo = data;
         }
     }
-    caseInfo = null;
 
     isSubmitting = false;
+    formReady = false;
+    errorMessage = null;
 
     /**
      * Close the mass close modal
      */
     closeModal() {
-        this.close();
+        this.close(true);
     }
 
     /**
@@ -89,11 +144,23 @@ export default class AdvisorPortalModalMassClose extends LightningModal {
     }
 
     /**
-     * The cases failed to update, unexpectedly
+     * Once the form has finished loading
+     */
+    handleFormReady() {
+        this.formReady = true;
+    }
+
+    /**
+     * Handle errors the child component
      */
     errorHandler(evnt) {
         this.isSubmitting = false;
-        this.makeToast('error', 'Error!', evnt.detail.errors[0] ?? '');
+        this.errorMessage = evnt.detail.errors[0];
+    }
+
+    // Global Error from any error raising events in this component
+    handleGlobalError(error) {
+        this.errorMessage = extractErrorMessages(error);
     }
 
     // Call the loadingCb
@@ -105,13 +172,10 @@ export default class AdvisorPortalModalMassClose extends LightningModal {
     makeToast(type, title, body) {
         if (this.toastCb != null)
             this.toastCb(
-                new CustomEvent('showtoast', {
-                    detail: {
-                        title: title,
-                        message: body,
-                        type: type,
-                        duration: 5000,
-                    },
+                new ShowToastEvent({
+                    title: title,
+                    message: body,
+                    variant: type,
                 })
             );
     }
@@ -130,20 +194,10 @@ export default class AdvisorPortalModalMassClose extends LightningModal {
         }
     }
 
+    /**
+     * Run callback using toast event
+     */
     convertToastHandler(evnt) {
-        let toastType = evnt?.toastAttributes?.type;
-        let toastTitle = evnt?.toastAttributes?.title;
-        let toastMessage = evnt?.toastAttributes?.message;
-
-        if (toastType != null && toastTitle != null && toastMessage != null) {
-            this.makeToast(toastType, toastTitle, toastMessage);
-        } else {
-            this.makeToast(
-                'warning',
-                'Unable to create toast',
-                'A toast was raised but could not be parsed and displayed - see JS console for the toast event object'
-            );
-            console.warn('Un-parsable toast event', evnt);
-        }
+        if (this.toastCb != null) this.toastCb(evnt);
     }
 }

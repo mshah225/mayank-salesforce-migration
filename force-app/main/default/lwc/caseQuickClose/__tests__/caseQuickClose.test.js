@@ -311,4 +311,71 @@ describe('c-case-quick-close', () => {
         // And close/spam buttons are shown
         expect(element.shadowRoot.querySelectorAll('lightning-button')).toHaveLength(2);
     });
+
+    test('Errors are shown', async () => {
+        // Arrange
+        const element = createElement('c-case-quick-close', {
+            is: CaseQuickClose,
+        });
+        element.recordId = '5005900000BNavNAAT';
+
+        // Act
+        document.body.appendChild(element);
+
+        // Wire completes
+        getRecord.error({message: 'Apex methods that are to be cached must be marked as @AuraEnabled(cacheable=true)'});
+        await flushPromises();
+
+        // Hides form
+        expect(element.shadowRoot.querySelector('c-lightning-case-close-view')).toBeFalsy();
+        // And ahow error message
+        expect(element.shadowRoot.querySelector('div[role="alert"]').textContent).toContain(
+            'Apex methods that are to be cached must be marked as @AuraEnabled(cacheable=true)'
+        );
+    });
+
+    test('Errors are propagated', async () => {
+        // Arrange
+        const element = createElement('c-case-quick-close', {
+            is: CaseQuickClose,
+        });
+        element.recordId = '5005900000BNavNAAT';
+
+        // Act
+        document.body.appendChild(element);
+
+        // Wire completes
+        getRecord.emit(caseRecordMock);
+        await flushPromises();
+
+        // Press the case close button
+        element.shadowRoot.querySelectorAll('lightning-button')[0].dispatchEvent(new Event('click'), {bubbles: true});
+        await flushPromises();
+
+        // Form finished loading
+        element.shadowRoot
+            .querySelector('c-lightning-case-close-view')
+            .dispatchEvent(new CustomEvent('ready'), {bubbles: true});
+        await flushPromises();
+
+        // Form component raises a list of errors
+        element.shadowRoot.querySelector('c-lightning-case-close-view').dispatchEvent(
+            new CustomEvent('error', {
+                detail: {
+                    errors: [
+                        'Could not find FieldSetHelper.getFieldsFromFieldSet - you do not have permission to class FieldSetHelper',
+                        'Another error message',
+                    ],
+                },
+            })
+        );
+        await flushPromises();
+
+        // Hides form
+        expect(element.shadowRoot.querySelector('c-lightning-case-close-view')).toBeFalsy();
+        // And ahow error message
+        expect(element.shadowRoot.querySelector('div[role="alert"]').textContent).toContain(
+            'Could not find FieldSetHelper.getFieldsFromFieldSet - you do not have permission to class FieldSetHelper'
+        );
+    });
 });

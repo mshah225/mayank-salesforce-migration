@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Badge_Name__c</fullName>
+    <businessOwnerGroup>Data_Owner_Admission_Services</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>This field is used to print badges displaying attendee’s preferred name for the event.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>“Badge Name” is specifically utilized to generate prinitng printing badges that showcase the name preferred by the attendee in check-in process for the event.</inlineHelpText>
+    <label>Badge Name</label>
+    <length>255</length>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

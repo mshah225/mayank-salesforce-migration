@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Tour_Group_Id__c</fullName>
+    <businessOwnerGroup>Data_Owner_Admission_Services</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>Contains the group number associated for a student's tour group.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>This field indicates the group number associated with student's tour group for the purposes of the Campus Visit.</inlineHelpText>
+    <label>Tour Group Id</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <securityClassification>Internal</securityClassification>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

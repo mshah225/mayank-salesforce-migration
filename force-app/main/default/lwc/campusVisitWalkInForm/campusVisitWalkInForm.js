@@ -54,6 +54,18 @@ export default class CampusVisitWalkInForm extends LightningModal {
     campaignRecord = {};
     contactRecord = {};
     opportunityRecord = {};
+
+    filterForTerm = {
+        criteria: [
+            {
+                fieldPath: 'Term_End_Date__c',
+                operator: 'gte',
+                value: { literal: 'TODAY' },
+            },
+        ],
+        filterLogic: '1',
+    };
+
     campaignMemberRecord = {
         Status: 'Not Registered - Attended',
     };
@@ -190,13 +202,25 @@ export default class CampusVisitWalkInForm extends LightningModal {
     }
 
     handleFirstNameChange(e) {
-        this.contactRecord.FirstName = e.detail.value;
-        this.contactRecord.SF_First_Name__c = e.detail.value;
+        let capitalizedName = e.detail.value;
+
+        if (e.detail.value) {
+            capitalizedName = capitalizedName[0].toUpperCase() + capitalizedName.slice(1);
+        }
+
+        this.contactRecord.FirstName = capitalizedName;
+        this.contactRecord.SF_First_Name__c = capitalizedName;
     }
 
     handleLastNameChange(e) {
-        this.contactRecord.LastName = e.detail.value;
-        this.contactRecord.SF_Last_Name__c = e.detail.value;
+        let capitalizedName = e.detail.value;
+
+        if (e.detail.value) {
+            capitalizedName = capitalizedName[0].toUpperCase() + capitalizedName.slice(1);
+        }
+
+        this.contactRecord.LastName = capitalizedName;
+        this.contactRecord.SF_Last_Name__c = capitalizedName;
     }
 
     handleEmailChange(e) {
@@ -366,6 +390,19 @@ export default class CampusVisitWalkInForm extends LightningModal {
         }
 
         return false;
+    }
+
+    printBadge() {
+        let displayName = '';
+
+        if (this.campaignMemberRecord.Badge_Name__c) {
+            displayName = encodeURIComponent(this.campaignMemberRecord.Badge_Name__c);
+        } else {
+            displayName = encodeURIComponent(this.contactRecord.FirstName + ' ' + this.contactRecord.LastName);
+        }
+
+        let url = '/apex/CampusVisitBadge?name=' + displayName + '&campaign=' + this.campaignMemberRecord.CampaignId;
+        window.open(url, "_blank");
     }
 
     isValidSubmission() {

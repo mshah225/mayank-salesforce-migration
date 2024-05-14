@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Award_Date__c</fullName>
+    <description>Date scholarship was awarded.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Date scholarship was awarded.</inlineHelpText>
+    <label>Award Date</label>
+    <required>false</required>
+    <type>Date</type>
+</CustomField>

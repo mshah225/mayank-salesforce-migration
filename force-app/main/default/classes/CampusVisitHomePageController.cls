@@ -12,6 +12,19 @@ public with sharing class CampusVisitHomePageController {
         return campaignMembersToDisplay;
     }
 
+    @AuraEnabled(cacheable=True)
+    public static List<CampaignMember> getAllCampaignMembers(String recordId){
+
+        List<CampaignMember> campaignMembersToDisplay = [
+            SELECT Name, Id, LeadOrContactID__c, Type, Contact.MailingState, Status, Number_of_Guests__c, Number_of_Attendees__c
+            FROM CampaignMember
+            WHERE CampaignId =: recordId
+            LIMIT 1000
+        ];
+
+        return campaignMembersToDisplay;
+    }
+
     @AuraEnabled
     public static List<CampaignMember> searchCampaignMembers(String searchString, List<String> searchStatus, String recordId){
         if (searchString == null || searchString.length() < 2) {

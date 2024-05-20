@@ -96,6 +96,7 @@ export default class CampusVisitWalkInForm extends LightningModal {
         this.pageThree = false;
 
         this.contactRecord.Birthdate = null;
+        this.contactRecord.SF_Birthdate__c = null;
         this.isContactSelected = false;
         this.isOpportunitySelected = false;
 

@@ -136,7 +136,7 @@ public without sharing class PreviousEducationService {
                         Type,
                         OwnerId
                     FROM Opportunity
-                    WHERE Contact__c IN :contactIdSet
+                    WHERE Contact__c IN :contactIdSet AND (CloseDate = NULL OR CloseDate >= :Date.today())
                 ]
             );
 

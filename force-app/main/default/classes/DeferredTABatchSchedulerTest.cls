@@ -108,6 +108,7 @@ public class DeferredTABatchSchedulerTest {
         );
         insert new List<Contact>{ testContact, testContact2 };
 
+        // This will get assigned using the Account info (since FTF and no geomarket data)
         Opportunity testOpp = new Opportunity(
             Contact__c = testContact.Id,
             Career__c = 'Undergraduate',
@@ -115,8 +116,9 @@ public class DeferredTABatchSchedulerTest {
             AccountId = testAcc.Id,
             Name = 'TestOppo',
             StageName = 'TestOppo',
-            CloseDate = Date.newInstance(2025, 9, 12)
+            CloseDate = System.today() + 365
         );
+        // This will get assigned using TAR, since Transfer, most recent college no exist, and contact has geomarket info
         Opportunity testOpp2 = new Opportunity(
             Contact__c = testContact2.Id,
             Career__c = 'Undergraduate',
@@ -124,7 +126,7 @@ public class DeferredTABatchSchedulerTest {
             AccountId = testAcc.Id,
             Name = 'TestOppo',
             StageName = 'TestOppo',
-            CloseDate = Date.newInstance(2025, 9, 12)
+            CloseDate = System.today() + 365
         );
         insert new List<Opportunity>{ testOpp, testOpp2 };
 
@@ -295,5 +297,193 @@ public class DeferredTABatchSchedulerTest {
         ];
 
         System.assertEquals(testUser2.Id, testLead.OwnerId); // changed owner to user 2
+    }
+
+    /**
+     * When an account owner changes, and that account was used for territory assignment, we need to re-assign the
+     * Opporunities that were assigned to the previous user (to assign them to the new user).  We only want this
+     * to happen on open Opporunities (CloseDate NOT in the past).
+     * This test does this by creating 3 Opportunities with CloseDate in the past, TODAY, and the future,
+     * all 3 are for a Contact with Last_HS_Attended info, and thus are assigned to the territory manager
+     * for their high school.
+     * We then change the Account owner and verify that the open opportunities have their Owners updated, and
+     * the closed Opportunities is left alone.
+     */
+    @isTest
+    private static void testAccountClosedOpportunity() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias LIMIT 1];
+        User testUser2 = [SELECT Id FROM User WHERE Alias = :testUserAlias2 LIMIT 1];
+        Account testAcc = [SELECT Id, Territory_Manager__c FROM Account WHERE Territory_Manager__c = :testUser.Id];
+        Contact testContact = [SELECT Id FROM Contact WHERE Email = 'test@email.rtn.test' LIMIT 1];
+
+        Opportunity closedOpp = new Opportunity(
+            Contact__c = testContact.Id,
+            Career__c = 'Undergraduate',
+            Type = 'First Time Freshman',
+            AccountId = testAcc.Id,
+            Name = 'TestOppo',
+            StageName = 'TestOppo',
+            CloseDate = System.today() + 365
+        );
+        Opportunity futureOpp = new Opportunity(
+            Contact__c = testContact.Id,
+            Career__c = 'Undergraduate',
+            Type = 'First Time Freshman',
+            AccountId = testAcc.Id,
+            Name = 'TestOppo',
+            StageName = 'TestOppo',
+            CloseDate = System.today() + 365
+        );
+        Opportunity todayOpp = new Opportunity(
+            Contact__c = testContact.Id,
+            Career__c = 'Undergraduate',
+            Type = 'First Time Freshman',
+            AccountId = testAcc.Id,
+            Name = 'TestOppo',
+            StageName = 'TestOppo',
+            CloseDate = System.today() + 365
+        );
+
+        insert new List<Opportunity>{ closedOpp, futureOpp, todayOpp }; // all 3 will get TAR-ed on insert - and should get user 1 as owner
+
+        // Now that they've been created (and have gone throguh territory assignment), change Close Dates to put some in past
+        closedOpp.CloseDate = System.today() - 365;
+        todayOpp.CloseDate = System.today();
+        update new List<Opportunity>{ closedOpp, todayOpp };
+
+        Map<Id, Opportunity> testOpps = new Map<Id, Opportunity>(
+            [
+                SELECT Id, OwnerId, Territory_Assignment_Last_Rule_Type__c
+                FROM Opportunity
+                WHERE Id IN (:closedOpp.Id, :futureOpp.Id, :todayOpp.Id)
+            ]
+        );
+        Assert.areEqual(3, testOpps.size());
+        for (Opportunity o : testOpps.values()) {
+            Assert.areEqual('Last Attended High School', o.Territory_Assignment_Last_Rule_Type__c); // assigned using HS Account Territory Manager
+            Assert.areEqual(testUser.Id, o.OwnerId); // owner should start as user 1
+        }
+
+        Test.startTest();
+
+        // Change accont manager
+        testAcc.Territory_Manager__c = testUser2.Id;
+        update testAcc;
+
+        // And let the scheduled job run
+        DeferredTABatchScheduler schedulable = new DeferredTABatchScheduler();
+        schedulable.execute(null); // use this instead of System.schedule to ensure that the batch class are run when we call Test.stopTest()
+
+        Test.stopTest();
+
+        testOpps = new Map<Id, Opportunity>(
+            [
+                SELECT Id, OwnerId, Territory_Assignment_Last_Rule_Type__c
+                FROM Opportunity
+                WHERE Id IN (:closedOpp.Id, :futureOpp.Id, :todayOpp.Id)
+            ]
+        );
+        for (Opportunity o : testOpps.values()) {
+            Assert.areEqual('Last Attended High School', o.Territory_Assignment_Last_Rule_Type__c); // still was assigned using HS Account Territory Manager
+        }
+        Assert.areEqual(testUser.Id, testOpps.get(closedOpp.Id).OwnerId); // still owned by user 1
+        Assert.areEqual(testUser2.Id, testOpps.get(futureOpp.Id).OwnerId); // changed owner to user 2
+        Assert.areEqual(testUser2.Id, testOpps.get(todayOpp.Id).OwnerId); // changed owner to user 2
+    }
+
+    /**
+     * When a TAR user changes, and that TAR was used for territory assignment, we need to re-assign the
+     * Opporunities that were assigned to the previous user (to assign them to the new user).  We only want this
+     * to happen on open Opporunities (CloseDate NOT in the past).
+     * This test does this by creating 3 Opportunities with CloseDate in the past, TODAY, and the future,
+     * all 3 are for a contact with no Last_HS_Attended info, but who does have Geomarket_Code__c data, thus they
+     * are assigned using the corresponding geomarket TAR.
+     * We then change that TAR's user and verify that the open opportunities have their Owners updated, and
+     * the closed Opportunities is left alone.
+     */
+    @isTest
+    private static void testTARClosedOpportunity() {
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias LIMIT 1];
+        User testUser2 = [SELECT Id FROM User WHERE Alias = :testUserAlias2 LIMIT 1];
+        Account testAcc = [SELECT Id, Territory_Manager__c FROM Account WHERE Territory_Manager__c = :testUser.Id];
+        Territory_Assignment_Rule__c testTAR = [
+            SELECT Id, User__c
+            FROM Territory_Assignment_Rule__c
+            WHERE User__c = :testUser.Id
+        ];
+        Contact testContact = [SELECT Id FROM Contact WHERE Email = 'test2@email.rtn.test' LIMIT 1];
+
+        Opportunity closedOpp = new Opportunity(
+            Contact__c = testContact.Id,
+            Career__c = 'Undergraduate',
+            Type = 'Transfer',
+            AccountId = testAcc.Id,
+            Name = 'TestOppo',
+            StageName = 'TestOppo',
+            CloseDate = System.today() + 365
+        );
+        Opportunity futureOpp = new Opportunity(
+            Contact__c = testContact.Id,
+            Career__c = 'Undergraduate',
+            Type = 'Transfer',
+            AccountId = testAcc.Id,
+            Name = 'TestOppo',
+            StageName = 'TestOppo',
+            CloseDate = System.today() + 365
+        );
+        Opportunity todayOpp = new Opportunity(
+            Contact__c = testContact.Id,
+            Career__c = 'Undergraduate',
+            Type = 'Transfer',
+            AccountId = testAcc.Id,
+            Name = 'TestOppo',
+            StageName = 'TestOppo',
+            CloseDate = System.today() + 365
+        );
+
+        insert new List<Opportunity>{ closedOpp, futureOpp, todayOpp }; // all 3 will get TAR-ed on insert - and should get user 1 as owner
+
+        // Now that they've been created (and have gone throguh territory assignment), change Close Dates to put some in past
+        closedOpp.CloseDate = System.today() - 365;
+        todayOpp.CloseDate = System.today();
+        update new List<Opportunity>{ closedOpp, todayOpp };
+
+        Map<Id, Opportunity> testOpps = new Map<Id, Opportunity>(
+            [
+                SELECT Id, OwnerId, Territory_Assignment_Last_Rule_Type__c
+                FROM Opportunity
+                WHERE Id IN (:closedOpp.Id, :futureOpp.Id, :todayOpp.Id)
+            ]
+        );
+        Assert.areEqual(3, testOpps.size());
+        for (Opportunity o : testOpps.values()) {
+            Assert.areEqual('Geomarket, Type Transfer', o.Territory_Assignment_Last_Rule_Type__c); // assigned using geomarket code TAR
+            Assert.areEqual(testUser.Id, o.OwnerId); // owner should start as user 1
+        }
+
+        Test.startTest();
+
+        testTAR.User__c = testUser2.Id;
+        update testTAR; // change TAR owner
+
+        // And let the scheduled job run
+        DeferredTABatchScheduler schedulable = new DeferredTABatchScheduler();
+        schedulable.execute(null); // use this instead of System.schedule to ensure that the batch class are run when we call Test.stopTest()
+
+        Test.stopTest();
+
+        testOpps = new Map<Id, Opportunity>(
+            [
+                SELECT Id, OwnerId, Territory_Assignment_Last_Rule_Type__c
+                FROM Opportunity
+                WHERE Id IN (:closedOpp.Id, :futureOpp.Id, :todayOpp.Id)
+            ]
+        );
+        for (Opportunity o : testOpps.values()) {
+            Assert.areEqual('Geomarket, Type Transfer', o.Territory_Assignment_Last_Rule_Type__c); // still assigned using geomarket code TAR
+        }
+        Assert.areEqual(testUser.Id, testOpps.get(closedOpp.Id).OwnerId); // still owned by user 1
+        Assert.areEqual(testUser2.Id, testOpps.get(futureOpp.Id).OwnerId); // changed owner to user 2
+        Assert.areEqual(testUser2.Id, testOpps.get(todayOpp.Id).OwnerId); // changed owner to user 2
     }
 }

@@ -23,9 +23,12 @@ public class EmailMessageDispatcher implements TriggerDispatcherInterface {
     public void beforeDelete() {
     }
     public void afterInsert() {
-        EmailMessageService.updateCasesFromEmailMessages(newMap);
+        if (FeatureFlagService.isEnabled('Email Message Trigger', 'Update Case Status'))
+            EmailMessageService.updateCasesFromEmailMessages(newList, oldMap);
     }
     public void afterUpdate() {
+        if (FeatureFlagService.isEnabled('Email Message Trigger', 'Update Case Status'))
+            EmailMessageService.updateCasesFromEmailMessages(newList, oldMap);
     }
     public void afterDelete() {
     }

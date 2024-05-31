@@ -684,6 +684,15 @@
                                             value="{!mycase.Reason_for_Escalation__c}"
                                         />
 
+                                        <apex:inputField
+                                            value="{!mycase.Knowledge_Link__c}"
+                                            label="Knowledge Link"
+                                            id="knowledgeLink"
+                                            style="width: 90%"
+                                        />
+
+                                        <br />
+
                                         <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED}">
                                             <apex:outputLabel value="Forward To Unit" for="forwardToUnit" />
                                             <apex:inputField

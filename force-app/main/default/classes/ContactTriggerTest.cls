@@ -322,6 +322,83 @@ public with sharing class ContactTriggerTest {
     }
 
     @isTest
+    private static void testOpportunityTerritoryReassignment() {
+        UserFactory.DefaultUser userCreator = new UserFactory.DefaultUser();
+        User testUser = (User) userCreator.create(1)[0];
+        testUser.ProfileId = RecordIdHelper.getProfileId('System Administrator');
+        insert testUser;
+
+        Territory_Assignment_Rule__c aTar1 = new Territory_Assignment_Rule__c();
+        aTar1.Rule_Type__c = 'State';
+        aTar1.User__c = TestUser.Id;
+        aTar1.Assignment_By_State__c = 'Arizona';
+        aTar1.Opportunity_Type__c = 'First Time Freshman';
+        insert aTar1;
+
+        Contact testContact = new Contact();
+        testContact.FirstName = 'TestFirstName';
+        testContact.LastName = 'TestLastName';
+        testContact.Email = 'test@test.com';
+        testContact.MailingCountry = 'United States';
+        insert testContact;
+
+        testContact = [SELECT AccountId FROM Contact WHERE Id = :testContact.Id];
+
+        Opportunity testClosedPastOpp = new Opportunity();
+        testClosedPastOpp.Name = 'Test Opp';
+        testClosedPastOpp.StageName = 'Prospect';
+        testClosedPastOpp.Type = 'First Time Freshman';
+        testClosedPastOpp.Career__c = 'Undergraduate';
+        testClosedPastOpp.CloseDate = Date.today() - 365;
+        testClosedPastOpp.Contact__c = testContact.Id;
+        testClosedPastOpp.AccountId = testContact.AccountId;
+        insert testClosedPastOpp;
+
+        Opportunity testClosedTodayOpp = new Opportunity();
+        testClosedTodayOpp.Name = 'Test Opp';
+        testClosedTodayOpp.StageName = 'Prospect';
+        testClosedTodayOpp.Type = 'First Time Freshman';
+        testClosedTodayOpp.Career__c = 'Undergraduate';
+        testClosedTodayOpp.CloseDate = Date.today();
+        testClosedTodayOpp.Contact__c = testContact.Id;
+        testClosedTodayOpp.AccountId = testContact.AccountId;
+        insert testClosedTodayOpp;
+
+        Test.startTest();
+
+        testContact.MailingState = 'Arizona';
+        update testContact;
+
+        Test.stopTest();
+
+        // Should not be updated (since closed a long time ago)
+        String actualClosedLastRuleType = [
+            SELECT Id, Territory_Assignment_Last_Rule_Type__c
+            FROM Opportunity
+            WHERE Id = :testClosedPastOpp.Id
+            LIMIT 1
+        ]
+        .Territory_Assignment_Last_Rule_Type__c;
+        String expectedClosedLastRuleType = null;
+        Assert.areEqual(expectedClosedLastRuleType, actualClosedLastRuleType);
+
+        // Should be updated (since closed just today)
+        String actualClosedTodayLastRuleType = [
+            SELECT Id, Territory_Assignment_Last_Rule_Type__c
+            FROM Opportunity
+            WHERE Id = :testClosedTodayOpp.Id
+            LIMIT 1
+        ]
+        .Territory_Assignment_Last_Rule_Type__c;
+        String expectedClosedTodayLastRuleType =
+            'State, ' +
+            testContact.MailingState +
+            ', Type ' +
+            testClosedTodayOpp.Type;
+        Assert.areEqual(expectedClosedTodayLastRuleType, actualClosedTodayLastRuleType);
+    }
+
+    @isTest
     private static void padTests() {
         /**
          * Just exists to pad the test coverage - we don't do anything on delete/undelete

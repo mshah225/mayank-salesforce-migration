@@ -17,7 +17,7 @@ global class BatchAccountDeferredOppTA implements Database.Batchable<sObject> {
             previousTmUserIds.add(ID.valueOf(a.Previous_Territory_Manager_ID__c));
         }
 
-        query = 'SELECT Id, Territory_Assignment_Required__c FROM Opportunity WHERE OwnerId IN :previousTmUserIds AND IsClosed = false AND Territory_Assignment_Last_Rule_Type__c != null';
+        query = 'SELECT Id, Territory_Assignment_Required__c FROM Opportunity WHERE OwnerId IN :previousTmUserIds AND IsClosed = false AND Territory_Assignment_Last_Rule_Type__c != null AND (CloseDate = NULL OR CloseDate >= TODAY)';
         return Database.getQueryLocator(query);
     }
 

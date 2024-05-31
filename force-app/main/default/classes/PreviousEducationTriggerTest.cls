@@ -333,4 +333,87 @@ private with sharing class PreviousEducationTriggerTest {
             'Rule did not assign correctly by rule type Last College Attended'
         );
     }
+
+    @isTest
+    private static void testTerritoryReassignmentClosedOpportunities() {
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
+
+        Account HS = new Account();
+        HS.Name = 'Test High School';
+        HS.Institution_Type__c = 'HS';
+        HS.Territory_Manager__c = TestUser.Id;
+        insert HS;
+
+        Contact testContact = new Contact();
+        testContact.FirstName = 'TestFirstName';
+        testContact.LastName = 'TestLastName';
+        testContact.Email = 'test@test.com';
+        insert testContact;
+
+        testContact = [SELECT Id, AccountId FROM Contact WHERE Id = :testContact.Id];
+
+        Opportunity closedOpp = new Opportunity();
+        closedOpp.Name = 'Test Opp, Closed';
+        closedOpp.Contact__c = testContact.Id;
+        closedOpp.AccountId = testContact.AccountId;
+        closedOpp.StageName = 'Prospect';
+        closedOpp.Career__c = 'Undergraduate';
+        closedOpp.Type = 'First Time Freshman';
+        closedOpp.CloseDate = Date.today() - 365;
+        insert closedOpp; // insert one at a time to avoid issues with "Auto Create Subscribers- Contacts" flow.
+
+        Opportunity futureOpp = new Opportunity();
+        futureOpp.Name = 'Test Opp, Future';
+        futureOpp.Contact__c = testContact.Id;
+        futureOpp.AccountId = testContact.AccountId;
+        futureOpp.StageName = 'Prospect';
+        futureOpp.Career__c = 'Undergraduate';
+        futureOpp.Type = 'First Time Freshman';
+        futureOpp.CloseDate = Date.today() + 365;
+        insert futureOpp;
+
+        Opportunity todayOpp = new Opportunity();
+        todayOpp.Name = 'Test Opp, Today';
+        todayOpp.Contact__c = testContact.Id;
+        todayOpp.AccountId = testContact.AccountId;
+        todayOpp.StageName = 'Prospect';
+        todayOpp.Career__c = 'Undergraduate';
+        todayOpp.Type = 'First Time Freshman';
+        todayOpp.CloseDate = Date.today();
+        insert todayOpp;
+
+        Test.startTest();
+
+        Previous_Education__c pe = new Previous_Education__c();
+        pe.Contact__c = testContact.Id;
+        pe.Account__c = HS.Id;
+        insert pe;
+
+        Test.stopTest();
+
+        Map<Id, Opportunity> updatedOpporunities = new Map<Id, Opportunity>(
+            [
+                SELECT Id, Territory_Assignment_Last_Rule_Type__c
+                FROM Opportunity
+                WHERE Id IN (:closedOpp.Id, :futureOpp.Id, :todayOpp.Id)
+            ]
+        );
+
+        Assert.areEqual(3, updatedOpporunities.size());
+
+        // Should not be updated (since closed a long time ago)
+        Assert.areEqual(null, updatedOpporunities.get(closedOpp.Id).Territory_Assignment_Last_Rule_Type__c);
+
+        // Should be updated (since closes today)
+        Assert.areEqual(
+            'Last Attended High School',
+            updatedOpporunities.get(todayOpp.Id).Territory_Assignment_Last_Rule_Type__c
+        );
+
+        // Should be updated (since closes in future)
+        Assert.areEqual(
+            'Last Attended High School',
+            updatedOpporunities.get(futureOpp.Id).Territory_Assignment_Last_Rule_Type__c
+        );
+    }
 }

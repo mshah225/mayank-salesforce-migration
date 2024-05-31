@@ -1,6 +1,8 @@
 <apex:page showHeader="false" sideBar="false" standardStylesheets="false" language="en_US">
     <head>
         <apex:includeScript value="{!URLFOR($Resource.DynamicClassAdderForLWCModals)}" />
+        <c:IntegrationJSPromises />
+
         <style>
             html {
                 background: #fff;
@@ -15,9 +17,303 @@
         addModalRelatedObservers(); // add observers that ensure modals get the needed classes
 
         $Lightning.use('c:AdvisorPortalDataTableApp', () => {
-            $Lightning.createComponent('c:AdvisorPortalA', {}, 'AdvisorPortalDataTable', (cmp) => { 
-                document.querySelector('html').classList.add('slds-scope');  // ensure rendered page has SLDS scope tag to ensure SLDS styles are applied to modals
-             });
+            $Lightning.createComponent('c:AdvisorPortalA', {}, 'AdvisorPortalDataTable', (cmp) => {
+                document.querySelector('html').classList.add('slds-scope'); // ensure rendered page has SLDS scope tag to ensure SLDS styles are applied to modals
+
+                /*
+                 * Navigation that opens other tab/subtabs needs to be done here because the advisor portal is LWC-based and the only way to LWCs to open other tabs
+                 * is by using the lightning/platformWorkspaceApi module.  This module does not work properly for LWC's that are embedded in Visualforce pages.
+                 *
+                 * Technically there are other workarounds, such as loading the integration.js script into the LWC, but those methods are not compatible with Lightning
+                 * Web Secrity, which is the desired Lightning security framework.
+                 *
+                 * We /could/ make a new lightning tab for the advisor portal, surfacing the LWC directly, rather than needing to embed it in a Visualforce page.
+                 * However, lightning tabs only work in SF Lightning and we still (as of February 2024) need to support SF Classic access to the advisor portal.
+                 */
+                document.querySelector('c-advisor-portal-a').addEventListener('navigate', function (event) {
+                    const detail = event.detail;
+
+                    const location = detail.location;
+                    let contactId, contactName, caseId, caseNumber;
+
+                    switch (location) {
+                        case 'viewcase':
+                            contactId = detail.params.contactId;
+                            contactName = detail.params.contactName;
+                            caseId = detail.params.caseId;
+                            caseNumber = detail.params.caseNumber;
+                            openCaseLightning(contactId.substr(0, 15), contactName, caseId.substr(0, 15), caseNumber);
+                            break;
+                        case 'studentprofile':
+                            contactId = detail.params.contactId;
+                            contactName = detail.params.contactName;
+                            openStudentProfileLightning(contactId.substr(0, 15), contactName);
+                            break;
+                        default:
+                            // eslint-disable-next-line no-console
+                            console.error('navagation location unsupported', event);
+                            break;
+                    }
+                });
+            });
         });
+
+        function openStudentProfileLightning(contactId, contactName) {
+            if (sforce.console.isInConsole()) {
+                // Open contact tab
+                sForceConsoleOpenTabCarefully(null, '/' + contactId, contactId, false, contactName)
+                    .then((result) => {
+                        if (result.success) {
+                            // And open the contact's student profile as a subtab, give it focus immediately
+                            return sForceConsoleOpenSubtabCarefully(
+                                result.id,
+                                '/apex/StudentProfile?contactId=' + contactId,
+                                null,
+                                true,
+                                contactName + ' Student Profile',
+                                null
+                            );
+                        } else {
+                            throw new Error('Could not open tab');
+                        }
+                    })
+                    .catch((err) => {
+                        // If there is an unexpected error opening as a SF subtab, open as a browser tab as fallback
+                        console.error(err);
+                        window.open('/apex/StudentProfile?contactId=' + contactId, '_blank');
+                    });
+            } else {
+                window.open('/apex/StudentProfile?contactId=' + contactId, '_blank');
+            }
+        }
+
+        function openCaseLightning(contactId, contactName, caseId, caseNumber) {
+            if (sforce.console.isInConsole()) {
+                // Open contact tab
+                sForceConsoleOpenTabCarefully(null, '/' + contactId, contactId, false, contactName)
+                    .then((result) => {
+                        if (result.success) {
+                            // And open the contact's case as a subtab, give it focus immediately
+                            return sForceConsoleOpenSubtabCarefully(
+                                result.id,
+                                '/' + caseId,
+                                caseId,
+                                true,
+                                caseNumber,
+                                null
+                            );
+                        } else {
+                            throw new Error('Could not open tab');
+                        }
+                    })
+                    .catch((err) => {
+                        // If there is an unexpected error opening as a SF subtab, open as a browser tab as fallback
+                        console.error(err);
+                        window.open('/' + caseId, '_blank');
+                    });
+            } else {
+                window.open('/' + caseId, '_blank');
+            }
+        }
+
+        /**
+         * Carefully open a primary tab.
+         * Attempts to open a new tab with the specified URL. Upon success, the promise resolves with the result object.
+         * This might fail if there is an existing tab for that URL. In that case resolve with the result object for the existing tab
+         *
+         * @param tabId - The id of the tab to replace when opening a new tab (null to open a new tab without replacing existing)
+         * @param url - The URL for the content the new tab should contain
+         * @param recordId - If this is opening a record in SF, what is the record id (this is a more reliable way to find existing tabs) (set null if not opening a record)
+         * @param active - Immediately give focus to the new tab?
+         * @param tabLabel - The label for the new tab
+         *
+         * @returns {Promise} A promise that resolves when the tab has been opened, with parameter = result {success: boolean, tabId: string}
+         */
+        function sForceConsoleOpenTabCarefully(tabId, url, recordId, active, tabLabel) {
+            // Open the requested tab (returns a promise)
+            return openPrimaryTab(tabId, url, active, tabLabel).then((result) => {
+                if (result.success) {
+                    // Simple to open, immediately return success and id
+                    return {
+                        success: true,
+                        id: result.id,
+                    };
+                } else {
+                    // Failed, usually because the tab already exists
+                    // (.then will wait for this promise chain to resolve and return its result)
+                    return getPrimaryTabIds()
+                        .then((primaryTabIdsResponse) => {
+                            // Get the page info for each primary tab
+                            let allPageInfoPromises = [];
+
+                            // for each primary tab, get its page info and add that to the list of promises
+                            for (let primaryTabId of primaryTabIdsResponse.ids)
+                                allPageInfoPromises.push(
+                                    getPageInfo(primaryTabId).then((pageInfoResponse) => {
+                                        return {tabId: primaryTabId, response: pageInfoResponse};
+                                    })
+                                );
+
+                            return Promise.all(allPageInfoPromises);
+                        })
+                        .then((pageInfoResponses) => {
+                            // Now that all page info requests have settled, we can figure out which primary tab we care about
+
+                            // We have multiple ways of checking which tab is correct,
+                            let matchedOnUrl, matchedOnUrlSubstring, matchedOnRecordId, matchedOnName;
+
+                            for (let pageInfoResponse of pageInfoResponses) {
+                                if (pageInfoResponse.response.success) {
+                                    let info = JSON.parse(pageInfoResponse.response.pageInfo);
+
+                                    // Matched on recordId (and recordId is specified) is most confident
+                                    if (recordId != null && matchedOnRecordId == null && info.objectId == recordId) {
+                                        matchedOnRecordId = pageInfoResponse.tabId;
+                                    }
+
+                                    // Matched on URL is confident but not completely reliable since relative URL vs absolute URL could fail a match
+                                    if (matchedOnUrl == null && info.url == url) {
+                                        matchedOnUrl = pageInfoResponse.tabId;
+                                    }
+
+                                    // Matched on URL substring is less confident can help detect relative vs absolute URLS
+                                    if (matchedOnUrlSubstring == null && info.url?.includes(url)) {
+                                        matchedOnUrlSubstring = pageInfoResponse.tabId;
+                                    }
+
+                                    // Matched on label is fallback option
+                                    if (tabLabel != null && matchedOnName == null && info.objectName == tabLabel) {
+                                        matchedOnName = pageInfoResponse.tabId;
+                                    }
+                                }
+                            }
+
+                            let whichTabToOpenId =
+                                matchedOnRecordId ?? matchedOnUrl ?? matchedOnUrlSubstring ?? matchedOnName ?? null;
+
+                            if (whichTabToOpenId != null) {
+                                if (active) {
+                                    // Give focus if active
+                                    return focusPrimaryTabById(whichTabToOpenId).then((focusResponse) => {
+                                        return {
+                                            success: focusResponse.success,
+                                            id: whichTabToOpenId,
+                                        };
+                                    });
+                                } else {
+                                    // or just return success
+                                    return {
+                                        success: true,
+                                        id: whichTabToOpenId,
+                                    };
+                                }
+                            } else {
+                                // Return error if couldn't find one
+                                throw new Error('Could not open new tab or find existing tab!');
+                            }
+                        });
+                }
+            });
+        }
+
+        /**
+         * Carefully open a subtab.
+         * Attempts to open a new subtab with the specified URL. Upon success, the promise resolves with the result object.
+         * This might fail if there is an existing subtab for that URL. In that case resolve with the result object for the existing subtab
+         *
+         * @param parentTabId - The id of the parent tab for this subtab to go under
+         * @param url - The URL for the content the new subtab should contain
+         * @param recordId - If this is opening a record in SF, what is the record id (this is a more reliable way to find existing tabs) (set null if not opening a record)
+         * @param active - Immediately give focus to the new subtab?
+         * @param tabLabel - The label for the new subtab
+         * @param tabId - The id of the subtab to replace when opening a new subtab (null to open a new subtab without replacing existing)
+         *
+         * @returns {Promise} A promise that resolves when the tab has been opened, with parameter = result {success: boolean, tabId: string}
+         */
+        function sForceConsoleOpenSubtabCarefully(parentTabId, url, recordId, active, tabLabel, tabId) {
+            return openSubtab(parentTabId, url, active, tabLabel, tabId).then((result) => {
+                if (result.success) {
+                    // Simple to open, immediately return success and id
+                    return {
+                        success: true,
+                        id: result.id,
+                    };
+                } else {
+                    // Failed, usually because the subtab already exists
+                    // (.then will wait for this promise chain to resolve and return its result)
+                    return getSubtabIds(parentTabId)
+                        .then((subTabIdsResult) => {
+                            // Get the page info for each primary tab
+                            let allPageInfoPromises = [];
+
+                            // for each primary tab, get its page info and add that to the list of promises
+                            for (let subtabId of subTabIdsResult.ids)
+                                allPageInfoPromises.push(
+                                    getPageInfo(subtabId).then((pageInfoResponse) => {
+                                        return {tabId: subtabId, response: pageInfoResponse};
+                                    })
+                                );
+
+                            return Promise.all(allPageInfoPromises);
+                        })
+                        .then((pageInfoResponses) => {
+                            // Now that all page info requests have settled, we can figure out which primary tab we care about
+
+                            // We have multiple ways of checking which tab is correct,
+                            let matchedOnUrl, matchedOnUrlSubstring, matchedOnRecordId, matchedOnName;
+
+                            for (let pageInfoResponse of pageInfoResponses) {
+                                if (pageInfoResponse.response.success) {
+                                    let info = JSON.parse(pageInfoResponse.response.pageInfo);
+
+                                    // Matched on recordId (and recordId is specified) is most confident
+                                    if (recordId != null && matchedOnRecordId == null && info.objectId == recordId) {
+                                        matchedOnRecordId = pageInfoResponse.tabId;
+                                    }
+
+                                    // Matched on URL is confident but not completely reliable since relative URL vs absolute URL could fail a match
+                                    if (matchedOnUrl == null && info.url == url) {
+                                        matchedOnUrl = pageInfoResponse.tabId;
+                                    }
+
+                                    // Matched on URL substring is less confident can help detect relative vs absolute URLS
+                                    if (matchedOnUrlSubstring == null && info.url?.includes(url)) {
+                                        matchedOnUrlSubstring = pageInfoResponse.tabId;
+                                    }
+
+                                    // Matched on label is fallback option
+                                    if (tabLabel != null && matchedOnName == null && info.objectName == tabLabel) {
+                                        matchedOnName = pageInfoResponse.tabId;
+                                    }
+                                }
+                            }
+
+                            let whichTabToOpenId =
+                                matchedOnRecordId ?? matchedOnUrl ?? matchedOnUrlSubstring ?? matchedOnName ?? null;
+
+                            if (whichTabToOpenId != null) {
+                                if (active) {
+                                    // Give focus if active
+                                    return focusSubtabById(whichTabToOpenId).then((focusResponse) => {
+                                        return {
+                                            success: focusResponse.success,
+                                            id: whichTabToOpenId,
+                                        };
+                                    });
+                                } else {
+                                    // or just return success
+                                    return {
+                                        success: true,
+                                        id: whichTabToOpenId,
+                                    };
+                                }
+                            } else {
+                                // Return error if couldn't find one
+                                throw new Error('Could not open new subtab or find existing subtab!');
+                            }
+                        });
+                }
+            });
+        }
     </script>
 </apex:page>

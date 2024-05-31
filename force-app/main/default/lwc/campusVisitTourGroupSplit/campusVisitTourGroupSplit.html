@@ -1,0 +1,78 @@
+<template>
+    <lightning-modal-header label="Tour Group Split"></lightning-modal-header>
+
+    <lightning-modal-body>
+        <template lwc:if={pageOne}>
+            <template lwc:if={mapData}>
+                <table>
+                    <tr>
+                        <th>Academic Session</th>
+                        <th>Number of Attendees (including Guests)</th>
+                        <th>Number of Groups</th>
+                    </tr>  
+                    <template for:each={mapData} for:item="campaignMemberSession">       
+                        <tr key={campaignMemberSession.key}>
+                            <td>
+                                {campaignMemberSession.key}
+                            </td>
+                            <td>
+                                {campaignMemberSession.value}
+                            </td>
+                            <td>
+                                <lightning-input
+                                    type="text"
+                                    value=1
+                                    data-id={campaignMemberSession.key}
+                                    onchange={handleTourGuideChange}
+                                >
+                                </lightning-input>
+                            </td>
+                        </tr>
+                    </template>
+                </table>
+            </template>
+            
+        </template>
+        <template lwc:else>
+            <template lwc:if={tourGroups}>
+                <template for:each={tourGroups} for:item="pod">
+                    
+                    <div key={pod.tourGroupId} style="margin-bottom: 30px;">
+                        <div style="font-weight: bold; font-size: medium;">
+                            Group {pod.tourGroupId} (Total Attendees: {pod.currentSize})
+                        </div>
+                        <lightning-datatable
+                        key-field="Id"
+                        data={pod.membersForTour}
+                        columns={campaignMemberColumns}
+                        hide-checkbox-column="true"
+                        suppress-bottom-bar="true"
+                        draft-values={editedColumns}
+                        oncellchange={updateTourGroupNumber}>
+                        </lightning-datatable>
+                    </div>
+
+                    
+                    
+                </template>
+            </template>
+            
+        </template>
+    </lightning-modal-body>
+
+    <lightning-modal-footer>
+        <template lwc:if={pageOne}>
+            <lightning-button label="Next" onclick={goToPageTwo}></lightning-button>
+        </template>
+        <template lwc:else>
+            <lightning-button
+                style="margin-right: 10px"
+                label="Go Back"
+                onclick={goToPageOne}
+            ></lightning-button>
+            
+            <lightning-button label="Submit" onclick={handleSave}></lightning-button>
+
+        </template>
+    </lightning-modal-footer>
+</template>

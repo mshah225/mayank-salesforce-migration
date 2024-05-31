@@ -58,6 +58,13 @@ global with sharing class StudentProfileController {
     public List<String> graduateAcademicsMessages { get; set; }
     public List<String> graduateIndicatorsMessages { get; set; }
 
+    public Boolean hasCreateCasePermissions {
+        get {
+            return Schema.sObjectType.Case.isCreateable();
+        }
+        set;
+    }
+
     public Student_Program_Plan__c ugStudentProgram {
         get {
             return ugProgramPlans.isEmpty() ? new Student_Program_Plan__c() : ugProgramPlans[0];
@@ -1157,7 +1164,7 @@ global with sharing class StudentProfileController {
     }
 
     @RemoteAction
-    global static String createCase(String descriptionIn, String subjectIn, String funcGroup, String emplidIn) {
+    global static String createCase(String descriptionIn, String subjectIn, String functionalGroup, String emplidIn) {
         try {
             Id student = [SELECT Id FROM Contact WHERE EmplId__c = :emplidIn LIMIT 1].Id;
             RecordType recordType = [SELECT Id FROM RecordType WHERE Name = 'ASU Service' LIMIT 1];
@@ -1167,20 +1174,43 @@ global with sharing class StudentProfileController {
                 ContactId = student,
                 Subject = subjectIn,
                 Description = descriptionIn,
-                CC_Functional_Group__c = funcGroup,
+                CC_Functional_Group__c = functionalGroup,
                 Origin__c = 'Student Profile',
                 IsVisibleInSelfService = false
             );
-            insert feedbackCase;
 
-            Case insertedCase = [SELECT CaseNumber FROM Case WHERE Id = :feedbackCase.Id];
-            return insertedCase.CaseNumber;
+            SObjectAccessDecision caseCreationDecision = Security.stripInaccessible(
+                AccessType.CREATABLE,
+                new List<Case>{ feedbackCase }
+            );
+
+            try {
+                insert caseCreationDecision.getRecords(); // insert accessible fields, if any
+                return [
+                    SELECT CaseNumber
+                    FROM Case
+                    WHERE Id = :caseCreationDecision.getRecords()[0].Id
+                    WITH SECURITY_ENFORCED
+                ]
+                .CaseNumber;
+            } catch (NoAccessException e) {
+                vars.add(ErrorLogger.convertStringToJSON('emplid', emplidIn));
+                vars.add(ErrorLogger.convertStringToJSON('functional group', functionalGroup));
+                vars.add(ErrorLogger.convertStringToJSON('subject', subjectIn));
+                vars.add(ErrorLogger.convertStringToJSON('description', descriptionIn));
+                for (SObject strippedCase : caseCreationDecision.getRecords()) {
+                    vars.add(ErrorLogger.convertSObjectToJSON('stripped case', strippedCase));
+                }
+                ErrorLogger.log(e, vars, false);
+            }
         } catch (Exception e) {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplidIn));
-            vars.add(ErrorLogger.convertStringToJSON('subjectIn', subjectIn));
-            vars.add(ErrorLogger.convertStringToJSON('descriptionIn', descriptionIn));
+            vars.add(ErrorLogger.convertStringToJSON('emplid', emplidIn));
+            vars.add(ErrorLogger.convertStringToJSON('functional group', functionalGroup));
+            vars.add(ErrorLogger.convertStringToJSON('subject', subjectIn));
+            vars.add(ErrorLogger.convertStringToJSON('description', descriptionIn));
             ErrorLogger.log(e, vars, false);
         }
+
         return null;
     }
 

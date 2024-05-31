@@ -15,10 +15,16 @@ public class CaseDispatcher implements TriggerDispatcherInterface {
         CaseService.assignClassificationsAndRecordType(newList, oldMap);
         CaseService.assignRecentGroupAndQueue(newList, oldMap);
         CaseService.processCaseAssociations(newList);
+        if (FeatureFlagService.isEnabled('Case Trigger', 'Set Masked Data Fields')) {
+            CaseService.setMaskedDataFields(newList, oldMap);
+        }
     }
     public void beforeUpdate() {
         CaseService.assignClassificationsAndRecordType(newList, oldMap);
         CaseService.assignRecentGroupAndQueue(newList, oldMap);
+        if (FeatureFlagService.isEnabled('Case Trigger', 'Set Masked Data Fields')) {
+            CaseService.setMaskedDataFields(newList, oldMap);
+        }
         CaseService.updateAccountIdFromContact(newList, oldMap);
     }
     public void beforeDelete() {

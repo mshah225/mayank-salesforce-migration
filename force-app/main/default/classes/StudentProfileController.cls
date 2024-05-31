@@ -16,7 +16,7 @@ global with sharing class StudentProfileController {
     public List<Student_Program_Plan__c> activeGradProgramPlans { get; set; }
     public List<Student_Program_Plan__c> completedGradProgramPlans { get; set; }
     public List<Service_Indicator__c> serviceIndicators { get; set; }
-    public List<et4ae5__IndividualEmailResult__c> emailsForContact {get; set;}
+    public List<et4ae5__IndividualEmailResult__c> emailsForContact { get; set; }
     public Student_Program_Plan__c studentProgram { get; set; }
     public List<Student_Program_Plan_Advisor__c> ugStudentProgramAdvisors { get; set; }
     public List<Student_Program_Plan_Advisor__c> gradStudentProgramAdvisors { get; set; }
@@ -45,7 +45,7 @@ global with sharing class StudentProfileController {
     public Decimal undergradGPA { get; set; }
     public Decimal gradGPA { get; set; }
     public List<String> financialAidIndicators { get; set; }
-    public Map<String, String> termToName { get; set; }    
+    public Map<String, String> termToName { get; set; }
     public List<String> generalMessages { get; set; }
     public List<String> classesMessages { get; set; }
     public List<String> financesMessages { get; set; }
@@ -54,7 +54,14 @@ global with sharing class StudentProfileController {
     public List<String> undergraduateAcademicsMessages { get; set; }
     public List<String> undergraduateIndicatorsMessages { get; set; }
     public List<String> graduateAcademicsMessages { get; set; }
-    public List<String> graduateIndicatorsMessages { get; set; }    
+    public List<String> graduateIndicatorsMessages { get; set; }
+
+    public Boolean hasCreateCasePermissions {
+        get {
+            return Schema.sObjectType.Case.isCreateable();
+        }
+        set;
+    }
 
     public Student_Program_Plan__c ugStudentProgram {
         get {
@@ -93,8 +100,6 @@ global with sharing class StudentProfileController {
         }
         set;
     }
-
-    
 
     public StudentProfileController() {
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
@@ -660,15 +665,16 @@ global with sharing class StudentProfileController {
     public List<SelectOption> getCaseFunctionaGroupPicklist() {
         List<SelectOption> caseFunctionaGroupPicklist = new List<SelectOption>();
         List<Case_Classification__c> caseFunctionaGroupPicklistValues = [
-            SELECT Name, Id 
-            FROM Case_Classification__c 
-            WHERE RecordTypeId = :RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group') 
-            AND Active__c = true
+            SELECT Name, Id
+            FROM Case_Classification__c
+            WHERE
+                RecordTypeId = :RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Functional_Group')
+                AND Active__c = TRUE
             ORDER BY Name ASC
         ];
 
         caseFunctionaGroupPicklist.add(new SelectOption('', '<SELECT>'));
-        for (Case_Classification__c functionalGroup : caseFunctionaGroupPicklistValues){
+        for (Case_Classification__c functionalGroup : caseFunctionaGroupPicklistValues) {
             caseFunctionaGroupPicklist.add(new SelectOption(functionalGroup.Id, functionalGroup.Name));
         }
 
@@ -932,12 +938,12 @@ global with sharing class StudentProfileController {
         emailsForContact = new List<et4ae5__IndividualEmailResult__c>();
         String businessUnitForEmails = Label.SP_BU_EmailSends;
         List<et4ae5__IndividualEmailResult__c> emailResults = [
-            SELECT et4ae5__SubjectLine__c, et4ae5__DateSent__c 
-            FROM et4ae5__IndividualEmailResult__c 
-            WHERE 
-                et4ae5__SendDefinition__r.et4ae5__Business_Unit__r.et4ae5__Business_Unit_ID__c =: businessUnitForEmails
+            SELECT et4ae5__SubjectLine__c, et4ae5__DateSent__c
+            FROM et4ae5__IndividualEmailResult__c
+            WHERE
+                et4ae5__SendDefinition__r.et4ae5__Business_Unit__r.et4ae5__Business_Unit_ID__c = :businessUnitForEmails
                 AND et4ae5__DateSent__c > LAST_YEAR
-                AND et4ae5__Contact__c =: theContact.Id
+                AND et4ae5__Contact__c = :theContact.Id
             ORDER BY et4ae5__DateSent__c DESC
         ];
 
@@ -1146,7 +1152,7 @@ global with sharing class StudentProfileController {
     }
 
     @RemoteAction
-    global static String createCase(String descriptionIn, String subjectIn, String funcGroup, String emplidIn) {
+    global static String createCase(String descriptionIn, String subjectIn, String functionalGroup, String emplidIn) {
         try {
             Id student = [SELECT Id FROM Contact WHERE EmplId__c = :emplidIn LIMIT 1].Id;
             RecordType recordType = [SELECT Id FROM RecordType WHERE Name = 'ASU Service' LIMIT 1];
@@ -1156,23 +1162,45 @@ global with sharing class StudentProfileController {
                 ContactId = student,
                 Subject = subjectIn,
                 Description = descriptionIn,
-                CC_Functional_Group__c = funcGroup,
+                CC_Functional_Group__c = functionalGroup,
                 Origin__c = 'Student Profile',
                 IsVisibleInSelfService = false
             );
-            insert feedbackCase;
 
-            Case insertedCase = [SELECT CaseNumber FROM Case WHERE Id = :feedbackCase.Id];
-            return insertedCase.CaseNumber;
+            SObjectAccessDecision caseCreationDecision = Security.stripInaccessible(
+                AccessType.CREATABLE,
+                new List<Case>{ feedbackCase }
+            );
+
+            try {
+                insert caseCreationDecision.getRecords(); // insert accessible fields, if any
+                return [
+                    SELECT CaseNumber
+                    FROM Case
+                    WHERE Id = :caseCreationDecision.getRecords()[0].Id
+                    WITH SECURITY_ENFORCED
+                ]
+                .CaseNumber;
+            } catch (NoAccessException e) {
+                vars.add(ErrorLogger.convertStringToJSON('emplid', emplidIn));
+                vars.add(ErrorLogger.convertStringToJSON('functional group', functionalGroup));
+                vars.add(ErrorLogger.convertStringToJSON('subject', subjectIn));
+                vars.add(ErrorLogger.convertStringToJSON('description', descriptionIn));
+                for (SObject strippedCase : caseCreationDecision.getRecords()) {
+                    vars.add(ErrorLogger.convertSObjectToJSON('stripped case', strippedCase));
+                }
+                ErrorLogger.log(e, vars, false);
+            }
         } catch (Exception e) {
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplidIn));
-            vars.add(ErrorLogger.convertStringToJSON('subjectIn', subjectIn));
-            vars.add(ErrorLogger.convertStringToJSON('descriptionIn', descriptionIn));
+            vars.add(ErrorLogger.convertStringToJSON('emplid', emplidIn));
+            vars.add(ErrorLogger.convertStringToJSON('functional group', functionalGroup));
+            vars.add(ErrorLogger.convertStringToJSON('subject', subjectIn));
+            vars.add(ErrorLogger.convertStringToJSON('description', descriptionIn));
             ErrorLogger.log(e, vars, false);
         }
+
         return null;
     }
-
 
     @RemoteAction
     global static List<ServiceIndicatorWrapper.ServiceIndicator> getServiceIndicatorsForStudent(String contactEmplid) {
@@ -1180,19 +1208,23 @@ global with sharing class StudentProfileController {
     }
 
     @RemoteAction
-    global static List<FinancialAidChecklistWrapper.FinancialAidChecklist> getFinancialAidChecklist(String contactEmplid) {
+    global static List<FinancialAidChecklistWrapper.FinancialAidChecklist> getFinancialAidChecklist(
+        String contactEmplid
+    ) {
         return StudentProfileCallout.getFinancialAidChecklists(contactEmplid);
     }
 
     @RemoteAction
-    global static List<FinancialAidChecklistWrapper.FinancialAidChecklist> getUnresolvedFinancialAidChecklist(List<FinancialAidChecklistWrapper.FinancialAidChecklist> finAidChecklists) {
+    global static List<FinancialAidChecklistWrapper.FinancialAidChecklist> getUnresolvedFinancialAidChecklist(
+        List<FinancialAidChecklistWrapper.FinancialAidChecklist> finAidChecklists
+    ) {
         return filterFinancialAidUnresolvedItems(finAidChecklists);
     }
 
     @RemoteAction
     global static Map<String, List<StudentProfileController.EditMessageWrapper>> getEditMessages(String contactEmplid) {
         FinancialEditMessageWrapper editMessageWrapperDetails = StudentProfileCallout.getEditMessages(contactEmplid);
-        
+
         Map<String, List<StudentProfileController.EditMessageWrapper>> aidYearToEditMessage = new Map<String, List<StudentProfileController.EditMessageWrapper>>();
 
         if (editMessageWrapperDetails == null) {
@@ -1208,13 +1240,13 @@ global with sharing class StudentProfileController {
                 StudentProfileController.EditMessageWrapper emw = new StudentProfileController.EditMessageWrapper();
                 emw.academic_year = messages.academic_year;
                 emw.aid_year = messages.aid_year;
-                emw.term = messageDetails.term;	
+                emw.term = messageDetails.term;
                 emw.action_description = messageDetails.action_description;
                 emw.description = messageDetails.description;
                 emw.item_type = messageDetails.item_type;
-                messagesForTerm.add(emw);                
+                messagesForTerm.add(emw);
             }
-            aidYearToEditMessage.put(messages.academic_year, messagesForTerm);    
+            aidYearToEditMessage.put(messages.academic_year, messagesForTerm);
         }
 
         return aidYearToEditMessage;
@@ -1225,7 +1257,7 @@ global with sharing class StudentProfileController {
         FinancialAidAwardWrapper awardWrapper = StudentProfileCallout.getAwards(contactEmplid);
 
         awardWrapper.aid_years.sort();
-        
+
         Map<String, List<FinancialAidAwardWrapper.cls_term_awards>> aidYearToAward = new Map<String, List<FinancialAidAwardWrapper.cls_term_awards>>();
 
         if (awardWrapper == null) {
@@ -1241,7 +1273,6 @@ global with sharing class StudentProfileController {
         }
 
         return aidYearToAward;
-
     }
 
     @RemoteAction
@@ -1274,7 +1305,7 @@ global with sharing class StudentProfileController {
     global static FinancialAidRefundWrapper getFinancialAidRefunds(String contactEmplid) {
         FinancialAidRefundWrapper refundWrapper = StudentProfileCallout.getRefunds(contactEmplid);
 
-        if (refundWrapper != null && refundWrapper.refunds != null) {   
+        if (refundWrapper != null && refundWrapper.refunds != null) {
             refundWrapper.refunds.sort();
         }
 
@@ -1290,30 +1321,30 @@ global with sharing class StudentProfileController {
     global static RenewableAidWrapper getRenewableAid(String contactEmplid) {
         RenewableAidWrapper aidWrapper = StudentProfileCallout.getRenewableAid(contactEmplid);
         aidWrapper.aid_years.sort();
-        return aidWrapper;   
+        return aidWrapper;
     }
 
     @RemoteAction
     global static BookPaymentWrapper getBookPayments(String contactEmplid) {
         BookPaymentWrapper bookPaymentWrap = StudentProfileCallout.getBookPayments(contactEmplid);
         bookPaymentWrap.aid_years.sort();
-        return bookPaymentWrap; 
-    }  
+        return bookPaymentWrap;
+    }
 
     @RemoteAction
     global static TuitionResidencyWrapper getTuitionResidencyStatus(String contactEmplid) {
         try {
             TuitionResidencyWrapper residencyStatus = StudentProfileCallout.getTuitionResidencyStatus(contactEmplid);
-            return residencyStatus; 
+            return residencyStatus;
         } catch (Exception e) {
             return null;
         }
-    }    
+    }
 
     @RemoteAction
     global static Map<String, List<SAPWrapper.cls_sap>> getAcademicProgress(String contactEmplid) {
         SAPWrapper academicProgressWrapper = StudentProfileCallout.getAcademicProgress(contactEmplid);
-        
+
         Map<String, List<SAPWrapper.cls_sap>> academicYearToSAP = new Map<String, List<SAPWrapper.cls_sap>>();
 
         if (academicProgressWrapper == null) {
@@ -1325,7 +1356,6 @@ global with sharing class StudentProfileController {
         }
 
         return academicYearToSAP;
-
     }
 
     global class FinancialAidWrapper {
@@ -1392,12 +1422,12 @@ global with sharing class StudentProfileController {
     }
 
     public class EditMessageWrapper {
-        public String term {get; set;}
-        public String action_description {get; set;}	
-        public String description {get; set;}	
-        public String item_type {get; set;}
-        public String academic_year {get; set;}
-        public String aid_year {get; set;}
+        public String term { get; set; }
+        public String action_description { get; set; }
+        public String description { get; set; }
+        public String item_type { get; set; }
+        public String academic_year { get; set; }
+        public String aid_year { get; set; }
     }
 
     private class StudentProfileException extends Exception {

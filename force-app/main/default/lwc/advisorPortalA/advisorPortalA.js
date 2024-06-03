@@ -323,6 +323,12 @@ export default class AdvisorPortalA extends LightningElement {
             .catch((err) => {
                 // eslint-disable-next-line no-console
                 console.error(err);
+                this.showToast(
+                    'Error',
+                    'Unexpected error while retrieving cases - more details can be found in the JS console.  You should open a bug ticket with the Salesforce team.',
+                    'error',
+                    5000
+                );
             })
             .finally(() => {
                 this.loadLess();

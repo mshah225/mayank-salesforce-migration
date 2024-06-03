@@ -59,6 +59,16 @@ public class AdvisorPortalFilter {
     }
 
     /**
+     * Deserialize a JSON string into a filter (or return null if impossible)
+     */
+    public static AdvisorPortalFilter parse(String str) {
+        if (str != null && str != '' && str != '{}') {
+            return (AdvisorPortalFilter) JSON.deserialize(str, AdvisorPortalFilter.class);
+        }
+        return null;
+    }
+
+    /**
      * Checks if a specific filter should be used or not.  Returns false when either the filter is unset or when the that filter is inactive due to grad/ugrad mode
      *
      * @param filterName Name of the filter to determine if it should be used or not
@@ -559,8 +569,9 @@ public class AdvisorPortalFilter {
 
         return val_int;
     }
-    public String getCreatedFromDate() {
+    public Datetime getCreatedFromDate() {
         String val = null;
+        Datetime val_dt = null;
 
         // Determine if the value is set at all and extract it if it is
         if (!String.isBlank(this.createdFromDate))
@@ -568,13 +579,14 @@ public class AdvisorPortalFilter {
 
         if (val != null) {
             // from date is at beginning of that date
-            val = Datetime.valueOf(val + ' 00:00:00').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ');
+            val_dt = Datetime.valueOf(val + ' 00:00:00');
         }
 
-        return val;
+        return val_dt;
     }
-    public String getCreatedToDate() {
+    public Datetime getCreatedToDate() {
         String val = null;
+        Datetime val_dt = null;
 
         // Determine if the value is set at all and extract it if it is
         if (!String.isBlank(this.createdToDate))
@@ -582,46 +594,70 @@ public class AdvisorPortalFilter {
 
         if (val != null) {
             // to date is at end of that date
-            val = Datetime.valueOf(val + ' 23:59:59').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ');
+            val_dt = Datetime.valueOf(val + ' 23:59:59');
         }
 
-        return val;
+        return val_dt;
     }
-    public String getFollowUpFromDate() {
+    public Date getFollowUpFromDate() {
         String val = null;
+        Date val_date = null;
 
         // Determine if the value is set at all and extract it if it is
         if (!String.isBlank(this.followUpFromDate))
             val = this.followUpFromDate;
 
-        return val;
+        if (val != null) {
+            // to date is at end of that date
+            val_date = Date.valueOf(val);
+        }
+
+        return val_date;
     }
-    public String getFollowUpToDate() {
+    public Date getFollowUpToDate() {
         String val = null;
+        Date val_date = null;
 
         // Determine if the value is set at all and extract it if it is
         if (!String.isBlank(this.followUpToDate))
             val = this.followUpToDate;
 
-        return val;
+        if (val != null) {
+            // to date is at end of that date
+            val_date = Date.valueOf(val);
+        }
+
+        return val_date;
     }
-    public String getPersistenceFromDate() {
+    public Date getPersistenceFromDate() {
         String val = null;
+        Date val_date = null;
 
         // Determine if the value is set at all and extract it if it is
         if (!String.isBlank(this.persistenceFromDate))
             val = this.persistenceFromDate;
 
-        return val;
+        if (val != null) {
+            // to date is at end of that date
+            val_date = Date.valueOf(val);
+        }
+
+        return val_date;
     }
-    public String getPersistenceToDate() {
+    public Date getPersistenceToDate() {
         String val = null;
+        Date val_date = null;
 
         // Determine if the value is set at all and extract it if it is
         if (!String.isBlank(this.persistenceToDate))
             val = this.persistenceToDate;
 
-        return val;
+        if (val != null) {
+            // to date is at end of that date
+            val_date = Date.valueOf(val);
+        }
+
+        return val_date;
     }
 
     /**

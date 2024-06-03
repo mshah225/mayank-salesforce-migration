@@ -692,13 +692,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         testStudentGroups.add(annaPhillipsStudentGroup);
         Student_Group__c carlPorterStudentGroup = newStudentGroup(carlPorter.Id, 'ADIP');
         testStudentGroups.add(carlPorterStudentGroup);
-        Student_Group__c maddyThomasStudentGroup1 = newStudentGroup(maddyThomas.Id, 'ADAM');
+        Student_Group__c maddyThomasStudentGroup1 = newStudentGroup(maddyThomas.Id, 'ADAD');
         testStudentGroups.add(maddyThomasStudentGroup1);
         Student_Group__c maddyThomasStudentGroup2 = newStudentGroup(maddyThomas.Id, 'SRKY');
         testStudentGroups.add(maddyThomasStudentGroup2);
         Student_Group__c charlieDorseyWardStudentGroup1 = newStudentGroup(charlieDorseyWard.Id, 'SR1B');
         testStudentGroups.add(charlieDorseyWardStudentGroup1);
-        Student_Group__c charlieDorseyWardStudentGroup2 = newStudentGroup(charlieDorseyWard.Id, 'SRSA');
+        Student_Group__c charlieDorseyWardStudentGroup2 = newStudentGroup(charlieDorseyWard.Id, 'ADAD');
         testStudentGroups.add(charlieDorseyWardStudentGroup2);
         Student_Group__c mitchKeaneStudentGroup = newStudentGroup(mitchKeane.Id, 'SR1D');
         testStudentGroups.add(mitchKeaneStudentGroup);
@@ -2856,7 +2856,7 @@ private class AdvisorPortalFilterSectionControllerTest {
                 Contact__c IN (
                     SELECT SG_Contact__c
                     FROM Student_Group__c
-                    WHERE SG_PeopleSoft_Code__c IN ('SRKY', 'ADAD', 'ADAM', 'SRSA')
+                    WHERE SG_PeopleSoft_Code__c IN ('SRKY', 'ADAD')
                 )
                 AND Contact__c IN (
                     SELECT Student__c
@@ -2871,11 +2871,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
             WHERE
-                Contact__c IN (
-                    SELECT SG_Contact__c
-                    FROM Student_Group__c
-                    WHERE SG_PeopleSoft_Code__c IN ('ADAD', 'ADAM', 'SRSA')
-                )
+                Contact__c IN (SELECT SG_Contact__c FROM Student_Group__c WHERE SG_PeopleSoft_Code__c IN ('ADAD'))
                 AND Contact__c IN (
                     SELECT Student__c
                     FROM Success_Student__c

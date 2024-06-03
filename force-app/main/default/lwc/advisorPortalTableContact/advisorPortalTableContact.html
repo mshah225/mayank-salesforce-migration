@@ -1,15 +1,16 @@
 <template>
-    <template if:true={contactWrapperNotNull}>
+    <template lwc:if={contactWrapperNotNull}>
         <div class="accordianSectionLabelWrapper">
-            <lightning-input
-                type="checkbox"
-                checked={contactWrapper.isSelected}
-                onchange={toggleContactSelect}
-                class="inline-input"
-            >
-            </lightning-input>
+            <template lwc:if={contactWrapper.isSelected}>
+                <lightning-input type="checkbox" checked onchange={toggleContactSelect} class="inline-input">
+                </lightning-input>
+            </template>
+            <template lwc:else>
+                <lightning-input type="checkbox" onchange={toggleContactSelect} class="inline-input"> </lightning-input>
+            </template>
+
             <div class="accordianSectionLabel">
-                <template if:true={contactWrapper.isOpen}>
+                <template lwc:if={contactWrapper.isOpen}>
                     <!-- sldsValidatorIgnoreNextLine -->
                     <lightning-button-icon
                         icon-name="utility:chevrondown"
@@ -20,7 +21,7 @@
                         onclick={closeDropdown}
                     ></lightning-button-icon>
                 </template>
-                <template if:false={contactWrapper.isOpen}>
+                <template lwc:else>
                     <!-- sldsValidatorIgnoreNextLine -->
                     <lightning-button-icon
                         icon-name="utility:chevronright"
@@ -37,18 +38,16 @@
                     &#124;
                 </span>
                 <span class="slds-var-m-left_xx-small">
-                    <template if:true={contactWrapper.hasCases}>
-                        <template if:true={contactWrapper.hasMultipleCases}>
+                    <template lwc:if={contactWrapper.hasCases}>
+                        <template lwc:if={contactWrapper.hasMultipleCases}>
                             {contactWrapper.cases.length} cases
                         </template>
-                        <template if:false={contactWrapper.hasMultipleCases}>
-                            {contactWrapper.cases.length} case
-                        </template>
+                        <template lwc:else> {contactWrapper.cases.length} case </template>
                     </template>
-                    <template if:false={contactWrapper.hasCases}> 0 cases </template>
+                    <template lwc:else> 0 cases </template>
                 </span>
 
-                <template if:true={contactWrapper.isOutreachCustomer}>
+                <template lwc:if={contactWrapper.isOutreachCustomer}>
                     <lightning-icon
                         class="outreach-icn"
                         icon-name="utility:record"
@@ -57,7 +56,7 @@
                     ></lightning-icon>
                 </template>
 
-                <template if:false={contactWrapper.isGradStudent}>
+                <template lwc:if={showOutlookInfo}>
                     <c-advisor-portal-table-contact-pred-level
                         prediction-level={contactWrapper.portalContact.Curr_Cont_Prediction_Level__c}
                     ></c-advisor-portal-table-contact-pred-level>
@@ -70,7 +69,7 @@
             </div>
         </div>
 
-        <template if:true={contactWrapper.isOpen}>
+        <template lwc:if={contactWrapper.isOpen}>
             <div class="accordianSectionBodyWrapper">
                 <table class="slds-table slds-table_cell-buffer slds-table_bordered accordianSectionBody">
                     <thead>
@@ -104,13 +103,23 @@
                             <tr class="slds-hint-parent" key={caseWrapper.portalCase.Id}>
                                 <th data-label="" scope="row">
                                     <div class="slds-truncate">
-                                        <lightning-input
-                                            type="checkbox"
-                                            checked={caseWrapper.isSelected}
-                                            name={caseWrapper.portalCase.Id}
-                                            onchange={toggleCaseSelect}
-                                            class="inline-input"
-                                        ></lightning-input>
+                                        <template lwc:if={caseWrapper.isSelected}>
+                                            <lightning-input
+                                                type="checkbox"
+                                                checked
+                                                name={caseWrapper.portalCase.Id}
+                                                onchange={toggleCaseSelect}
+                                                class="inline-input"
+                                            ></lightning-input>
+                                        </template>
+                                        <template lwc:else>
+                                            <lightning-input
+                                                type="checkbox"
+                                                name={caseWrapper.portalCase.Id}
+                                                onchange={toggleCaseSelect}
+                                                class="inline-input"
+                                            ></lightning-input>
+                                        </template>
                                     </div>
                                 </th>
                                 <th data-label="Priority">
@@ -138,7 +147,7 @@
                                 </td>
                                 <td data-label="Followup Date">
                                     <div class="slds-truncate" title="Followup Date">
-                                        <template if:true={caseWrapper.hasFollowupDate}>
+                                        <template lwc:if={caseWrapper.hasFollowupDate}>
                                             <lightning-formatted-date-time
                                                 value={caseWrapper.formattedFollowupDate}
                                             ></lightning-formatted-date-time>

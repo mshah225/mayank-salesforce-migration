@@ -435,6 +435,40 @@ public class DynamicSoqlBuilderTest {
         LogSuite.deactivateTestFlowSuite();
     }
 
+    @isTest
+    private static void whereKeyword() {
+        LogSuite.activateTestFlowSuite('DynamicSoqlBuilderTest whereDate');
+
+        // Update to have birthdates near today so we can use TODAY in filter
+        Date past = Date.today().addDays(-3);
+        Date today = Date.today();
+        Date future = Date.today().addDays(3);
+        List<Contact> contacts = new List<Contact>([SELECT Id, Birthdate FROM Contact]);
+        for (Integer i = 0; i < contacts.size(); i++) {
+            if (Math.mod(i, 3) == 0)
+                contacts[i].Birthdate = past;
+            else if (Math.mod(i, 3) == 1)
+                contacts[i].Birthdate = today;
+            else
+                contacts[i].Birthdate = future;
+        }
+        update contacts;
+
+        // And check correct response
+        List<Contact> expectedContacts = [SELECT Id FROM Contact WHERE Birthdate < TODAY];
+        List<Contact> returnedContacts = (List<Contact>) new DynamicSoqlBuilder('Contact')
+            .returnField('Id')
+            .restrictLessThan('Birthdate', new DynamicSoqlBuilderRestriction.Keyword('TODAY'))
+            .query();
+
+        Assert.isTrue(
+            !expectedContacts.isEmpty(),
+            'If expectedContacts is empty - then we have nothing to verify against.'
+        );
+        assertSame(expectedContacts, returnedContacts);
+        LogSuite.deactivateTestFlowSuite();
+    }
+
     /**
      * Assert that the records in both lists are the same - every record that exists in one exists in the other,
      * and each pair of records have the same set of fields (and those fields have the same value)

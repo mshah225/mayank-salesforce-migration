@@ -717,7 +717,7 @@ private class AdvisorPortalFilterSectionControllerTest {
         Service_Indicator__c anyaSimmsServiceIndicator = new Service_Indicator__c(
             SI_Contact__c = anyaSimms.Id,
             SI_Code__c = 'AD4',
-            SI_Reason__c = 'PROV',
+            SI_Reason__c = 'Provisional Admission',
             SI_Positive_Service_Indicator__c = true,
             SI_Start_Term__c = term2107.Id,
             SI_End_Term__c = term2844.Id
@@ -3269,7 +3269,7 @@ private class AdvisorPortalFilterSectionControllerTest {
                         SI_Start_Term__r.PeopleSoft_Code__c <= :currentPSCode
                         AND SI_End_Term__r.PeopleSoft_Code__c >= :currentPSCode
                         AND SI_Code__c = 'AD4'
-                        AND SI_Reason__c = 'PROV'
+                        AND SI_Reason__c = 'Provisional Admission'
                         AND SI_Positive_Service_Indicator__c = TRUE
                 )
                 AND Contact__c IN (

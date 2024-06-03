@@ -378,7 +378,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'COMPSCI',
             Plan_Description__c = 'Computer Science',
-            Residency__c = 'Non-Resident'
+            Residency__c = 'Non-Resident',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(ryanCastelliProgramPlan);
         Student_Program_Plan__c chaseBurgessProgramPlan = new Student_Program_Plan__c(
@@ -389,7 +391,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'BUSNESS',
             Plan_Description__c = 'Business Boss',
-            Residency__c = 'Non-Resident'
+            Residency__c = 'Non-Resident',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(chaseBurgessProgramPlan);
         Student_Program_Plan__c morganStraussProgramPlan = new Student_Program_Plan__c(
@@ -400,7 +404,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'AEROSPC',
             Plan_Description__c = 'Aerospace Engineering',
-            Residency__c = 'Resident'
+            Residency__c = 'Resident',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(morganStraussProgramPlan);
         Student_Program_Plan__c benHellsigProgramPlan = new Student_Program_Plan__c(
@@ -411,7 +417,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'BUSNESS',
             Plan_Description__c = 'Business Boss',
-            Residency__c = 'Non-Resident'
+            Residency__c = 'Non-Resident',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(benHellsigProgramPlan);
         Student_Program_Plan__c marisaBarillaProgramPlan = new Student_Program_Plan__c(
@@ -422,7 +430,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'PREMED',
             Plan_Description__c = 'Premedical',
-            Residency__c = 'Non-Resident'
+            Residency__c = 'Non-Resident',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(marisaBarillaProgramPlan);
         Student_Program_Plan__c sarahDurisekProgramPlan = new Student_Program_Plan__c(
@@ -433,7 +443,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'PREMED',
             Plan_Description__c = 'Premedical',
-            Residency__c = 'Resident'
+            Residency__c = 'Resident',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(sarahDurisekProgramPlan);
         Student_Program_Plan__c jamesBairProgramPlan = new Student_Program_Plan__c(
@@ -444,7 +456,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'TVFILM',
             Plan_Description__c = 'Videography',
-            Residency__c = 'International'
+            Residency__c = 'International',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(jamesBairProgramPlan);
         Student_Program_Plan__c zacharyNoellerProgramPlan = new Student_Program_Plan__c(
@@ -455,7 +469,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'TVFILM',
             Plan_Description__c = 'Videography',
-            Residency__c = 'Non-Resident'
+            Residency__c = 'Non-Resident',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(zacharyNoellerProgramPlan);
         Student_Program_Plan__c morganDiegelProgramPlan = new Student_Program_Plan__c(
@@ -466,7 +482,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'COMPSCI',
             Plan_Description__c = 'Computer Science',
-            Residency__c = 'International'
+            Residency__c = 'International',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(morganDiegelProgramPlan);
         Student_Program_Plan__c aaronAssafProgramPlan = new Student_Program_Plan__c(
@@ -477,7 +495,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'ELECENG',
             Plan_Description__c = 'Electrical Engineering',
-            Residency__c = 'International'
+            Residency__c = 'International',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(aaronAssafProgramPlan);
         Student_Program_Plan__c simonKirkseyProgramPlan = new Student_Program_Plan__c(
@@ -488,7 +508,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'PURMATH',
             Plan_Description__c = 'Absoluti Mathematica',
-            Residency__c = 'Non-Resident'
+            Residency__c = 'Non-Resident',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(simonKirkseyProgramPlan);
         Student_Program_Plan__c seanPhillipsProgramPlan = new Student_Program_Plan__c(
@@ -499,7 +521,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'TVFILM',
             Plan_Description__c = 'Videography',
-            Residency__c = 'Resident'
+            Residency__c = 'Resident',
+            Status__c = 'Active in Program',
+            Effective_Date__c = tMinus3d
         );
         testStudentProgramPlans.add(seanPhillipsProgramPlan);
         Student_Program_Plan__c annaPhillipsProgramPlan = new Student_Program_Plan__c(
@@ -1313,9 +1337,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             System.assert(
                 programMap.keySet().contains(expectedKey),
                 'Should contain all active programs (which is ALL programs for our test data) but "' +
-                expectedKey +
-                '" is missing from ' +
-                programMap.keySet()
+                    expectedKey +
+                    '" is missing from ' +
+                    programMap.keySet()
             );
         }
     }
@@ -1341,26 +1365,26 @@ private class AdvisorPortalFilterSectionControllerTest {
             System.assert(
                 planMap.keySet().contains(expectedKey),
                 'Should contain all active plans (which is ALL plans for our test data) but "' +
-                expectedKey +
-                '" is missing from ' +
-                planMap.keySet()
+                    expectedKey +
+                    '" is missing from ' +
+                    planMap.keySet()
             );
 
             if (p.Program__r.Program_Code__c == 'IRAAFUL') {
                 System.assert(
                     limitedPlanMap.keySet().contains(expectedKey),
                     'Should contain only plans under the IRAAFUL program and it is missing "' +
-                    expectedKey +
-                    '" from ' +
-                    limitedPlanMap.keySet()
+                        expectedKey +
+                        '" from ' +
+                        limitedPlanMap.keySet()
                 );
             } else {
                 System.assert(
                     !limitedPlanMap.keySet().contains(expectedKey),
                     'Should contain only plans under the IRAAFUL program but it contains "' +
-                    expectedKey +
-                    '" in ' +
-                    limitedPlanMap.keySet()
+                        expectedKey +
+                        '" in ' +
+                        limitedPlanMap.keySet()
                 );
             }
         }
@@ -4116,8 +4140,8 @@ private class AdvisorPortalFilterSectionControllerTest {
                 System.assert(
                     false,
                     'Missing contact from results.  ' +
-                    expectedStudent.get('ContactId__alias') +
-                    ' was expected but not returned.'
+                        expectedStudent.get('ContactId__alias') +
+                        ' was expected but not returned.'
                 );
             }
         }

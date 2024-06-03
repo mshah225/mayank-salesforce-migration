@@ -2,90 +2,64 @@
 public class DynamicSoqlBuilderTest {
     @TestSetup
     static void setup() {
-        List<Contact> testContacts = new List<Contact>();
-
-        testContacts.add(
+        insert new List<Contact>{
             new Contact(
                 FirstName = 'Robert',
                 LastName = 'Nordman',
                 Email = 'rnordman@asu.test',
                 DoNotCall = true,
-                Birthdate = Date.newInstance(1999, 12, 17),
-                Email_Change_Date__c = Datetime.valueOf('2023-10-12 14:00:00')
-            )
-        );
-        testContacts.add(
+                Birthdate = Date.newInstance(1999, 12, 17)
+            ),
             new Contact(
                 FirstName = 'Priscilla',
                 LastName = 'Nordman',
                 Email = 'pnordman@asu.test',
                 DoNotCall = true,
-                Birthdate = Date.newInstance(1998, 12, 17),
-                Email_Change_Date__c = Datetime.valueOf('2023-10-12 13:00:00')
-            )
-        );
-        testContacts.add(
+                Birthdate = Date.newInstance(1998, 12, 17)
+            ),
             new Contact(
                 FirstName = 'Amanda',
                 LastName = 'Nordman',
                 Email = 'anordman@asu.test',
                 DoNotCall = true,
-                Birthdate = Date.newInstance(1997, 12, 17),
-                Email_Change_Date__c = Datetime.valueOf('2023-10-12 12:00:00')
-            )
-        );
-        testContacts.add(
+                Birthdate = Date.newInstance(1997, 12, 17)
+            ),
             new Contact(
                 FirstName = 'Robert',
                 LastName = 'Comstock',
                 Email = 'rcomstock@asu.test',
                 DoNotCall = true,
-                Birthdate = Date.newInstance(1996, 12, 17),
-                Email_Change_Date__c = Datetime.valueOf('2023-10-12 11:00:00')
-            )
-        );
-        testContacts.add(
+                Birthdate = Date.newInstance(1996, 12, 17)
+            ),
             new Contact(
                 FirstName = 'Roger',
                 LastName = 'Davies',
                 Email = 'rdavies@asu.test',
                 DoNotCall = false,
-                Birthdate = Date.newInstance(1995, 12, 17),
-                Email_Change_Date__c = Datetime.valueOf('2023-10-12 10:00:00')
-            )
-        );
-        testContacts.add(
+                Birthdate = Date.newInstance(1995, 12, 17)
+            ),
             new Contact(
                 FirstName = 'Justin',
                 LastName = 'Sanchez',
                 Email = 'jsanchez@asu.test',
                 DoNotCall = false,
-                Birthdate = Date.newInstance(1994, 12, 17),
-                Email_Change_Date__c = Datetime.valueOf('2023-10-12 09:00:00')
-            )
-        );
-        testContacts.add(
+                Birthdate = Date.newInstance(1994, 12, 17)
+            ),
             new Contact(
                 FirstName = 'Michael',
                 LastName = 'Gilardi',
                 Email = 'mgildari@asu.test',
                 DoNotCall = false,
-                Birthdate = Date.newInstance(1993, 12, 17),
-                Email_Change_Date__c = Datetime.valueOf('2023-10-12 08:00:00')
-            )
-        );
-        testContacts.add(
+                Birthdate = Date.newInstance(1993, 12, 17)
+            ),
             new Contact(
                 FirstName = 'Ryan',
                 LastName = 'O\'Brien',
                 Email = 'robrien@asu.test',
                 DoNotCall = false,
-                Birthdate = Date.newInstance(1992, 12, 17),
-                Email_Change_Date__c = Datetime.valueOf('2023-10-12 07:00:00')
+                Birthdate = Date.newInstance(1992, 12, 17)
             )
-        );
-
-        insert testContacts;
+        };
     }
 
     @isTest
@@ -438,89 +412,88 @@ public class DynamicSoqlBuilderTest {
     @isTest
     private static void whereDatetime() {
         LogSuite.activateTestFlowSuite('DynamicSoqlBuilderTest whereDatetime');
-        List<Contact> expectedContacts = [
+
+        // Make cases with CreatedDate both before and after queriable timestamp
+        insert new List<Case>{ new Case(Subject = 'Past'), new Case(Subject = 'Past') };
+        ObjectService.wait(2000);
+        Datetime now = Datetime.now();
+        ObjectService.wait(2000);
+        insert new List<Case>{ new Case(Subject = 'Future'), new Case(Subject = 'Future') };
+
+        List<Case> expectedCases = [
             SELECT Id
-            FROM Contact
-            WHERE Email_Change_Date__c <= :Datetime.valueOf('2023-10-12 10:00:00')
+            FROM Case
+            WHERE CreatedDate <= :now
         ];
-        List<Contact> returnedContacts = (List<Contact>) new DynamicSoqlBuilder('Contact')
+        List<Case> returnedCases = (List<Case>) new DynamicSoqlBuilder('Case')
             .returnField('Id')
-            .restrictLessThanOrEqual('Email_Change_Date__c', Datetime.valueOf('2023-10-12 10:00:00'))
+            .restrictLessThanOrEqual('CreatedDate', now)
             .query();
 
-        Assert.isTrue(
-            !expectedContacts.isEmpty(),
-            'If expectedContacts is empty - then we have nothing to verify against.'
-        );
-        assertSame(expectedContacts, returnedContacts);
+        Assert.isTrue(!expectedCases.isEmpty(), 'If expectedCases is empty - then we have nothing to verify against.');
+        assertSame(expectedCases, returnedCases);
         LogSuite.deactivateTestFlowSuite();
     }
 
     /**
-     * Assert that the contacts in both lists are the same - every Contact that exists in one exists in the other,
-     * and both Contacts have the same set of fields
+     * Assert that the records in both lists are the same - every record that exists in one exists in the other,
+     * and each pair of records have the same set of fields (and those fields have the same value)
+     *
+     * Records must include the Id field since this is used to map expected vs returned
      */
-    private static void assertSame(List<Contact> expectedContacts, List<Contact> returnedContacts) {
+    private static void assertSame(List<SObject> expectedRecords, List<SObject> returnedRecords) {
         Assert.areEqual(
-            expectedContacts.size(),
-            returnedContacts.size(),
-            'Expected ' +
-            expectedContacts.size() +
-            ' contacts, but returned ' +
-            returnedContacts.size() +
-            ' contacts.'
+            expectedRecords.size(),
+            returnedRecords.size(),
+            'Expected ' + expectedRecords.size() + ' records, but returned ' + returnedRecords.size() + ' records.'
         );
 
-        Map<Id, Contact> returnedContactsSet = new Map<Id, Contact>();
-        for (Contact con : returnedContacts)
-            returnedContactsSet.put(con.Id, con);
+        Map<Id, SObject> returnedRecordsMap = new Map<Id, SObject>();
+        for (SObject con : returnedRecords)
+            returnedRecordsMap.put(con.Id, con);
 
-        for (Contact expectedContact : expectedContacts) {
+        for (SObject expectedRecord : expectedRecords) {
             // Exists in map
             Assert.isTrue(
-                returnedContactsSet.containsKey(expectedContact.Id),
-                'Expected Contact(Id=' +
-                expectedContact.Id +
-                ') to be returned, but it was not.'
+                returnedRecordsMap.containsKey(expectedRecord.Id),
+                'Expected Record(Id=' + expectedRecord.Id + ') to be returned, but it was not.'
             );
 
             // Compare all fields
-            Contact returnedContact = returnedContactsSet.get(expectedContact.Id);
+            SObject returnedRecord = returnedRecordsMap.get(expectedRecord.Id);
 
             Map<String, Object> expectedMp = (Map<String, Object>) JSON.deserializeUntyped(
-                JSON.serialize(expectedContact)
+                JSON.serialize(expectedRecord)
             );
             Map<String, Object> returnedMp = (Map<String, Object>) JSON.deserializeUntyped(
-                JSON.serialize(returnedContact)
+                JSON.serialize(returnedRecord)
             );
             Assert.areEqual(
                 expectedMp.size(),
                 returnedMp.size(),
-                'Expected Contact to have ' +
-                expectedMp.size() +
-                ' fields, but it had ' +
-                returnedMp.size() +
-                ' fields returned.'
+                'Expected Record to have ' +
+                    expectedMp.size() +
+                    ' fields, but it had ' +
+                    returnedMp.size() +
+                    ' fields returned.'
             );
 
             for (String field : expectedMp.keySet()) {
                 // exists in map
                 Assert.isTrue(
                     returnedMp.containsKey(field),
-                    'Expected field ' +
-                    field +
-                    ' to be returned, but it was not.'
+                    'Expected field ' + field + ' to be returned, but it was not.'
                 );
                 // correct value for field
                 Assert.areEqual(
                     expectedMp.get(field),
                     returnedMp.get(field),
                     'Expected field ' +
-                    field +
-                    ' to equal ' +
-                    expectedMp.get(field) +
-                    ', but it was ' +
-                    returnedMp.get(field)
+                        field +
+                        ' to equal ' +
+                        expectedMp.get(field) +
+                        ', but it was ' +
+                        returnedMp.get(field)
                 );
             }
         }

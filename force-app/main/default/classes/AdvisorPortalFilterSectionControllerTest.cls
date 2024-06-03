@@ -84,42 +84,50 @@ private class AdvisorPortalFilterSectionControllerTest {
      * +----------------------+----------+----------+-----------+----------+---------+-------+-------------+-----------+-------------+------------+------------+-----------+------------------------+
      *
      *
-     * We setup case categories of "Watchlist Cases"
-     * +------------------------+------------------------+
-     * |          Name          |         Parent         |
-     * +------------------------+------------------------+
-     * |  ASU Advisor Outreach  |                        |
-     * |  Watchlist             |  ASU Advisor Outreach  |
-     * +------------------------+------------------------+
+     * We setup case categories and subcategories (and functional groups)
      *
-     * and 4 other case catgories
-     * +---------+
-     * |   Name  |
-     * +---------+
-     * |  CAT-1  |
-     * |  CAT-2  |
-     * |  CAT-3  |
-     * |  CAT-4  |
-     * +---------+
+     * ASU Advisor Outreach (functional group)
+     *   + CAT-1 (category)
+     *       + SUBCAT-1-1 (subcategory)
+     *       + SUBCAT-1-2 (subcategory)
+     *   + CAT-2 (category)
+     *       + SUBCAT-2-1 (subcategory)
+     *       + SUBCAT-2-2 (subcategory)
+     *   + CAT-3 (category)
+     *   + CAT-4 (category)
+     *   + Watchlist (category)
+     * ASU Graduate Advisor Portal (functional group)
+     *   + G-CAT-1 (category)
+     *       + G-SUBCAT-1-1 (subcategory)
+     *       + G-SUBCAT-1-2 (subcategory)
+     *   + G-CAT-2 (category)
+     *       + G-SUBCAT-2-1 (subcategory)
+     *       + G-SUBCAT-2-2 (subcategory)
      *
-     *
-     * 10 cases
-     * +----------------------+-------------+----------------------------------+----------+------------------+----------------+------------+
-     * |         Who          |  Subject    |                Status            |  Owner   |  Follow Up Date  |  Created Date  |  Category  |
-     * +----------------------+-------------+----------------------------------+----------+------------------+----------------+------------+
-     * |  Ryan Castelli       |  New car    |  New                             | McKinnon |  TODAY + 5d      |  TODAY - 5d    |  CAT-1     |
-     * |  Ryan Castelli       |  Found bug  |  Busy Signal                     | McKinnon |  TODAY + 9d      |  TODAY - 9d    |  CAT-1     |
-     * |  Ryan Castelli       |  Send help  |  Customer Replied                | McKinnon |  TODAY + 10d     |  TODAY - 10d   |  CAT-2     |
-     * |  Ryan Castelli       |  Ant man    |  Email Sent                      | McKinnon |  TODAY + 2d      |  TODAY - 2d    |  CAT-2     |
-     * |  Chase Burgess       |  Battery    |  New                             | McKinnon |  TODAY + 2d      |  TODAY - 2d    |  CAT-4     |
-     * |  Ben Hellsig         |  Tailwind   |  New                             | McKinnon |  TODAY + 2d      |  TODAY - 2d    |  CAT-4     |
-     * |  Marisa Barilla      |  Paperclip  |  New                             | McKinnon |  TODAY + 2d      |  TODAY - 2d    |  CAT-4     |
-     * |  Sarah Durisek       |  Enrollment |  Outreach Required               | McKinnon |  TODAY + 2d      |  TODAY - 2d    |  CAT-3     |
-     * |  James Bair          |  Enrollment |  Outreach Required - Transferred | McKinnon |  TODAY + 1d      |  TODAY - 1d    |  CAT-3     |
-     * |  Morgan Diegel       |  Bee girl   |  Email Sent                      | McKinnon |  TODAY + 1d      |  TODAY - 1d    |  CAT-4     |
-     * |  Morgan Diegel       |  Spyglass   |  New                             | McKinnon |  TODAY + 1d      |  TODAY - 1d    |  Watchlist |
-     * +----------------------+-------------+----------------------------------+----------+------------------+----------------+------------+
+     * 17 cases
+     * +----------------------+-------------+----------------------------------+----------+------------------+----------------+------------+----------------+
+     * |         Who          |  Subject    |                Status            |  Owner   |  Follow Up Date  |  Created Date  |  Category  |  Sub Category  |
+     * +----------------------+-------------+----------------------------------+----------+------------------+----------------+------------+----------------+
+     * |  Ryan Castelli       |  New car    |  New                             | McKinnon |  TODAY + 5d      |  TODAY - 5d    |  CAT-1     |  SUBCAT-1-1    |
+     * |  Ryan Castelli       |  Found bug  |  Busy Signal                     | McKinnon |  TODAY + 9d      |  TODAY - 9d    |  CAT-1     |  SUBCAT-1-2    |
+     * |  Ryan Castelli       |  Send help  |  Customer Replied                | McKinnon |  TODAY + 10d     |  TODAY - 10d   |  CAT-2     |  SUBCAT-2-1    |
+     * |  Ryan Castelli       |  Ant man    |  Email Sent                      | McKinnon |  TODAY + 2d      |  TODAY - 2d    |  CAT-2     |                |
+     * |  Chase Burgess       |  Roger      |  Talkie                          | McKinnon |  TODAY + 2d      |  TODAY - 2d    |  CAT-1     |  SUBCAT-1-1    |
+     * |  Chase Burgess       |  Battery    |  New                             | McKinnon |  TODAY + 2d      |  TODAY - 2d    |  CAT-4     |                |
+     * |  Ben Hellsig         |  Tailwind   |  New                             | McKinnon |  TODAY + 2d      |  TODAY - 2d    |  CAT-4     |                |
+     * |  Marisa Barilla      |  Paperclip  |  New                             | McKinnon |  TODAY + 2d      |  TODAY - 2d    |  CAT-4     |                |
+     * |  Sarah Durisek       |  Enrollment |  Outreach Required               | McKinnon |  TODAY + 2d      |  TODAY - 2d    |  CAT-3     |                |
+     * |  James Bair          |  Enrollment |  Outreach Required - Transferred | McKinnon |  TODAY + 1d      |  TODAY - 1d    |  CAT-3     |                |
+     * |  Morgan Diegel       |  Bee girl   |  Email Sent                      | McKinnon |  TODAY + 1d      |  TODAY - 1d    |  CAT-4     |                |
+     * |  Morgan Diegel       |  Spyglass   |  New                             | McKinnon |  TODAY + 1d      |  TODAY - 1d    |  Watchlist |                |
+     * |  Anna Phillips       |  Parade 11  |  New                             | McKinnon |  TODAY + 1d      |  TODAY - 1d    |  G-CAT-1   |  G-SUBCAT-1-1  |
+     * |  Carl Porter         |  Parade 11  |  New                             | McKinnon |  TODAY + 1d      |  TODAY - 1d    |  G-CAT-1   |  G-SUBCAT-1-2  |
+     * |  Devin McCain        |  Parade 11  |  New                             | McKinnon |  TODAY + 1d      |  TODAY - 1d    |  G-CAT-1   |  G-SUBCAT-1-2  |
+     * |  Corey Nickolette    |  Parade 11  |  New                             | McKinnon |  TODAY + 1d      |  TODAY - 1d    |  G-CAT-2   |  G-SUBCAT-2-1  |
+     * |  Maddy Thomas        |  Parade 11  |  New                             | McKinnon |  TODAY + 1d      |  TODAY - 1d    |  G-CAT-2   |                |
+     * +----------------------+-------------+----------------------------------+----------+------------------+----------------+------------+----------------+
      */
+
     @TestSetup
     public static void setup() {
         // Common date obejcts
@@ -779,20 +787,39 @@ private class AdvisorPortalFilterSectionControllerTest {
         Case_Classification__c asuAdvisorOutreachFuncGrp = newFunctionalGroup('ASU Advisor Outreach');
         insert asuAdvisorOutreachFuncGrp;
         Case_Classification__c watchlistCategory = newCaseClassification('Watchlist', asuAdvisorOutreachFuncGrp.Id);
-        Case_Classification__c category1 = newCaseClassification('CAT-1', null);
-        Case_Classification__c category2 = newCaseClassification('CAT-2', null);
-        Case_Classification__c category3 = newCaseClassification('CAT-3', null);
-        Case_Classification__c category4 = newCaseClassification('CAT-4', null);
+        Case_Classification__c category1 = newCaseClassification('CAT-1', asuAdvisorOutreachFuncGrp.Id);
+        Case_Classification__c category2 = newCaseClassification('CAT-2', asuAdvisorOutreachFuncGrp.Id);
+        Case_Classification__c category3 = newCaseClassification('CAT-3', asuAdvisorOutreachFuncGrp.Id);
+        Case_Classification__c category4 = newCaseClassification('CAT-4', asuAdvisorOutreachFuncGrp.Id);
         insert new List<Case_Classification__c>{ watchlistCategory, category1, category2, category3, category4 };
+        Case_Classification__c subcat1_1 = newCaseSubClassification('SUBCAT-1-1', category1.Id);
+        Case_Classification__c subcat1_2 = newCaseSubClassification('SUBCAT-1-2', category1.Id);
+        Case_Classification__c subcat2_1 = newCaseSubClassification('SUBCAT-2-1', category2.Id);
+        Case_Classification__c subcat2_2 = newCaseSubClassification('SUBCAT-2-2', category2.Id);
+        insert new List<Case_Classification__c>{ subcat1_1, subcat1_2, subcat2_1, subcat2_2 };
+
+        Case_Classification__c gradFuncGrp = newFunctionalGroup('ASU Graduate Advisor Portal');
+        insert gradFuncGrp;
+        Case_Classification__c gradCategory1 = newCaseClassification('G-CAT-1', gradFuncGrp.Id);
+        Case_Classification__c gradCategory2 = newCaseClassification('G-CAT-2', gradFuncGrp.Id);
+        insert new List<Case_Classification__c>{ gradCategory1, gradCategory2 };
+        Case_Classification__c gradSubcat1_1 = newCaseSubClassification('G-SUBCAT-1-1', gradCategory1.Id);
+        Case_Classification__c gradSubcat1_2 = newCaseSubClassification('G-SUBCAT-1-2', gradCategory1.Id);
+        Case_Classification__c gradSubcat2_1 = newCaseSubClassification('G-SUBCAT-2-1', gradCategory2.Id);
+        Case_Classification__c gradSubcat2_2 = newCaseSubClassification('G-SUBCAT-2-2', gradCategory2.Id);
+        insert new List<Case_Classification__c>{ gradSubcat1_1, gradSubcat1_2, gradSubcat2_1, gradSubcat2_2 };
 
         // And then the cases
         String caseUGrad = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
+        String caseGrad = RecordIdHelper.getRecordTypeId('Case', 'ASU_Graduate_Advisor_Portal');
         List<Case> testCases = new List<Case>();
         Case testCase1 = new Case(
             ContactId = ryanCastelli.Id,
             Subject = 'New car',
             Status = 'New',
+            CC_Functional_Group__c = asuAdvisorOutreachFuncGrp.Id,
             CC_Category__c = category1.Id,
+            CC_Sub_Category__c = subcat1_1.Id,
             Followup_Date__c = tPlus5d,
             CreatedDate = tMinus5d,
             OwnerId = testUser.Id,
@@ -803,7 +830,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             ContactId = ryanCastelli.Id,
             Subject = 'Found bug',
             Status = 'Busy Signal',
+            CC_Functional_Group__c = asuAdvisorOutreachFuncGrp.Id,
             CC_Category__c = category1.Id,
+            CC_Sub_Category__c = subcat1_2.Id,
             Followup_Date__c = tPlus9d,
             CreatedDate = tMinus9d,
             OwnerId = testUser.Id,
@@ -814,7 +843,9 @@ private class AdvisorPortalFilterSectionControllerTest {
             ContactId = ryanCastelli.Id,
             Subject = 'Send help',
             Status = 'Customer Replied',
+            CC_Functional_Group__c = asuAdvisorOutreachFuncGrp.Id,
             CC_Category__c = category2.Id,
+            CC_Sub_Category__c = subcat2_1.Id,
             Followup_Date__c = tPlus10d,
             CreatedDate = tMinus10d,
             OwnerId = testUser.Id,
@@ -825,6 +856,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             ContactId = ryanCastelli.Id,
             Subject = 'Ant man',
             Status = 'Email Sent',
+            CC_Functional_Group__c = asuAdvisorOutreachFuncGrp.Id,
             CC_Category__c = category2.Id,
             Followup_Date__c = tPlus2d,
             CreatedDate = tMinus2d,
@@ -832,21 +864,36 @@ private class AdvisorPortalFilterSectionControllerTest {
             RecordTypeId = caseUGrad
         );
         testCases.add(testCase4);
-        Case testCase5 = new Case(
+        Case chaseBurgessCase1 = new Case(
+            ContactId = chaseBurgess.Id,
+            Subject = 'Roger',
+            Status = 'Talkie',
+            CC_Functional_Group__c = asuAdvisorOutreachFuncGrp.Id,
+            CC_Category__c = category1.Id,
+            CC_Sub_Category__c = subcat1_1.Id,
+            Followup_Date__c = tPlus2d,
+            CreatedDate = tMinus2d,
+            OwnerId = testUser.Id,
+            RecordTypeId = caseUGrad
+        );
+        testCases.add(chaseBurgessCase1);
+        Case chaseBurgessCase2 = new Case(
             ContactId = chaseBurgess.Id,
             Subject = 'Battery',
             Status = 'New',
+            CC_Functional_Group__c = asuAdvisorOutreachFuncGrp.Id,
             CC_Category__c = category4.Id,
             Followup_Date__c = tPlus2d,
             CreatedDate = tMinus2d,
             OwnerId = testUser.Id,
             RecordTypeId = caseUGrad
         );
-        testCases.add(testCase5);
+        testCases.add(chaseBurgessCase2);
         Case testCase6 = new Case(
             ContactId = benHellsig.Id,
             Subject = 'Tailwind',
             Status = 'New',
+            CC_Functional_Group__c = asuAdvisorOutreachFuncGrp.Id,
             CC_Category__c = category4.Id,
             Followup_Date__c = tPlus2d,
             CreatedDate = tMinus2d,
@@ -858,6 +905,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             ContactId = marisaBarilla.Id,
             Subject = 'Paperclip',
             Status = 'New',
+            CC_Functional_Group__c = asuAdvisorOutreachFuncGrp.Id,
             CC_Category__c = category4.Id,
             Followup_Date__c = tPlus2d,
             CreatedDate = tMinus2d,
@@ -869,6 +917,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             ContactId = sarahDurisek.Id,
             Subject = 'Enrollment',
             Status = 'Outreach Required',
+            CC_Functional_Group__c = asuAdvisorOutreachFuncGrp.Id,
             CC_Category__c = category3.Id,
             Followup_Date__c = tPlus2d,
             CreatedDate = tMinus2d,
@@ -880,6 +929,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             ContactId = jamesBair.Id,
             Subject = 'Enrollment',
             Status = 'Outreach Required - Transferred',
+            CC_Functional_Group__c = asuAdvisorOutreachFuncGrp.Id,
             CC_Category__c = category3.Id,
             Followup_Date__c = tPlus1d,
             CreatedDate = tMinus1d,
@@ -891,6 +941,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             ContactId = morganDiegel.Id,
             Subject = 'Bee girl',
             Status = 'Email Sent',
+            CC_Functional_Group__c = asuAdvisorOutreachFuncGrp.Id,
             CC_Category__c = category4.Id,
             Followup_Date__c = tPlus1d,
             CreatedDate = tMinus1d,
@@ -910,7 +961,70 @@ private class AdvisorPortalFilterSectionControllerTest {
             RecordTypeId = caseUGrad
         );
         testCases.add(testCase11);
-
+        Case testCaseGrad1 = new Case(
+            ContactId = annaPhillips.Id,
+            Subject = 'Parade 11',
+            Status = 'New',
+            CC_Functional_Group__c = gradFuncGrp.Id,
+            CC_Category__c = gradCategory1.Id,
+            CC_Sub_Category__c = gradSubcat1_1.Id,
+            Followup_Date__c = tPlus1d,
+            CreatedDate = tMinus1d,
+            OwnerId = testUser.Id,
+            RecordTypeId = caseGrad
+        );
+        testCases.add(testCaseGrad1);
+        Case testCaseGrad2 = new Case(
+            ContactId = carlPorter.Id,
+            Subject = 'Parade 11',
+            Status = 'New',
+            CC_Functional_Group__c = gradFuncGrp.Id,
+            CC_Category__c = gradCategory1.Id,
+            CC_Sub_Category__c = gradSubcat1_2.Id,
+            Followup_Date__c = tPlus1d,
+            CreatedDate = tMinus1d,
+            OwnerId = testUser.Id,
+            RecordTypeId = caseGrad
+        );
+        testCases.add(testCaseGrad2);
+        Case testCaseGrad3 = new Case(
+            ContactId = devinMcCain.Id,
+            Subject = 'Parade 11',
+            Status = 'New',
+            CC_Functional_Group__c = gradFuncGrp.Id,
+            CC_Category__c = gradCategory1.Id,
+            CC_Sub_Category__c = gradSubcat1_2.Id,
+            Followup_Date__c = tPlus1d,
+            CreatedDate = tMinus1d,
+            OwnerId = testUser.Id,
+            RecordTypeId = caseGrad
+        );
+        testCases.add(testCaseGrad3);
+        Case testCaseGrad4 = new Case(
+            ContactId = coreyNickolette.Id,
+            Subject = 'Parade 11',
+            Status = 'New',
+            CC_Functional_Group__c = gradFuncGrp.Id,
+            CC_Category__c = gradCategory2.Id,
+            CC_Sub_Category__c = gradSubcat2_1.Id,
+            Followup_Date__c = tPlus1d,
+            CreatedDate = tMinus1d,
+            OwnerId = testUser.Id,
+            RecordTypeId = caseGrad
+        );
+        testCases.add(testCaseGrad4);
+        Case testCaseGrad5 = new Case(
+            ContactId = maddyThomas.Id,
+            Subject = 'Parade 11',
+            Status = 'New',
+            CC_Functional_Group__c = gradFuncGrp.Id,
+            CC_Category__c = gradCategory2.Id,
+            Followup_Date__c = tPlus1d,
+            CreatedDate = tMinus1d,
+            OwnerId = testUser.Id,
+            RecordTypeId = caseGrad
+        );
+        testCases.add(testCaseGrad5); /** */
         insert testCases;
 
         // nsert a test term
@@ -976,11 +1090,17 @@ private class AdvisorPortalFilterSectionControllerTest {
         LogSuite.activateTestFlowSuite('testGetCaseSubjectPicklistValues');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
-        List<Case> testCases = [SELECT Id, Subject FROM Case WHERE OwnerId = :testUser.Id];
+        List<Case> testCases = [
+            SELECT Id, Subject
+            FROM Case
+            WHERE
+                OwnerId = :testUser.Id
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach')
+        ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
         filter.version = 'v1';
-        filter.career = 'GRAD';
+        filter.career = 'UGRD';
 
         // Act
         Test.startTest();
@@ -999,8 +1119,8 @@ private class AdvisorPortalFilterSectionControllerTest {
     }
 
     @IsTest
-    private static void testGetCaseCategoryPicklistValues() {
-        LogSuite.activateTestFlowSuite('testGetCaseCategoryPicklistValues');
+    private static void testGetCaseCategoryPicklistValuesUGrad() {
+        LogSuite.activateTestFlowSuite('testGetCaseCategoryPicklistValuesUGrad');
         User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
 
         List<Case> testCases = [
@@ -1013,7 +1133,7 @@ private class AdvisorPortalFilterSectionControllerTest {
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
         filter.version = 'v1';
-        filter.career = 'GRAD';
+        filter.career = 'UGRD';
 
         Test.startTest();
         Map<String, String> classificationMap = AdvisorPortalFilterSectionController.getCaseClassificationPicklistValues(
@@ -1025,7 +1145,123 @@ private class AdvisorPortalFilterSectionControllerTest {
         for (Case c : testCases) {
             System.assert(
                 classificationMap.keySet().contains(c.CC_Category__r.Name),
-                'Should contain all categories that this user has cases for'
+                'Should contain all UGRAD categories that this user has cases for'
+            );
+        }
+    }
+
+    @IsTest
+    private static void testGetCaseCategoryPicklistValuesGrad() {
+        LogSuite.activateTestFlowSuite('testGetCaseCategoryPicklistValuesGrad');
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<Case_Classification__c> allGradCategories = [
+            SELECT Id, Name
+            FROM Case_Classification__c
+            WHERE Parent__r.Name = 'ASU Graduate Advisor Portal' AND Name != 'Watchlist' AND Active__c = TRUE
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v1';
+        filter.career = 'GRD';
+
+        Test.startTest();
+        Map<String, String> classificationMap = AdvisorPortalFilterSectionController.getCaseClassificationPicklistValues(
+            JSON.serialize(filter),
+            new List<String>{ testUser.Id }
+        );
+        Test.stopTest();
+
+        for (Case_Classification__c c : allGradCategories) {
+            System.assert(
+                classificationMap.keySet().contains(c.Name),
+                'The picklist should have returned all GRAD categories, but is missing: ' + c.Name
+            );
+        }
+    }
+
+    @IsTest
+    private static void testGetCaseSubClassificationPicklistValuesGrad() {
+        LogSuite.activateTestFlowSuite('testGetCaseSubClassificationPicklistValuesGrad');
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<Case_Classification__c> allGradCategories = [
+            SELECT Id, Name, Parent__r.Name
+            FROM Case_Classification__c
+            WHERE
+                Parent__r.Parent__r.Name = 'ASU Graduate Advisor Portal'
+                AND Parent__r.Name != 'Watchlist'
+                AND Active__c = TRUE
+        ];
+
+        List<String> allSubCategories = new List<String>();
+        Map<String, List<String>> categorySubcategoryMap = new Map<String, List<String>>();
+        for (Case_Classification__c c : allGradCategories) {
+            String category = c.Parent__r.Name;
+            String subcategory = c.Name;
+
+            if (!categorySubcategoryMap.containsKey(category))
+                categorySubcategoryMap.put(category, new List<String>());
+
+            categorySubcategoryMap.get(category).add(subcategory);
+            allSubCategories.add(subcategory);
+        }
+
+        AdvisorPortalFilter filter1 = new AdvisorPortalFilter();
+        filter1.version = 'v1';
+        filter1.career = 'GRD';
+
+        AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v1';
+        filter2.career = 'GRD';
+        filter2.caseCategory = 'G-CAT-1';
+
+        AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
+        filter3.version = 'v1';
+        filter3.career = 'GRD';
+        filter3.caseCategory = 'G-CAT-1;G-CAT-2';
+
+        Test.startTest();
+        Map<String, String> classificationMap1 = AdvisorPortalFilterSectionController.getCaseSubClassificationPicklistValues(
+            JSON.serialize(filter1),
+            new List<String>{ testUser.Id }
+        );
+
+        Map<String, String> classificationMap2 = AdvisorPortalFilterSectionController.getCaseSubClassificationPicklistValues(
+            JSON.serialize(filter2),
+            new List<String>{ testUser.Id }
+        );
+
+        Map<String, String> classificationMap3 = AdvisorPortalFilterSectionController.getCaseSubClassificationPicklistValues(
+            JSON.serialize(filter3),
+            new List<String>{ testUser.Id }
+        );
+        Test.stopTest();
+
+        // No category selected
+        for (String subcatName : allSubCategories) {
+            System.assert(
+                classificationMap1.keySet().contains(subcatName),
+                'The picklist should have returned all GRAD subcategories, but is missing: ' + subcatName
+            );
+        }
+
+        // 1 category selected
+        for (String subcatName : categorySubcategoryMap.get('G-CAT-1')) {
+            System.assert(
+                classificationMap2.keySet().contains(subcatName),
+                'The picklist should have returned all GRAD subcategories, but is missing: ' + subcatName
+            );
+        }
+
+        // Multiple category selected
+        List<String> mixedSubCategories = new List<String>();
+        mixedSubCategories.addAll(categorySubcategoryMap.get('G-CAT-1'));
+        mixedSubCategories.addAll(categorySubcategoryMap.get('G-CAT-2'));
+        for (String subcatName : mixedSubCategories) {
+            System.assert(
+                classificationMap3.keySet().contains(subcatName),
+                'The picklist should have returned all GRAD subcategories, but is missing: ' + subcatName
             );
         }
     }
@@ -2135,6 +2371,84 @@ private class AdvisorPortalFilterSectionControllerTest {
             EncodingUtil.base64Encode(Blob.valueOf('CAT-4')) +
             ';' +
             EncodingUtil.base64Encode(Blob.valueOf('CAT-3'));
+
+        Test.startTest();
+        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter)
+        );
+
+        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+            new List<Id>{ testUser.Id },
+            JSON.serialize(filter2)
+        );
+        Test.stopTest();
+
+        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON,
+            List<AdvisorPortalContact>.class
+        );
+
+        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
+            resultsJSON2,
+            List<AdvisorPortalContact>.class
+        );
+
+        System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents.size(), results.size());
+        assertCorrectReturned(expectedStudents, results);
+
+        System.assert(!expectedStudents2.isEmpty(), 'Should have some matches - otherwise the test is pointless');
+        System.assertEquals(expectedStudents2.size(), results2.size());
+        assertCorrectReturned(expectedStudents2, results2);
+    }
+
+    @IsTest
+    private static void testFilterCaseSubCategory() {
+        LogSuite.activateTestFlowSuite('testFilterCaseSubCategory');
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+
+        List<AggregateResult> expectedStudents = [
+            SELECT ContactId ContactId__alias
+            FROM Case
+            WHERE
+                CC_Category__r.Name = 'G-CAT-1'
+                AND CC_Sub_Category__r.Name = 'G-SUBCAT-1-1'
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Graduate_Advisor_Portal')
+            GROUP BY ContactId
+        ];
+
+        List<AggregateResult> expectedStudents2 = [
+            SELECT ContactId ContactId__alias
+            FROM Case
+            WHERE
+                CC_Category__r.Name IN ('G-CAT-1', 'G-CAT-2')
+                AND CC_Sub_category__r.Name IN ('G-SUBCAT-1-1', 'G-SUBCAT-1-2', 'G-SUBCAT-2-1')
+                AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Graduate_Advisor_Portal')
+            GROUP BY ContactId
+        ];
+
+        AdvisorPortalFilter filter = new AdvisorPortalFilter();
+        filter.version = 'v2';
+        filter.career = 'GRD';
+        filter.caseTypeState = 'ProactiveCasesState';
+        filter.caseCategory = EncodingUtil.base64Encode(Blob.valueOf('G-CAT-1'));
+        filter.caseSubCategory = EncodingUtil.base64Encode(Blob.valueOf('G-SUBCAT-1-1'));
+
+        AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
+        filter2.version = 'v2';
+        filter2.career = 'GRD';
+        filter2.caseTypeState = 'ProactiveCasesState';
+        filter2.caseCategory =
+            EncodingUtil.base64Encode(Blob.valueOf('G-CAT-1')) +
+            ';' +
+            EncodingUtil.base64Encode(Blob.valueOf('G-CAT-2'));
+        filter2.caseSubCategory =
+            EncodingUtil.base64Encode(Blob.valueOf('G-SUBCAT-1-1')) +
+            ';' +
+            EncodingUtil.base64Encode(Blob.valueOf('G-SUBCAT-1-2')) +
+            ';' +
+            EncodingUtil.base64Encode(Blob.valueOf('G-SUBCAT-2-1'));
 
         Test.startTest();
         String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
@@ -3758,6 +4072,18 @@ private class AdvisorPortalFilterSectionControllerTest {
         Case_Classification__c classification = new Case_Classification__c(
             Name = name,
             RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Category')
+        );
+
+        if (parentId != null)
+            classification.Parent__c = parentId;
+
+        return classification;
+    }
+
+    private static Case_Classification__c newCaseSubClassification(String name, String parentId) {
+        Case_Classification__c classification = new Case_Classification__c(
+            Name = name,
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Case_Classification__c', 'Sub_Category')
         );
 
         if (parentId != null)

@@ -43,6 +43,7 @@ public class AdvisorPortalFilter {
     public String residency; //.........................  ugrad........  grad  ...... ..  y ..  y ..
     public String caseStatus; //........................  ugrad........  grad  ...... ..  y ..  y ..
     public String caseCategory; //......................  ugrad........  grad  ...... ..  y ..  y ..
+    public String caseSubCategory; //..................................  grad  ...... ..  y ..  y ..
     public String caseSubject; //.......................  ugrad  .................... ..  y ..  y ..
     public String specialPopulation; //................................  grad  ...... ..  y ..  y ..
     public String outlookScore; //......................  ugrad  .................... ..  y ..  y ..
@@ -59,13 +60,16 @@ public class AdvisorPortalFilter {
     }
 
     /**
-     * Deserialize a JSON string into a filter (or return null if impossible)
+     * Attempts to deserailize a String into an Advisor Portal Filter.
+     * If the string is null, empty string, or empty object (`{}`), then returns null
+     * as this is a non-filter
      */
-    public static AdvisorPortalFilter parse(String str) {
-        if (str != null && str != '' && str != '{}') {
-            return (AdvisorPortalFilter) JSON.deserialize(str, AdvisorPortalFilter.class);
+    public static AdvisorPortalFilter deserialize(String serialized) {
+        AdvisorPortalFilter filter = null;
+        if (serialized != null && serialized != '' && serialized != '{}') {
+            filter = (AdvisorPortalFilter) JSON.deserialize(serialized, AdvisorPortalFilter.class);
         }
-        return null;
+        return filter;
     }
 
     /**
@@ -96,6 +100,7 @@ public class AdvisorPortalFilter {
                     'residency',
                     'caseStatus',
                     'caseCategory',
+                    'caseSubCategory',
                     'specialPopulation',
                     'caseCount',
                     'createdFromDate',
@@ -157,6 +162,8 @@ public class AdvisorPortalFilter {
             useThisFilter &= getCaseStatuses() != null;
         else if (filterName == 'caseCategory')
             useThisFilter &= getCaseCategories() != null;
+        else if (filterName == 'caseSubCategory')
+            useThisFilter &= getCaseSubCategories() != null;
         else if (filterName == 'caseSubject')
             useThisFilter &= getCaseSubjects() != null;
         else if (filterName == 'specialPopulation')
@@ -441,6 +448,28 @@ public class AdvisorPortalFilter {
 
             // Decode each element of the array if they are base64 encoded
             if (ruleSet.arrayElemsAreBase64Encoded.contains('caseCategory')) {
+                val_arr = decodeBase64ElementsOfArray(val_arr);
+            }
+        }
+
+        return val_arr;
+    }
+    public List<String> getCaseSubCategories() {
+        RuleSet ruleSet = new RuleSet(version);
+        String val = null;
+        List<String> val_arr = null;
+
+        // Determine if the value is set at all and extract it if it is
+        if (!String.isBlank(this.caseSubCategory))
+            val = this.caseSubCategory;
+
+        if (val != null) {
+            // Split using array delimiter
+            List<String> val_split = val.split(ruleSet.arrayDelim);
+            val_arr = val_split;
+
+            // Decode each element of the array if they are base64 encoded
+            if (ruleSet.arrayElemsAreBase64Encoded.contains('caseSubCategory')) {
                 val_arr = decodeBase64ElementsOfArray(val_arr);
             }
         }
@@ -798,7 +827,6 @@ public class AdvisorPortalFilter {
         String version;
         List<String> arrayElemsAreBase64Encoded = new List<String>();
         String arrayDelim;
-        Map<String, Map<String, Object>> filterNameToLabelToValueMap = new Map<String, Map<String, Object>>();
 
         public RuleSet(String version) {
             this.version = version;
@@ -809,6 +837,7 @@ public class AdvisorPortalFilter {
                 arrayDelim = ';';
                 arrayElemsAreBase64Encoded.add('caseSubject');
                 arrayElemsAreBase64Encoded.add('caseCategory');
+                arrayElemsAreBase64Encoded.add('caseSubCategory');
             }
         }
     }

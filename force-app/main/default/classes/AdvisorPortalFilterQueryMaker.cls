@@ -417,6 +417,11 @@ public class AdvisorPortalFilterQueryMaker {
                 .bind('caseCategories', filter.getCaseCategories())
                 .restrictIn('CC_Category__r.Name', new DynamicSoqlBuilderRestriction.Bind('caseCategories'));
 
+        if (filter.shouldUse('caseSubCategory'))
+            caseQuery
+                .bind('caseSubCategories', filter.getCaseSubCategories())
+                .restrictIn('CC_Sub_Category__r.Name', new DynamicSoqlBuilderRestriction.Bind('caseSubCategories'));
+
         if (filter.shouldUse('caseSubject'))
             caseQuery
                 .bind('caseSubjects', filter.getCaseSubjects())

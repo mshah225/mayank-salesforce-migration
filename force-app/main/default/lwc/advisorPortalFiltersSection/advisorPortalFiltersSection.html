@@ -239,6 +239,24 @@
         <template if:true={isGraduateOnly}>
             <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
                 <c-lightning-combo-box
+                    label="Case Sub-Category"
+                    data-name="caseSubCategory"
+                    name="caseSubCategory"
+                    multi-select="true"
+                    options={caseSubCategoryPicklistValues}
+                    value={currentFilter.caseSubCategory}
+                    oncommit={changeField}
+                    onchange={stopEvent}
+                ></c-lightning-combo-box>
+                <lightning-spinner
+                    if:true={loadingCaseSubCategory}
+                    class="fieldLoadingCircle"
+                    alternative-text="Loading"
+                    size="small"
+                ></lightning-spinner>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                <c-lightning-combo-box
                     label="Special Population"
                     data-name="specialPopulation"
                     name="specialPopulation"

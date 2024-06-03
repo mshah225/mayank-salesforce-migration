@@ -8,6 +8,7 @@ import getCampusValues from '@salesforce/apex/AdvisorPortalFilterSectionControll
 import getCaseStatusSettings from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseStatusSettings';
 import getCaseSubjectPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseSubjectPicklistValues';
 import getCaseClassificationPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseClassificationPicklistValues';
+import getCaseSubClassificationPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseSubClassificationPicklistValues';
 import getAcademicProgramPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicProgramPicklistValues';
 import getSchoolDepartmentPicklistVaues from '@salesforce/apex/AdvisorPortalFilterSectionController.getSchoolDepartmentPicklistVaues';
 import getAcademicPlanPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicPlanPicklistValues';
@@ -29,11 +30,13 @@ export default class AdvisorPortalA extends LightningElement {
     loadingAcadPlan = false;
     loadingCaseStatus = false;
     loadingCaseCategory = false;
+    loadingCaseSubCategory = false;
     residencyPicklistValues = [];
     caseStatusPicklistValues = [];
     campusPicklistValues = [];
     caseSubjectPicklistValues = [];
     caseCategoryPicklistValues = [];
+    caseSubCategoryPicklistValues = [];
     academicProgramOptions = [];
     schoolDepartmentOptions = [];
     academicPlanOptions = [];
@@ -70,7 +73,7 @@ export default class AdvisorPortalA extends LightningElement {
             this.allowedToUseMassTransfer = data;
         } else if (error != null) {
             // eslint-disable-next-line no-console
-            console.error(error);
+            console.error('checkedIfAllowedToUseMassTransfer', error);
         }
 
         this.loadLess();
@@ -87,7 +90,7 @@ export default class AdvisorPortalA extends LightningElement {
         } else if (error != null) {
             this.currentFilter = {};
             // eslint-disable-next-line no-console
-            console.error(error);
+            console.error('gotDefaultFilter', error);
         }
 
         if (this.currentFilter != null) {
@@ -95,13 +98,12 @@ export default class AdvisorPortalA extends LightningElement {
             if (this.currentFilter.caseTypeState == null) this.currentFilter.caseTypeState = 'ProactiveCasesState';
             if (this.currentFilter.career == null) this.currentFilter.career = 'UGRD';
 
-            this.getViewAsOptions(); // once the default filter is loaded - we can get the view as options
-
             this.loadMore(); // for any picklist options that depend on filter being set
             Promise.all([
-                this.refreshCampusValues(),
-                this.refreshSchoolDepartmentPicklistVaues(),
-                this.refreshAcademicPlanPicklistValues(),
+                this.getViewAsOptions(), // once the default filter is loaded - we can get the view as options
+                this.refreshCampusValues(), // depends on career
+                this.refreshSchoolDepartmentPicklistVaues(), // depends on acad program
+                this.refreshAcademicPlanPicklistValues(), // depends on acad program, school, and degree level
             ]).then(() => {
                 this.loadLess();
             });
@@ -114,7 +116,7 @@ export default class AdvisorPortalA extends LightningElement {
     getViewAsOptions() {
         this.loadMore();
 
-        viewAsOptions({
+        return viewAsOptions({
             gradOnly: this.currentFilter.career === 'GRD',
         })
             .then((val) => {
@@ -151,7 +153,7 @@ export default class AdvisorPortalA extends LightningElement {
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
-                console.error(err);
+                console.error('getViewAsOptions', err);
             })
             .finally(() => {
                 this.loadLess();
@@ -183,8 +185,6 @@ export default class AdvisorPortalA extends LightningElement {
         this.updateConditionalFields(field).then(() => {
             this.triggerCurrentFilterChanges();
         });
-
-        if (field === 'career') this.getViewAsOptions();
     }
 
     /**
@@ -196,9 +196,12 @@ export default class AdvisorPortalA extends LightningElement {
 
         if (changedField === 'career') {
             this.loadingCampusValues = true;
-            prm = this.refreshCampusValues().then(() => {
-                this.loadingCampusValues = false;
-            });
+            prm = Promise.all([
+                this.refreshCampusValues().then(() => {
+                    this.loadingCampusValues = false;
+                }),
+                this.getViewAsOptions(),
+            ]);
         } else if (changedField === 'degreeLevel') {
             this.loadingAcadPlan = true;
             this.refreshAcademicPlanPicklistValues().then(() => {
@@ -220,6 +223,11 @@ export default class AdvisorPortalA extends LightningElement {
             this.loadingAcadPlan = true;
             prm = this.refreshAcademicPlanPicklistValues().then(() => {
                 this.loadingAcadPlan = false;
+            });
+        } else if (changedField === 'caseCategory') {
+            this.loadingCaseSubCategory = true;
+            prm = this.refreshCaseSubClassificationPicklistValues().then(() => {
+                this.loadingCaseSubCategory = false;
             });
         }
 
@@ -278,6 +286,17 @@ export default class AdvisorPortalA extends LightningElement {
             .catch((err) => {
                 // eslint-disable-next-line no-console
                 console.error('refreshCaseClassificationPicklistValues', err);
+            });
+    }
+    refreshCaseSubClassificationPicklistValues() {
+        const filterJSON = JSON.stringify(this.currentFilter);
+        return getCaseSubClassificationPicklistValues({filterJSON, viewAsOptions: this.selectedUsers})
+            .then((val) => {
+                this.caseSubCategoryPicklistValues = buildPicklistOptionsArray(val);
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error('refreshCaseSubClassificationPicklistValues', err);
             });
     }
     refreshAcademicProgramPicklistValues() {
@@ -341,6 +360,7 @@ export default class AdvisorPortalA extends LightningElement {
 
         this.loadingCaseStatus = true;
         this.loadingCaseCategory = true;
+        this.loadingCaseSubCategory = true;
         this.loadMore();
         Promise.all([
             this.refreshCaseSubjectPicklistValues().then(() => {
@@ -348,6 +368,9 @@ export default class AdvisorPortalA extends LightningElement {
             }),
             this.refreshCaseClassificationPicklistValues().then(() => {
                 this.loadingCaseCategory = false;
+            }),
+            this.refreshCaseSubClassificationPicklistValues().then(() => {
+                this.loadingCaseSubCategory = false;
             }),
         ])
             .then(() => {

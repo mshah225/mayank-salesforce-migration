@@ -43,6 +43,7 @@ public class AdvisorPortalFilter {
     public String residency; //.........................  ugrad........  grad  ...... ..  y ..  y ..
     public String caseStatus; //........................  ugrad........  grad  ...... ..  y ..  y ..
     public String caseCategory; //......................  ugrad........  grad  ...... ..  y ..  y ..
+    public String caseSubCategory; //..................................  grad  ...... ..  y ..  y ..
     public String caseSubject; //.......................  ugrad  .................... ..  y ..  y ..
     public String specialPopulation; //................................  grad  ...... ..  y ..  y ..
     public String outlookScore; //......................  ugrad  .................... ..  y ..  y ..
@@ -56,6 +57,19 @@ public class AdvisorPortalFilter {
     public String persistenceToDate; //.................  ugrad  .................... ..  y ..  y ..
 
     public AdvisorPortalFilter() {
+    }
+
+    /**
+     * Attempts to deserailize a String into an Advisor Portal Filter.
+     * If the string is null, empty string, or empty object (`{}`), then returns null
+     * as this is a non-filter
+     */
+    public static AdvisorPortalFilter deserialize(String serialized) {
+        AdvisorPortalFilter filter = null;
+        if (serialized != null && serialized != '' && serialized != '{}') {
+            filter = (AdvisorPortalFilter) JSON.deserialize(serialized, AdvisorPortalFilter.class);
+        }
+        return filter;
     }
 
     /**
@@ -86,6 +100,7 @@ public class AdvisorPortalFilter {
                     'residency',
                     'caseStatus',
                     'caseCategory',
+                    'caseSubCategory',
                     'specialPopulation',
                     'caseCount',
                     'createdFromDate',
@@ -147,6 +162,8 @@ public class AdvisorPortalFilter {
             useThisFilter &= getCaseStatuses() != null;
         else if (filterName == 'caseCategory')
             useThisFilter &= getCaseCategories() != null;
+        else if (filterName == 'caseSubCategory')
+            useThisFilter &= getCaseSubCategories() != null;
         else if (filterName == 'caseSubject')
             useThisFilter &= getCaseSubjects() != null;
         else if (filterName == 'specialPopulation')
@@ -437,6 +454,28 @@ public class AdvisorPortalFilter {
 
         return val_arr;
     }
+    public List<String> getCaseSubCategories() {
+        RuleSet ruleSet = new RuleSet(version);
+        String val = null;
+        List<String> val_arr = null;
+
+        // Determine if the value is set at all and extract it if it is
+        if (!String.isBlank(this.caseSubCategory))
+            val = this.caseSubCategory;
+
+        if (val != null) {
+            // Split using array delimiter
+            List<String> val_split = val.split(ruleSet.arrayDelim);
+            val_arr = val_split;
+
+            // Decode each element of the array if they are base64 encoded
+            if (ruleSet.arrayElemsAreBase64Encoded.contains('caseSubCategory')) {
+                val_arr = decodeBase64ElementsOfArray(val_arr);
+            }
+        }
+
+        return val_arr;
+    }
     public List<String> getCaseSubjects() {
         RuleSet ruleSet = new RuleSet(version);
         String val = null;
@@ -559,8 +598,9 @@ public class AdvisorPortalFilter {
 
         return val_int;
     }
-    public String getCreatedFromDate() {
+    public Datetime getCreatedFromDate() {
         String val = null;
+        Datetime val_dt = null;
 
         // Determine if the value is set at all and extract it if it is
         if (!String.isBlank(this.createdFromDate))
@@ -568,13 +608,14 @@ public class AdvisorPortalFilter {
 
         if (val != null) {
             // from date is at beginning of that date
-            val = Datetime.valueOf(val + ' 00:00:00').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ');
+            val_dt = Datetime.valueOf(val + ' 00:00:00');
         }
 
-        return val;
+        return val_dt;
     }
-    public String getCreatedToDate() {
+    public Datetime getCreatedToDate() {
         String val = null;
+        Datetime val_dt = null;
 
         // Determine if the value is set at all and extract it if it is
         if (!String.isBlank(this.createdToDate))
@@ -582,46 +623,70 @@ public class AdvisorPortalFilter {
 
         if (val != null) {
             // to date is at end of that date
-            val = Datetime.valueOf(val + ' 23:59:59').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ');
+            val_dt = Datetime.valueOf(val + ' 23:59:59');
         }
 
-        return val;
+        return val_dt;
     }
-    public String getFollowUpFromDate() {
+    public Date getFollowUpFromDate() {
         String val = null;
+        Date val_date = null;
 
         // Determine if the value is set at all and extract it if it is
         if (!String.isBlank(this.followUpFromDate))
             val = this.followUpFromDate;
 
-        return val;
+        if (val != null) {
+            // to date is at end of that date
+            val_date = Date.valueOf(val);
+        }
+
+        return val_date;
     }
-    public String getFollowUpToDate() {
+    public Date getFollowUpToDate() {
         String val = null;
+        Date val_date = null;
 
         // Determine if the value is set at all and extract it if it is
         if (!String.isBlank(this.followUpToDate))
             val = this.followUpToDate;
 
-        return val;
+        if (val != null) {
+            // to date is at end of that date
+            val_date = Date.valueOf(val);
+        }
+
+        return val_date;
     }
-    public String getPersistenceFromDate() {
+    public Date getPersistenceFromDate() {
         String val = null;
+        Date val_date = null;
 
         // Determine if the value is set at all and extract it if it is
         if (!String.isBlank(this.persistenceFromDate))
             val = this.persistenceFromDate;
 
-        return val;
+        if (val != null) {
+            // to date is at end of that date
+            val_date = Date.valueOf(val);
+        }
+
+        return val_date;
     }
-    public String getPersistenceToDate() {
+    public Date getPersistenceToDate() {
         String val = null;
+        Date val_date = null;
 
         // Determine if the value is set at all and extract it if it is
         if (!String.isBlank(this.persistenceToDate))
             val = this.persistenceToDate;
 
-        return val;
+        if (val != null) {
+            // to date is at end of that date
+            val_date = Date.valueOf(val);
+        }
+
+        return val_date;
     }
 
     /**
@@ -762,7 +827,6 @@ public class AdvisorPortalFilter {
         String version;
         List<String> arrayElemsAreBase64Encoded = new List<String>();
         String arrayDelim;
-        Map<String, Map<String, Object>> filterNameToLabelToValueMap = new Map<String, Map<String, Object>>();
 
         public RuleSet(String version) {
             this.version = version;
@@ -773,6 +837,7 @@ public class AdvisorPortalFilter {
                 arrayDelim = ';';
                 arrayElemsAreBase64Encoded.add('caseSubject');
                 arrayElemsAreBase64Encoded.add('caseCategory');
+                arrayElemsAreBase64Encoded.add('caseSubCategory');
             }
         }
     }

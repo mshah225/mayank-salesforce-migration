@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Mapping of Project Key to Project ID for JIRA projects.</description>
-    <label>Jira Project Detail</label>
-    <pluralLabel>Jira Project Details</pluralLabel>
-    <visibility>Public</visibility>
-</CustomObject>

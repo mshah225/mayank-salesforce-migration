@@ -78,6 +78,19 @@ public class AdvisorPortalFilterTest {
     }
 
     @IsTest
+    private static void testDeserializer() {
+        AdvisorPortalFilter filter1 = AdvisorPortalFilter.deserialize(null);
+        AdvisorPortalFilter filter2 = AdvisorPortalFilter.deserialize('');
+        AdvisorPortalFilter filter3 = AdvisorPortalFilter.deserialize('{}');
+        AdvisorPortalFilter filter4 = AdvisorPortalFilter.deserialize('{"version": "v2", "career":"GRD"}');
+
+        System.assertEquals(null, filter1);
+        System.assertEquals(null, filter2);
+        System.assertEquals(null, filter3);
+        System.assertEquals('GRD', filter4.getCareer());
+    }
+
+    @IsTest
     private static void testGetCaseState() {
         String v1FilterStr = '{"version":"v1","caseTypeState":"AllCasesState"}';
         String v2FilterStr = '{"version":"v2","caseTypeState":"AllCasesState"}';
@@ -275,6 +288,23 @@ public class AdvisorPortalFilterTest {
     }
 
     @IsTest
+    private static void testGetCaseSubCategory() {
+        List<String> subcategories = new List<String>{ 'SUBCAT-0', 'SUBCAT-33' };
+        List<String> b64SubCategories = new List<String>();
+        for (String subcat : subcategories)
+            b64SubCategories.add(EncodingUtil.base64Encode(Blob.valueOf(subcat)));
+
+        String v1FilterStr = '{"version":"v1","caseSubCategory":"' + String.join(subcategories, ';') + '"}';
+        String v2FilterStr = '{"version":"v2","caseSubCategory":"' + String.join(b64SubCategories, ';') + '"}';
+
+        AdvisorPortalFilter v1Filter = (AdvisorPortalFilter) JSON.deserialize(v1FilterStr, AdvisorPortalFilter.class);
+        AdvisorPortalFilter v2Filter = (AdvisorPortalFilter) JSON.deserialize(v2FilterStr, AdvisorPortalFilter.class);
+
+        System.assertEquals(String.join(subcategories, ';'), String.join(v1Filter.getCaseSubCategories(), ';'));
+        System.assertEquals(String.join(subcategories, ';'), String.join(v2Filter.getCaseSubCategories(), ';'));
+    }
+
+    @IsTest
     private static void testGetCaseSubject() {
         List<String> subjects = new List<String>{ 'eat', 'spiky; or....' };
         List<String> b64Subjects = new List<String>();
@@ -359,11 +389,11 @@ public class AdvisorPortalFilterTest {
 
         System.assertEquals(
             Datetime.valueOf('2022-01-02 00:00:00').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ'),
-            v1Filter.getCreatedFromDate()
+            v1Filter.getCreatedFromDate().formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ')
         );
         System.assertEquals(
             Datetime.valueOf('2022-01-02 00:00:00').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ'),
-            v2Filter.getCreatedFromDate()
+            v2Filter.getCreatedFromDate().formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ')
         );
     }
 
@@ -377,11 +407,11 @@ public class AdvisorPortalFilterTest {
 
         System.assertEquals(
             Datetime.valueOf('2022-01-02 23:59:59').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ'),
-            v1Filter.getCreatedToDate()
+            v1Filter.getCreatedToDate().formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ')
         );
         System.assertEquals(
             Datetime.valueOf('2022-01-02 23:59:59').formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ'),
-            v2Filter.getCreatedToDate()
+            v2Filter.getCreatedToDate().formatGmt('yyyy-MM-dd\'T\'HH:mm:ssZ')
         );
     }
 
@@ -393,8 +423,13 @@ public class AdvisorPortalFilterTest {
         AdvisorPortalFilter v1Filter = (AdvisorPortalFilter) JSON.deserialize(v1FilterStr, AdvisorPortalFilter.class);
         AdvisorPortalFilter v2Filter = (AdvisorPortalFilter) JSON.deserialize(v2FilterStr, AdvisorPortalFilter.class);
 
-        System.assertEquals('2022-01-02', v1Filter.getFollowUpFromDate());
-        System.assertEquals('2022-01-02', v2Filter.getFollowUpFromDate());
+        System.assertEquals(2022, v1Filter.getFollowUpFromDate().year());
+        System.assertEquals(1, v1Filter.getFollowUpFromDate().month());
+        System.assertEquals(2, v1Filter.getFollowUpFromDate().day());
+        
+        System.assertEquals(2022, v2Filter.getFollowUpFromDate().year());
+        System.assertEquals(1, v2Filter.getFollowUpFromDate().month());
+        System.assertEquals(2, v2Filter.getFollowUpFromDate().day());
     }
 
     @IsTest
@@ -405,8 +440,13 @@ public class AdvisorPortalFilterTest {
         AdvisorPortalFilter v1Filter = (AdvisorPortalFilter) JSON.deserialize(v1FilterStr, AdvisorPortalFilter.class);
         AdvisorPortalFilter v2Filter = (AdvisorPortalFilter) JSON.deserialize(v2FilterStr, AdvisorPortalFilter.class);
 
-        System.assertEquals('2022-01-02', v1Filter.getFollowUpToDate());
-        System.assertEquals('2022-01-02', v2Filter.getFollowUpToDate());
+        System.assertEquals(2022, v1Filter.getFollowUpToDate().year());
+        System.assertEquals(1, v1Filter.getFollowUpToDate().month());
+        System.assertEquals(2, v1Filter.getFollowUpToDate().day());
+        
+        System.assertEquals(2022, v2Filter.getFollowUpToDate().year());
+        System.assertEquals(1, v2Filter.getFollowUpToDate().month());
+        System.assertEquals(2, v2Filter.getFollowUpToDate().day());
     }
 
     @IsTest
@@ -417,8 +457,13 @@ public class AdvisorPortalFilterTest {
         AdvisorPortalFilter v1Filter = (AdvisorPortalFilter) JSON.deserialize(v1FilterStr, AdvisorPortalFilter.class);
         AdvisorPortalFilter v2Filter = (AdvisorPortalFilter) JSON.deserialize(v2FilterStr, AdvisorPortalFilter.class);
 
-        System.assertEquals('2022-01-02', v1Filter.getPersistenceFromDate());
-        System.assertEquals('2022-01-02', v2Filter.getPersistenceFromDate());
+         System.assertEquals(2022, v1Filter.getPersistenceFromDate().year());
+        System.assertEquals(1, v1Filter.getPersistenceFromDate().month());
+        System.assertEquals(2, v1Filter.getPersistenceFromDate().day());
+        
+        System.assertEquals(2022, v2Filter.getPersistenceFromDate().year());
+        System.assertEquals(1, v2Filter.getPersistenceFromDate().month());
+        System.assertEquals(2, v2Filter.getPersistenceFromDate().day());
     }
 
     @IsTest
@@ -429,7 +474,12 @@ public class AdvisorPortalFilterTest {
         AdvisorPortalFilter v1Filter = (AdvisorPortalFilter) JSON.deserialize(v1FilterStr, AdvisorPortalFilter.class);
         AdvisorPortalFilter v2Filter = (AdvisorPortalFilter) JSON.deserialize(v2FilterStr, AdvisorPortalFilter.class);
 
-        System.assertEquals('2022-01-02', v1Filter.getPersistenceToDate());
-        System.assertEquals('2022-01-02', v2Filter.getPersistenceToDate());
+         System.assertEquals(2022, v1Filter.getPersistenceToDate().year());
+        System.assertEquals(1, v1Filter.getPersistenceToDate().month());
+        System.assertEquals(2, v1Filter.getPersistenceToDate().day());
+        
+        System.assertEquals(2022, v2Filter.getPersistenceToDate().year());
+        System.assertEquals(1, v2Filter.getPersistenceToDate().month());
+        System.assertEquals(2, v2Filter.getPersistenceToDate().day());
     }
 }

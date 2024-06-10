@@ -6,7 +6,7 @@ private class JiraCalloutTest {
         Test.setMock(HttpCalloutMock.class, mockCallout);
 
         Test.startTest();
-        String key1 = JiraCallout.createTicket('Summary', 'description', 'Bug', 'TEST-COMPONENT');
+        String key1 = JiraCallout.createTicket('SFE', 'Summary', 'description', 'Bug', 'TEST-COMPONENT');
         Test.stopTest();
 
         System.assertEquals('SFE-49392', key1);
@@ -132,7 +132,7 @@ private class JiraCalloutTest {
             mock.setThrowError(true);
             Test.setMock(HttpCalloutMock.class, mock);
             Test.startTest();
-            String key1 = JiraCallout.createTicket('Summary', 'description', 'addUsers', '');
+            String key1 = JiraCallout.createTicket('SFE', 'Summary', 'description', 'addUsers', '');
             Test.stopTest();
         } catch (Exception ex) {
             threwError = true;

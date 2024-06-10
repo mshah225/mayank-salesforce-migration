@@ -15,6 +15,10 @@ export default class AdvisorPortalTableContact extends LightningElement {
         return this.contactWrapper !== null;
     }
 
+    get showOutlookLevel() {
+        return this.contactWrapper?.isGradStudent === false;
+    }
+
     getSelectedItems() {
         const selectedCases = [];
 

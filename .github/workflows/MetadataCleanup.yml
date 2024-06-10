@@ -17,14 +17,14 @@ jobs:
               uses: JesseTG/rm@v1.0.3
               with:
                   path: force-app/main/default/applications
-            - name: Remove 'customMetadata' directory
-              uses: JesseTG/rm@v1.0.3
-              with:
-                  path: force-app/main/default/customMetadata
             - name: Remove 'connectedApps' directory
               uses: JesseTG/rm@v1.0.3
               with:
                   path: force-app/main/default/connectedApps
+            - name: Remove 'customMetadata' directory
+              uses: JesseTG/rm@v1.0.3
+              with:
+                  path: force-app/main/default/customMetadata
             - name: Remove 'dataSources' directory
               uses: JesseTG/rm@v1.0.3
               with:
@@ -69,6 +69,14 @@ jobs:
               uses: JesseTG/rm@v1.0.3
               with:
                   path: force-app/main/default/objects
+            - name: Remove 'permissionsets' directory
+              uses: JesseTG/rm@v1.0.3
+              with:
+                  path: force-app/main/default/permissionsets
+            - name: Remove 'profiles' directory
+              uses: JesseTG/rm@v1.0.3
+              with:
+                  path: force-app/main/default/profiles
             - name: Remove 'quickActions' directory
               uses: JesseTG/rm@v1.0.3
               with:

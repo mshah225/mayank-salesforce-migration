@@ -226,4 +226,7 @@ global with sharing class StudentProfileCallout {
 
         return academicProgressForStudent;
     }
+
+    private class StudentProfileCalloutException extends Exception {
+    }
 }

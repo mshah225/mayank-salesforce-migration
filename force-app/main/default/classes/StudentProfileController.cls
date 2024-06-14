@@ -55,6 +55,15 @@ global with sharing class StudentProfileController {
     public List<String> undergraduateIndicatorsMessages { get; set; }
     public List<String> graduateAcademicsMessages { get; set; }
     public List<String> graduateIndicatorsMessages { get; set; }
+    public List<String> studentCareAndConcernMessages { get; set; }
+
+    public Boolean hasStudentCareAndConcernAccess {
+        get {
+            return PermissionsHelper.currentUserHasProfile('System Administrator') ||
+                PermissionsHelper.currentUserHasPermissionSet('Role_Student_360');
+        }
+        set;
+    }
 
     public Boolean hasCreateCasePermissions {
         get {
@@ -312,6 +321,7 @@ global with sharing class StudentProfileController {
         undergraduateIndicatorsMessages = new List<String>();
         graduateAcademicsMessages = new List<String>();
         graduateIndicatorsMessages = new List<String>();
+        studentCareAndConcernMessages = new List<String>();
 
         List<Student_Profile_Message__mdt> messages = [
             SELECT Message_to_Display__c, Student_Profile_Tab__c
@@ -338,6 +348,8 @@ global with sharing class StudentProfileController {
                 graduateAcademicsMessages.add(message.Message_to_Display__c);
             } else if (message.Student_Profile_Tab__c == 'Graduate Indicators') {
                 graduateIndicatorsMessages.add(message.Message_to_Display__c);
+            } else if (message.Student_Profile_Tab__c == 'Student Care and Concern') {
+                studentCareAndConcernMessages.add(message.Message_to_Display__c);
             }
         }
     }
@@ -963,6 +975,49 @@ global with sharing class StudentProfileController {
         eAdvisorStatus = 'No Status';
     }
 
+    @RemoteAction
+    global static Object getJudicialData(String emplid) {
+        try {
+            HttpRequest req = new HttpRequest();
+            req.setMethod('GET');
+            req.setEndpoint('callout:Student_Judicial_Data/data/' + emplid);
+
+            Continuation con = new Continuation(120);
+            con.continuationMethod = 'processJudicialData';
+            con.state = con.addHttpRequest(req);
+
+            return con;
+        } catch (Exception ex) {
+            vars.add(
+                ErrorLogger.convertStringToJSON('Context', '[ERROR] There was a problem receiving judicial data.')
+            );
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            ErrorLogger.log(ex, vars, false);
+            return null;
+        }
+    }
+
+    private static Object processJudicialData(Object state) {
+        List<JudicialWrapper> judicialData = new List<JudicialWrapper>();
+        HttpResponse res;
+
+        try {
+            res = Continuation.getResponse((String) state);
+            if (res.getStatusCode() == 200) {
+                judicialData = (List<JudicialWrapper>) JSON.deserialize(res.getBody(), List<JudicialWrapper>.class);
+            } else {
+                throw new StudentProfileException('[ERROR] There was a problem parsing judicial data.');
+            }
+        } catch (Exception ex) {
+            vars.add(ErrorLogger.convertIntegerToJSON('Status code', res.getStatusCode()));
+            vars.add(ErrorLogger.convertStringToJSON('Response body', res.getBody()));
+            ErrorLogger.log(ex, vars, false);
+            return null;
+        }
+
+        return judicialData;
+    }
+
     private static List<FinancialAidChecklistWrapper.FinancialAidChecklist> filterFinancialAidUnresolvedItems(
         List<FinancialAidChecklistWrapper.FinancialAidChecklist> financialAidChecklists
     ) {
@@ -1027,6 +1082,81 @@ global with sharing class StudentProfileController {
         return advNoteWrapperList;
     }
 
+    @AuraEnabled(cacheable=true)
+    public static List<AdvisingNoteWrapper> getPSAdvisorNotesLWC(String contactId) {
+        try {
+            if (contactId == null)
+                return null;
+
+            Contact c = [SELECT Id, EMPLID__c FROM Contact WHERE Id = :contactId LIMIT 1];
+
+            if (c.EMPLID__c == null)
+                return null;
+
+            if (!Schema.sObjectType.PS_ASU_SP_ADNOTE_V__x.isAccessible()) {
+                throw new StudentProfileException(
+                    'User does not have permission to view ' +
+                        Schema.sObjectType.PS_ASU_SP_ADNOTE_V__x.getLabelPlural()
+                );
+            }
+
+            List<AdvisingNoteWrapper> advNoteWrapperList = new List<AdvisingNoteWrapper>();
+
+            // Get advising notes
+            List<PS_ASU_SP_ADNOTE_V__x> advisingNoteList = [
+                SELECT
+                    ACAD_CAREER__c,
+                    COMMENTS__c,
+                    CREATDTTM__c,
+                    CREATEOPRID__c,
+                    DisplayUrl,
+                    EMPLID__c,
+                    ExternalId,
+                    Id,
+                    NAME__c,
+                    STRM__c,
+                    Academic_Plan__c,
+                    Academic_Plan__r.Name,
+                    Academic_Program__c,
+                    Academic_Program__r.Name,
+                    Student_Career_Number__c
+                FROM PS_ASU_SP_ADNOTE_V__x
+                WHERE EMPLID__c = :c.EMPLID__c
+                WITH USER_MODE
+                ORDER BY CREATDTTM__c DESC
+                
+            ];
+
+            Set<String> advAsuRiteIds = new Set<String>();
+            for (PS_ASU_SP_ADNOTE_V__x note : advisingNoteList)
+                if (note.CREATEOPRID__c != null && note.CREATEOPRID__c != '')
+                    advAsuRiteIds.add(note.CREATEOPRID__c + '@admin.asu.edu');
+
+            // Get the id for the users mentioned in advisor notes
+            List<User> advUserList = [
+                SELECT Id, FederationIdentifier
+                FROM User
+                WHERE FederationIdentifier IN :advAsuRiteIds
+            ];
+
+            Map<String, String> advUserMap = new Map<String, String>();
+            for (User user : advUserList)
+                advUserMap.put(user.FederationIdentifier, user.Id);
+
+            // Create wrappers
+            for (PS_ASU_SP_ADNOTE_V__x note : advisingNoteList) {
+                AdvisingNoteWrapper noteWrapper = new AdvisingNoteWrapper();
+                noteWrapper.note = note;
+                noteWrapper.advUserId = advUserMap.get(note.CREATEOPRID__c + '@admin.asu.edu');
+                advNoteWrapperList.add(noteWrapper);
+            }
+
+            return advNoteWrapperList;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
     @RemoteAction
     global static List<CommentWrapper> getComments(String emplId, String jsonComments) {
         List<PS_ASU_SP_COMMNT_V__x> commentsList = (List<PS_ASU_SP_COMMNT_V__x>) JSON.deserialize(
@@ -1059,24 +1189,24 @@ global with sharing class StudentProfileController {
     }
 
     @RemoteAction
-    global static List<SortableClass> sortClasses(
+    global static List<StudentProfileSortClasses> sortClasses(
         String paramToSortBy,
         String listOfClassesJSON,
         Boolean sortDirection
     ) {
-        List<SortableClass> classList = new List<SortableClass>();
+        List<StudentProfileSortClasses> classList = new List<StudentProfileSortClasses>();
         List<PS_ASU_SP_CLASS_V__x> listOfClasses = (List<PS_ASU_SP_CLASS_V__x>) JSON.deserialize(
             listOfClassesJSON,
             List<PS_ASU_SP_CLASS_V__x>.class
         );
         for (PS_ASU_SP_CLASS_V__x asuClass : listOfClasses) {
-            classList.add(new SortableClass(asuClass, paramToSortBy));
+            classList.add(new StudentProfileSortClasses(asuClass, paramToSortBy));
         }
 
         classList.sort();
         if (!sortDirection) {
-            List<SortableClass> reversedList = new List<SortableClass>();
-            for (SortableClass sc : classList) {
+            List<StudentProfileSortClasses> reversedList = new List<StudentProfileSortClasses>();
+            for (StudentProfileSortClasses sc : classList) {
                 if (reversedList.size() == 0) {
                     reversedList.add(sc);
                 } else {
@@ -1089,14 +1219,14 @@ global with sharing class StudentProfileController {
     }
 
     @RemoteAction
-    global static List<SortableCreditByExam> sortExams(
+    global static List<StudentProfileSortExams> sortExams(
         String paramToSortBy,
         List<PS_ASU_SP_TRNSFR_V__x> listOfExams,
         Boolean sortDirection
     ) {
-        List<SortableCreditByExam> examList = new List<SortableCreditByExam>();
+        List<StudentProfileSortExams> examList = new List<StudentProfileSortExams>();
         for (PS_ASU_SP_TRNSFR_V__x exam : listOfExams) {
-            examList.add(new SortableCreditByExam(exam, paramToSortBy));
+            examList.add(new StudentProfileSortExams(exam, paramToSortBy));
         }
 
         examList.sort();
@@ -1104,8 +1234,8 @@ global with sharing class StudentProfileController {
             return examList;
         }
 
-        List<SortableCreditByExam> reversedList = new List<SortableCreditByExam>();
-        for (SortableCreditByExam sc : examList) {
+        List<StudentProfileSortExams> reversedList = new List<StudentProfileSortExams>();
+        for (StudentProfileSortExams sc : examList) {
             if (reversedList.size() == 0) {
                 reversedList.add(sc);
             } else {
@@ -1113,6 +1243,38 @@ global with sharing class StudentProfileController {
             }
         }
         return reversedList;
+    }
+
+    @RemoteAction
+    global static List<StudentProfileSortAcademicIntegrity> sortAcademicIntegrityData(
+        String paramToSortBy,
+        String academicIntegrityListJson,
+        Boolean sortDirection
+    ) {
+        List<StudentProfileSortAcademicIntegrity> academicIntegrityListToSort = new List<StudentProfileSortAcademicIntegrity>();
+        List<PS_ASU_SP_CLASS_V__x> academicIntegrityList = (List<PS_ASU_SP_CLASS_V__x>) JSON.deserialize(
+            academicIntegrityListJson,
+            List<PS_ASU_SP_CLASS_V__x>.class
+        );
+        for (PS_ASU_SP_CLASS_V__x academicIntegrityItem : academicIntegrityList) {
+            academicIntegrityListToSort.add(
+                new StudentProfileSortAcademicIntegrity(academicIntegrityItem, paramToSortBy)
+            );
+        }
+
+        academicIntegrityListToSort.sort();
+        if (!sortDirection) {
+            List<StudentProfileSortAcademicIntegrity> reversedList = new List<StudentProfileSortAcademicIntegrity>();
+            for (StudentProfileSortAcademicIntegrity listItem : academicIntegrityListToSort) {
+                if (reversedList.size() == 0) {
+                    reversedList.add(listItem);
+                } else {
+                    reversedList.add(0, listItem);
+                }
+            }
+            return reversedList;
+        }
+        return academicIntegrityListToSort;
     }
 
     @RemoteAction
@@ -1145,6 +1307,32 @@ global with sharing class StudentProfileController {
             classesData.classSessions.add('All');
         }
         return classesData;
+    }
+
+    @RemoteAction
+    global static AcademicIntegrityWrapper getAcademicIntegrityData(
+        String academicIntegrityListJson,
+        String asrListJson
+    ) {
+        List<PS_ASU_SP_CLASS_V__x> academicIntegrityList = (List<PS_ASU_SP_CLASS_V__x>) JSON.deserialize(
+            academicIntegrityListJson,
+            List<PS_ASU_SP_CLASS_V__x>.class
+        );
+        List<PS_ASU_SP_ASR_CLSV__x> asrList = (List<PS_ASU_SP_ASR_CLSV__x>) JSON.deserialize(
+            asrListJson,
+            List<PS_ASU_SP_ASR_CLSV__x>.class
+        );
+
+        AcademicIntegrityWrapper academicIntegrityData = new AcademicIntegrityWrapper();
+        for (PS_ASU_SP_ASR_CLSV__x asr : asrList) {
+            academicIntegrityData.asrClasses.add(asr.STRM__c + '|' + asr.SESSION_CODE__c + '|' + asr.CLASS_NBR__c);
+        }
+
+        for (PS_ASU_SP_CLASS_V__x course : academicIntegrityList) {
+            academicIntegrityData.academicIntegrityData.add(course);
+        }
+
+        return academicIntegrityData;
     }
 
     public String getAidYear() {
@@ -1369,7 +1557,9 @@ global with sharing class StudentProfileController {
     }
 
     global class AdvisingNoteWrapper {
+        @AuraEnabled
         public PS_ASU_SP_ADNOTE_V__x note { get; set; }
+        @AuraEnabled
         public String advUserId { get; set; }
     }
 
@@ -1379,6 +1569,40 @@ global with sharing class StudentProfileController {
         public Set<String> asrClasses = new Set<String>();
         public List<PS_ASU_SP_CLASS_V__x> enrolledClasses = new List<PS_ASU_SP_CLASS_V__x>();
         public List<PS_ASU_SP_CLASS_V__x> droppedClasses = new List<PS_ASU_SP_CLASS_V__x>();
+    }
+
+    global class AcademicIntegrityWrapper {
+        public Set<String> asrClasses = new Set<String>();
+        public List<PS_ASU_SP_CLASS_V__x> academicIntegrityData = new List<PS_ASU_SP_CLASS_V__x>();
+    }
+
+    global class JudicialWrapper {
+        public String CASE_NUMBER { get; set; }
+        public String FILE_ID { get; set; }
+        public String TYPE { get; set; }
+        public String STATUS { get; set; }
+        public String SID { get; set; }
+        public String ROLE { get; set; }
+        public String CASE_CREATED_DATE { get; set; }
+        public String REPORTED_DATE { get; set; }
+        public String INCIDENT_DATE { get; set; }
+        public String INCIDENT_TIME { get; set; }
+        public String INCIDENT_LOCATION { get; set; }
+        public String INCIDENT_LOCATION_SPECIFIC { get; set; }
+        public String INCIDENT_DESCRIPTION { get; set; }
+        public String INCIDENT_SUMMARY { get; set; }
+        public String CHARGE_1 { get; set; }
+        public String FINDING_1 { get; set; }
+        public String CHARGE_2 { get; set; }
+        public String FINDING_2 { get; set; }
+        public String CHARGE_3 { get; set; }
+        public String FINDING_3 { get; set; }
+        public String CHARGE_4 { get; set; }
+        public String FINDING_4 { get; set; }
+        public String CHARGE_5 { get; set; }
+        public String FINDING_5 { get; set; }
+        public String CHARGE_6 { get; set; }
+        public String FINDING_6 { get; set; }
     }
 
     global class CommentWrapper {

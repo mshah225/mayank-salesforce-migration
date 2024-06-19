@@ -5,7 +5,7 @@ global with sharing class ScheduledStalledSMSDetector implements Schedulable {
     private SMSDetectionRuleSet ruleSuperset; // used for the query so we can use just one query
 
     global void execute(SchedulableContext SC) {
-        primaryMethod();
+        // primaryMethod();
     }
 
     public void primaryMethod() {
@@ -108,7 +108,7 @@ global with sharing class ScheduledStalledSMSDetector implements Schedulable {
                 Number_Of_Days__c,
                 Email_Addresses__c,
                 Report_Fields__c,
-                Sender_Id_Units__c,
+                // Sender_Id_Units__c,
                 Statuses__c
             FROM SMS_Stall_Detection_Rule__mdt
             WHERE Enabled__c = TRUE
@@ -123,7 +123,7 @@ global with sharing class ScheduledStalledSMSDetector implements Schedulable {
                     Number_Of_Days__c,
                     Email_Addresses__c,
                     Report_Fields__c,
-                    Sender_Id_Units__c,
+                    // Sender_Id_Units__c,
                     Statuses__c
                 FROM SMS_Stall_Detection_Rule__mdt
                 WHERE Enabled__c = FALSE AND MasterLabel LIKE '%[DO NOT CHANGE]%'
@@ -197,13 +197,13 @@ global with sharing class ScheduledStalledSMSDetector implements Schedulable {
             }
             // Make sender id list
             constraintSenderIdUnits = new Set<String>();
-            if (rule.Sender_Id_Units__c != null) {
-                for (String s : rule.Sender_Id_Units__c.split(',')) {
-                    if (s.trim().length() > 0) {
-                        constraintSenderIdUnits.add(s.trim());
-                    }
-                }
-            }
+            // if (rule.Sender_Id_Units__c != null) {
+            //     for (String s : rule.Sender_Id_Units__c.split(',')) {
+            //         if (s.trim().length() > 0) {
+            //             constraintSenderIdUnits.add(s.trim());
+            //         }
+            //     }
+            // }
             // Make status list
             constraintStatuses = new Set<String>();
             if (rule.Statuses__c != null) {

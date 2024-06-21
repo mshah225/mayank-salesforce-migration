@@ -739,6 +739,7 @@ public class CaseService {
             newCase.Type_of_Additional_Assignment_Needed__c = typeOfAdditionalAssignment == null
                 ? newCase.Type_of_Additional_Assignment_Needed__c
                 : typeOfAdditionalAssignment;
+            newCase.Case_Assignment_Rule__c = carId == null ? newCase.Case_Assignment_Rule__c : carId;
         }
 
         private void setFieldsFromCar(Case_Assignment_Rule__c car) {
@@ -752,6 +753,8 @@ public class CaseService {
                 subCategory = car.CC_Sub_Category__c;
             if (car.CC_Functional_Group__c != null)
                 functionalGroup = car.CC_Functional_Group__c;
+            if (car.Id != null)
+                carId = car.Id;
         }
 
         private Boolean useOppForTerritoryManager(Opportunity opp) {
@@ -769,5 +772,6 @@ public class CaseService {
         public String category = null;
         public String subCategory = null;
         public String typeOfAdditionalAssignment = null;
+        public String carId = null;
     }
 }

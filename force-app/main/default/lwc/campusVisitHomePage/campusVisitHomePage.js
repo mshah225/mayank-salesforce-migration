@@ -2,10 +2,14 @@ import {LightningElement, wire, api} from 'lwc';
 import {EnclosingTabId, setTabLabel, setTabIcon} from 'lightning/platformWorkspaceApi';
 
 import getCampaignMembers from '@salesforce/apex/CampusVisitHomePageController.getCampaignMembers';
+import getAllCampaignMembers from '@salesforce/apex/CampusVisitHomePageController.getAllCampaignMembers';
 import searchCampaignMembers from '@salesforce/apex/CampusVisitHomePageController.searchCampaignMembers';
 import updateCampaignMembers from '@salesforce/apex/CampusVisitHomePageController.updateCampaignMembers';
 import CheckInFormModal from 'c/campusVisitCheckInForm';
 import WalkInFormModal from 'c/campusVisitWalkInForm';
+import TourSplitModal from 'c/campusVisitTourGroupSplit';
+
+import reportId from '@salesforce/label/c.Tour_Split_Report_Id';
 
 import {NavigationMixin} from 'lightning/navigation';
 import {refreshApex} from '@salesforce/apex';
@@ -37,11 +41,14 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
     cols = COLMS;
     contacts;
     wiredContacts;
+    wiredAllCampaignMembers;
     selectedContacts;
     baseData;
     nameSearchString = '';
     statusSearchString;
     isModalOpen = false;
+    memberStatusCounts;
+    memberStatusOptions;
     value = ['Registered', 'Registered - Late'];
 
     get selectedContactsLen() {
@@ -62,6 +69,14 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
         }
         if (result.error) {
             console.error(result.error);
+        }
+    }
+
+    @wire(getAllCampaignMembers, {recordId: '$propertyValue'})
+    setStatusCount(result) {
+        this.wiredAllCampaignMembers = result;
+        if(result && result.data) {
+            this.memberStatusOptions = this.countStatusGroups(result?.data);
         }
     }
 
@@ -134,14 +149,15 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
         });
         updateCampaignMembers({campaignMemberIds: idList}).then(() => {
             refreshApex(this.wiredContacts);
+            refreshApex(this.wiredAllCampaignMembers);
         });
         this.template.querySelector('lightning-datatable').selectedRows = [];
         this.selectedContacts = undefined;
     }
 
     refreshTable() {
-        console.log('refreshing table');
         refreshApex(this.wiredContacts);
+        refreshApex(this.wiredAllCampaignMembers);
         this.template.querySelector('lightning-datatable').selectedRows = [];
         this.selectedContacts = undefined;
     }
@@ -157,15 +173,7 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
     }
 
     get options() {
-        return [
-            {label: 'Invited', value: 'Invited'},
-            {label: 'Registered', value: 'Registered'},
-            {label: 'Registered - Attended', value: 'Registered - Attended'},
-            {label: 'Not Registered - Attended', value: 'Not Registered - Attended'},
-            {label: 'Registered - Not Attended', value: 'Registered - Not Attended'},
-            {label: 'Registered - Cancelled', value: 'Registered - Cancelled'},
-            {label: 'Registered - Late', value: 'Registered - Late'},
-        ];
+        return this.memberStatusOptions;
     }
 
     get selectedValues() {
@@ -185,5 +193,59 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
         });
 
         this.refreshTable();
+    }
+
+    countStatusGroups(allCampaignMembers) {
+
+        this.memberStatusCounts = new Map();
+
+        this.memberStatusCounts.set('Invited', 0);
+        this.memberStatusCounts.set('Registered', 0);
+        this.memberStatusCounts.set('Registered - Attended', 0);
+        this.memberStatusCounts.set('Not Registered - Attended', 0);
+        this.memberStatusCounts.set('Registered - Not Attended', 0);
+        this.memberStatusCounts.set('Registered - Cancelled', 0);
+        this.memberStatusCounts.set('Registered - Late', 0);
+        
+        for (let x = 0; x < allCampaignMembers.length; x++) {
+            let statusCount = this.memberStatusCounts.get(allCampaignMembers[x].Status);
+            this.memberStatusCounts.set(allCampaignMembers[x].Status, ++statusCount);
+        }
+
+        return [
+            {label: 'Invited (' + this.memberStatusCounts.get('Invited') + ')', value: 'Invited'},
+            {label: 'Registered (' + this.memberStatusCounts.get('Registered') + ')', value: 'Registered'},
+            {label: 'Registered - Attended (' + this.memberStatusCounts.get('Registered - Attended') + ')', value: 'Registered - Attended'},
+            {label: 'Not Registered - Attended (' + this.memberStatusCounts.get('Not Registered - Attended') + ')', value: 'Not Registered - Attended'},
+            {label: 'Registered - Not Attended (' + this.memberStatusCounts.get('Registered - Not Attended') + ')', value: 'Registered - Not Attended'},
+            {label: 'Registered - Cancelled (' + this.memberStatusCounts.get('Registered - Cancelled') + ')', value: 'Registered - Cancelled'},
+            {label: 'Registered - Late (' + this.memberStatusCounts.get('Registered - Late') + ')', value: 'Registered - Late'},
+        ];
+        
+    }
+
+    async splitIntoTourGroups() {
+        const result = await TourSplitModal.open({
+            size: 'large',
+            description: "Accessible description of modal's purpose",
+            content: this.propertyValue,
+        });
+
+        this.refreshTable();
+
+        if (result) {
+            this[NavigationMixin.Navigate]({
+                type: 'standard__recordPage',
+                attributes: {
+                    recordId: reportId,
+                    objectApiName: 'Report',
+                    actionName: 'view'
+                },
+                state : {
+                    fv0: this.propertyValue
+                }
+            });
+        }
+        
     }
 }

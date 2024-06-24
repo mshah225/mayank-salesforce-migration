@@ -1,5 +1,8 @@
 const {jestConfig} = require('@salesforce/sfdx-lwc-jest/config');
 
+const setupFilesAfterEnv = jestConfig.setupFilesAfterEnv || [];
+setupFilesAfterEnv.push('<rootDir>/force-app/main/default/lwc/__jestMocks__/customValidators.js');
+
 module.exports = {
     ...jestConfig,
     // reference: https://github.com/trailheadapps/lwc-recipes/issues/583
@@ -21,4 +24,5 @@ module.exports = {
         '^lightning/inputField$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/inputField',
     },
     modulePathIgnorePatterns: ['<rootDir>/.localdevserver'],
+    setupFilesAfterEnv, // run after jest is setup
 };

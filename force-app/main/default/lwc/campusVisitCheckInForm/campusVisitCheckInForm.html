@@ -117,7 +117,7 @@
                             <lightning-input type="text" read-only="true" label="Type" value="--"> </lightning-input>
                         </template>
                     </div>
-                    <div class="slds-col slds-size_1-of-2">
+                    <div class="slds-col slds-size_1-of-4">
                         <template lwc:if={campMem.Opportunity__r}>
                             <lightning-input
                                 type="text"
@@ -129,6 +129,18 @@
                         </template>
                         <template lwc:else>
                             <lightning-input type="text" read-only="true" label="Stage" value="--"> </lightning-input>
+                        </template>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4">
+                        <template lwc:if={campMem.Opportunity__c}>
+                            <lightning-record-view-form
+                                record-id={campMem.Opportunity__c}
+                                object-api-name="Opportunity">
+                                <lightning-output-field field-name="Term__c"> </lightning-output-field>
+                            </lightning-record-view-form>
+                        </template>
+                        <template lwc:else>
+                            <lightning-input type="text" read-only="true" label="Term" value="--"> </lightning-input>
                         </template>
                     </div>
                 </div>
@@ -188,7 +200,7 @@
                             type="checkbox"
                             variant="label-stacked"
                             label="Barrett Session"
-                            value={campMem.Barrett_Session__c}
+                            checked={campMem.Barrett_Session__c}
                             onchange={handleBarrettChange}
                         >
                         </lightning-input>
@@ -198,7 +210,7 @@
                             type="checkbox"
                             variant="label-stacked"
                             label="Housing Tour"
-                            value={campMem.Housing_Tour__c}
+                            checked={campMem.Housing_Tour__c}
                             onchange={handleHousingTourChange}
                         >
                         </lightning-input>
@@ -290,6 +302,7 @@
     </lightning-modal-body>
 
     <lightning-modal-footer>
+        <lightning-button style="margin-right: 10px" label="Print Badge" onclick={printBadge}></lightning-button>
         <lightning-button label="Save" onclick={handleOkay}></lightning-button>
     </lightning-modal-footer>
 </template>

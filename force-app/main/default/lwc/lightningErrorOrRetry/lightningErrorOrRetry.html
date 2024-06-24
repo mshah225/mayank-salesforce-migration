@@ -1,0 +1,23 @@
+<template>
+    <template lwc:if={hasError}>
+        <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+            <div>
+                <h2 style="display: inline; white-space: pre-line">{message}</h2>
+                <template lwc:if={multipleLines}>
+                    <br />
+                </template>
+                <lightning-button-icon
+                    icon-name="utility:refresh"
+                    alternative-text="Retry"
+                    class="slds-m-left_xx-small"
+                    title="Retry"
+                    variant="border-filled"
+                    onclick={sendRetryEvent}
+                ></lightning-button-icon>
+            </div>
+        </div>
+    </template>
+    <template lwc:else>
+        <slot></slot>
+    </template>
+</template>

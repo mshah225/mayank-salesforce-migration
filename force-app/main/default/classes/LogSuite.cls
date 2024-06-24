@@ -42,10 +42,10 @@ public class LogSuite {
         }
     }
 
-    public static void loUntuncated(String sMsg) {
-        for (Integer i = 0; i < sMsg.length(); i = i + 300) {
-            Integer iEffectiveEnd = (i + 300 > (sMsg.length()) ? sMsg.length() : i + 300);
-            System.debug(sMsg.substring(i, iEffectiveEnd));
+    public static void logUntuncated(String logType, String sMsg) {
+        for (Integer i = 0; i < sMsg.length(); i = i + 260) {
+            Integer iEffectiveEnd = (i + 260 > (sMsg.length()) ? sMsg.length() : i + 260);
+            log(logType, sMsg.substring(i, iEffectiveEnd));
         }
     }
 }

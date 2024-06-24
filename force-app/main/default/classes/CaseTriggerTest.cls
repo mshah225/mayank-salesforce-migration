@@ -245,7 +245,6 @@ public with sharing class CaseTriggerTest {
 
         Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(
             Email_Address__c = 'service@test.test',
-            customer_notice_email_from_name__c = 'Test Service',
             email_template_id__c = templateId,
             queue_id__c = String.valueOf(TMUser.Id).subString(0, 15),
             origin__c = 'Test Origin',
@@ -258,7 +257,6 @@ public with sharing class CaseTriggerTest {
 
         Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c(
             Email_Address__c = 'admissions@asu.edu',
-            customer_notice_email_from_name__c = 'Default Test Service',
             email_template_id__c = templateId,
             queue_id__c = String.valueOf(TMUser.Id).subString(0, 15),
             origin__c = 'Test Origin',
@@ -347,7 +345,6 @@ public with sharing class CaseTriggerTest {
 
         Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(
             Email_Address__c = 'service@test.test',
-            customer_notice_email_from_name__c = 'Test Service',
             email_template_id__c = templateId,
             queue_id__c = String.valueOf(TMUser.Id).subString(0, 15),
             origin__c = 'Test Origin',
@@ -361,7 +358,6 @@ public with sharing class CaseTriggerTest {
 
         Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c(
             Email_Address__c = 'admissions@asu.edu',
-            customer_notice_email_from_name__c = 'Default Test Service',
             email_template_id__c = templateId,
             queue_id__c = String.valueOf(TMUser.Id).subString(0, 15),
             origin__c = 'Test Origin',
@@ -452,7 +448,6 @@ public with sharing class CaseTriggerTest {
 
         Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(
             Email_Address__c = 'service@test.test',
-            customer_notice_email_from_name__c = 'Test Service',
             email_template_id__c = templateId,
             queue_id__c = String.valueOf(TMUser.Id).subString(0, 15),
             origin__c = 'Test Origin',
@@ -466,7 +461,6 @@ public with sharing class CaseTriggerTest {
 
         Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c(
             Email_Address__c = 'admissions@asu.edu',
-            customer_notice_email_from_name__c = 'Default Test Service',
             email_template_id__c = templateId,
             queue_id__c = String.valueOf(TMUser.Id).subString(0, 15),
             origin__c = 'Test Origin',
@@ -556,7 +550,6 @@ public with sharing class CaseTriggerTest {
 
         Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(
             Email_Address__c = 'service@test.test',
-            customer_notice_email_from_name__c = 'Test Service',
             email_template_id__c = templateId,
             queue_id__c = String.valueOf(TMUser.Id).subString(0, 15),
             //origin__c = 'Test Origin',
@@ -569,7 +562,6 @@ public with sharing class CaseTriggerTest {
 
         Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c(
             Email_Address__c = 'admissions@asu.edu',
-            customer_notice_email_from_name__c = 'Default Test Service',
             email_template_id__c = templateId,
             queue_id__c = String.valueOf(TMUser.Id).subString(0, 15),
             origin__c = 'Test Origin',
@@ -661,7 +653,6 @@ public with sharing class CaseTriggerTest {
 
         Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(
             Email_Address__c = 'service@test.test',
-            customer_notice_email_from_name__c = 'Test Service',
             email_template_id__c = templateId,
             queue_id__c = String.valueOf(APIUser.Id).substring(0, 15),
             origin__c = 'Test Origin',
@@ -674,7 +665,6 @@ public with sharing class CaseTriggerTest {
 
         Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c(
             Email_Address__c = 'admissions@asu.edu',
-            customer_notice_email_from_name__c = 'Default Test Service',
             email_template_id__c = templateId,
             queue_id__c = String.valueOf(APIUser.Id).substring(0, 15),
             origin__c = 'Test Origin',
@@ -769,7 +759,6 @@ public with sharing class CaseTriggerTest {
 
         Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(
             Email_Address__c = 'service@test.test',
-            customer_notice_email_from_name__c = 'Test Service',
             email_template_id__c = templateId,
             queue_id__c = String.valueOf(APIUser.Id).substring(0, 15),
             origin__c = 'Test Origin',
@@ -782,7 +771,6 @@ public with sharing class CaseTriggerTest {
 
         Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c(
             Email_Address__c = 'admissions@asu.edu',
-            customer_notice_email_from_name__c = 'Default Test Service',
             email_template_id__c = templateId,
             queue_id__c = String.valueOf(APIUser.Id).substring(0, 15),
             origin__c = 'Test Origin',
@@ -883,7 +871,6 @@ public with sharing class CaseTriggerTest {
 
         Case_Assignment_Rule__c car = new Case_Assignment_Rule__c(
             Email_Address__c = 'service@test.test',
-            customer_notice_email_from_name__c = 'Test Service',
             email_template_id__c = templateId,
             queue_id__c = String.valueOf(APIUser.Id).substring(0, 15),
             origin__c = 'Test Origin',
@@ -896,7 +883,6 @@ public with sharing class CaseTriggerTest {
 
         Case_Assignment_Rule__c carDefault = new Case_Assignment_Rule__c(
             Email_Address__c = 'admissions@asu.edu',
-            customer_notice_email_from_name__c = 'Default Test Service',
             email_template_id__c = templateId,
             queue_id__c = String.valueOf(APIUser.Id).substring(0, 15),
             origin__c = 'Test Origin',

@@ -1,0 +1,20 @@
+:host .advising-notes-table {
+    border: var(--lwc-borderWidthThin, 1px) solid
+        var(--slds-g-color-border-base-1, var(--lwc-colorBorder, rgb(229, 229, 229)));
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+:host .advising-notes-table tbody > tr:nth-of-type(2n + 1) {
+    background-color: var(--slds-g-color-neutral-base-95, var(--lwc-colorBackgroundRowHover, rgb(243, 243, 243)));
+}
+
+:host .advising-notes-table td {
+    border: var(--lwc-borderWidthThin, 1px) solid
+        var(--slds-g-color-border-base-1, var(--lwc-colorBorder, rgb(229, 229, 229)));
+    padding: 0.5rem;
+}
+
+:host .advising-notes-table .comment {
+    white-space: pre-line;
+}

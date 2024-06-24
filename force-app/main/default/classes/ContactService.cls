@@ -521,7 +521,7 @@ public class ContactService {
             [
                 SELECT Id, Territory_Assignment_Required__c
                 FROM Opportunity
-                WHERE Contact__c IN :contactIdsWithTAChanges
+                WHERE Contact__c IN :contactIdsWithTAChanges AND (CloseDate = NULL OR CloseDate >= :Date.today())
             ]
         );
 

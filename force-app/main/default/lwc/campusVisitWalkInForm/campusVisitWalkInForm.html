@@ -307,6 +307,7 @@
                                 object-api-name="Term__c"
                                 value={opportunityRecord.Term__c}
                                 onchange={handleTermChange}
+                                filter={filterForTerm}
                                 required
                             >
                             </lightning-record-picker>
@@ -457,6 +458,8 @@
             <lightning-button label="Next" onclick={goToPageThree}></lightning-button>
         </template>
         <template lwc:else>
+            <lightning-button style="margin-right: 10px" label="Print Badge" onclick={printBadge}></lightning-button>
+            
             <lightning-button
                 style="margin-right: 10px"
                 label="Go Back"

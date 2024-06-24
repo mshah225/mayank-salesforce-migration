@@ -10,4 +10,3 @@ force-app/main/default/pages/Bulk_SMS_FYS.page
 force-app/main/default/pages/pkb_RSS.page
 force-app/main/default/components/vsPageBlockTableEnhancer.component
 force-app/main/default/components/vsNavbar.component
-force-app/main/default/classes/StudentProfileExternalObjectjs.cls

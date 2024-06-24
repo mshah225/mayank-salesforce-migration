@@ -99,6 +99,21 @@ export default class CampusVisitCheckInForm extends LightningModal {
         this.campaignMemberAddTourInfo = e.detail.value;
     }
 
+    printBadge() {
+        let displayName = '';
+
+        if (this.campaignMemberBadgeName) {
+            displayName = encodeURIComponent(this.campaignMemberBadgeName.trim());
+        } else if (this.campMem.Badge_Name__c) {
+            displayName = encodeURIComponent(this.campMem.Badge_Name__c.trim());
+        } else {
+            displayName = encodeURIComponent(this.campMem.Name.trim());
+        }
+
+        let url = '/apex/CampusVisitBadge?name=' + displayName + '&campaign=' + this.campMem.Campaign.Id;
+        window.open(url, "_blank");
+    }
+
     saveRecord() {
         let camMem = {};
         camMem.Id = this.content;

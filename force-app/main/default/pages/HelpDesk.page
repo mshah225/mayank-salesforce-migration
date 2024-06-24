@@ -25,9 +25,9 @@
 
         function openStudentProfile(emplId, contactName) {
             if (sforce.console.isInConsole()) {
-                sforce.console.openPrimaryTab(null, '/apex/studentProfile?contactId=' + emplId, true, contactName);
+                sforce.console.openPrimaryTab(null, '/apex/StudentProfile?contactId=' + emplId, true, contactName);
             } else {
-                window.open('/apex/studentProfile?contactId=' + emplId);
+                window.open('/apex/StudentProfile?contactId=' + emplId);
             }
         }
 
@@ -560,7 +560,7 @@
                                 />
 
                                 <apex:commandButton
-                                    id="studentProfileButton"
+                                    id="StudentProfileButton"
                                     onclick="openStudentProfile('{!contactsrch.EMPLID__c}', '{!contactName}'); return false;"
                                     value="Student Profile"
                                     disabled="{!NOT(isContactSet && NOT(ISNULL(contactsrch.EMPLID__c) || contactsrch.EMPLID__c == ''))}"
@@ -684,6 +684,15 @@
                                             value="{!mycase.Reason_for_Escalation__c}"
                                         />
 
+                                        <apex:inputField
+                                            value="{!mycase.Knowledge_Link__c}"
+                                            label="Knowledge Link"
+                                            id="knowledgeLink"
+                                            style="width: 90%"
+                                        />
+
+                                        <br />
+
                                         <apex:pageBlockSectionItem rendered="{!mycase.Status == CLOSED_FORWARDED}">
                                             <apex:outputLabel value="Forward To Unit" for="forwardToUnit" />
                                             <apex:inputField
@@ -805,7 +814,7 @@
                                 />
 
                                 <apex:commandButton
-                                    id="studentProfileButtonCase"
+                                    id="StudentProfileButtonCase"
                                     onclick="openStudentProfile('{!contactsrch.EMPLID__c}', '{!contactName}'); return false;"
                                     value="Student Profile"
                                     disabled="{!ISNULL(contactsrch.EMPLID__c) || contactsrch.EMPLID__c == ''}"

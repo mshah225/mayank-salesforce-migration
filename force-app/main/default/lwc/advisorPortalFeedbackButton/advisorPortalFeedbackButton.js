@@ -1,9 +1,23 @@
-import {LightningElement} from 'lwc';
+import {LightningElement, api} from 'lwc';
 import submitFeedback from '@salesforce/apex/FeedbackButtonService.submitFeedback';
+import createTicket from '@salesforce/apex/JiraCallout.createTicket'
 import LightningQuestionAnswerModal from 'c/lightningQuestionAnswerModal';
 
 export default class AdvisorPortalFeedbackButton extends LightningElement {
     carName = 'Advisor Portal';
+    @api set currentFilter(val) {
+        this._currentFilter = val;
+
+        if (this._currentFilter != null) {
+            if (this._currentFilter.career === 'GRD') this.routeTicketToJira = true;
+            else this.routeTicketToJira = false;
+        }
+    }
+    get currentFilter() {
+        return this._currentFilter;
+    }
+    _currentFilter = null;
+
     questions = [
         {
             key: 'feedback',
@@ -31,26 +45,37 @@ export default class AdvisorPortalFeedbackButton extends LightningElement {
                         if (feedback == null) feedback = '';
                         feedback = feedback.trim();
 
-                        // Submit it - then return to close the modal
-                        return submitFeedback({carName: this.carName, feedbackText: feedback})
-                            .then(() => {
-                                this.makeToast('success', 'Success', 'Feedback successfully submitted');
+                        // route graduate advisor feedbacks to Jira
+                        if (this.routeTicketToJira) {
+                            return createTicket({
+                                jiraProjectMetadataRecordName: 'Graduate College',
+                                summary: 'Graduate Advisor Portal Feedback Inquiry',
+                                description: feedback,
+                                type: 'Improvement',
+                                componentNames: 'Salesforce'
+                            })
+                            .then((res) => {
+                                this.makeToast('success', 'Success', 'Feedback successfully submitted: ' + res);
                             })
                             .catch((error) => {
                                 let errorMsg = error.body.message;
-                                if (
-                                    !errorMsg.includes(
-                                        'Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080)'
-                                    )
-                                ) {
-                                    errorMsg +=
-                                        '. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080)';
-                                }
-
-                                this.makeToast('error', 'Error', errorMsg);
-
+                                this.notifyErrorMessage(errorMsg);
                                 throw error;
-                            });
+                            })
+                        }
+
+                        return submitFeedback({
+                            carName: this.carName, 
+                            feedbackText: feedback
+                        })
+                        .then(() => {
+                            this.makeToast('success', 'Success', 'Feedback successfully submitted');
+                        })
+                        .catch((error) => {
+                            let errorMsg = error.body.message;
+                            this.notifyErrorMessage(errorMsg);
+                            throw error;
+                        });
                     } else {
                         // If the cancel button was pressed
                         return Promise.resolve();
@@ -58,6 +83,16 @@ export default class AdvisorPortalFeedbackButton extends LightningElement {
                 },
             },
         });
+    }
+
+    notifyErrorMessage(msg) {
+        if (!msg.includes(
+            'Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080)'
+        )) {
+            msg += '. Our support team has been notified of this error. If you require immediate assistance please call 1-855-ASU-5080 (1-855-278-5080)';
+        }
+
+        this.makeToast('error', 'Error', msg);
     }
 
     openModalKeyboard(e) {

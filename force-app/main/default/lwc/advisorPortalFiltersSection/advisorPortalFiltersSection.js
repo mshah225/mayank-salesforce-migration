@@ -33,6 +33,7 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
     @api loadingAcadPlan = false;
     @api loadingCaseStatus = false;
     @api loadingCaseCategory = false;
+    @api loadingCaseSubCategory = false;
 
     // For each of the @api specified picklist options we MUST convert the proxy object to a non-proxy object
     // before passing it to the lightningComboBox.  If we don't when the array gets to the lightningComboBox
@@ -72,6 +73,13 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
         return this._caseCategoryPicklistValues;
     }
     _caseCategoryPicklistValues = [];
+    @api set caseSubCategoryPicklistValues(val) {
+        this._caseSubCategoryPicklistValues = cloneObj(val);
+    }
+    get caseSubCategoryPicklistValues() {
+        return this._caseSubCategoryPicklistValues;
+    }
+    _caseSubCategoryPicklistValues = [];
     @api set academicProgramOptions(val) {
         this._academicProgramOptions = cloneObj(val);
     }
@@ -245,39 +253,6 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
     admitTermToPatternMismatchError = 'Should be a valid Peoplesoft term code.';
 
     /**
-     * Copy only the fields that are different from filterB to filterA
-     * @param {AdvisorPortalFilter} filterA
-     * @param {AdvisorPortalFilter} filterB
-     */
-    copyChanges(filterA, filterB) {
-        for (let i = 0; i < this.filterPropertyList.length; i++) {
-            const propertyName = this.filterPropertyList[i];
-            if (filterB[propertyName] != null && filterA[propertyName] !== filterB[propertyName])
-                filterA[propertyName] = filterB[propertyName];
-        }
-    }
-
-    /**
-     * Check if filterA and filterB disagree
-     * @param {AdvisorPortalFilter} filterA
-     * @param {AdvisorPortalFilter} filterB
-     * @returns true if different
-     */
-    filterIsDifferent(filterA, filterB) {
-        let same = true;
-
-        for (let i = 0; i < this.filterPropertyList.length; i++) {
-            const propertyName = this.filterPropertyList[i];
-            if (filterA[propertyName] !== filterB[propertyName]) {
-                same = false;
-                break;
-            }
-        }
-
-        return !same;
-    }
-
-    /**
      * Update an interdependent fields (such as dates being before/after as appropriate)
      * @param {String} changedField
      */
@@ -296,17 +271,12 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
                 fromTerm.length === 4 &&
                 toTerm.length === 4
             ) {
-                try {
-                    if (parseInt(toTerm, 10) < parseInt(fromTerm, 10)) {
-                        toTermComponent.setCustomValidity('To term should be after the From term');
-                        fromTermComponent.setCustomValidity('From term should be before the To term');
-                    } else {
-                        toTermComponent.setCustomValidity('');
-                        fromTermComponent.setCustomValidity('');
-                    }
-                } catch (err) {
-                    // eslint-disable-next-line no-console
-                    console.error(err);
+                if (parseInt(toTerm, 10) < parseInt(fromTerm, 10)) {
+                    toTermComponent.setCustomValidity('To term should be after the From term');
+                    fromTermComponent.setCustomValidity('From term should be before the To term');
+                } else {
+                    toTermComponent.setCustomValidity('');
+                    fromTermComponent.setCustomValidity('');
                 }
             } else {
                 toTermComponent.setCustomValidity('');
@@ -356,6 +326,7 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
     filterPropertyList = [
         'studentString',
         'caseCategory',
+        'caseSubCategory',
         'caseSubject',
         'caseStatus',
         'caseCount',

@@ -19,7 +19,6 @@ export default class TaggingComponent extends LightningElement {
     @track tagSearch = "";
     @track tagFinalList;
     @track tagSearchKey = "";
-    @track clickedButtonLabel;
     @track tagRemovalReasonSelected;
     @track boolShowPopover = false;
     @track tagRemovalOptions;
@@ -211,7 +210,6 @@ export default class TaggingComponent extends LightningElement {
             }, true);
  
         if (All_Compobox_Valid || this.tagRemovalReasonSelected != null) {
-            this.clickedButtonLabel = event.target.dataset.id;
             this.removeTagFromUI();
             this.isModalOpen = false;
         }
@@ -236,7 +234,7 @@ export default class TaggingComponent extends LightningElement {
 
     //This method here is used to update the ContactTag on ContactTag object and will uncheck and update the ineffective date on ContactTag__c Object
     removeTagFromUI() {
-        removeTag({ tag: this.clickedButtonLabel, recordId: this.recordId, tagRemovalReason: this.tagRemovalReasonSelected })
+        removeTag({ tag: this.currentSelectedTag.label, recordId: this.recordId, tagRemovalReason: this.tagRemovalReasonSelected })
             .then((result) => {
                 if (result == "Success") {
                     const event = new ShowToastEvent({

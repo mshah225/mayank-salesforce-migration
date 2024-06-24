@@ -456,7 +456,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'TVFILM',
             Plan_Description__c = 'Videography',
-            Residency__c = 'International',
+            Residency__c = 'Non-Resident',
             Status__c = 'Active in Program',
             Effective_Date__c = tMinus3d
         );
@@ -482,7 +482,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'COMPSCI',
             Plan_Description__c = 'Computer Science',
-            Residency__c = 'International',
+            Residency__c = 'Non-Resident',
             Status__c = 'Active in Program',
             Effective_Date__c = tMinus3d
         );
@@ -495,7 +495,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             Plan_Type_Text__c = 'MAJ',
             Plan_Code__c = 'ELECENG',
             Plan_Description__c = 'Electrical Engineering',
-            Residency__c = 'International',
+            Residency__c = 'Non-Resident',
             Status__c = 'Active in Program',
             Effective_Date__c = tMinus3d
         );
@@ -1079,7 +1079,6 @@ private class AdvisorPortalFilterSectionControllerTest {
         System.assert(!options.isEmpty(), 'There should be SOME residency options.');
         System.assert(options.keySet().contains('Resident'), 'Residency options should contain "Resident".');
         System.assert(options.keySet().contains('Non-Resident'), 'Residency options should contain "Non-Resident".');
-        System.assert(options.keySet().contains('International'), 'Residency options should contain "International".');
     }
 
     @IsTest
@@ -2161,7 +2160,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
             WHERE
-                Residency__c = 'International'
+                Residency__c = 'Non-Resident'
                 AND Contact__c IN (
                     SELECT Student__c
                     FROM Success_Student__c
@@ -2174,7 +2173,7 @@ private class AdvisorPortalFilterSectionControllerTest {
             SELECT Contact__c ContactId__alias
             FROM Student_Program_Plan__c
             WHERE
-                Residency__c IN ('Resident', 'International')
+                Residency__c IN ('Resident', 'Non-Resident')
                 AND Contact__c IN (
                     SELECT Student__c
                     FROM Success_Student__c
@@ -2187,13 +2186,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter.version = 'v1';
         filter.career = 'UGRD';
         filter.caseTypeState = 'AllCasesState';
-        filter.residency = 'International';
+        filter.residency = 'Non-Resident';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
         filter2.version = 'v1';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'AllCasesState';
-        filter2.residency = 'Resident;International';
+        filter2.residency = 'Resident;Non-Resident';
 
         Test.startTest();
         String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(

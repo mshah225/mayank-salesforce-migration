@@ -356,7 +356,47 @@ public class CaseService {
                     }
                 }
             }
+            
+            if (FeatureManagement.checkPermission('Case_Service_CAR') && newCase.Case_Assignment_Rule__c != null) {
+                
+                Contact con = relatedContactMap.get(newCase.ContactId);
+                Opportunity firstOpp = null;
+                CaseAssignmentDeterminer assignmentDet = null;
 
+                if (con != null) {
+                    List<Opportunity> opList = con.Opportunities__r;
+                    firstOpp = opList == null || opList.isEmpty() ? null : opList[0];
+                }
+
+                if (newCase.Associate_Case_to_Active_Opportunity__c == true && firstOpp != null) {
+                    newCase.Opportunity__c = firstOpp.Id;
+                }
+                
+                Case_Assignment_Rule__c carFromCase = [
+                    SELECT
+                    Id,
+                    Queue_ID__c,
+                    Origin__c,
+                    CC_Category__c,
+                    CC_Sub_Category__c,
+                    CC_Functional_Group__c,
+                    Type_of_Additional_Assignment_Needed__c
+                    FROM Case_Assignment_Rule__c
+                    WHERE Id =: newCase.Case_Assignment_Rule__c
+                ];
+
+                if (firstOpp == null) {
+                    assignmentDet = new CaseAssignmentDeterminer(carFromCase);
+                } else {                    
+                    assignmentDet = new CaseAssignmentDeterminer(firstOpp, carFromCase);
+                }
+                
+                if (assignmentDet != null) {
+                    assignmentDet.setCaseFields(newCase);
+                    return;
+                }
+            }
+            
             if (recruitmentCaseRecordTypeId != null && newCase.RecordTypeId == recruitmentCaseRecordTypeId) {
                 Contact con = relatedContactMap.get(newCase.ContactId);
                 Opportunity firstOpp = null;
@@ -370,7 +410,7 @@ public class CaseService {
                 if (newCase.Associate_Case_to_Active_Opportunity__c == true && firstOpp != null) {
                     newCase.Opportunity__c = firstOpp.Id;
                 }
-
+                
                 if (!UserInfo.getFirstName().equals('API') || UserInfo.getLastName().equals('ASU EMAIL SERVICE')) {
                     // If in a non API user context or are running as the email service
                     // then we should perform assignment by looking at fields on the case
@@ -727,6 +767,10 @@ public class CaseService {
                 }
             }
 
+            setFieldsFromCar(car);
+        }
+
+        public CaseAssignmentDeterminer(Case_Assignment_Rule__c car) {          
             setFieldsFromCar(car);
         }
 

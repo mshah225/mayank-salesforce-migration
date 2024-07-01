@@ -309,8 +309,7 @@
                 padding: 0.75em;
             }
         </style>
-    </head>
-
+    </head>    
     <body>
         <div class="student-profile-container">
             <div
@@ -3377,9 +3376,13 @@
                                     <div id="grpsTranscriptErrors"></div>
                                 </div>
                             </apex:pageBlock>
-                        </div>
-
-                        <div role="tabpanel" class="tab-pane" id="StudentCareAndConcern">
+                        </div>                        
+                        <div
+                            role="tabpanel"
+                            class="tab-pane"
+                            id="StudentCareAndConcern"
+                            style="{!IF(hasStudentCareAndConcernAccess  == TRUE, '', 'display:none')}"
+                        >
                             <apex:repeat value="{!studentCareAndConcernMessages}" var="message">
                                 <div class="alert">{!message}</div>
                             </apex:repeat>
@@ -3729,7 +3732,9 @@
             loadFinancialAidIndicators(); // Section name: FINANCES TAB
             loadCommentsTab(); // Section name: COMMENTS TAB
             loadUGIndicatorTab(); // Section name: UNDERGRADUATE INDICATORS TAB
-            loadCareAndConcernTab(); // Section name: CARE AND CONCERN TAB
+            if ("{!IF(studentCareAndConcernMessages == TRUE, 'true', 'false')}") {
+                loadCareAndConcernTab(); // Section name: CARE AND CONCERN TAB
+            }
         });
 
         /**

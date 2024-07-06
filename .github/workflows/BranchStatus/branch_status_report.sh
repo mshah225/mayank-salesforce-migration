@@ -53,14 +53,14 @@ for remote in $(git branch -r); do
 		else
 			git pull --no-edit origin main
 			if [ $? -eq 0 ]; then
-				if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]] || [[ "$branch" == "wpc" ]]; then
+				if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]] || [[ "$branch" == "wpc" ]] || [[ "$branch" == "knowledge" ]]; then
 					git push origin $branch
 					mergeableCoreBranchArray+=("$branch")
 					mergeableCoreBranchCount=$((mergeableCoreBranchCount + 1))
 				fi
 			else
 				git merge --abort
-				if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]] || [[ "$branch" == "wpc" ]]; then
+				if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]] || [[ "$branch" == "wpc" ]] || [[ "$branch" == "knowledge" ]]; then
 					conflictedCoreBranchArray+=("$branch")
 					conflictedCoreBranchCount=$((conflictedCoreBranchCount + 1))
 				else

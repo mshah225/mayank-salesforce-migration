@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Email_Addresses__c</fullName>
+    <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>Who should be notified with this report (comma separated)?
+E.g. if you want ex1@asu.edu and ex2@asu.edu to be notified of stalled SMS, this should be:
+ex1@asu.edu, ex2@asu.edu</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Who should be notified with this report (comma separated)?
+E.g. if you want ex1@asu.edu and ex2@asu.edu to be notified of stalled SMS, this should be:
+ex1@asu.edu, ex2@asu.edu</inlineHelpText>
+    <label>Email Addresses</label>
+    <length>256</length>
+    <securityClassification>Internal</securityClassification>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

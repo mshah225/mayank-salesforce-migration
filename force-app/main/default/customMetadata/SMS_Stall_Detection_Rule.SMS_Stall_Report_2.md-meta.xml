@@ -12,7 +12,7 @@
     </values>
     <values>
         <field>Enabled__c</field>
-        <value xsi:type="xsd:boolean">false</value>
+        <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
         <field>Number_Of_Days__c</field>
@@ -26,7 +26,7 @@ smagicinteract__Delivery_Error_Message__c, smagicinteract__SMSText__c</value>
     </values>
     <values>
         <field>Sender_Id_Units__c</field>
-        <value xsi:type="xsd:string">New Student Programs, New College, MLFTC, Financial Aid, WPC Business, Access ASU, Health Solutions, Engineering, Admission Services, Honors, Sun Devil Card Services, AISSS, Public Service, Nursing and Health Innovation, Global Futures,Career Services,UIA, Salesforce Support</value>
+        <value xsi:type="xsd:string">New Student Programs, New College, MLFTC, Financial Aid, WPC Business, Access ASU, Health Solutions, Engineering, Admission Services, Honors, AISSS, Public Service, Nursing and Health Innovation, Global Futures,Career Services,UIA</value>
     </values>
     <values>
         <field>Statuses__c</field>

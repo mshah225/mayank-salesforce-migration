@@ -12,7 +12,7 @@
     </values>
     <values>
         <field>Enabled__c</field>
-        <value xsi:type="xsd:boolean">false</value>
+        <value xsi:type="xsd:boolean">true</value>
     </values>
     <values>
         <field>Number_Of_Days__c</field>
@@ -24,7 +24,7 @@
     </values>
     <values>
         <field>Sender_Id_Units__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">Financial Aid</value>
     </values>
     <values>
         <field>Statuses__c</field>

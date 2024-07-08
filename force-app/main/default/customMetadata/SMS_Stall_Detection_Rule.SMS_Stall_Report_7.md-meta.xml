@@ -24,7 +24,7 @@
     </values>
     <values>
         <field>Sender_Id_Units__c</field>
-        <value xsi:nil="true"/>
+        <value xsi:type="xsd:string">New College</value>
     </values>
     <values>
         <field>Statuses__c</field>

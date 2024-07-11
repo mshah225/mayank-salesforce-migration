@@ -5102,7 +5102,7 @@
                 '{!$RemoteAction.StudentProfileController.getAwardStatusMap}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
-                    if (event.status && result?.length > 0) {
+                    if (event.status && result) {
                         var keySet = Object.keys(result);
                         var valueSet = Object.values(result);
 
@@ -5214,7 +5214,7 @@
                 '{!$RemoteAction.StudentProfileController.getChargeHistoryMap}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
-                    if (event.status && result?.length > 0) {
+                    if (event.status && result) {
                         var keySet = Object.keys(result);
                         var valueSet = Object.values(result);
 
@@ -5661,7 +5661,7 @@
                 '{!$RemoteAction.StudentProfileController.getAcademicProgress}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
-                    if (event.status && result?.length > 0) {
+                    if (event.status && result) {
                         var keySet = Object.keys(result);
                         var valueSet = Object.values(result);
 

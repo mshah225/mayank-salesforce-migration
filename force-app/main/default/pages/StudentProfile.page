@@ -5125,6 +5125,10 @@
                         document.getElementById('selectListForAwards').innerHTML = selectHtml;
 
                         buildAwardTable();
+                    } else {
+                        document.getElementById('selectListForAwards').innerHTML =
+                                'No financial aid or scholarship awards information found for {!theContact.Preferred_First_Name__c}.';
+                        return;
                     }
                 },
                 {buffer: false, escape: true, timeout: 120000}
@@ -5237,6 +5241,10 @@
                         document.getElementById('selectListForChargeHistory').innerHTML = selectHtml;
 
                         buildChargeHistoryTable();
+                    } else {
+                        document.getElementById('selectListForChargeHistory').innerHTML =
+                                'No charge history found for {!theContact.Preferred_First_Name__c}.';
+                        return;
                     }
                 },
                 {buffer: false, escape: true, timeout: 120000}
@@ -5684,6 +5692,10 @@
                         document.getElementById('selectListForSAP').innerHTML = selectHtml;
 
                         buildSAPTable();
+                    } else {
+                        document.getElementById('selectListForSAP').innerHTML =
+                                'No satisfactory academic progress found for {!theContact.Preferred_First_Name__c}.';
+                        return;
                     }
                 },
                 {buffer: false, escape: true, timeout: 120000}

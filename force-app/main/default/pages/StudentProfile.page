@@ -5018,7 +5018,7 @@
                 '{!$RemoteAction.StudentProfileController.getEditMessages}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
-                    if (event.status && result?.length > 0) {
+                    if (event.status && result) {
                         var keySet = Object.keys(result);
                         var valueSet = Object.values(result);
 
@@ -5042,6 +5042,12 @@
                         var test = document.getElementById('editMessageSelectOptions');
 
                         buildEditMessageTable();
+                    } else {
+                        if (keySet.length == null || keySet.length == 0) {
+                            document.getElementById('selectListForEditMessages').innerHTML =
+                                'No financial aid user edit message found for {!theContact.Preferred_First_Name__c}.';
+                            return;
+                        }
                     }
                 },
                 {buffer: false, escape: true, timeout: 120000}

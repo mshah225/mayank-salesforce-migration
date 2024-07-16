@@ -25,6 +25,10 @@ jobs:
               uses: JesseTG/rm@v1.0.3
               with:
                   path: force-app/main/default/customMetadata
+            - name: Remove 'customPermissions' directory
+              uses: JesseTG/rm@v1.0.3
+              with:
+                  path: force-app/main/default/customPermissions
             - name: Remove 'dataSources' directory
               uses: JesseTG/rm@v1.0.3
               with:

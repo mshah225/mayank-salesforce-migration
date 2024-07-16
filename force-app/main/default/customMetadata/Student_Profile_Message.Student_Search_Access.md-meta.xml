@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Student Search Access</label>
+    <protected>false</protected>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Message_to_Display__c</field>
+        <value xsi:type="xsd:string">This user has access to the Student 360 Search experience, which sometimes contains sensitive information. You do not have permission to access this information, so you cannot see it when logged in as this user.</value>
+    </values>
+    <values>
+        <field>Student_Profile_Tab__c</field>
+        <value xsi:type="xsd:string">Student Search</value>
+    </values>
+</CustomMetadata>

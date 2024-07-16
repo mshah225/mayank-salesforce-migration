@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Contains text to display at the top of the various student profile tabs</description>
+    <label>Student Profile Message</label>
+    <pluralLabel>Student Profile Messages</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

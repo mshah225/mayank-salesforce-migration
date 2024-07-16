@@ -371,11 +371,17 @@ export default class LightningComboBox extends LightningElement {
      * and make sure the value only contains values from the options
      */
     forceSelectedStatesToMatchValue() {
-        const parentDeclaredValues = this._value == null ? [] : this._value.split(';');
+        // can't continue if either is null
+        if (this._options == null || this._value == null) return;
+
+        const parentDeclaredValues = this._value.split(';');
         const options = cloneObj(this._options);
         const newValues = [];
         let madeAChange = false;
 
+        // Iterate over the picklist options and select any values
+        // that the value indicates should be selected - if this causes
+        // us to select or unselect any options, than change has happened
         let foundOne = false;
         for (let i = 0; i < options.length; i++) {
             const opt = options[i];
@@ -389,6 +395,11 @@ export default class LightningComboBox extends LightningElement {
                 opt.isSelected = false;
             }
         }
+
+        // Find any declared values that match none of the options in the picklist
+        // if any such exist, than change has happened to remove that selected value
+        let validValues = options.map((o) => o.value);
+        for (const declVal of parentDeclaredValues) if (!validValues.includes(declVal)) madeAChange = true;
 
         this._options = options;
 

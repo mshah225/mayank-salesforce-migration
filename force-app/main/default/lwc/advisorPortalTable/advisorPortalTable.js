@@ -1,77 +1,36 @@
+/* eslint-disable no-undef */
+/* eslint-disable @salesforce/aura/ecma-intrinsics */
 import {LightningElement, api} from 'lwc';
 import persistenceChart from '@salesforce/resourceUrl/PersistenceChart';
 import {cloneObj} from 'c/helperFunctions';
 
 export default class AdvisorPortalTable extends LightningElement {
-    @api set currentFilter(val) {
-        this._currentFilter = val;
-
-        if (this._currentFilter != null) {
-            // Only really care about this one field
-            if (this._currentFilter.career === 'GRD') this.showPersistenceLegend = false;
-            else this.showPersistenceLegend = true;
-        }
-    }
-    get currentFilter() {
-        return this._currentFilter;
-    }
-    _currentFilter = null;
-
-    @api set allResults(val) {
-        // deep copy the results to allow us to modify our copy
-        const newVal = cloneObj(val);
-        for (let i = 0; i < newVal.length; i++) {
-            const v = newVal[i];
-
-            // Expand all if needed
-            if (this.expandedAll) {
-                v.isOpen = true;
-            } else {
-                v.isOpen = false;
-            }
-
-            // Select all if needed
-            if (this.selectedAll) {
-                v.isSelected = true;
-            } else {
-                v.isSelected = false;
-            }
-
-            // Select cases if needed
-            for (let j = 0; j < v.cases.length; j++) {
-                const c = v.cases[j];
-                if (this.selectedAll) {
-                    c.isSelected = true;
-                } else {
-                    c.isSelected = false;
-                }
-            }
-        }
-
-        this._allResults = newVal;
-        this.determineShownContactWrappers();
-        this.sendSelectedEvent();
+    @api currentFilter = null;
+    @api set allResults(v) {
+        this._allResults = cloneObj(v); // cloning here help on performance for toggling select all
     }
     get allResults() {
         return this._allResults;
     }
-    _allResults = [];
+    _allResults = null;
 
     currentPage = 0;
     pageSize = 20;
 
     expandedAll = true;
     selectedAll = false;
-    showPersistenceLegend = true;
 
-    shownContactWrappers = [];
+    get showPersistenceLegend() {
+        if (this.currentFilter?.career === 'GRD') return false;
+        return true;
+    }
 
     get sizeOfResults() {
-        return this.allResults.length;
+        return this.allResults?.length ?? 0;
     }
 
     get allResultsIsEmpty() {
-        return false && this.allResults.length === 0;
+        return this.sizeOfResults === 0;
     }
 
     get persistenceIconVeryLow() {
@@ -93,112 +52,120 @@ export default class AdvisorPortalTable extends LightningElement {
     changePage(e) {
         const newPage = e.detail;
         this.currentPage = newPage;
-        this.determineShownContactWrappers();
     }
 
     changePageSize(e) {
         const newSize = e.detail;
         this.pageSize = newSize;
-        this.determineShownContactWrappers();
     }
 
     updateExpandedAll(e) {
+        this.expandOverrides = {};
         this.expandedAll = e.detail.checked;
-
-        for (let i = 0; i < this._allResults.length; i++) {
-            const v = this._allResults[i];
-
-            // Exapnd all contacts
-            if (this.expandedAll) {
-                v.isOpen = true;
-            } else {
-                v.isOpen = false;
-            }
-        }
-
-        this.determineShownContactWrappers();
     }
 
     updateSelectedAll(e) {
+        this.selectOverrides = {};
         this.selectedAll = e.detail.checked;
-
-        for (let i = 0; i < this._allResults.length; i++) {
-            const v = this._allResults[i];
-
-            // Set for all contacts
-            if (this.selectedAll) {
-                v.isSelected = true;
-            } else {
-                v.isSelected = false;
-            }
-
-            // Set for all cases
-            for (let j = 0; j < v.cases.length; j++) {
-                const c = v.cases[j];
-                if (this.selectedAll) {
-                    c.isSelected = true;
-                } else {
-                    c.isSelected = false;
-                }
-            }
-        }
-
-        this.sendSelectedEvent();
-        this.determineShownContactWrappers();
     }
 
-    determineShownContactWrappers() {
-        const shownResults = [];
+    /**
+     * All the contact wrappers, with correct toggle/selected state
+     */
+    get contactWrappers() {
+        const rows = [];
 
-        for (let i = 0; i < this.allResults.length; i++) {
-            const result = this.allResults[i];
+        const allResults = cloneObj(this.allResults); // cloning here ensures rendered detects change
+        for (const c of allResults) {
+            // Mark as selected
+            c.isSelected = this.selectOverrides[c.portalContact.Id] ?? this.selectedAll;
+
+            if (this.selectedAll)
+                for (const caseWrapper of c.cases ?? [])
+                    caseWrapper.isSelected = this.selectOverrides[caseWrapper.portalCase.Id] ?? true;
+            else
+                for (const caseWrapper of c.cases ?? [])
+                    caseWrapper.isSelected = this.selectOverrides[caseWrapper.portalCase.Id] ?? false;
+
+            // Mark as open or closed accordian
+            c.isOpen = this.expandOverrides[c.portalContact.Id] ?? this.expandedAll;
+
+            rows.push(c);
+        }
+
+        /**
+         * This getter should rerun whenever its dependencies change - which means whenever the contact list changes,
+         * stuff is toggled, or stuff is (un)selected.
+         *
+         * Whenever these change calculate the list of selected ids, and raise event if it has changed
+         */
+        const newSelectedIds = new Set();
+        for (const c of rows) {
+            if (c.isSelected) newSelectedIds.add(c.portalContact.Id);
+            for (const caseWrapper of c.cases ?? [])
+                if (caseWrapper.isSelected) newSelectedIds.add(caseWrapper.portalCase.Id);
+        }
+
+        // Either a differing number of ids, or some ids in new list are not in old list
+        if (
+            newSelectedIds.size !== this.prevSelectedIds.size ||
+            Array.from(newSelectedIds).filter((id) => !this.prevSelectedIds.has(id)).length > 0
+        ) {
+            this.prevSelectedIds = newSelectedIds;
+            this.sendSelectedEvent();
+        }
+
+        return rows;
+    }
+    prevSelectedIds = new Set();
+
+    /**
+     * Only the contact wrappers on the current page
+     */
+    get shownContactWrappers() {
+        const rows = [];
+
+        const contactWrappers = this.contactWrappers;
+
+        for (let i = 0; i < contactWrappers.length; i++) {
+            const contactWrapper = contactWrappers[i];
+
             if (i < this.currentPage * this.pageSize) {
                 continue; // these are on a previous page
             } else if (i >= (this.currentPage + 1) * this.pageSize) {
                 continue; // these are on a next page
             } else {
-                shownResults.push(result);
+                rows.push(contactWrapper);
             }
         }
 
-        this.shownContactWrappers = cloneObj(shownResults);
+        return rows;
     }
 
+    selectOverrides = {};
     updateSelected(e) {
         const changedContact = e.detail.contact;
         const changedCases = e.detail.cases;
-        for (let i = 0; i < this.allResults.length; i++) {
-            const contactWrapper = this.allResults[i];
-
-            if (contactWrapper.portalContact.Id === changedContact.Id) {
-                contactWrapper.isSelected = changedContact.selected;
-                for (let j = 0; j < contactWrapper.cases.length; j++) {
-                    const caseWrapper = contactWrapper.cases[j];
-                    if (changedCases.includes(caseWrapper.portalCase.Id)) {
-                        caseWrapper.isSelected = true;
-                    } else {
-                        caseWrapper.isSelected = false;
-                    }
-                }
-                break;
-            }
-        }
-        this.sendSelectedEvent();
-        this.determineShownContactWrappers();
+        // Add contact to override list
+        this.selectOverrides[changedContact.Id] = changedContact.selected;
+        // Add all cases to override list
+        const contactWrapper = (this.allResults ?? []).filter((v) => v.portalContact.Id === changedContact.Id)[0];
+        for (const caseWrapper of contactWrapper.cases)
+            if (changedCases.includes(caseWrapper.portalCase.Id))
+                this.selectOverrides[caseWrapper.portalCase.Id] = true;
+            else this.selectOverrides[caseWrapper.portalCase.Id] = false;
+        // trigger re-render
+        this.selectOverrides = cloneObj(this.selectOverrides);
     }
 
+    expandOverrides = {};
     updateToggleAccordian(e) {
         const changedContactId = e.detail.contactId;
         const newState = e.detail.open;
-
-        for (let i = 0; i < this.allResults.length; i++) {
-            const res = this.allResults[i];
-            if (res.portalContact.Id === changedContactId) {
-                res.isOpen = newState;
-                break;
-            }
-        }
-        this.determineShownContactWrappers();
+        // Add to override list
+        this.expandOverrides[changedContactId] = newState;
+        // trigger re-render
+        this.expandOverrides = cloneObj(this.expandOverrides);
     }
 
     bubbleEvent(e) {
@@ -212,16 +179,14 @@ export default class AdvisorPortalTable extends LightningElement {
     sendSelectedEvent() {
         // Make a list of all contacts and cases that are selected
         const selectedContactCaseWrappers = [];
-        for (let i = 0; i < this.allResults.length; i++) {
-            const res = this.allResults[i];
+        for (const res of this.contactWrappers) {
             const wrapper = {contactId: res.portalContact.Id, selected: false, cases: []};
             let somethingSelected = false;
             if (res.isSelected) {
                 wrapper.selected = true;
                 somethingSelected = true;
             }
-            for (let j = 0; j < res.cases.length; j++) {
-                const c = res.cases[j];
+            for (const c of res.cases) {
                 if (c.isSelected) {
                     wrapper.cases.push({caseId: c.portalCase.Id, selected: true});
                     somethingSelected = true;

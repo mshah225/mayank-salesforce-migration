@@ -1,0 +1,34 @@
+<template>
+    <c-lightning-error-or-retry message={errorMessage} has-error={hasError} onretry={errorReload}>
+        <c-lightning-await-load-block
+            loading={loading}
+            has-content={hasData}
+            not-found-message="No advising notes found."
+        >
+            <div class="slds-scrollable_y" style="max-height: 400px">
+                <table class="advising-notes-table">
+                    <tbody>
+                        <template for:each={rows} for:item="row">
+                            <tr key={row.id1}>
+                                <td>
+                                    <template lwc:if={row.href}>
+                                        <a href={row.href} onclick={openUserLink} data-userid={row.c__UserId}>
+                                            {row.NAME__c}
+                                        </a>
+                                    </template>
+                                    <template lwc:else> {row.NAME__c} </template>
+                                </td>
+                                <td>{row.c__Date}</td>
+                                <td>{row.c__PlanName}</td>
+                                <td>{row.c__ProgramName}</td>
+                            </tr>
+                            <tr key={row.id2}>
+                                <td colspan="4" class="comment">{row.COMMENTS__c}</td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </c-lightning-await-load-block>
+    </c-lightning-error-or-retry>
+</template>

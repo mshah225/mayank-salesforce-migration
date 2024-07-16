@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Student Profile -- access to Student 360 header + Student Search button + &apos;Care + Concern&apos; tab</description>
+    <isLicensed>false</isLicensed>
+    <label>Student 360 Visible</label>
+</CustomPermission>

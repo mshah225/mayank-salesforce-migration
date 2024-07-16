@@ -1,5 +1,6 @@
 @isTest
 private class PermissionsHelperTest {
+    // Tests if the current user has a specific profile
     @isTest
     private static void testUserHasProfile() {
         Boolean userHasProfile = false;
@@ -14,6 +15,7 @@ private class PermissionsHelperTest {
         System.assertEquals(false, userDoesNotHaveProfile);
     }
 
+    // Tests if the current user has an empty or null profile name
     @isTest
     private static void testNullOrEmptyProfile() {
         Boolean currentUserHasEmptyProfile = true;
@@ -34,6 +36,7 @@ private class PermissionsHelperTest {
         System.assertEquals(false, userHasNullProfile);
     }
 
+    // Tests if the current user has a specific permission set
     @isTest
     private static void testUserHasPermissionSet() {
         Boolean userHasPermissionSet = false;
@@ -58,6 +61,7 @@ private class PermissionsHelperTest {
         System.assertEquals(false, userDoesNotHavePermissionSet);
     }
 
+    // Tests if the current user has an empty or null permission set name
     @isTest
     private static void testNullOrEmptyPermissionSet() {
         Boolean currentUserHasEmptyPermissionSet = true;

@@ -1,5 +1,12 @@
 @isTest
 private class MyASUHelpPaginationControllerTest {
+    // Helper method to publish articles
+    private static void publishArticles(List<Id> articleIds) {
+        for (FAQ__kav faqArticle : [SELECT KnowledgeArticleId FROM FAQ__kav WHERE Id IN :articleIds]) {
+            KbManagement.PublishingService.publishArticle(faqArticle.KnowledgeArticleId, true);
+        }
+    }
+
     @TestSetup
     private static void setup() {
         List<FAQ__kav> faqArticles = new List<FAQ__kav>();
@@ -24,19 +31,21 @@ private class MyASUHelpPaginationControllerTest {
         }
 
         // Publish all test articles
-        for (FAQ__kav faqArticle : [SELECT KnowledgeArticleId FROM FAQ__kav WHERE Id IN :faqArticleIds]) {
-            KbManagement.PublishingService.publishArticle(faqArticle.KnowledgeArticleId, true);
-        }
+        publishArticles(faqArticleIds);
     }
 
-    @isTest
-    private static void testAutofillSearchText() {
+    private static void setFixedSearchResults() {
         List<KnowledgeArticleVersion> allKAVs = [SELECT Id FROM KnowledgeArticleVersion];
         List<Id> fixedResultIds = new List<Id>();
         for (KnowledgeArticleVersion kav : allKAVs) {
             fixedResultIds.add(kav.Id);
         }
         Test.setFixedSearchResults(fixedResultIds);
+    }
+
+    @isTest
+    private static void testAutofillSearchText() {
+        setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
         ApexPages.currentPage().getParameters().put('q', 'Test');
 
@@ -45,36 +54,30 @@ private class MyASUHelpPaginationControllerTest {
         Test.stopTest();
 
         System.assertEquals('Test', vf.textToSearch);
-        System.assertEquals(1, vf.getCurrentPageNumber());
-        System.assertEquals(30, vf.numberOfResults);
+        System.assertEquals(1, vf.currentPage);
+        System.assertEquals(30, vf.resultCount);
     }
 
     @isTest
     private static void testNextPrevPage() {
-        List<KnowledgeArticleVersion> allKAVs = [SELECT Id FROM KnowledgeArticleVersion];
-        List<Id> fixedResultIds = new List<Id>();
-        for (KnowledgeArticleVersion kav : allKAVs) {
-            fixedResultIds.add(kav.Id);
-        }
-        Test.setFixedSearchResults(fixedResultIds);
+        setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
         ApexPages.currentPage().getParameters().put('q', 'Test');
 
-        Decimal pageNum1, pageNum2, pageNum3, pageNum4, pageNum5;
         Test.startTest();
         MyASUHelpPaginationController vf = new MyASUHelpPaginationController();
-        pageNum1 = vf.getCurrentPageNumber();
+        Integer pageNum1 = vf.currentPage;
         vf.next();
-        pageNum2 = vf.getCurrentPageNumber();
+        Integer pageNum2 = vf.currentPage;
         vf.next();
-        pageNum3 = vf.getCurrentPageNumber();
+        Integer pageNum3 = vf.currentPage;
         vf.next();
-        pageNum4 = vf.getCurrentPageNumber();
+        Integer pageNum4 = vf.currentPage;
         vf.previous();
-        pageNum5 = vf.getCurrentPageNumber();
+        Integer pageNum5 = vf.currentPage;
         Test.stopTest();
 
-        System.assertEquals(10, vf.getPageSize(), 'These tests expect the page size to be 10');
+        System.assertEquals(10, vf.pageSize, 'These tests expect the page size to be 10');
         System.assertEquals(3, vf.lastPage, '30 results / 10 per page means we should have 3 pages');
         System.assertEquals(1, pageNum1);
         System.assertEquals(2, pageNum2);
@@ -94,71 +97,48 @@ private class MyASUHelpPaginationControllerTest {
         Test.setCurrentPage(Page.viewAllArticles);
         ApexPages.currentPage().getParameters().put('q', 'Test');
 
-        Boolean actualOnFirstPage, actualOnLastPage;
         Test.startTest();
         MyASUHelpPaginationController vf = new MyASUHelpPaginationController();
-        actualOnFirstPage = vf.getOnFirstPage();
-        actualOnLastPage = vf.getOnLastPage();
         Test.stopTest();
 
-        System.assertEquals(true, actualOnFirstPage);
-        System.assertEquals(true, actualOnLastPage);
+        System.assertEquals(true, vf.onFirstPage);
+        System.assertEquals(true, vf.onLastPage);
     }
 
     @isTest
     private static void testNoSearchTerm() {
-        List<KnowledgeArticleVersion> allKAVs = [SELECT Id FROM KnowledgeArticleVersion];
-        List<Id> fixedResultIds = new List<Id>();
-        for (KnowledgeArticleVersion kav : allKAVs) {
-            fixedResultIds.add(kav.Id);
-        }
-        Test.setFixedSearchResults(fixedResultIds);
+        setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
         ApexPages.currentPage().getParameters().put('q', '');
 
-        Boolean actualOnFirstPage, actualOnLastPage;
         Test.startTest();
         MyASUHelpPaginationController vf = new MyASUHelpPaginationController();
-        actualOnFirstPage = vf.getOnFirstPage();
-        actualOnLastPage = vf.getOnLastPage();
         Test.stopTest();
 
         System.assertEquals('', vf.textToSearch);
-        System.assertEquals(true, actualOnFirstPage);
-        System.assertEquals(true, actualOnLastPage);
+        System.assertEquals(true, vf.onFirstPage);
+        System.assertEquals(true, vf.onLastPage);
     }
 
     @isTest
     private static void testChangeSearchTerm() {
-        List<KnowledgeArticleVersion> allKAVs = [SELECT Id FROM KnowledgeArticleVersion];
-        List<Id> fixedResultIds = new List<Id>();
-        for (KnowledgeArticleVersion kav : allKAVs) {
-            fixedResultIds.add(kav.Id);
-        }
-        Test.setFixedSearchResults(fixedResultIds);
+        setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
         ApexPages.currentPage().getParameters().put('q', 'Cats');
 
         Test.startTest();
         MyASUHelpPaginationController vf = new MyASUHelpPaginationController();
-        vf.getCurrentPageNumber();
         vf.textToSearch = 'Test';
-        vf.getCurrentPageNumber();
-        vf.getForceRecalculatePaginationValues();
+        vf.getRefreshPagination();
         Test.stopTest();
 
         System.assertEquals('Test', vf.textToSearch);
-        System.assertEquals(30, vf.numberOfResults);
+        System.assertEquals(30, vf.resultCount);
     }
 
     @isTest
     private static void testViewAllResultsRef() {
-        List<KnowledgeArticleVersion> allKAVs = [SELECT Id FROM KnowledgeArticleVersion];
-        List<Id> fixedResultIds = new List<Id>();
-        for (KnowledgeArticleVersion kav : allKAVs) {
-            fixedResultIds.add(kav.Id);
-        }
-        Test.setFixedSearchResults(fixedResultIds);
+        setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
         ApexPages.currentPage().getParameters().put('q', 'Test');
 
@@ -193,9 +173,11 @@ private class MyASUHelpPaginationControllerTest {
             )
         );
         insert buttonsToInsert;
+
         // Need contact for MyASUHelpController constructor
         Contact testContact = new Contact(FirstName = 'John', LastName = 'McTesterson');
         insert testContact;
+
         // New user for MyASUHelpController constructor
         User testUser = new User(
             FirstName = 'John',
@@ -212,25 +194,21 @@ private class MyASUHelpPaginationControllerTest {
             ProfileId = RecordIdHelper.getProfileId('ASU Community')
         );
         insert testUser;
+
         // Need terms for MyASUHelpController constructor
-        Date dTac = System.today().adddays(365);
-        Date dTb = System.today().adddays(405);
+        Date dTac = System.today().addDays(365);
+        Date dTb = System.today().addDays(405);
         Term__c termAC = new Term__c(
-            Session_A_C_Start_Date__c = date.newinstance(dTac.year(), dTac.month(), dTac.day()),
+            Session_A_C_Start_Date__c = date.newInstance(dTac.year(), dTac.month(), dTac.day()),
             Year__c = String.valueOf(dTac.year())
         );
         Term__c termB = new Term__c(
-            Session_B_Start_Date__c = date.newinstance(dTb.year(), dTb.month(), dTb.day()),
+            Session_B_Start_Date__c = date.newInstance(dTb.year(), dTb.month(), dTb.day()),
             Year__c = String.valueOf(dTb.year())
         );
         insert new List<Term__c>{ termAC, termB };
 
-        List<KnowledgeArticleVersion> allKAVs = [SELECT Id FROM KnowledgeArticleVersion];
-        List<Id> fixedResultIds = new List<Id>();
-        for (KnowledgeArticleVersion kav : allKAVs) {
-            fixedResultIds.add(kav.Id);
-        }
-        Test.setFixedSearchResults(fixedResultIds);
+        setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
         ApexPages.currentPage().getParameters().put('q', 'Test');
 
@@ -242,7 +220,7 @@ private class MyASUHelpPaginationControllerTest {
         }
 
         System.assertEquals('Test', vf.textToSearch);
-        System.assertEquals(1, vf.getCurrentPageNumber());
-        System.assertEquals(30, vf.numberOfResults);
+        System.assertEquals(1, vf.currentPage);
+        System.assertEquals(30, vf.resultCount);
     }
 }

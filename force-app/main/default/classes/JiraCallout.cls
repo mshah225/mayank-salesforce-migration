@@ -10,7 +10,17 @@ global class JiraCallout {
      *
      * @return A string that is the JIRA key for the create ticket
      */
-    public static String createTicket(String summary, String description, String type, String componentNames) {
+    @AuraEnabled
+    public static String createTicket(String jiraProjectMetadataRecordName, String summary, String description, String type, String componentNames) {
+        Jira_Project_Detail__mdt metadataRecord = [
+            SELECT 
+            Project_Id__c, 
+            Project_Key__c 
+            FROM Jira_Project_Detail__mdt 
+            WHERE MasterLabel = :jiraProjectMetadataRecordName 
+            LIMIT 1
+        ];
+
         List<String> errorLoggerVars = new List<String>();
         String jiraKey;
         String alias = [SELECT alias FROM User WHERE Id = :UserInfo.getUserId()].alias;
@@ -24,7 +34,8 @@ global class JiraCallout {
 
         // Create JSON object with all fields specified
         JSONObject jsObj = new JSONObject();
-        jsObj.put('fields.project.id', '17074');
+        jsObj.put('fields.project.id', metadataRecord.Project_Id__c);
+        jsObj.put('fields.project.key', metadataRecord.Project_Key__c);
         jsObj.put('fields.summary', summary.replaceAll('[\\n\\r]+', ' '));
         jsObj.put('fields.description', description);
         jsObj.put('fields.issuetype.name', type);

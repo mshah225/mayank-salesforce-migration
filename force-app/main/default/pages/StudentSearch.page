@@ -1,0 +1,1026 @@
+<!-- Student Search Visualforce Page -->
+<apex:page
+    id="StudentSearch"
+    controller="StudentSearchController"
+    cache="false"
+    showHeader="false"
+    sideBar="false"
+    standardStylesheets="false"
+    docType="HTML-5.0"
+    action="{!init}"
+    readOnly="true"
+>
+    <apex:includeScript value="/support/console/42.0/integration.js" />
+    <apex:includeScript value="{!URLFOR($Resource.jsForce)}" />
+
+    <head>
+        <title>Student Search</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="stylesheet"
+            href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+            integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+            crossorigin="anonymous"
+        />
+        <link href="https://fonts.googleapis.com/css?family=Roboto:normal,medium" rel="stylesheet" type="text/css" />
+        <apex:stylesheet
+            value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"
+        />
+        <c:StudentProfileStyles />
+        <style>
+            .alert {
+                margin-top: 20px;
+                color: white;
+                font-family: Arial, Helvetica, 'Nimbus Sans L', 'Liberation Sans', FreeSans, sans-serif !important;
+                font-size: 14px;
+                background: #9f2b50;
+            }
+            .student-360-page-title,
+            .student-search-table-student-name,
+            #student-search-message {
+                font-weight: bold;
+            }
+
+            #student-search-message {
+                margin-top: 2em;
+            }
+
+            #student-search-input-title {
+                font-weight: bold;
+                font-size: 1.1em;
+            }
+
+            #student-search-input-field-container {
+                max-width: 33%;
+            }
+
+            @media (max-width: 977px) {
+                #student-search-input-field-container {
+                    max-width: 40%;
+                }
+            }
+
+            @media (max-width: 818px) {
+                #student-search-input-field-container {
+                    max-width: 60%;
+                }
+            }
+
+            @media (max-width: 818px) {
+                #student-search-input-field-container {
+                    max-width: 100%;
+                }
+            }
+
+            #student-search-input-field-container > input:nth-child(1) {
+                padding: 0.2em 0.35em;
+            }
+
+            #student-search-input-field-container > input:nth-child(1),
+            #student-search-input-field-description {
+                width: 75%;
+            }
+
+            #student-search-input-field-container > input:nth-child(2) {
+                margin-left: 0.5em;
+                color: #fff;
+                background-color: #8c1d40;
+                border-radius: 5%;
+                border: solid;
+                border-color: #8c1d40 !important;
+                width: 64px;
+            }
+
+            #student-search-input-field-container .fa-search {
+                margin-left: -100px;
+            }
+
+            #student-search-input-field-description {
+                font-size: 0.8em;
+                margin-top: 1em;
+            }
+
+            #student-search-results {
+                margin-top: 2em;
+            }
+
+            #student-search-current-search-results-text {
+                font-size: 1.25em;
+                font-weight: bold;
+            }
+
+            #student-search-current-search-count {
+                margin-top: 1em;
+                margin-bottom: -0.5em;
+            }
+
+            #student-search-container hr {
+                display: block;
+                width: 100%;
+                border-top: 0;
+                height: 2px;
+                margin: 1.5rem 0;
+                opacity: 1;
+                background-color: #8c1d40;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="student-profile-container">
+            <div style="{!IF(showRestrictedStudent360ToSubstituteUser == TRUE, '', 'display:none')}">
+                <div class="student-profile-container-title">
+                    <h1 style="float: left">
+                        <span class="student-360-page-title">Student 360:</span> Student Search <i>(View Only)</i>
+                    </h1>
+                    <hr />
+                </div>
+                <apex:repeat value="{!studentSearchRestrictedMessages}" var="message">
+                    <div class="alert">{!message}</div>
+                </apex:repeat>
+            </div>
+            <div style="{!IF(hasStudent360Access  == TRUE, '', 'display:none')}">
+                <div class="student-profile-container-title">
+                    <h1 style="float: left"><span class="student-360-page-title">Student 360:</span> Student Search</h1>
+                    <hr />
+                </div>
+                <apex:repeat value="{!studentSearchMessages}" var="message">
+                    <div class="alert">{!message}</div>
+                </apex:repeat>
+
+                <apex:form>
+                    <apex:pageBlock mode="maindetail">
+                        <div id="student-search-input-title">Search:</div>
+                        <div id="student-search-input-field-container">
+                            <apex:inputText id="student-search-input-field" styleClass="slds-select" />
+                            <apex:commandButton
+                                id="student-search-input-button"
+                                onclick="initiateStudentSearch(); return false;"
+                                value="Search"
+                            />
+                            <i class="fa fa-search"></i>
+                            <div id="student-search-input-field-description">
+                                <strong>Search by</strong> EMPLID, ASURITE, Campus ID, or name (full or partial). Use
+                                "last, first" or "first last" format for names.
+                            </div>
+                        </div>
+                        <div id="student-search-results" style="display: none">
+                            <div id="student-search-current-search-results-text">
+                                Search results for "<span id="student-search-current-search-value"></span>"
+                            </div>
+                            <div id="student-search-current-search-count"></div>
+                        </div>
+                        <div style="overflow: auto; max-height: 400px; margin-top: 1em">
+                            <div id="student-search-container" style="display: none"></div>
+                        </div>
+                        <div id="student-search-message"></div>
+                    </apex:pageBlock>
+                </apex:form>
+            </div>
+        </div>
+    </body>
+
+    <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}" />
+
+    <script type="text/javascript">
+        let isInConsole = sforce.console.isInConsole() || window.location.href.includes('FrameOrigin'),
+            conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'}),
+            queryRecordLimit = '250',
+            userSearchInput,
+            searchMode,
+            studentResultsByCampus = [],
+            studentResultsBySearchTerm = [],
+            studentResultsToDisplay = [];
+
+        /**
+         * Sets up the page load event to include custom logic after the original onload event.
+         * Ensures that if the script is running within Salesforce Console, it sets a specific tab title.
+         */
+        function setupPageLoad() {
+            let originalPageLoad = window.onload;
+            window.onload = () => {
+                originalPageLoad && originalPageLoad(); // Preserve any existing onload event handlers
+                if (isInConsole) {
+                    sforce.console.setTabTitle('Student Search'); // Set the Salesforce console tab title
+                }
+            };
+        }
+
+        /**
+         * Opens a new subtab within the Salesforce Console if available, or a new browser tab if not.
+         * It attempts to open the specified URL as a subtab in the primary Salesforce Console tab. If the console
+         * environment or primary tab ID is unavailable, it defaults to a standard browser tab.
+         */
+        function openNewSubtab(subtabUrl, subtabTitle) {
+            if (isInConsole) {
+                sforce.console.getEnclosingPrimaryTabId((result) => {
+                    let tabId = result.id;
+                    if (tabId && tabId !== 'null') {
+                        sforce.console.openSubtab(tabId, subtabUrl, true, subtabTitle || undefined);
+                    } else {
+                        window.open(subtabUrl); // Fallback to opening a new browser tab if no enclosing tab ID
+                    }
+                });
+            } else {
+                window.open(subtabUrl); // Open in a new browser tab if not in the Salesforce Console
+            }
+        }
+
+        /**
+         * Displays a message to the user within a designated UI element.
+         */
+        function showMessage(message = '') {
+            $j('#student-search-message').html(message).show();
+        }
+
+        /**
+         * Displays a loading message and optionally includes confirmation buttons for ASURITE or name search.
+         * The function uses the showMessage utility to display the message prominently.
+         */
+        function showLoadingMessage(message = 'Loading...', userConfirmationNeeded = false) {
+            if (userConfirmationNeeded) {
+                showMessage(
+                    `<i style='line-height: 2.5rem; vertical-align: middle; color: #8c1d40;' class='fa fa-question-circle fa-2x margin-bottom'></i>
+                    <span style='line-height: 2.5rem; vertical-align: middle;'>${message}</span>
+                    <button onclick='confirmAsuriteSearch(true);' class='btn btn-primary btn-sm' style='margin-left: 1em;'><i class='fa fa-user'></i>&nbsp;&nbsp;ASURITE</button>
+                    <button onclick='confirmAsuriteSearch(false);' class='btn btn-info btn-sm' style='margin-left: .5em;'><i class='fa fa-users'></i>&nbsp;&nbsp;Name</button>`
+                );
+            } else {
+                showMessage(
+                    `<i style='line-height: 2.5rem; vertical-align: middle;' class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>
+                    <span style='line-height: 2.5rem; vertical-align: middle;'>${message}</span>`
+                );
+            }
+        }
+
+        /**
+         * Displays a welcome message at the start of the session, prompting the user to enter a search term.
+         * The function uses the showMessage utility to display the message prominently.
+         */
+        function showWelcomeMessage() {
+            showMessage("Let's dive in! Enter a search term, then click 'Search' or press ENTER to begin.");
+        }
+
+        /**
+         * Displays an error message in a distinct format to alert users that something went wrong.
+         */
+        function showErrorMessage(error = 'An unknown error occurred') {
+            showMessage(`[ERROR]: ${error}`);
+        }
+
+        /**
+         * Hides any currently displayed message within the designated message container.
+         */
+        function hideMessage() {
+            $j('#student-search-message').hide();
+        }
+
+        /**
+         * Retrieves and sanitizes the user's search input, updating the input field if the sanitized value differs.
+         */
+        function getUserSearchInput() {
+            let unsanitizedInput = $j('[id$=student-search-input-field]').val(); // Get the current input from the field
+            userSearchInput = sanitizeUserInput(unsanitizedInput); // Sanitize the input
+            if (userSearchInput != unsanitizedInput) {
+                $j('[id$=student-search-input-field]').val(userSearchInput); // Update the field if sanitized input differs
+            }
+        }
+
+        /**
+         * Sanitizes input by normalizing accented characters, limiting to specific characters, and managing punctuation.
+         */
+        function sanitizeUserInput(input) {
+            const accentsMap = {
+                Á: 'A',
+                É: 'E',
+                Í: 'I',
+                Ó: 'O',
+                Ú: 'U',
+                á: 'a',
+                é: 'e',
+                í: 'i',
+                ó: 'o',
+                ú: 'u',
+                À: 'A',
+                È: 'E',
+                Ì: 'I',
+                Ò: 'O',
+                Ù: 'U',
+                à: 'a',
+                è: 'e',
+                ì: 'i',
+                ò: 'o',
+                ù: 'u',
+            };
+
+            // Convert accented characters to their ASCII equivalents
+            input = input
+                .split('')
+                .map((char) => accentsMap[char] || char)
+                .join('');
+
+            // Remove non-allowed characters
+            input = input
+                .trim()
+                .slice(0, 75)
+                .replace(/[^a-zA-Z0-9,'\s-.]/g, '');
+
+            // Only set input as lowercase if the entire input is NOT all caps
+            input = input == input.toUpperCase() ? input : input.toLowerCase();
+
+            // Handle multiple commas: keep the first, replace subsequent commas with spaces
+            let parts = input.split(',');
+            if (parts.length > 1) {
+                input = parts[0] + ',' + parts.slice(1).join(' ').replace(/\s+/g, ' ');
+            }
+
+            // Normalize formatting by collapsing consecutive punctuation and spaces
+            input = input
+                .replace(/-+/g, '-') // Collapse multiple hyphens
+                .replace(/\.{2,}/g, '.') // Collapse multiple periods
+                .replace(/^\./, '') // Remove leading period
+                .replace(/\.$/, '') // Remove trailing period
+                .replace(/\s+/g, ' ') // Collapse multiple spaces
+                .trim();
+
+            return input;
+        }
+
+        /**
+         * Displays the term currently being searched for, enhancing user awareness and interaction.
+         */
+        function setCurrentSearchTerm() {
+            $j('#student-search-current-search-value').text(userSearchInput);
+        }
+
+        /**
+         * Displays the number of matches found for the search, providing immediate feedback on the search results.
+         */
+        function showCurrentSearchCount() {
+            let matchCount = studentResultsToDisplay?.length || 0;
+            let matchResultsText =
+                matchCount === 1 ? 'Your search returned 1 match' : `Your search returned ${matchCount} matches`;
+
+            // If there is a valid ASURITE match but no associated student records, let the user know. Otherwise, carry on.
+            matchResultsText =
+                searchMode?.isAsurite && matchCount === 0
+                    ? `<i style='line-height: 2.5rem; vertical-align: middle; color: #8c1d40;' class='fa fa-exclamation-circle fa-2x margin-bottom'></i>
+                        <span style='line-height: 2.5rem; vertical-align: middle; font-weight: bold;'>ASURITE ID confirmed, but it's not linked to any student records. It could be assigned to faculty, staff, or affiliates.</span>`
+                    : matchResultsText;
+
+            $j('#student-search-current-search-count').html(matchResultsText).show();
+        }
+
+        /**
+         * Hides the display of the current search count.
+         */
+        function hideCurrentSearchCount() {
+            $j('#student-search-current-search-count').hide();
+        }
+
+        /**
+         * Makes the search results section visible to the user.
+         */
+        function showSearchResults() {
+            $j('#student-search-results').show();
+        }
+
+        /**
+         * Conceals the search results section.
+         */
+        function hideSearchResults() {
+            $j('#student-search-results').hide();
+        }
+
+        /**
+         * Injects HTML markup into the student search container, updating the displayed content.
+         */
+        function renderSearchContainer(markup = '') {
+            $j('#student-search-container').html(markup).show();
+        }
+
+        /**
+         * Sets the visibility of the student search container, typically making it visible after updates.
+         */
+        function setSearchContainerVisibility() {
+            $j('#student-search-container').css('display', 'initial');
+        }
+
+        /**
+         * Hides the entire student search container.
+         */
+        function hideSearchContainer() {
+            $j('#student-search-container').hide();
+        }
+
+        /**
+         * Resets the data-storing variables to a fresh state.
+         */
+        function resetSearchData() {
+            studentResultsBySearchTerm = [];
+            studentResultsByCampus = [];
+            studentResultsToDisplay = [];
+            searchMode = undefined;
+        }
+
+        /**
+         * Whether or not studentResultsBySearchTerm contains any data elements.
+         */
+        function hasSearchTermResults() {
+            return studentResultsBySearchTerm?.length > 0;
+        }
+
+        /**
+         * Whether or not studentResultsByCampus contains any data elements.
+         */
+        function hasCampusResults() {
+            return studentResultsByCampus?.length > 0;
+        }
+
+        /**
+         * Whether or not studentResultsToDisplay contains any data elements.
+         */
+        function hasResultsToDisplay() {
+            return studentResultsToDisplay?.length > 0;
+        }
+
+        /**
+         * Initiates the page load and sets a welcome message.
+         */
+        $j = jQuery.noConflict();
+        $j(document).ready(() => {
+            showWelcomeMessage();
+            setupPageLoad();
+        });
+
+        /**
+         * Begins the search process by clearing previous results and displaying a loading message before starting the dynamic search.
+         */
+        function initiateStudentSearch() {
+            if ("{!IF(hasStudent360Access == TRUE, 'true', 'false')}") {
+                if (hasSearchTermResults() || hasCampusResults() || hasResultsToDisplay()) {
+                    hideSearchResults();
+                    hideSearchContainer();
+                }
+
+                resetSearchData();
+                showLoadingMessage();
+                executeDynamicSearch();
+            }
+        }
+
+        /**
+         * Controls the search flow based on user input.
+         */
+        function executeDynamicSearch() {
+            getUserSearchInput();
+            if (!userSearchInput) {
+                hideSearchResults();
+                showWelcomeMessage();
+                return;
+            }
+            initiateSearchFlow();
+        }
+
+        /**
+         * Manages the initial search operations, including hiding messages, showing current search terms and results, and triggering the initial query process.
+         */
+        function initiateSearchFlow() {
+            hideMessage();
+            hideCurrentSearchCount();
+            setCurrentSearchTerm();
+
+            showLoadingMessage('Fine-tuning search parameters for you. Just a moment...');
+            executeQuery(buildLocationQuery(), handleLocationQueryResults);
+        }
+
+        /**
+         * Constructs a SOQL query to retrieve active campus location data from the Salesforce system.
+         * This query fetches IDs and location codes for locations marked as active.
+         */
+        function buildLocationQuery() {
+            return 'SELECT Id, Location_Code__c FROM Location__c WHERE Location_Status__c = true';
+        }
+
+        /**
+         * Constructs a SOQL query to retrieve detailed student data based on the campus location provided by user input.
+         * This query includes various student and program details specific to the campus.
+         */
+        function buildCampusQuery() {
+            let sanitizedQueryInput = userSearchInput.replace(/'/g, "\\'"); // Escape all single quotes in the query
+            return (
+                'SELECT Id, Campus__r.Location_Code__c, College_Diploma_Description__c, Contact__c, ' +
+                'Contact__r.ASURite_ID__c, Contact__r.Birthdate, Contact__r.EMPLID__c, Contact__r.Preferred_Full_Name__c, ' +
+                'Contact__r.Preferred_First_Name__c, Contact__r.LastName, Degree_Conferral_Date__c, Plan_Code__c, ' +
+                'Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c ' +
+                'FROM Student_Program_Plan__c ' +
+                "WHERE Campus__r.Location_Code__c = '" +
+                sanitizedQueryInput +
+                "' " +
+                'ORDER BY Contact__r.Preferred_Full_Name__c ' +
+                'LIMIT ' +
+                queryRecordLimit
+            );
+        }
+
+        /**
+         * Constructs a SOQL query to check for the existence of a contact based on an ASURITE ID.
+         * This query is used to verify if a specific ASURITE ID is associated with any contact.
+         */
+        function buildAsuriteMatchQuery() {
+            let sanitizedQueryInput = userSearchInput.replace(/'/g, "\\'"); // Escape all single quotes in the query
+            return "SELECT COUNT() FROM Contact WHERE ASURite_ID__c = '" + sanitizedQueryInput + "' LIMIT 1";
+        }
+
+        /**
+         * Generates a dynamic SOQL query based on the specified search mode to fetch contact information.
+         * This query adapts to various input types such as EMPLID, ASURITE, full names, or partial names.
+         */
+        function buildDynamicContactQuery() {
+            let sanitizedQueryInput = userSearchInput.replace(/'/g, "\\'"); // Escape all single quotes in the query
+            let consolidatedQuery =
+                'SELECT Id, ASURite_ID__c, Birthdate, EMPLID__c, Preferred_Full_Name__c, ' +
+                '(SELECT Id, EMPLID__c FROM Class_external__r), ' +
+                '(SELECT Id, Campus__r.Location_Code__c, College_Diploma_Description__c, Contact__c, Degree_Conferral_Date__c, ' +
+                'Plan_Code__c, Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c FROM Student_Plans__r) ' +
+                'FROM Contact ';
+
+            if (searchMode?.isEmplid) {
+                consolidatedQuery += "WHERE EMPLID__c = '" + sanitizedQueryInput + "' ";
+            } else if (searchMode?.isAsurite) {
+                consolidatedQuery += "WHERE ASURite_ID__c = '" + sanitizedQueryInput + "' ";
+            } else if (searchMode?.isLastFirstWithComma || searchMode?.isFirstLastWithSpace) {
+                consolidatedQuery += getExtractedNameQueryContext(searchMode);
+            } else if (searchMode?.isPartialName) {
+                consolidatedQuery += "WHERE Preferred_Full_Name__c LIKE '%" + sanitizedQueryInput + "%' ";
+            } else {
+                return null;
+            }
+
+            consolidatedQuery += 'AND EMPLID__c != null ';
+
+            if (searchMode?.isLastFirstWithComma || searchMode?.isFirstLastWithSpace || searchMode?.isPartialName)
+                consolidatedQuery += 'ORDER BY Preferred_Full_Name__c ';
+
+            return (consolidatedQuery += 'LIMIT ' + queryRecordLimit);
+        }
+
+        /**
+         * Determines the appropriate SOQL condition for name-based searches, adapting based on the format of the name input (comma-separated or space-separated).
+         */
+        function getExtractedNameQueryContext(searchMode) {
+            let extractedNames;
+            let extractedFirstName;
+            let extractedLastName;
+            let extractedFullName;
+
+            if (searchMode?.isLastFirstWithComma) {
+                extractedNames = userSearchInput.split(',');
+                extractedLastName = extractedNames[0].trim();
+                extractedFirstName = extractedNames[1].trim();
+            } else if (searchMode?.isFirstLastWithSpace) {
+                extractedNames = userSearchInput.split(' ');
+                for (let i = 0; i < extractedNames.length; i++) {
+                    if (i === 0) {
+                        extractedFirstName = extractedNames[i].trim();
+                    } else if (i === 1) {
+                        extractedLastName = extractedNames[i].trim();
+                    } else {
+                        extractedLastName += ' ' + extractedNames[i].trim();
+                    }
+                }
+            }
+            extractedFirstName = extractedFirstName.trim().replace(/'/g, "\\'");
+            extractedLastName = extractedLastName.trim().replace(/'/g, "\\'");
+            extractedFullName = extractedFirstName + ' ' + extractedLastName;
+
+            return (
+                'WHERE ' +
+                "(Preferred_Full_Name__c = '" +
+                extractedFullName +
+                "' OR (" +
+                "Preferred_First_Name__c LIKE '" +
+                extractedFirstName +
+                "%' AND " +
+                "LastName LIKE '" +
+                extractedLastName +
+                "%')) "
+            );
+        }
+
+        /**
+         * Executes a SOQL query and manages the response via a callback.
+         */
+        function executeQuery(query, callback) {
+            conn.query(query, callback);
+        }
+
+        /**
+         * Processes location query results to determine subsequent actions based on matches with campus location codes or the need for a contact match.
+         * Errors halt processing with a displayed message, while successful matches direct specific query executions.
+         */
+        function handleLocationQueryResults(error, response) {
+            if (error) {
+                return showErrorMessage(error);
+            }
+
+            // Extract campus location codes from the query response and check for a match with the user input.
+            const campusLocationCodes = response.records.map((record) => record.Location_Code__c.trim());
+            const isCampusSearch = campusLocationCodes.includes(userSearchInput);
+
+            // Determine the next query based on whether a campus match was found.
+            const nextQuery = isCampusSearch ? buildCampusQuery() : buildAsuriteMatchQuery();
+
+            // Execute the determined query with the appropriate callback function based on the type of search.
+            executeQuery(nextQuery, isCampusSearch ? handleCampusStudentResults : handleSearchMode);
+        }
+
+        /**
+         * Manages results from a campus-specific query by organizing and displaying student data. Errors are addressed, and successful data retrieval triggers result compilation.
+         */
+        function handleCampusStudentResults(error, response) {
+            if (error) {
+                return showErrorMessage(error);
+            }
+
+            showLoadingMessage('Campus data located! Compiling details for you now...');
+
+            processStudentRecordsByCampus(response.records);
+            buildSearchResults();
+        }
+
+        /**
+         * Processes and organizes student data specifically retrieved from campus-related queries.
+         */
+        function processStudentRecordsByCampus(records) {
+            studentResultsByCampus = records;
+            showLoadingMessage('Organizing student data for you. Almost there...');
+
+            // Consolidate reducing duplicates, selecting the most relevant program, and cleaning up data
+            let uniqueAndRelevantStudents = studentResultsByCampus.reduce((accumulator, item) => {
+                // Cleanup unwanted properties from the item and nested objects
+                delete item.attributes;
+                if (item.Contact__r) {
+                    delete item.Contact__r.attributes;
+                }
+                if (item.Campus__r) {
+                    delete item.Campus__r.attributes;
+                }
+
+                // Generate a key for quick lookup and comparison
+                let emplId = item.Contact__r.EMPLID__c;
+
+                // Check for existing entry with the same EMPLID
+                if (!accumulator[emplId]) {
+                    accumulator[emplId] = item; // No entry exists, so use the current item
+                } else {
+                    // Entry exists, decide if the current item should replace the existing one
+                    let existingItem = accumulator[emplId];
+                    if (
+                        item.Primary_Flag__c || // Current item is marked as primary
+                        (!existingItem.Primary_Flag__c && // Existing item is not primary, but the new item might have a later date
+                            item.Degree_Conferral_Date__c > existingItem.Degree_Conferral_Date__c)
+                    ) {
+                        accumulator[emplId] = item;
+                    }
+                }
+
+                return accumulator;
+            }, {});
+
+            // Convert the map back to an array
+            studentResultsByCampus = Object.values(uniqueAndRelevantStudents);
+
+            // Sort the reduced results alphabetically by preferred full name
+            studentResultsByCampus.sort((a, b) =>
+                a.Contact__r.Preferred_Full_Name__c.localeCompare(b.Contact__r.Preferred_Full_Name__c)
+            );
+        }
+
+        /**
+         * Determines and handles the search mode for non-campus queries, processing results based on ASURITE or other criteria.
+         */
+        function handleSearchMode(error, response) {
+            if (error) return showErrorMessage(error);
+
+            searchMode = determineSearchMode(response.totalSize);
+            if (!searchMode?.isAsurite) {
+                // No ASURITE match; proceed with dynamic query construction
+                executeQuery(buildDynamicContactQuery(), handleContactResults);
+            }
+        }
+
+        /**
+         * Processes contact search results from dynamic queries and manages the presentation of these results.
+         */
+        function handleContactResults(error, response) {
+            if (error) return showErrorMessage(error);
+
+            processStudentRecordsBySearchTerm(response.records);
+            buildSearchResults();
+        }
+
+        /**
+         * Processes a broader set of student records, handling attributes and organizing the data for presentation based on EMPLID and relevance.
+         */
+        function processStudentRecordsBySearchTerm(records) {
+            studentResultsBySearchTerm = records;
+
+            showLoadingMessage('Refining student details for optimal results. Hang tight...');
+
+            // Clean up data by removing unnecessary attributes from main and nested records
+            Object.values(studentResultsBySearchTerm).forEach((contact) => {
+                delete contact.attributes; // Assume top-level attributes to be removed
+                if (contact.Class_external__r) {
+                    contact.Class_external__r.records.forEach((classRecord) => {
+                        delete classRecord.attributes;
+                    });
+                }
+                if (contact.Student_Plans__r) {
+                    contact.Student_Plans__r.records.forEach((plan) => {
+                        delete plan.attributes;
+                        if (plan.Campus__r) {
+                            delete plan.Campus__r.attributes;
+                        }
+                    });
+                }
+            });
+
+            // Reduce duplicates by EMPLID and select the most relevant contact data considering Student_Plans__r
+            let uniqueContacts = studentResultsBySearchTerm.reduce((accumulator, current) => {
+                let emplId = current.EMPLID__c; // Assuming EMPLID__c is directly under Contact
+
+                if (!accumulator[emplId]) {
+                    accumulator[emplId] = current;
+                } else {
+                    let existing = accumulator[emplId];
+
+                    // Determine the most significant record from Student_Plans__r
+                    let existingMostSignificantPlan = existing.Student_Plans__r?.records.reduce(
+                        (mostSignificant, plan) => {
+                            if (
+                                !mostSignificant ||
+                                plan.Primary_Flag__c ||
+                                plan.Degree_Conferral_Date__c > mostSignificant.Degree_Conferral_Date__c
+                            ) {
+                                return plan;
+                            }
+                            return mostSignificant;
+                        },
+                        null
+                    );
+
+                    let currentMostSignificantPlan = current.Student_Plans__r?.records.reduce(
+                        (mostSignificant, plan) => {
+                            if (
+                                !mostSignificant ||
+                                plan.Primary_Flag__c ||
+                                plan.Degree_Conferral_Date__c > mostSignificant.Degree_Conferral_Date__c
+                            ) {
+                                return plan;
+                            }
+                            return mostSignificant;
+                        },
+                        null
+                    );
+
+                    // Check if current record's most significant plan is more relevant
+                    if (
+                        !existingMostSignificantPlan ||
+                        currentMostSignificantPlan.Primary_Flag__c ||
+                        currentMostSignificantPlan.Degree_Conferral_Date__c >
+                            existingMostSignificantPlan.Degree_Conferral_Date__c
+                    ) {
+                        accumulator[emplId] = current;
+                    }
+                }
+
+                return accumulator;
+            }, {});
+
+            // Convert the results back to an array for further processing
+            studentResultsBySearchTerm = Object.values(uniqueContacts);
+
+            // Optionally sort the results by Preferred Full Name, EMPLID, or any other criterion
+            studentResultsBySearchTerm.sort((a, b) => a.Preferred_Full_Name__c.localeCompare(b.Preferred_Full_Name__c));
+        }
+
+        /**
+         * Determines search mode based on user input and match count, displaying context-appropriate messages and potentially requesting user confirmation for ASURITE matches.
+         */
+        function determineSearchMode(totalSize) {
+            const isEmplid = /^[0-9]{10}$/gi.test(userSearchInput);
+            const isAsurite = !isEmplid && totalSize === 1;
+            const isLastFirstWithComma = userSearchInput.includes(',');
+            const isFirstLastWithSpace = userSearchInput.includes(' ');
+            const isPartialName = !isEmplid && !isAsurite && !isLastFirstWithComma && !isFirstLastWithSpace;
+
+            if (isAsurite) {
+                showLoadingMessage('ASURITE ID found! Search by ASURITE or switch to name?', true);
+            } else if (isEmplid) {
+                showLoadingMessage('Checking EMPLID details. Fetching student data now...');
+            } else if (isLastFirstWithComma) {
+                showLoadingMessage("Tidying up the details for your 'Last, First' search. Almost there...");
+            } else if (isFirstLastWithSpace) {
+                showLoadingMessage("Exploring 'First Last' names. Sorting them out shortly...");
+            } else if (isPartialName) {
+                showLoadingMessage('Navigating partial names. Finding matches now...');
+            }
+
+            return {isEmplid, isAsurite, isLastFirstWithComma, isFirstLastWithSpace, isPartialName};
+        }
+
+        /**
+         * Decides the search path (ASURITE or name) based on user input, handling loading messages and query execution accordingly.
+         */
+        function confirmAsuriteSearch(useAsurite) {
+            hideMessage();
+            if (useAsurite) {
+                showLoadingMessage('Fetching details for ASURITE ID...');
+                searchMode.isAsurite = true;
+                executeQuery(buildDynamicContactQuery(), handleContactResults);
+            } else {
+                showLoadingMessage('Switching to name search. Just a moment...');
+                searchMode.isAsurite = false;
+                searchMode.isPartialName = true;
+                executeQuery(buildDynamicContactQuery(), handleContactResults); // Assuming name search is partial name
+            }
+        }
+
+        /**
+         * Compiles search results into a formatted HTML table, handling both campus-specific and general contact results.
+         */
+        function extractStudentData() {
+            showMessage();
+
+            if (hasSearchTermResults()) {
+                studentResultsToDisplay = studentResultsBySearchTerm.map((record) => {
+                    // Mapping basic and optional contact information from the student records.
+                    const contactInfo = extractStudentBySearchTermContactData(record);
+                    const programInfo =
+                        record?.Student_Plans__r?.records?.length > 0
+                            ? extractStudentBySearchTermProgramData(record.Student_Plans__r.records[0])
+                            : {campus: '--', plan: '--', program: '--'};
+
+                    const studentStatus =
+                        record?.Student_Plans__r?.records?.length > 0
+                            ? {hasProgramData: true, hasClassData: false}
+                            : record?.Class_external__r?.records?.length > 0
+                            ? {hasProgramData: false, hasClassData: true}
+                            : {hasProgramData: false, hasClassData: false};
+
+                    return {...contactInfo, ...programInfo, ...studentStatus};
+                });
+            } else if (hasCampusResults()) {
+                // Display campus results if campus search method was used versus a student-specific search term.
+                studentResultsToDisplay = studentResultsByCampus.map((record) =>
+                    extractStudentByCampusProgramData(record)
+                );
+            }
+
+            if (hasResultsToDisplay()) findRelevantResults(studentResultsToDisplay);
+        }
+
+        /**
+         * Reduces duplicate entries and sorts the results by relevance or specified criteria to prepare for display.
+         */
+        function findRelevantResults(results) {
+            studentResultsToDisplay = Object.values(results).filter(
+                (record) => record.hasProgramData || record.hasClassData
+            );
+
+            // Reduce duplicates by preferring entries with more relevant data.
+            studentResultsToDisplay = studentResultsToDisplay.reduce((accumulator, currentItem) => {
+                const existingIndex = accumulator.findIndex((item) => item.emplid === currentItem.emplid);
+                if (existingIndex > -1) {
+                    const existingItem = accumulator[existingIndex];
+                    if (isMostRelevantProgram(currentItem, existingItem)) {
+                        accumulator[existingIndex] = currentItem;
+                    }
+                } else {
+                    accumulator.push(currentItem);
+                }
+                return accumulator;
+            }, []);
+
+            // Sort alphabetically by name.
+            studentResultsToDisplay.sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        /**
+         * Determines whether a current data item is more relevant than an existing one based on specified attributes.
+         */
+        function isMostRelevantProgram(current, existing) {
+            const currentInfoCount = Object.values(current).filter((value) => value !== '--')?.length || 0;
+            const existingInfoCount = Object.values(existing).filter((value) => value !== '--')?.length || 0;
+            return currentInfoCount > existingInfoCount;
+        }
+
+        /**
+         * Constructs the final results display in the user interface, including handling scenarios where no results are found.
+         */
+        function buildSearchResults() {
+            extractStudentData();
+            showCurrentSearchCount();
+            showSearchResults();
+
+            if (studentResultsToDisplay?.length == 0) {
+                return;
+            }
+
+            setSearchContainerVisibility();
+
+            let resultTableHtml = `
+                <hr>
+                <div class="table-responsive">
+                    <table id="student_search_table" class="table table-striped table-bordered">
+                        <thead>
+                            <tr style="cursor:pointer">
+                                <th scope="col">Name</th>
+                                <th scope="col">EMPLID</th>
+                                <th scope="col">ASURITE</th>
+                                <th scope="col">DOB</th>
+                                <th scope="col">Campus</th>
+                                <th scope="col">Plan</th>
+                                <th scope="col">Program</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+
+            studentResultsToDisplay.forEach((result) => {
+                const {name, emplid, asurite, birthdate, campus, plan, program} = result;
+                let studentProfileUrl =
+                    emplid === '--' ? 'javascript:void(0)' : `/apex/StudentProfile?contactId=${emplid}`;
+
+                resultTableHtml += `
+                    <tr>
+                        <td data-header="Name" class="student-search-table-student-name"><a href="${studentProfileUrl}">${name}</a></td>
+                        <td data-header="EMPLID">${emplid}</td>
+                        <td data-header="ASURITE">${asurite}</td>
+                        <td data-header="DOB">${birthdate}</td>
+                        <td data-header="Campus">${campus}</td>
+                        <td data-header="Plan">${plan}</td>
+                        <td data-header="Program">${program}</td>
+                    </tr>`;
+            });
+
+            resultTableHtml += '</tbody></table></div>';
+            renderSearchContainer(resultTableHtml);
+        }
+
+        /**
+         * Extracts and returns basic personal and contact information from a student Contact record.
+         */
+        function extractStudentBySearchTermContactData(contact) {
+            return {
+                name: contact?.Preferred_Full_Name__c || '--',
+                asurite: contact?.ASURite_ID__c || '--',
+                birthdate:
+                    contact?.Birthdate && !isNaN(Date.parse(contact.Birthdate))
+                        ? new Intl.DateTimeFormat('en-US', {
+                              year: 'numeric',
+                              month: '2-digit',
+                              day: '2-digit',
+                          }).format(new Date(contact.Birthdate))
+                        : '--',
+                emplid: contact?.EMPLID__c || '--',
+            };
+        }
+
+        /**
+         * Pulls specific program-related details from a student plan record for detailed display.
+         */
+        function extractStudentBySearchTermProgramData(programPlan) {
+            return {
+                campus: programPlan?.Campus__r?.Location_Code__c || '--',
+                plan: programPlan?.Plan_Transcript_Description__c || '--',
+                program: programPlan?.College_Diploma_Description__c || programPlan?.Program_Description__c || '--',
+            };
+        }
+
+        /**
+         * Extracts detailed information from campus-specific student records, preparing it for user presentation.
+         */
+        function extractStudentByCampusProgramData(programPlan) {
+            return {
+                name: programPlan?.Contact__r?.Preferred_Full_Name__c || '--',
+                asurite: programPlan?.Contact__r?.ASURite_ID__c || '--',
+                birthdate:
+                    programPlan?.Contact__r?.Birthdate && !isNaN(Date.parse(programPlan.Contact__r.Birthdate))
+                        ? new Intl.DateTimeFormat('en-US', {
+                              year: 'numeric',
+                              month: '2-digit',
+                              day: '2-digit',
+                          }).format(new Date(programPlan.Contact__r.Birthdate))
+                        : '--',
+                emplid: programPlan?.Contact__r?.EMPLID__c || '--',
+                campus: programPlan?.Campus__r?.Location_Code__c || '--',
+                plan: programPlan?.Plan_Transcript_Description__c || '--',
+                program: programPlan?.College_Diploma_Description__c || programPlan?.Program_Description__c || '--',
+                hasProgramData: true,
+                hasClassData: false,
+            };
+        }
+    </script>
+</apex:page>

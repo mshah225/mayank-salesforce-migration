@@ -30,7 +30,7 @@ const COLMS = [
     {label: 'Mailing State', fieldName: 'State'},
     {label: 'Status', fieldName: 'Status'},
     {label: 'Number of Guests', fieldName: 'numberOfGuests'},
-    {label: 'Number of Attendees', fieldName: 'numberofAttendees'},
+    {label: 'Opportunity Type', fieldName: 'oppType'},
     {fieldName: 'actions', type: 'action', typeAttributes: {rowActions: ACTIONS}},
 ];
 
@@ -83,6 +83,7 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
     mapContacts(row) {
         var mailingState;
         var numOfGuests;
+        var oppType;
 
         if (row.State == undefined || row.State == '') {
             if (row.Contact != undefined && row.Contact.MailingState != undefined) {
@@ -91,6 +92,14 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
                 mailingState = '--';
             }
         }
+
+        if (row.Opportunity__c == null || row.Opportunity__r.Type == null) {
+            oppType = '--';
+        } else {
+            oppType = row.Opportunity__r.Type;
+        }
+
+        console.log(row);
 
         if (row.Number_of_Guests__c == undefined) {
             numOfGuests = '0';
@@ -107,7 +116,7 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
             State: mailingState,
             Status: `${row.Status}`,
             numberOfGuests: numOfGuests,
-            numberofAttendees: `${row.Number_of_Attendees__c}`,
+            oppType: oppType,
         };
     }
 

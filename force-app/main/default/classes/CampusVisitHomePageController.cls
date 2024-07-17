@@ -3,7 +3,7 @@ public with sharing class CampusVisitHomePageController {
     public static List<CampaignMember> getCampaignMembers(String recordId, List<String> searchStatus){
 
         List<CampaignMember> campaignMembersToDisplay = [
-            SELECT Name, Id, LeadOrContactID__c, Type, Contact.MailingState, Status, Number_of_Guests__c, Number_of_Attendees__c
+            SELECT Name, Id, LeadOrContactID__c, Type, Contact.MailingState, Status, Number_of_Guests__c, Number_of_Attendees__c, Opportunity__r.Type
             FROM CampaignMember
             WHERE Status IN: searchStatus AND CampaignId =: recordId
             LIMIT 1000
@@ -16,7 +16,7 @@ public with sharing class CampusVisitHomePageController {
     public static List<CampaignMember> getAllCampaignMembers(String recordId){
 
         List<CampaignMember> campaignMembersToDisplay = [
-            SELECT Name, Id, LeadOrContactID__c, Type, Contact.MailingState, Status, Number_of_Guests__c, Number_of_Attendees__c
+            SELECT Name, Id, LeadOrContactID__c, Type, Contact.MailingState, Status, Number_of_Guests__c, Number_of_Attendees__c, Opportunity__r.Type
             FROM CampaignMember
             WHERE CampaignId =: recordId
             LIMIT 1000
@@ -33,7 +33,7 @@ public with sharing class CampusVisitHomePageController {
         searchString = '%' + searchString + '%';
 
         List<CampaignMember> campaignMembersToDisplay = [
-            SELECT Name, Id, LeadOrContactID__c, Type, Contact.MailingState, Status, Number_of_Guests__c, Number_of_Attendees__c
+            SELECT Name, Id, LeadOrContactID__c, Type, Contact.MailingState, Status, Number_of_Guests__c, Number_of_Attendees__c, Opportunity__r.Type
             FROM CampaignMember
             WHERE Name LIKE: searchString AND Status IN: searchStatus AND CampaignId =: recordId
             LIMIT 1000

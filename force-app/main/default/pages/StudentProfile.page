@@ -1989,6 +1989,7 @@
                                             <apex:column headerValue="Plan Type" value="{!app.Plan_Type_Text__c}" />
                                             <apex:column headerValue="Degree" value="{!app.Degree__c}" />
                                             <apex:column headerValue="Campus" value="{!app.Campus__r.Name}" />
+                                            <apex:column headerValue="Req Term" value="{!app.Requirement_Term__c}" />
                                             <apex:column headerValue="Grad Term" value="{!app.Completion_Term__c}" />
                                             <apex:column headerValue="Primary" value="{!app.Primary_Flag__c}" />
                                         </apex:dataTable>

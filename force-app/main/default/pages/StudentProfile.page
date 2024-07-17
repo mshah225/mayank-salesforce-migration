@@ -1,3 +1,4 @@
+<!-- Student Profile Visualforce Page -->
 <apex:page
     id="StudentProfile"
     controller="StudentProfileController"
@@ -15,7 +16,6 @@
         <title>{!theContact.Preferred_First_Name__c}'s Student Profile</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <!-- Latest compiled and minified CSS -->
         <link
             rel="stylesheet"
             href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
@@ -309,24 +309,36 @@
                 padding: 0.75em;
             }
         </style>
-    </head>    
+    </head>
     <body>
         <div class="student-profile-container">
+            <!-- If a user shouldn't see Student 360 at all, we display the experience as Student Profile -->
             <div
                 class="student-profile-container-title"
-                style="{!IF(hasStudentCareAndConcernAccess == FALSE, '', 'display:none')}"
+                style="{!IF(hasStudent360Access == FALSE && showRestrictedStudent360ToSubstituteUser == FALSE, '', 'display:none')}"
             >
                 <h1 style="float: left">Student Profile</h1>
                 <hr />
             </div>
+
+            <!-- If a user shouldn't see Student 360 at all, but they are logged in as a user that can, display a view-only experience -->
             <div
                 class="student-profile-container-title"
-                style="{!IF(hasStudentCareAndConcernAccess == TRUE, '', 'display:none')}"
+                style="{!IF(hasStudent360Access  == FALSE && showRestrictedStudent360ToSubstituteUser == TRUE, '', 'display:none')}"
             >
+                <h1 style="float: left"><span class="student-360-page-title">Student 360</span> <i>(View Only)</i></h1>
+                <a class="student-search-button" href="/apex/StudentSearch"> Go to Student Search </a>
+                <hr />
+            </div>
+
+            <!-- If the user should see Student 360, display the entire experience -->
+            <div class="student-profile-container-title" style="{!IF(hasStudent360Access == TRUE, '', 'display:none')}">
                 <h1 style="float: left"><span class="student-360-page-title">Student 360</span></h1>
                 <a class="student-search-button" href="/apex/StudentSearch"> Go to Student Search </a>
                 <hr />
             </div>
+
+            <!-- Legacy Student Profile -->
             <div class="row intro">
                 <div class="col-xs-4 col-md-2 intro" style="margin-bottom: 20px">
                     <apex:outputPanel id="photoRerenderPanel" layout="none">
@@ -447,7 +459,6 @@
 
                             <tr>
                                 <td>
-                                    <!--a href="/{!theContact.Id}" target="_blank"-->
                                     <a href="#" onclick="openNewSubtab('/{!theContact.Id}','Details');return false">
                                         Salesforce Contact
                                     </a>
@@ -514,7 +525,6 @@
                                     role="dialog"
                                 >
                                     <div class="modal-dialog">
-                                        <!-- Modal content-->
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <button
@@ -539,7 +549,7 @@
                                                             styleclass="chartBlock"
                                                         >
                                                             <apex:selectOptions
-                                                                value="{!caseFunctionaGroupPicklist}"
+                                                                value="{!caseFunctionalGroupPicklist}"
                                                             ></apex:selectOptions>
                                                         </apex:selectList>
                                                     </apex:form>
@@ -657,19 +667,12 @@
                                     </apex:column>
                                     <apex:column headerValue="Status" value="{!oc.Status}" />
                                     <apex:column headerValue="Subject">
-                                        <!--a href="/{!oc.Id}" target="_blank"-->
                                         <a href="#" onclick="openNewSubtab('/{!oc.Id}','null');return false">
-                                            <apex:outputText
-                                                rendered="{!IF(LEN(oc.Subject) > 100
-                                                , true, false)}"
-                                            >
+                                            <apex:outputText rendered="{!IF(LEN(oc.Subject) > 100, true, false)}">
                                                 {!LEFT(oc.Subject, 100)}
                                             </apex:outputText>
 
-                                            <apex:outputText
-                                                rendered="{!IF(LEN(oc.Subject) < 100
-                                                , true, false)}"
-                                            >
+                                            <apex:outputText rendered="{!IF(LEN(oc.Subject) < 100, true, false)}">
                                                 {!oc.Subject}
                                             </apex:outputText>
                                         </a>
@@ -768,10 +771,7 @@
                                     </apex:column>
                                     <apex:column headerValue="Code" value="{!sg.SG_PeopleSoft_Code__c}" />
                                     <apex:column headerValue="Description">
-                                        <apex:outputText
-                                            value="{!LEFT(sg.SG_Description__c, 100)}
-                                    ..."
-                                        />
+                                        <apex:outputText value="{!LEFT(sg.SG_Description__c, 100)}..." />
                                     </apex:column>
                                 </apex:dataTable>
 
@@ -885,11 +885,11 @@
                         </li>
                         <li
                             role="presentation"
-                            style="{!IF(hasStudentCareAndConcernAccess == TRUE,'display:block;','display:none')}"
+                            style="{!IF(hasStudent360Access == TRUE || showRestrictedStudent360ToSubstituteUser == TRUE,'display:block;','display:none')}"
                         >
                             <a
-                                href="#StudentCareAndConcern"
-                                aria-controls="StudentCareAndConcern"
+                                href="#CareAndConcern"
+                                aria-controls="CareAndConcern"
                                 role="tab"
                                 data-toggle="tab"
                                 style="padding: 5px; text-align: center"
@@ -2497,7 +2497,6 @@
                                     </h4>
                                 </div>
 
-                                <!-- Transcripts Sent -->
                                 <div style="overflow: auto; max-height: 400px">
                                     <div id="ps_transcript" style="display: none"></div>
 
@@ -3353,7 +3352,7 @@
                                                 </tr>
                                                 <tr>
                                                     <th>Completed Academic Integrity</th>
-                                                    <td id="gr_academicIntegrity">{!completedAcadmicIntegrity}</td>
+                                                    <td id="gr_academicIntegrity">{!completedAcademicIntegrity}</td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -3369,76 +3368,82 @@
                                     </h4>
                                 </div>
 
-                                <!-- Transcripts Sent -->
                                 <div style="overflow: auto; max-height: 400px">
                                     <div id="gr_psTranscript" style="display: none"></div>
 
                                     <div id="grpsTranscriptErrors"></div>
                                 </div>
                             </apex:pageBlock>
-                        </div>                        
+                        </div>
                         <div
                             role="tabpanel"
                             class="tab-pane"
-                            id="StudentCareAndConcern"
-                            style="{!IF(hasStudentCareAndConcernAccess  == TRUE, '', 'display:none')}"
+                            id="CareAndConcern"
+                            style="{!IF(hasStudent360Access  == TRUE || showRestrictedStudent360ToSubstituteUser == TRUE, '', 'display:none')}"
                         >
-                            <apex:repeat value="{!studentCareAndConcernMessages}" var="message">
-                                <div class="alert">{!message}</div>
-                            </apex:repeat>
-                            <apex:pageBlock mode="maindetail">
-                                <div class="page-header-smaller">
-                                    <h4>
-                                        <i class="fa fa-caret-down"></i>
-                                        &nbsp;Care
-                                    </h4>
-                                </div>
+                            <div style="{!IF(showRestrictedStudent360ToSubstituteUser == TRUE, '', 'display:none')}">
+                                <apex:repeat value="{!careAndConcernRestrictedMessages}" var="message">
+                                    <div class="alert">{!message}</div>
+                                </apex:repeat>
+                            </div>
+                            <div style="{!IF(hasStudent360Access  == TRUE, '', 'display:none')}">
+                                <apex:repeat value="{!careAndConcernMessages}" var="message">
+                                    <div class="alert">{!message}</div>
+                                </apex:repeat>
+                                <apex:pageBlock mode="maindetail">
+                                    <div class="page-header-smaller">
+                                        <h4>
+                                            <i class="fa fa-caret-down"></i>
+                                            &nbsp;Care
+                                        </h4>
+                                    </div>
 
-                                <div style="overflow: auto; max-height: 400px">
-                                    <div id="judicial-data-recent-care-container" style="display: none"></div>
-                                    <div id="judicial-data-recent-care-errors"></div>
-                                    <div id="judicial-data-redacted-care-container" style="display: none"></div>
-                                    <div id="judicial-data-redacted-care-errors"></div>
-                                </div>
+                                    <div style="overflow: auto; max-height: 400px">
+                                        <div id="judicial-data-recent-care-container" style="display: none"></div>
+                                        <div id="judicial-data-recent-care-errors"></div>
+                                        <div id="judicial-data-redacted-care-container" style="display: none"></div>
+                                        <div id="judicial-data-redacted-care-errors"></div>
+                                    </div>
 
-                                <div class="page-header-smaller">
-                                    <h4>
-                                        <i class="fa fa-caret-down"></i>
-                                        &nbsp;Conduct
-                                    </h4>
-                                </div>
+                                    <div class="page-header-smaller">
+                                        <h4>
+                                            <i class="fa fa-caret-down"></i>
+                                            &nbsp;Conduct
+                                        </h4>
+                                    </div>
 
-                                <div style="overflow: auto; max-height: 400px">
-                                    <div id="judicial-data-recent-conduct-container" style="display: none"></div>
-                                    <div id="judicial-data-recent-conduct-errors"></div>
-                                    <div id="judicial-data-redacted-conduct-container" style="display: none"></div>
-                                    <div id="judicial-data-redacted-conduct-errors"></div>
-                                </div>
+                                    <div style="overflow: auto; max-height: 400px">
+                                        <div id="judicial-data-recent-conduct-container" style="display: none"></div>
+                                        <div id="judicial-data-recent-conduct-errors"></div>
+                                        <div id="judicial-data-redacted-conduct-container" style="display: none"></div>
+                                        <div id="judicial-data-redacted-conduct-errors"></div>
+                                    </div>
 
-                                <div class="page-header-smaller">
-                                    <h4>
-                                        <i class="fa fa-caret-down"></i>
-                                        &nbsp;Academic Integrity
-                                    </h4>
-                                </div>
+                                    <div class="page-header-smaller">
+                                        <h4>
+                                            <i class="fa fa-caret-down"></i>
+                                            &nbsp;Academic Integrity
+                                        </h4>
+                                    </div>
 
-                                <div style="overflow: auto; max-height: 400px">
-                                    <div id="academic-integrity-container" style="display: none"></div>
-                                    <div id="academic-integrity-errors"></div>
-                                </div>
+                                    <div style="overflow: auto; max-height: 400px">
+                                        <div id="academic-integrity-container" style="display: none"></div>
+                                        <div id="academic-integrity-errors"></div>
+                                    </div>
 
-                                <div class="page-header-smaller">
-                                    <h4>
-                                        <i class="fa fa-caret-down"></i>
-                                        &nbsp;Emergency Contacts
-                                    </h4>
-                                </div>
+                                    <div class="page-header-smaller">
+                                        <h4>
+                                            <i class="fa fa-caret-down"></i>
+                                            &nbsp;Emergency Contacts
+                                        </h4>
+                                    </div>
 
-                                <div style="overflow: auto; max-height: 400px">
-                                    <div id="emergency-contacts-container" style="display: none"></div>
-                                    <div id="emergency-contacts-errors"></div>
-                                </div>
-                            </apex:pageBlock>
+                                    <div style="overflow: auto; max-height: 400px">
+                                        <div id="emergency-contacts-container" style="display: none"></div>
+                                        <div id="emergency-contacts-errors"></div>
+                                    </div>
+                                </apex:pageBlock>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -3732,7 +3737,7 @@
             loadFinancialAidIndicators(); // Section name: FINANCES TAB
             loadCommentsTab(); // Section name: COMMENTS TAB
             loadUGIndicatorTab(); // Section name: UNDERGRADUATE INDICATORS TAB
-            if ("{!IF(studentCareAndConcernMessages == TRUE, 'true', 'false')}") {
+            if ("{!IF(hasStudent360Access == TRUE, 'true', 'false')}") {
                 loadCareAndConcernTab(); // Section name: CARE AND CONCERN TAB
             }
         });
@@ -4271,8 +4276,8 @@
             var cumGpa = '';
             var curGpa = '';
             for (var r = 1; r < classTable?.rows?.length; r++) {
-                var termCell = classTable?.rows[r]?.cells[0].innerHTML;
-                var sessionCell = classTable?.rows[r]?.cells[1].innerHTML;
+                var termCell = classTable?.rows?.[r]?.cells[0].innerHTML;
+                var sessionCell = classTable?.rows?.[r]?.cells[1].innerHTML;
                 var displayStyle = 'none';
                 if (
                     (termCell?.indexOf(searchTerm) >= 0 || searchTerm == 'All') &&
@@ -4306,8 +4311,8 @@
 
             classTable = document.getElementById('dropped_classes_table');
             for (var r = 1; r < classTable?.rows?.length; r++) {
-                var termCell = classTable?.rows[r]?.cells[0].innerHTML;
-                var sessionCell = classTable?.rows[r]?.cells[1].innerHTML;
+                var termCell = classTable?.rows?.[r]?.cells[0].innerHTML;
+                var sessionCell = classTable?.rows?.[r]?.cells[1].innerHTML;
                 var displayStyle = 'none';
                 if (
                     (termCell?.indexOf(searchTerm) >= 0 || searchTerm == 'All') &&

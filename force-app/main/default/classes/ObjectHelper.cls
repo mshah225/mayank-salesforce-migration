@@ -1,14 +1,61 @@
+/**
+ * A helper class providing utility methods for working with Salesforce objects and data categories.
+ */
 public with sharing class ObjectHelper {
     private static final Boolean DEBUG = false;
 
     /**
-     * Retrieves the data category label as a means to display to users.
-     * Returns with label if valid, returns an empty string otherwise.
+     * Checks if a field exists on a specified Salesforce object.
+     *
+     * @param objectName The API name of the Salesforce object.
+     * @param fieldName The API name of the field to check.
+     * @return True if the field exists on the object; false otherwise.
+     */
+    public static Boolean fieldExistsOnObject(String objectName, String fieldName) {
+        return ((SObject) (Type.forName('Schema.' + objectName)?.newInstance()))
+            ?.getSObjectType()
+            ?.getDescribe()
+            ?.fields.getMap()
+            ?.keySet()
+            ?.contains(fieldName?.toLowerCase());
+    }
+
+    /**
+     * Retrieves fields from a specified field set on a Salesforce object.
+     *
+     * @param objectName The API name of the Salesforce object.
+     * @param fieldSetName The name of the field set.
+     * @return A JSON string containing the fields in the field set and the object label.
+     */
+    @AuraEnabled(cacheable=true)
+    public static String getFieldsFromFieldSet(String objectName, String fieldSetName) {
+        if (!String.isEmpty(fieldSetName)) {
+            Map<String, String> returnMap = new Map<String, String>();
+            SObject objectToCheck = (SObject) (Type.forName('Schema.' + objectName)?.newInstance());
+
+            String objectLabel = objectToCheck?.getSObjectType()?.getDescribe()?.getLabel();
+            List<Schema.FieldSetMember> fieldsInFieldSet = objectToCheck
+                ?.getSObjectType()
+                ?.getDescribe()
+                ?.fieldSets.getMap()
+                .get(fieldSetName)
+                ?.getFields();
+
+            returnMap.put('FIELD_LIST', JSON.serialize(fieldsInFieldSet));
+            returnMap.put('OBJECT_LABEL', objectLabel);
+
+            return JSON.serialize(returnMap);
+        }
+        return null;
+    }
+
+    /**
+     * Retrieves the data category label based on the object type, data category group, and data category.
      *
      * @param objectType The API name of the Salesforce object type.
      * @param dataCategoryGroup The name of the data category group (without '__c' suffix).
      * @param dataCategory The name of the data category (without '__c' suffix).
-     * @return Boolean indicating if the data category is valid.
+     * @return The label of the data category if valid; an empty string otherwise.
      */
     public static String getDataCategoryLabelByName(String objectType, String dataCategoryGroup, String dataCategory) {
         List<DescribeDataCategoryGroupResult> categoryGroups;
@@ -68,12 +115,10 @@ public with sharing class ObjectHelper {
 
     /**
      * Retrieves a wrapped data category matching the specified label and object type.
-     * The method searches through data category groups and structures to find a matching category by label.
-     * If found, it returns a DataCategoryWrapper with details of the category. Otherwise, returns an empty wrapper.
      *
      * @param objectType The API name of the Salesforce object type to search within.
      * @param labelName The label name of the data category to find.
-     * @return DataCategoryWrapper instance containing category details if found, otherwise an empty DataCategoryWrapper.
+     * @return DataCategoryWrapper instance containing category details if found; otherwise an empty DataCategoryWrapper.
      */
     public static DataCategoryWrapper getDataCategoryNameAndGroupByLabel(String objectType, String labelName) {
         List<DescribeDataCategoryGroupResult> categoryGroups;
@@ -132,8 +177,6 @@ public with sharing class ObjectHelper {
 
     /**
      * Validates if a specified data category exists within a given object type and data category group.
-     * Checks against the Salesforce schema to determine if the data category and group are valid for the object type.
-     * Returns true if valid, false otherwise.
      *
      * @param objectType The API name of the Salesforce object type.
      * @param dataCategoryGroup The name of the data category group (without '__c' suffix).

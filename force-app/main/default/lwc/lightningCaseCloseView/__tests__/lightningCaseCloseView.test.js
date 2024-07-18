@@ -4,7 +4,7 @@ import LightningCaseCloseView from 'c/lightningCaseCloseView';
 import {getRecord} from 'lightning/uiRecordApi';
 import {getPicklistValues} from 'lightning/uiObjectInfoApi';
 import {graphql} from 'lightning/uiGraphQLApi';
-import getFieldsFromFieldSet from '@salesforce/apex/FieldSetHelper.getFieldsFromFieldSet';
+import getFieldsFromFieldSet from '@salesforce/apex/ObjectHelper.getFieldsFromFieldSet';
 import closeCasesList from '@salesforce/apex/LightningCaseCloseController.closeCasesList';
 import {flushPromises} from 'c/helperFunctions';
 
@@ -20,7 +20,7 @@ const recordTypeInfoMock = require('./data/recordTypeInfo.json');
 const statusOptionsMock = require('./data/statusOptions.json');
 
 jest.mock(
-    '@salesforce/apex/FieldSetHelper.getFieldsFromFieldSet',
+    '@salesforce/apex/ObjectHelper.getFieldsFromFieldSet',
     () => {
         const {createApexTestWireAdapter} = require('@salesforce/sfdx-lwc-jest');
         return {

@@ -145,7 +145,7 @@ describe('c-advisor-portal-modal-mass-close', () => {
             new CustomEvent('error', {
                 detail: {
                     errors: [
-                        'Could not find FieldSetHelper.getFieldsFromFieldSet - you do not have permission to class FieldSetHelper',
+                        'Could not find ObjectHelper.getFieldsFromFieldSet - you do not have permission to class ObjectHelper',
                         'Another error message',
                     ],
                 },
@@ -157,7 +157,7 @@ describe('c-advisor-portal-modal-mass-close', () => {
         expect(element.shadowRoot.querySelector('c-lightning-case-close-view')).toBeFalsy();
         // And ahow error message
         expect(element.shadowRoot.querySelector('div[role="alert"]').textContent).toContain(
-            'Could not find FieldSetHelper.getFieldsFromFieldSet - you do not have permission to class FieldSetHelper'
+            'Could not find ObjectHelper.getFieldsFromFieldSet - you do not have permission to class ObjectHelper'
         );
     });
 });

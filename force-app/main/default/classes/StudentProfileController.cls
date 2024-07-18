@@ -1,3 +1,7 @@
+/**
+ * Controller class for handling student profile functionalities in a Salesforce environment.
+ * This class is responsible for managing and displaying various details related to a student's profile.
+ */
 global with sharing class StudentProfileController {
     private static List<String> vars = new List<String>();
 
@@ -5,7 +9,7 @@ global with sharing class StudentProfileController {
     private String aidYear;
 
     public String contactId { get; set; }
-    public boolean urlParamsExistAndAreValid { get; set; }
+    public Boolean urlParamsExistAndAreValid { get; set; }
     public String contactName { get; set; }
     public Contact theContact { get; set; }
     public List<Case> openCases { get; set; }
@@ -36,8 +40,8 @@ global with sharing class StudentProfileController {
     public String currentTermName { get; set; }
     public String nextTerm { get; set; }
     public String nextTermName { get; set; }
-    public string futureTerm { get; set; }
-    public string futureTermName { get; set; }
+    public String futureTerm { get; set; }
+    public String futureTermName { get; set; }
     public String subPlanString { get; set; }
     public String eAdvisorStatus { get; set; }
     public String ciIndex { get; set; }
@@ -55,23 +59,86 @@ global with sharing class StudentProfileController {
     public List<String> undergraduateIndicatorsMessages { get; set; }
     public List<String> graduateAcademicsMessages { get; set; }
     public List<String> graduateIndicatorsMessages { get; set; }
-    public List<String> studentCareAndConcernMessages { get; set; }
+    public List<String> careAndConcernMessages { get; set; }
+    public List<String> careAndConcernRestrictedMessages { get; set; }
 
-    public Boolean hasStudentCareAndConcernAccess {
+    /**
+     * Property to get or set the substitute user details.
+     * @return UserHelper.SubstituteUserWrapper instance with substitute user details.
+     */
+    public UserHelper.SubstituteUserWrapper substituteUser {
         get {
-            return PermissionsHelper.currentUserHasProfile('System Administrator') ||
-                PermissionsHelper.currentUserHasPermissionSet('Role_Student_360');
+            if (substituteUser == null) {
+                substituteUser = UserHelper.getSubstituteUserDetails();
+            }
+            return substituteUser;
         }
         set;
     }
 
+    /**
+     * Property to check if the substitute user has access to the Student 360 feature.
+     * @return Boolean indicating if the substitute user has Student 360 access.
+     */
+    public Boolean substituteUserHasStudent360Access {
+        get {
+            return substituteUser.isSubstitutingAsAnotherUser &&
+                PermissionsHelper.userHasCustomPermission('Student_360_Visible', substituteUser.substituteUserId);
+        }
+        set;
+    }
+
+    /**
+     * Property to determine if the Student 360 feature should be shown to the substitute user.
+     * @return Boolean indicating if the Student 360 feature should be shown to the substitute user.
+     */
+    public Boolean showRestrictedStudent360ToSubstituteUser {
+        get {
+            return substituteUser.isSubstitutingAsAnotherUser &&
+                !substituteUserHasStudent360Access &&
+                loggedInUserHasStudent360Access;
+        }
+        set;
+    }
+
+    /**
+     * Property to check if the logged-in user has access to the Student 360 feature.
+     * @return Boolean indicating if the logged-in user has Student 360 access.
+     */
+    public Boolean loggedInUserHasStudent360Access {
+        get {
+            return FeatureManagement.checkPermission('Student_360_Visible');
+        }
+        set;
+    }
+
+    /**
+     * Property to check if the current user has access to the Student 360 feature.
+     * @return Boolean indicating if the user has access to the Student 360 feature.
+     */
+    public Boolean hasStudent360Access {
+        get {
+            return substituteUser.isSubstitutingAsAnotherUser
+                ? substituteUserHasStudent360Access && loggedInUserHasStudent360Access
+                : loggedInUserHasStudent360Access;
+        }
+        set;
+    }
+
+    /**
+     * Checks if the current user has permissions to create cases.
+     * @return Boolean indicating if the current user has permissions to create cases.
+     */
     public Boolean hasCreateCasePermissions {
         get {
-            return Schema.sObjectType.Case.isCreateable();
+            return PermissionsHelper.currentUserHasCreateCasePermissions();
         }
         set;
     }
 
+    /**
+     * Retrieves the undergraduate student program plan.
+     */
     public Student_Program_Plan__c ugStudentProgram {
         get {
             return ugProgramPlans.isEmpty() ? new Student_Program_Plan__c() : ugProgramPlans[0];
@@ -79,6 +146,9 @@ global with sharing class StudentProfileController {
         set;
     }
 
+    /**
+     * Retrieves the graduate student program plan.
+     */
     public Student_Program_Plan__c gradStudentProgram {
         get {
             return activeGraduatePrograms.isEmpty()
@@ -88,9 +158,12 @@ global with sharing class StudentProfileController {
         set;
     }
 
-    public String completedAcadmicIntegrity {
+    /**
+     * Checks if the academic integrity requirement is completed.
+     */
+    public String completedAcademicIntegrity {
         get {
-            if (completedAcadmicIntegrity == null) {
+            if (completedAcademicIntegrity == null) {
                 List<Checklist_Item__c> academicIntegrity = [
                     SELECT Checklist_Item_Status__c
                     FROM Checklist_Item__c
@@ -98,18 +171,22 @@ global with sharing class StudentProfileController {
                     LIMIT 1
                 ];
                 if (academicIntegrity.isEmpty()) {
-                    completedAcadmicIntegrity = '--';
+                    completedAcademicIntegrity = '--';
                 } else if (academicIntegrity[0].Checklist_Item_Status__c.equals('Completed')) {
-                    completedAcadmicIntegrity = 'Yes';
+                    completedAcademicIntegrity = 'Yes';
                 } else {
-                    completedAcadmicIntegrity = 'No';
+                    completedAcademicIntegrity = 'No';
                 }
             }
-            return completedAcadmicIntegrity;
+            return completedAcademicIntegrity;
         }
         set;
     }
 
+    /**
+     * Constructor for StudentProfileController.
+     * Initializes various lists and sets default values based on URL parameters.
+     */
     public StudentProfileController() {
         if (ApexPages.currentPage().getParameters().get('contactId') != null) {
             contactId = ApexPages.currentPage().getParameters().get('contactId');
@@ -123,6 +200,10 @@ global with sharing class StudentProfileController {
         completedGraduatePrograms = new List<GraduateProgramPlanWrapper>();
     }
 
+    /**
+     * Initializes the student profile. If the URL parameters exist and are valid, sets various student profile details.
+     * Otherwise, initializes default values and adds a fatal error message indicating a missing EMPLID.
+     */
     public void init() {
         if (urlParamsExistAndAreValid) {
             setStudentProfileMessages();
@@ -143,10 +224,13 @@ global with sharing class StudentProfileController {
             setContactEmailRecords();
         } else {
             initializeValuesForNullContactId();
-            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.FATAL, Label.EMPLIDMissing));
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.FATAL, Label.EMPLIDMissing));
         }
     }
 
+    /**
+     * Initializes default values for the student profile when contactId is null.
+     */
     public void initializeValuesForNullContactId() {
         testUndergradScoreList = new List<Test_Score__c>();
         testGradScoreList = new List<Test_Score__c>();
@@ -161,9 +245,12 @@ global with sharing class StudentProfileController {
         contactName = ApexPages.currentPage().getParameters().get('contactName');
     }
 
+    /**
+     * Checks if the student is part of the WICHE program based on their student groups.
+     * @return Boolean indicating if the student is part of the WICHE program.
+     */
     public Boolean getWICHE() {
         Boolean WICHE = false;
-
         for (Student_Group__c sg : sGroupList) {
             if (
                 sg.SG_Status__c && (sg.SG_PeopleSoft_Code__c.equals('WRGP') || sg.SG_PeopleSoft_Code__c.equals('SFX6'))
@@ -171,13 +258,15 @@ global with sharing class StudentProfileController {
                 WICHE = true;
             }
         }
-
         return WICHE;
     }
 
+    /**
+     * Checks if the student is part of an accelerated program based on their student groups.
+     * @return Boolean indicating if the student is part of an accelerated program.
+     */
     public Boolean getAccelerated() {
         Boolean accelerated = false;
-
         for (Student_Group__c sg : sGroupList) {
             if (
                 sg.SG_Status__c &&
@@ -187,10 +276,13 @@ global with sharing class StudentProfileController {
                 accelerated = true;
             }
         }
-
         return accelerated;
     }
 
+    /**
+     * Sets the contact record based on the contactId.
+     * Throws an exception if the contact record or EMPLID is missing.
+     */
     private void setContactRecord() {
         if (Validator.validateId(contactId, Contact.class)) {
             isContactId = true;
@@ -207,19 +299,28 @@ global with sharing class StudentProfileController {
         }
 
         if (theContact == null || theContact.EMPLID__c == null) {
-            throw new StudentProfileException('Contact missing EMPLId');
+            throw new StudentProfileException('Contact missing EMPLID');
         }
     }
 
+    /**
+     * Sets the deceased status based on the contact record.
+     */
     private void setDeceased() {
         deceased = theContact.Deceased__c ? 'Deceased' : '';
     }
 
+    /**
+     * Sets the student milestones for undergraduate and graduate programs.
+     */
     private void setMilestones() {
         setStudentMilestoneUGrad();
         setStudentMilestoneGrad();
     }
 
+    /**
+     * Sets the undergraduate student milestones.
+     */
     private void setStudentMilestoneUGrad() {
         studentMilestonesUGrad = [
             SELECT
@@ -245,6 +346,9 @@ global with sharing class StudentProfileController {
         ];
     }
 
+    /**
+     * Sets the financial aid indicators for the student.
+     */
     private void setFinancialAidIndicator() {
         financialAidIndicators = new List<String>();
         if (theContact.Financial_Aid_Indicator__c == null || theContact.Financial_Aid_Indicator__c == '') {
@@ -256,6 +360,9 @@ global with sharing class StudentProfileController {
         }
     }
 
+    /**
+     * Sets the graduate student milestones.
+     */
     private void setStudentMilestoneGrad() {
         studentMilestonesGrad = [
             SELECT
@@ -282,6 +389,9 @@ global with sharing class StudentProfileController {
         ];
     }
 
+    /**
+     * Sets the current and next terms for the student.
+     */
     private void setCurrentAndNextTerms() {
         StudentTerm__c currentTermData = StudentTerm__c.getOrgDefaults();
         String nextTermPeoplesoftCode = currentTermData.NextTerm__c;
@@ -290,16 +400,16 @@ global with sharing class StudentProfileController {
         nextTerm = currentTermData.NextTerm__c;
         futureTerm = currentTermData.FutureTerm__c;
 
-        List<TERM__c> termList = [
+        List<Term__c> termList = [
             SELECT Name, PeopleSoft_Code__c, Aid_Year__c
-            FROM TERM__c
+            FROM Term__c
             WHERE
                 PeopleSoft_Code__c = :currentTerm
                 OR PeopleSoft_Code__c = :nextTermPeoplesoftCode
                 OR PeopleSoft_Code__c = :futureTermPeoplesoftCode
         ];
 
-        for (TERM__c term : termList) {
+        for (Term__c term : termList) {
             if (term.PeopleSoft_Code__c == currentTerm) {
                 currentTermName = term.Name;
                 aidYear = term.Aid_Year__c;
@@ -311,6 +421,9 @@ global with sharing class StudentProfileController {
         }
     }
 
+    /**
+     * Sets various messages for the student profile based on custom metadata.
+     */
     public void setStudentProfileMessages() {
         generalMessages = new List<String>();
         classesMessages = new List<String>();
@@ -321,10 +434,11 @@ global with sharing class StudentProfileController {
         undergraduateIndicatorsMessages = new List<String>();
         graduateAcademicsMessages = new List<String>();
         graduateIndicatorsMessages = new List<String>();
-        studentCareAndConcernMessages = new List<String>();
+        careAndConcernMessages = new List<String>();
+        careAndConcernRestrictedMessages = new List<String>();
 
         List<Student_Profile_Message__mdt> messages = [
-            SELECT Message_to_Display__c, Student_Profile_Tab__c
+            SELECT Message_to_Display__c, Student_Profile_Tab__c, DeveloperName
             FROM Student_Profile_Message__mdt
             WHERE Is_Active__c = TRUE
         ];
@@ -348,20 +462,38 @@ global with sharing class StudentProfileController {
                 graduateAcademicsMessages.add(message.Message_to_Display__c);
             } else if (message.Student_Profile_Tab__c == 'Graduate Indicators') {
                 graduateIndicatorsMessages.add(message.Message_to_Display__c);
-            } else if (message.Student_Profile_Tab__c == 'Student Care and Concern') {
-                studentCareAndConcernMessages.add(message.Message_to_Display__c);
+            } else if (
+                message.Student_Profile_Tab__c == 'Care and Concern' &&
+                message.DeveloperName == 'Care_and_Concern'
+            ) {
+                careAndConcernMessages.add(message.Message_to_Display__c);
+            } else if (
+                showRestrictedStudent360ToSubstituteUser &&
+                message.Student_Profile_Tab__c == 'Care and Concern' &&
+                message.DeveloperName == 'Care_and_Concern_Access'
+            ) {
+                careAndConcernRestrictedMessages.add(message.Message_to_Display__c);
             }
         }
     }
 
+    /**
+     * Sets the open cases for the student.
+     */
     private void setOpenCases() {
         openCases = CaseService.getAllOpenCases(theContact.Id);
     }
 
+    /**
+     * Sets the student groups for the student.
+     */
     private void setStudentGroups() {
         sGroupList = StudentGroupService.getContactActiveStudentGroups(theContact.Id);
     }
 
+    /**
+     * Sets the service indicators for the student.
+     */
     private void setServiceIndicators() {
         List<Service_Indicator__c> serviceIndicatorList = [
             SELECT SI_Code__c, SI_Description__c, SI_Reason__c, SI_Start_Date__c
@@ -376,6 +508,9 @@ global with sharing class StudentProfileController {
         serviceIndicators = (!serviceIndicatorList.isEmpty() ? serviceIndicatorList : new List<Service_Indicator__c>());
     }
 
+    /**
+     * Sets the student programs and advisors for the student.
+     */
     private void setStudentProgramsAndAdvisors() {
         setStudentProgramPlans();
         setUndergraduateStudentProgramPlanAdvisors();
@@ -384,6 +519,9 @@ global with sharing class StudentProfileController {
         setGraduateStudentProgramPlanMilestone();
     }
 
+    /**
+     * Sets the student program plans for the student.
+     */
     private void setStudentProgramPlans() {
         List<Student_Program_Plan__c> allProgramPlans = [
             SELECT
@@ -493,6 +631,9 @@ global with sharing class StudentProfileController {
         setGPA();
     }
 
+    /**
+     * Sets the GPA for the undergraduate and graduate programs.
+     */
     private void setGPA() {
         for (GraduateProgramPlanWrapper gppw : activeGraduatePrograms) {
             if (gppw.gradProgramPlan.Primary_Flag__c && gppw.gradProgramPlan.Tot_Cumulative__c > 0) {
@@ -515,6 +656,10 @@ global with sharing class StudentProfileController {
         }
     }
 
+    /**
+     * Sets the term map based on the provided list of terms.
+     * @param terms List of term codes to be mapped to their names.
+     */
     private void setTermMap(List<String> terms) {
         if (terms.isEmpty()) {
             return;
@@ -532,12 +677,15 @@ global with sharing class StudentProfileController {
         }
     }
 
+    /**
+     * Sets the subplan string for the student program.
+     */
     private void setSubplanString() {
         if (studentProgram == null || studentProgram.Id == null) {
             return;
         }
         List<Student_Program_Subplan__c> subplans = [
-            SELECT Subplan_description__c, Student_Program_Plan__c
+            SELECT Subplan_Description__c, Student_Program_Plan__c
             FROM Student_Program_Subplan__c
             WHERE Student_Program_Plan__c = :studentProgram.Id
         ];
@@ -545,12 +693,15 @@ global with sharing class StudentProfileController {
             return;
         }
         for (Student_Program_Subplan__c subplan : subplans) {
-            if (subPlan.Student_Program_Plan__c == studentProgram.Id) {
-                subPlanString = subplan.Subplan_description__c;
+            if (subplan.Student_Program_Plan__c == studentProgram.Id) {
+                subPlanString = subplan.Subplan_Description__c;
             }
         }
     }
 
+    /**
+     * Sets the undergraduate student program plan advisors.
+     */
     public void setUndergraduateStudentProgramPlanAdvisors() {
         ugStudentProgramAdvisors = [
             SELECT
@@ -566,6 +717,9 @@ global with sharing class StudentProfileController {
         ];
     }
 
+    /**
+     * Sets the graduate student program plan advisors.
+     */
     public void setGraduateStudentProgramPlanAdvisors() {
         gradStudentProgramAdvisors = [
             SELECT
@@ -584,6 +738,9 @@ global with sharing class StudentProfileController {
         ];
     }
 
+    /**
+     * Sets the graduate student program plan committees and advisors.
+     */
     public void setGraduateStudentProgramPlanCommitteesAndAdvisors() {
         List<Id> programPlansUsed = new List<Id>();
         for (GraduateProgramPlanWrapper gppw : activeGraduatePrograms) {
@@ -618,6 +775,9 @@ global with sharing class StudentProfileController {
         }
     }
 
+    /**
+     * Sets the graduate student program plan milestones.
+     */
     public void setGraduateStudentProgramPlanMilestone() {
         List<String> planCode = new List<String>();
         for (GraduateProgramPlanWrapper gppw : activeGraduatePrograms) {
@@ -674,9 +834,13 @@ global with sharing class StudentProfileController {
         }
     }
 
-    public List<SelectOption> getCaseFunctionaGroupPicklist() {
-        List<SelectOption> caseFunctionaGroupPicklist = new List<SelectOption>();
-        List<Case_Classification__c> caseFunctionaGroupPicklistValues = [
+    /**
+     * Retrieves the case functional group picklist options.
+     * @return List of SelectOption for case functional group picklist.
+     */
+    public List<SelectOption> getCaseFunctionalGroupPicklist() {
+        List<SelectOption> caseFunctionalGroupPicklist = new List<SelectOption>();
+        List<Case_Classification__c> caseFunctionalGroupPicklistValues = [
             SELECT Name, Id
             FROM Case_Classification__c
             WHERE
@@ -685,19 +849,25 @@ global with sharing class StudentProfileController {
             ORDER BY Name ASC
         ];
 
-        caseFunctionaGroupPicklist.add(new SelectOption('', '<SELECT>'));
-        for (Case_Classification__c functionalGroup : caseFunctionaGroupPicklistValues) {
-            caseFunctionaGroupPicklist.add(new SelectOption(functionalGroup.Id, functionalGroup.Name));
+        caseFunctionalGroupPicklist.add(new SelectOption('', '<SELECT>'));
+        for (Case_Classification__c functionalGroup : caseFunctionalGroupPicklistValues) {
+            caseFunctionalGroupPicklist.add(new SelectOption(functionalGroup.Id, functionalGroup.Name));
         }
 
-        return caseFunctionaGroupPicklist;
+        return caseFunctionalGroupPicklist;
     }
 
+    /**
+     * Sets the test scores for the student.
+     */
     private void setTestScores() {
         setUndergradStudentTestScores();
         setGraduateStudentTestScores();
     }
 
+    /**
+     * Sets the undergraduate student test scores.
+     */
     private void setUndergradStudentTestScores() {
         Set<String> testCodes = new Set<String>{
             'ACT',
@@ -726,7 +896,7 @@ global with sharing class StudentProfileController {
             'MAT',
             'MCAT'
         };
-        testUnderGradScoreList = [
+        testUndergradScoreList = [
             SELECT Test_Component_Score__c, Test_Component__c, Test_Date__c, Test_Type__c
             FROM Test_Score__c
             WHERE
@@ -737,6 +907,9 @@ global with sharing class StudentProfileController {
         ];
     }
 
+    /**
+     * Sets the graduate student test scores.
+     */
     private void setGraduateStudentTestScores() {
         Set<String> testCodes = new Set<String>{
             'GMAT',
@@ -760,12 +933,18 @@ global with sharing class StudentProfileController {
         ];
     }
 
+    /**
+     * Sets the financial details for the student.
+     */
     private void setFinancials() {
         setFinancialAidWrapper();
         setStudentAccount();
         setFinancialAidPackage();
     }
 
+    /**
+     * Sets the financial aid wrapper for the student.
+     */
     private void setFinancialAidWrapper() {
         faWrapper = new FinancialAidWrapper();
 
@@ -795,6 +974,9 @@ global with sharing class StudentProfileController {
         }
     }
 
+    /**
+     * Sets the student account details.
+     */
     private void setStudentAccount() {
         List<Student_Account__c> studentAccounts = [
             SELECT Future_Balance__c, Account_Balance__c, Past_Due_Tip__c
@@ -810,6 +992,9 @@ global with sharing class StudentProfileController {
         }
     }
 
+    /**
+     * Sets the financial aid package details.
+     */
     private void setFinancialAidPackage() {
         List<Financial_Aid_Package__c> financesPackageList = [
             SELECT
@@ -837,13 +1022,19 @@ global with sharing class StudentProfileController {
         financialAidPackage = financesPackageList.isEmpty() ? new Financial_Aid_Package__c() : financesPackageList[0];
     }
 
+    /**
+     * Sets the Me3 results for the student.
+     */
     private void setMe3Results() {
         setMe3DegreeSearchResult();
-        setMe3HighScoolResult();
+        setMe3HighSchoolResult();
     }
 
+    /**
+     * Sets the Me3 degree search results for the student.
+     */
     private void setMe3DegreeSearchResult() {
-        List<me3__c> me3List = [
+        List<Me3__c> me3List = [
             SELECT
                 Id,
                 A_Score__c,
@@ -884,8 +1075,11 @@ global with sharing class StudentProfileController {
         me3Results = (!me3List.isEmpty() ? me3List[0] : new Me3__c());
     }
 
-    private void setMe3HighScoolResult() {
-        List<me3__c> me3List = [
+    /**
+     * Sets the Me3 high school results for the student.
+     */
+    private void setMe3HighSchoolResult() {
+        List<Me3__c> me3List = [
             SELECT
                 Id,
                 A_Score__c,
@@ -923,9 +1117,12 @@ global with sharing class StudentProfileController {
             ORDER BY Test_Completed_Date__c DESC
             LIMIT 1
         ];
-        me3HighSchoolResults = (!me3List.isEmpty() ? me3List[0] : new me3__c());
+        me3HighSchoolResults = (!me3List.isEmpty() ? me3List[0] : new Me3__c());
     }
 
+    /**
+     * Sets the CI Index for the student based on the opportunity records.
+     */
     private void setCIIndex() {
         List<Opportunity> studentOpp = [
             SELECT CI_Score__c
@@ -946,6 +1143,9 @@ global with sharing class StudentProfileController {
         }
     }
 
+    /**
+     * Sets the email records for the contact.
+     */
     private void setContactEmailRecords() {
         emailsForContact = new List<et4ae5__IndividualEmailResult__c>();
         String businessUnitForEmails = Label.SP_BU_EmailSends;
@@ -964,6 +1164,9 @@ global with sharing class StudentProfileController {
         }
     }
 
+    /**
+     * Sets the advisor status for the student based on their undergraduate programs.
+     */
     private void setAdvisorStatus() {
         for (Student_Program_Plan__c spp : ugProgramPlans) {
             if (spp.eAdvisor__c == 'Off Track for Graduation') {
@@ -975,6 +1178,11 @@ global with sharing class StudentProfileController {
         eAdvisorStatus = 'No Status';
     }
 
+    /**
+     * Retrieves judicial data for the specified EMPLID.
+     * @param emplid The EMPLID of the student.
+     * @return Continuation object for the judicial data request.
+     */
     @RemoteAction
     global static Object getJudicialData(String emplid) {
         try {
@@ -988,15 +1196,15 @@ global with sharing class StudentProfileController {
 
             return con;
         } catch (Exception ex) {
-            vars.add(
-                ErrorLogger.convertStringToJSON('Context', '[ERROR] There was a problem receiving judicial data.')
-            );
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            ErrorLogger.log(ex, vars, false);
             return null;
         }
     }
 
+    /**
+     * Processes the judicial data response.
+     * @param state The state object from the continuation.
+     * @return List of JudicialWrapper containing the judicial data.
+     */
     private static Object processJudicialData(Object state) {
         List<JudicialWrapper> judicialData = new List<JudicialWrapper>();
         HttpResponse res;
@@ -1009,15 +1217,17 @@ global with sharing class StudentProfileController {
                 throw new StudentProfileException('[ERROR] There was a problem parsing judicial data.');
             }
         } catch (Exception ex) {
-            vars.add(ErrorLogger.convertIntegerToJSON('Status code', res.getStatusCode()));
-            vars.add(ErrorLogger.convertStringToJSON('Response body', res.getBody()));
-            ErrorLogger.log(ex, vars, false);
             return null;
         }
 
         return judicialData;
     }
 
+    /**
+     * Filters unresolved financial aid checklist items.
+     * @param financialAidChecklists List of FinancialAidChecklist to filter.
+     * @return List of unresolved FinancialAidChecklist items.
+     */
     private static List<FinancialAidChecklistWrapper.FinancialAidChecklist> filterFinancialAidUnresolvedItems(
         List<FinancialAidChecklistWrapper.FinancialAidChecklist> financialAidChecklists
     ) {
@@ -1030,24 +1240,33 @@ global with sharing class StudentProfileController {
         return unresolvedChecklists;
     }
 
+    /**
+     * Retrieves the SunCard photo URL for the specified ASURITE and EMPLID.
+     * @param asurite The ASURITE ID of the student.
+     * @param emplid The EMPLID of the student.
+     * @return String containing the SunCard photo URL.
+     */
     @RemoteAction
-    global static String getSunCardPhotoRA(String asurite, String emplId) {
+    global static String getSunCardPhotoRA(String asurite, String emplid) {
         String suncardPhotoUrl;
 
         try {
-            suncardPhotoUrl = SuncardPhotoService.getSunCardPhotoUrl(asurite, emplId);
+            suncardPhotoUrl = SuncardPhotoService.getSunCardPhotoUrl(asurite, emplid);
         } catch (Exception ex) {
-            vars.add(ErrorLogger.convertStringToJSON('asurite', asurite));
-            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
-            ErrorLogger.log(ex, vars, false);
             return null;
         }
 
         return suncardPhotoUrl;
     }
 
+    /**
+     * Retrieves advisor notes for the specified EMPLID and JSON advisor notes.
+     * @param emplid The EMPLID of the student.
+     * @param jsonAdvisorNotes The JSON string of advisor notes.
+     * @return List of AdvisingNoteWrapper containing the advisor notes.
+     */
     @RemoteAction
-    global static List<AdvisingNoteWrapper> getPSAdvisorNotes(String emplId, String jsonAdvisorNotes) {
+    global static List<AdvisingNoteWrapper> getPSAdvisorNotes(String emplid, String jsonAdvisorNotes) {
         List<AdvisingNoteWrapper> advNoteWrapperList = new List<AdvisingNoteWrapper>();
         List<PS_ASU_SP_ADNOTE_V__x> advisingNoteList = (List<PS_ASU_SP_ADNOTE_V__x>) JSON.deserialize(
             jsonAdvisorNotes,
@@ -1082,6 +1301,11 @@ global with sharing class StudentProfileController {
         return advNoteWrapperList;
     }
 
+    /**
+     * Retrieves advisor notes for the specified contact ID using Lightning Web Components.
+     * @param contactId The contact ID of the student.
+     * @return List of AdvisingNoteWrapper containing the advisor notes.
+     */
     @AuraEnabled(cacheable=true)
     public static List<AdvisingNoteWrapper> getPSAdvisorNotesLWC(String contactId) {
         try {
@@ -1095,8 +1319,7 @@ global with sharing class StudentProfileController {
 
             if (!Schema.sObjectType.PS_ASU_SP_ADNOTE_V__x.isAccessible()) {
                 throw new StudentProfileException(
-                    'User does not have permission to view ' +
-                        Schema.sObjectType.PS_ASU_SP_ADNOTE_V__x.getLabelPlural()
+                    'User does not have permission to view ' + Schema.sObjectType.PS_ASU_SP_ADNOTE_V__x.getLabelPlural()
                 );
             }
 
@@ -1124,7 +1347,6 @@ global with sharing class StudentProfileController {
                 WHERE EMPLID__c = :c.EMPLID__c
                 WITH USER_MODE
                 ORDER BY CREATDTTM__c DESC
-                
             ];
 
             Set<String> advAsuRiteIds = new Set<String>();
@@ -1157,8 +1379,14 @@ global with sharing class StudentProfileController {
         }
     }
 
+    /**
+     * Retrieves comments for the specified EMPLID and JSON comments.
+     * @param emplid The EMPLID of the student.
+     * @param jsonComments The JSON string of comments.
+     * @return List of CommentWrapper containing the comments.
+     */
     @RemoteAction
-    global static List<CommentWrapper> getComments(String emplId, String jsonComments) {
+    global static List<CommentWrapper> getComments(String emplid, String jsonComments) {
         List<PS_ASU_SP_COMMNT_V__x> commentsList = (List<PS_ASU_SP_COMMNT_V__x>) JSON.deserialize(
             jsonComments,
             List<PS_ASU_SP_COMMNT_V__x>.class
@@ -1188,6 +1416,13 @@ global with sharing class StudentProfileController {
         return commentWrapperList;
     }
 
+    /**
+     * Sorts the classes based on the specified parameter and JSON class list.
+     * @param paramToSortBy The parameter to sort by.
+     * @param listOfClassesJSON The JSON string of class list.
+     * @param sortDirection The sort direction (true for ascending, false for descending).
+     * @return List of sorted StudentProfileSortClasses.
+     */
     @RemoteAction
     global static List<StudentProfileSortClasses> sortClasses(
         String paramToSortBy,
@@ -1218,6 +1453,13 @@ global with sharing class StudentProfileController {
         return classList;
     }
 
+    /**
+     * Sorts the exams based on the specified parameter and list of exams.
+     * @param paramToSortBy The parameter to sort by.
+     * @param listOfExams The list of exams to sort.
+     * @param sortDirection The sort direction (true for ascending, false for descending).
+     * @return List of sorted StudentProfileSortExams.
+     */
     @RemoteAction
     global static List<StudentProfileSortExams> sortExams(
         String paramToSortBy,
@@ -1245,6 +1487,13 @@ global with sharing class StudentProfileController {
         return reversedList;
     }
 
+    /**
+     * Sorts the academic integrity data based on the specified parameter and JSON list.
+     * @param paramToSortBy The parameter to sort by.
+     * @param academicIntegrityListJson The JSON string of academic integrity list.
+     * @param sortDirection The sort direction (true for ascending, false for descending).
+     * @return List of sorted StudentProfileSortAcademicIntegrity.
+     */
     @RemoteAction
     global static List<StudentProfileSortAcademicIntegrity> sortAcademicIntegrityData(
         String paramToSortBy,
@@ -1277,6 +1526,12 @@ global with sharing class StudentProfileController {
         return academicIntegrityListToSort;
     }
 
+    /**
+     * Retrieves classes data based on the specified class list and ASR list.
+     * @param classListJson The JSON string of class list.
+     * @param asrListJson The JSON string of ASR list.
+     * @return ClassesWrapper containing the classes data.
+     */
     @RemoteAction
     global static ClassesWrapper getClassesData(String classListJson, String asrListJson) {
         List<PS_ASU_SP_CLASS_V__x> classList = (List<PS_ASU_SP_CLASS_V__x>) JSON.deserialize(
@@ -1309,6 +1564,12 @@ global with sharing class StudentProfileController {
         return classesData;
     }
 
+    /**
+     * Retrieves academic integrity data based on the specified academic integrity list and ASR list.
+     * @param academicIntegrityListJson The JSON string of academic integrity list.
+     * @param asrListJson The JSON string of ASR list.
+     * @return AcademicIntegrityWrapper containing the academic integrity data.
+     */
     @RemoteAction
     global static AcademicIntegrityWrapper getAcademicIntegrityData(
         String academicIntegrityListJson,
@@ -1335,19 +1596,34 @@ global with sharing class StudentProfileController {
         return academicIntegrityData;
     }
 
+    /**
+     * Retrieves the aid year for the student.
+     * @return String containing the aid year.
+     */
     public String getAidYear() {
         return aidYear;
     }
 
+    /**
+     * Creates a case based on the provided description, subject, functional group, and EMPLID.
+     * @param descriptionIn The description of the case.
+     * @param subjectIn The subject of the case.
+     * @param functionalGroup The functional group of the case.
+     * @param emplidIn The EMPLID of the student.
+     * @return String containing the case number.
+     */
     @RemoteAction
     global static String createCase(String descriptionIn, String subjectIn, String functionalGroup, String emplidIn) {
         try {
-            Id student = [SELECT Id FROM Contact WHERE EmplId__c = :emplidIn LIMIT 1].Id;
-            RecordType recordType = [SELECT Id FROM RecordType WHERE Name = 'ASU Service' LIMIT 1];
+            String newCaseNumber = '';
+
+            Id recordTypeId = [SELECT Id FROM RecordType WHERE Name = 'ASU Service' LIMIT 1].Id;
+            Id studentContactId = [SELECT Id FROM Contact WHERE EMPLID__c = :emplidIn LIMIT 1].Id;
+
             Case feedbackCase = new Case(
                 Status = 'New',
-                RecordType = recordType,
-                ContactId = student,
+                RecordTypeId = recordTypeId,
+                ContactId = studentContactId,
                 Subject = subjectIn,
                 Description = descriptionIn,
                 CC_Functional_Group__c = functionalGroup,
@@ -1359,26 +1635,22 @@ global with sharing class StudentProfileController {
                 AccessType.CREATABLE,
                 new List<Case>{ feedbackCase }
             );
+            insert caseCreationDecision.getRecords(); // insert accessible fields, if any
 
-            try {
-                insert caseCreationDecision.getRecords(); // insert accessible fields, if any
-                return [
+            for (Case newCase : (List<Case>) caseCreationDecision.getRecords()) {
+                for (Case securedCase : [
                     SELECT CaseNumber
                     FROM Case
-                    WHERE Id = :caseCreationDecision.getRecords()[0].Id
+                    WHERE Id = :newCase.Id
                     WITH SECURITY_ENFORCED
-                ]
-                .CaseNumber;
-            } catch (NoAccessException e) {
-                vars.add(ErrorLogger.convertStringToJSON('emplid', emplidIn));
-                vars.add(ErrorLogger.convertStringToJSON('functional group', functionalGroup));
-                vars.add(ErrorLogger.convertStringToJSON('subject', subjectIn));
-                vars.add(ErrorLogger.convertStringToJSON('description', descriptionIn));
-                for (SObject strippedCase : caseCreationDecision.getRecords()) {
-                    vars.add(ErrorLogger.convertSObjectToJSON('stripped case', strippedCase));
+                    LIMIT 1
+                ]) {
+                    newCaseNumber = (securedCase.CaseNumber != null) ? securedCase.CaseNumber : null;
                 }
-                ErrorLogger.log(e, vars, false);
+                break;
             }
+
+            return newCaseNumber;
         } catch (Exception e) {
             vars.add(ErrorLogger.convertStringToJSON('emplid', emplidIn));
             vars.add(ErrorLogger.convertStringToJSON('functional group', functionalGroup));
@@ -1390,11 +1662,21 @@ global with sharing class StudentProfileController {
         return null;
     }
 
+    /**
+     * Retrieves the service indicators for the specified student EMPLID.
+     * @param contactEmplid The EMPLID of the student.
+     * @return List of ServiceIndicatorWrapper.ServiceIndicator containing the service indicators.
+     */
     @RemoteAction
     global static List<ServiceIndicatorWrapper.ServiceIndicator> getServiceIndicatorsForStudent(String contactEmplid) {
         return StudentProfileCallout.getServiceIndicators(contactEmplid);
     }
 
+    /**
+     * Retrieves the financial aid checklist for the specified student EMPLID.
+     * @param contactEmplid The EMPLID of the student.
+     * @return List of FinancialAidChecklistWrapper.FinancialAidChecklist containing the financial aid checklist items.
+     */
     @RemoteAction
     global static List<FinancialAidChecklistWrapper.FinancialAidChecklist> getFinancialAidChecklist(
         String contactEmplid
@@ -1402,6 +1684,11 @@ global with sharing class StudentProfileController {
         return StudentProfileCallout.getFinancialAidChecklists(contactEmplid);
     }
 
+    /**
+     * Retrieves unresolved financial aid checklist items for the specified list.
+     * @param finAidChecklists The list of FinancialAidChecklist to filter.
+     * @return List of unresolved FinancialAidChecklist items.
+     */
     @RemoteAction
     global static List<FinancialAidChecklistWrapper.FinancialAidChecklist> getUnresolvedFinancialAidChecklist(
         List<FinancialAidChecklistWrapper.FinancialAidChecklist> finAidChecklists
@@ -1409,11 +1696,16 @@ global with sharing class StudentProfileController {
         return filterFinancialAidUnresolvedItems(finAidChecklists);
     }
 
+    /**
+     * Retrieves edit messages for the specified student EMPLID.
+     * @param contactEmplid The EMPLID of the student.
+     * @return Map of aid year to list of EditMessageWrapper containing the edit messages.
+     */
     @RemoteAction
-    global static Map<String, List<StudentProfileController.EditMessageWrapper>> getEditMessages(String contactEmplid) {
+    global static Map<String, List<EditMessageWrapper>> getEditMessages(String contactEmplid) {
         FinancialEditMessageWrapper editMessageWrapperDetails = StudentProfileCallout.getEditMessages(contactEmplid);
 
-        Map<String, List<StudentProfileController.EditMessageWrapper>> aidYearToEditMessage = new Map<String, List<StudentProfileController.EditMessageWrapper>>();
+        Map<String, List<EditMessageWrapper>> aidYearToEditMessage = new Map<String, List<EditMessageWrapper>>();
 
         if (editMessageWrapperDetails == null) {
             return null;
@@ -1422,10 +1714,10 @@ global with sharing class StudentProfileController {
         editMessageWrapperDetails.edit_messages.sort();
 
         for (FinancialEditMessageWrapper.cls_edit_messages messages : editMessageWrapperDetails.edit_messages) {
-            List<StudentProfileController.EditMessageWrapper> messagesForTerm = new List<StudentProfileController.EditMessageWrapper>();
+            List<EditMessageWrapper> messagesForTerm = new List<EditMessageWrapper>();
             messages.message_details.sort();
             for (FinancialEditMessageWrapper.cls_message_details messageDetails : messages.message_details) {
-                StudentProfileController.EditMessageWrapper emw = new StudentProfileController.EditMessageWrapper();
+                EditMessageWrapper emw = new EditMessageWrapper();
                 emw.academic_year = messages.academic_year;
                 emw.aid_year = messages.aid_year;
                 emw.term = messageDetails.term;
@@ -1440,6 +1732,11 @@ global with sharing class StudentProfileController {
         return aidYearToEditMessage;
     }
 
+    /**
+     * Retrieves award status map for the specified student EMPLID.
+     * @param contactEmplid The EMPLID of the student.
+     * @return Map of aid year to list of term awards containing the award status.
+     */
     @RemoteAction
     global static Map<String, List<FinancialAidAwardWrapper.cls_term_awards>> getAwardStatusMap(String contactEmplid) {
         FinancialAidAwardWrapper awardWrapper = StudentProfileCallout.getAwards(contactEmplid);
@@ -1463,6 +1760,11 @@ global with sharing class StudentProfileController {
         return aidYearToAward;
     }
 
+    /**
+     * Retrieves charge history map for the specified student EMPLID.
+     * @param contactEmplid The EMPLID of the student.
+     * @return Map of term to charges containing the charge history.
+     */
     @RemoteAction
     global static Map<String, FinancialAidChargeHistoryWrapper.cls_charges> getChargeHistoryMap(String contactEmplid) {
         FinancialAidChargeHistoryWrapper chargeHistoryWrapper = StudentProfileCallout.getChargeHistory(contactEmplid);
@@ -1484,11 +1786,21 @@ global with sharing class StudentProfileController {
         return termToChargeHistory;
     }
 
+    /**
+     * Retrieves financial aid account balance for the specified student EMPLID.
+     * @param contactEmplid The EMPLID of the student.
+     * @return FinancialAidBalanceWrapper containing the financial aid account balance.
+     */
     @RemoteAction
     global static FinancialAidBalanceWrapper getFinancialAidAccountBalance(String contactEmplid) {
         return StudentProfileCallout.getAccountBalance(contactEmplid);
     }
 
+    /**
+     * Retrieves financial aid refunds for the specified student EMPLID.
+     * @param contactEmplid The EMPLID of the student.
+     * @return FinancialAidRefundWrapper containing the financial aid refunds.
+     */
     @RemoteAction
     global static FinancialAidRefundWrapper getFinancialAidRefunds(String contactEmplid) {
         FinancialAidRefundWrapper refundWrapper = StudentProfileCallout.getRefunds(contactEmplid);
@@ -1500,11 +1812,21 @@ global with sharing class StudentProfileController {
         return refundWrapper;
     }
 
+    /**
+     * Retrieves deposit status for the specified student EMPLID.
+     * @param contactEmplid The EMPLID of the student.
+     * @return DepositStatusWrapper containing the deposit status.
+     */
     @RemoteAction
     global static DepositStatusWrapper getDepositStatus(String contactEmplid) {
         return StudentProfileCallout.getDepositStatus(contactEmplid);
     }
 
+    /**
+     * Retrieves renewable aid for the specified student EMPLID.
+     * @param contactEmplid The EMPLID of the student.
+     * @return RenewableAidWrapper containing the renewable aid.
+     */
     @RemoteAction
     global static RenewableAidWrapper getRenewableAid(String contactEmplid) {
         RenewableAidWrapper aidWrapper = StudentProfileCallout.getRenewableAid(contactEmplid);
@@ -1512,6 +1834,11 @@ global with sharing class StudentProfileController {
         return aidWrapper;
     }
 
+    /**
+     * Retrieves book payments for the specified student EMPLID.
+     * @param contactEmplid The EMPLID of the student.
+     * @return BookPaymentWrapper containing the book payments.
+     */
     @RemoteAction
     global static BookPaymentWrapper getBookPayments(String contactEmplid) {
         BookPaymentWrapper bookPaymentWrap = StudentProfileCallout.getBookPayments(contactEmplid);
@@ -1519,6 +1846,11 @@ global with sharing class StudentProfileController {
         return bookPaymentWrap;
     }
 
+    /**
+     * Retrieves tuition residency status for the specified student EMPLID.
+     * @param contactEmplid The EMPLID of the student.
+     * @return TuitionResidencyWrapper containing the tuition residency status.
+     */
     @RemoteAction
     global static TuitionResidencyWrapper getTuitionResidencyStatus(String contactEmplid) {
         try {
@@ -1529,6 +1861,11 @@ global with sharing class StudentProfileController {
         }
     }
 
+    /**
+     * Retrieves academic progress for the specified student EMPLID.
+     * @param contactEmplid The EMPLID of the student.
+     * @return Map of aid year to list of SAPWrapper.cls_sap containing the academic progress.
+     */
     @RemoteAction
     global static Map<String, List<SAPWrapper.cls_sap>> getAcademicProgress(String contactEmplid) {
         SAPWrapper academicProgressWrapper = StudentProfileCallout.getAcademicProgress(contactEmplid);
@@ -1546,6 +1883,9 @@ global with sharing class StudentProfileController {
         return academicYearToSAP;
     }
 
+    /**
+     * Wrapper class for financial aid details.
+     */
     global class FinancialAidWrapper {
         public Set<String> aidYears { get; set; }
         public List<Financial_Aid_Detail__c> summaryRecords { get; set; }
@@ -1556,6 +1896,9 @@ global with sharing class StudentProfileController {
         }
     }
 
+    /**
+     * Wrapper class for advising notes.
+     */
     global class AdvisingNoteWrapper {
         @AuraEnabled
         public PS_ASU_SP_ADNOTE_V__x note { get; set; }
@@ -1563,6 +1906,9 @@ global with sharing class StudentProfileController {
         public String advUserId { get; set; }
     }
 
+    /**
+     * Wrapper class for classes data.
+     */
     global class ClassesWrapper {
         public Set<String> classTerms = new Set<String>();
         public Set<String> classSessions = new Set<String>();
@@ -1571,11 +1917,17 @@ global with sharing class StudentProfileController {
         public List<PS_ASU_SP_CLASS_V__x> droppedClasses = new List<PS_ASU_SP_CLASS_V__x>();
     }
 
+    /**
+     * Wrapper class for academic integrity data.
+     */
     global class AcademicIntegrityWrapper {
         public Set<String> asrClasses = new Set<String>();
         public List<PS_ASU_SP_CLASS_V__x> academicIntegrityData = new List<PS_ASU_SP_CLASS_V__x>();
     }
 
+    /**
+     * Wrapper class for judicial data.
+     */
     global class JudicialWrapper {
         public String CASE_NUMBER { get; set; }
         public String FILE_ID { get; set; }
@@ -1605,11 +1957,17 @@ global with sharing class StudentProfileController {
         public String FINDING_6 { get; set; }
     }
 
+    /**
+     * Wrapper class for comments.
+     */
     global class CommentWrapper {
         public PS_ASU_SP_COMMNT_V__x comment { get; set; }
         public String commenterUserId { get; set; }
     }
 
+    /**
+     * Wrapper class for graduate program plans.
+     */
     public class GraduateProgramPlanWrapper {
         public Student_Milestone__c gradMilestoneDefense { get; set; }
         public Student_Milestone__c gradMilestoneFormat { get; set; }
@@ -1645,6 +2003,9 @@ global with sharing class StudentProfileController {
         public List<Student_Program_Plan_Advisor__c> gradAdvisors { get; set; }
     }
 
+    /**
+     * Wrapper class for edit messages.
+     */
     public class EditMessageWrapper {
         public String term { get; set; }
         public String action_description { get; set; }
@@ -1654,6 +2015,9 @@ global with sharing class StudentProfileController {
         public String aid_year { get; set; }
     }
 
+    /**
+     * Custom exception for student profile errors.
+     */
     private class StudentProfileException extends Exception {
     }
 }

@@ -1,3 +1,4 @@
+<!-- Student Search Visualforce Page -->
 <apex:page
     id="StudentSearch"
     controller="StudentSearchController"
@@ -128,41 +129,55 @@
 
     <body>
         <div class="student-profile-container">
-            <div class="student-profile-container-title">
-                <h1 style="float: left"><span class="student-360-page-title">Student 360:</span> Student Search</h1>
-                <hr />
+            <div style="{!IF(showRestrictedStudent360ToSubstituteUser == TRUE, '', 'display:none')}">
+                <div class="student-profile-container-title">
+                    <h1 style="float: left">
+                        <span class="student-360-page-title">Student 360:</span> Student Search <i>(View Only)</i>
+                    </h1>
+                    <hr />
+                </div>
+                <apex:repeat value="{!studentSearchRestrictedMessages}" var="message">
+                    <div class="alert">{!message}</div>
+                </apex:repeat>
             </div>
-            <apex:repeat value="{!studentProfileGlobalMessages}" var="message">
-                <div class="alert">{!message}</div>
-            </apex:repeat>
-            <apex:form>
-                <apex:pageBlock mode="maindetail">
-                    <div id="student-search-input-title">Search:</div>
-                    <div id="student-search-input-field-container">
-                        <apex:inputText id="student-search-input-field" styleClass="slds-select" />
-                        <apex:commandButton
-                            id="student-search-input-button"
-                            onclick="initiateStudentSearch(); return false;"
-                            value="Search"
-                        />
-                        <i class="fa fa-search"></i>
-                        <div id="student-search-input-field-description">
-                            <strong>Search by</strong> EMPLID, ASURITE, Campus ID, or name (full or partial). Use "last,
-                            first" or "first last" format for names.
+            <div style="{!IF(hasStudent360Access  == TRUE, '', 'display:none')}">
+                <div class="student-profile-container-title">
+                    <h1 style="float: left"><span class="student-360-page-title">Student 360:</span> Student Search</h1>
+                    <hr />
+                </div>
+                <apex:repeat value="{!studentSearchMessages}" var="message">
+                    <div class="alert">{!message}</div>
+                </apex:repeat>
+
+                <apex:form>
+                    <apex:pageBlock mode="maindetail">
+                        <div id="student-search-input-title">Search:</div>
+                        <div id="student-search-input-field-container">
+                            <apex:inputText id="student-search-input-field" styleClass="slds-select" />
+                            <apex:commandButton
+                                id="student-search-input-button"
+                                onclick="initiateStudentSearch(); return false;"
+                                value="Search"
+                            />
+                            <i class="fa fa-search"></i>
+                            <div id="student-search-input-field-description">
+                                <strong>Search by</strong> EMPLID, ASURITE, Campus ID, or name (full or partial). Use
+                                "last, first" or "first last" format for names.
+                            </div>
                         </div>
-                    </div>
-                    <div id="student-search-results" style="display: none">
-                        <div id="student-search-current-search-results-text">
-                            Search results for "<span id="student-search-current-search-value"></span>"
+                        <div id="student-search-results" style="display: none">
+                            <div id="student-search-current-search-results-text">
+                                Search results for "<span id="student-search-current-search-value"></span>"
+                            </div>
+                            <div id="student-search-current-search-count"></div>
                         </div>
-                        <div id="student-search-current-search-count"></div>
-                    </div>
-                    <div style="overflow: auto; max-height: 400px; margin-top: 1em">
-                        <div id="student-search-container" style="display: none"></div>
-                    </div>
-                    <div id="student-search-message"></div>
-                </apex:pageBlock>
-            </apex:form>
+                        <div style="overflow: auto; max-height: 400px; margin-top: 1em">
+                            <div id="student-search-container" style="display: none"></div>
+                        </div>
+                        <div id="student-search-message"></div>
+                    </apex:pageBlock>
+                </apex:form>
+            </div>
         </div>
     </body>
 
@@ -251,7 +266,7 @@
          * Displays an error message in a distinct format to alert users that something went wrong.
          */
         function showErrorMessage(error = 'An unknown error occurred') {
-            showMessage(`[ERROR]: ${message}`);
+            showMessage(`[ERROR]: ${error}`);
         }
 
         /**
@@ -443,14 +458,16 @@
          * Begins the search process by clearing previous results and displaying a loading message before starting the dynamic search.
          */
         function initiateStudentSearch() {
-            if (hasSearchTermResults() || hasCampusResults() || hasResultsToDisplay()) {
-                hideSearchResults();
-                hideSearchContainer();
-            }
+            if ("{!IF(hasStudent360Access == TRUE, 'true', 'false')}") {
+                if (hasSearchTermResults() || hasCampusResults() || hasResultsToDisplay()) {
+                    hideSearchResults();
+                    hideSearchContainer();
+                }
 
-            resetSearchData();
-            showLoadingMessage();
-            executeDynamicSearch();
+                resetSearchData();
+                showLoadingMessage();
+                executeDynamicSearch();
+            }
         }
 
         /**

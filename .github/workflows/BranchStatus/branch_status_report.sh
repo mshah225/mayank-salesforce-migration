@@ -15,8 +15,9 @@ dev="dev"
 qa="qa"
 uat="uat"
 wpc="wpc"
+knowledge="knowledge"
 
-coreBranches=("$dev" "$qa" "$uat" "$wpc")
+coreBranches=("$dev" "$qa" "$uat" "$wpc" "$knowledge")
 coreBranchesCount="${#coreBranches[@]}"
 
 for remote in $(git branch -r); do
@@ -52,14 +53,14 @@ for remote in $(git branch -r); do
 		else
 			git pull --no-edit origin main
 			if [ $? -eq 0 ]; then
-				if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]] || [[ "$branch" == "wpc" ]]; then
+				if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]] || [[ "$branch" == "wpc" ]] || [[ "$branch" == "knowledge" ]]; then
 					git push origin $branch
 					mergeableCoreBranchArray+=("$branch")
 					mergeableCoreBranchCount=$((mergeableCoreBranchCount + 1))
 				fi
 			else
 				git merge --abort
-				if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]] || [[ "$branch" == "wpc" ]]; then
+				if [[ "$branch" == "dev" ]] || [[ "$branch" == "qa" ]] || [[ "$branch" == "uat" ]] || [[ "$branch" == "wpc" ]] || [[ "$branch" == "knowledge" ]]; then
 					conflictedCoreBranchArray+=("$branch")
 					conflictedCoreBranchCount=$((conflictedCoreBranchCount + 1))
 				else
@@ -275,6 +276,56 @@ else
 		},'
 fi
 blocks="$blocks$wpcBranchBlocks"
+
+knowledgeBranchBlocks=''
+if [[ "${mergeableCoreBranchArray[*]}" =~ "${knowledge}" ]]; then
+	knowledgeBranchBlocks='
+        {
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "→ *knowledge*"
+			},
+			"accessory": {
+				"type": "button",
+				"text": {
+					"type": "plain_text",
+					"text": ":canvas-check: PASSING",
+					"emoji": true
+				},
+				"value": "knowledge",
+				"url": "https://github.com/ASU/crm-salesforce-enterprise/tree/knowledge",
+				"action_id": "button-action"
+			}
+		},
+        {
+			"type": "divider"
+		},'
+else
+	knowledgeBranchBlocks='
+        {
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "→ *knowledge*"
+			},
+			"accessory": {
+				"type": "button",
+				"text": {
+					"type": "plain_text",
+					"text": ":exclamation: FAILING",
+					"emoji": true
+				},
+				"value": "knowledge",
+				"url": "https://github.com/ASU/crm-salesforce-enterprise/tree/knowledge",
+				"action_id": "button-action"
+			}
+		},
+        {
+			"type": "divider"
+		},'
+fi
+blocks="$blocks$knowledgeBranchBlocks"
 
 deletedBranchBlocks=''
 if [ ${#deletedBranchArray[@]} -gt 0 ]; then

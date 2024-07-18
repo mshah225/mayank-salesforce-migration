@@ -24,6 +24,7 @@ export default class CaseQuickClose extends LightningElement {
     @api recordSubmitButtonVariant = 'brand';
     @api closeSpamButtonLabel = 'Close Spam';
     @api closeSpamButtonVariant = 'destructive';
+
     record;
     isLoading = false;
     isFormVisible = false;
@@ -40,7 +41,6 @@ export default class CaseQuickClose extends LightningElement {
         return [this.recordId];
     }
 
-    // Case Record
     @wire(getRecord, {
         recordId: '$recordId',
         fields: [SUBJECT_FIELD, CASE_NUMBER_FIELD, DESCRIPTION_FIELD, RECORD_TYPE_DEVELOPER_NAME_FIELD],
@@ -49,8 +49,7 @@ export default class CaseQuickClose extends LightningElement {
         if (error) {
             this.record = undefined;
             this.handleGlobalError(error);
-        }
-        if (data) {
+        } else if (data) {
             this.record = data;
         }
     }
@@ -61,45 +60,37 @@ export default class CaseQuickClose extends LightningElement {
         return this.allowedCloseCaseSpamRTs.includes(currentRT);
     }
 
-    // Validation Error Override
     get hasValidationError() {
-        return this.validationError ? true : false;
+        return !!this.validationError;
     }
     set hasValidationError(error) {
         this.validationError = error;
     }
 
-    // Component Name (Card Title)
     get lwcComponentName() {
         return this.componentName;
     }
 
-    // Button Label
     get lwcCloseButtonLabel() {
         return this.closeButtonLabel;
     }
 
-    // Button Variant
     get lwcCloseButtonVariant() {
         return this.closeButtonVariant;
     }
 
-    // Submit Button Label
     get lwcRecordSubmitButtonLabel() {
         return this.recordSubmitButtonLabel;
     }
 
-    // Button Label
     get lwcCloseSpamButtonLabel() {
         return this.closeSpamButtonLabel;
     }
 
-    // Button Variant
     get lwcCloseSpamButtonVariant() {
         return this.closeSpamButtonVariant;
     }
 
-    // Submit Button Variant
     get lwcRecordSubmitButtonVariant() {
         return this.recordSubmitButtonVariant;
     }
@@ -112,7 +103,6 @@ export default class CaseQuickClose extends LightningElement {
         this.isLoading = status;
     }
 
-    // Form Visibility
     get formVisible() {
         return this.isFormVisible;
     }
@@ -128,7 +118,6 @@ export default class CaseQuickClose extends LightningElement {
         this.isButtonVisible = visible;
     }
 
-    // Spam Button Visibility
     get spamButtonVisible() {
         return this.isRTAllowedClosedSpam && this.isSpamButtonVisible;
     }
@@ -143,7 +132,6 @@ export default class CaseQuickClose extends LightningElement {
         this.isFormReady = ready;
     }
 
-    // Error Message
     get errorMessage() {
         return this.errorDetail;
     }
@@ -151,7 +139,6 @@ export default class CaseQuickClose extends LightningElement {
         this.errorDetail = detail;
     }
 
-    // Error Contact Info
     get errorContactEmail() {
         return this.errorContact;
     }
@@ -186,13 +173,11 @@ export default class CaseQuickClose extends LightningElement {
         this.formVisible = true;
     }
 
-    // Handle Close Spam Cases
     handleOnCaseCloseSpamButton() {
         this.loading = true;
         this.handleCloseSpam();
     }
 
-    // Close Spam Logic
     handleCloseSpam() {
         const fields = {};
         fields[ID_FIELD.fieldApiName] = this.recordId;
@@ -202,7 +187,6 @@ export default class CaseQuickClose extends LightningElement {
         const currentSubject = getFieldValue(this.record, SUBJECT_FIELD) ?? '';
         const currentDescription = getFieldValue(this.record, DESCRIPTION_FIELD) ?? '';
 
-        // Modify case details
         if (!currentSubject.startsWith('SPAM:')) {
             fields[SUBJECT_FIELD.fieldApiName] = 'SPAM: ' + currentSubject;
         }
@@ -212,7 +196,6 @@ export default class CaseQuickClose extends LightningElement {
 
         const recordInput = {fields};
 
-        // Update the record
         updateRecord(recordInput)
             .then(() => {
                 this.dispatchEvent(
@@ -244,7 +227,6 @@ export default class CaseQuickClose extends LightningElement {
         this.handleResetForm();
     }
 
-    // Reset
     handleResetForm() {
         this.formVisible = false;
         this.buttonVisible = true;
@@ -252,7 +234,6 @@ export default class CaseQuickClose extends LightningElement {
         this.errorMessage = null;
     }
 
-    // Cancel Form
     handleOnCancel() {
         this.handleResetForm();
     }

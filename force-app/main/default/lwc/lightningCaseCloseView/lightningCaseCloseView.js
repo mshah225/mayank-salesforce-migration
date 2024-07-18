@@ -71,7 +71,7 @@ import {getRecord, getFieldValue} from 'lightning/uiRecordApi';
 import {getPicklistValues} from 'lightning/uiObjectInfoApi';
 import {gql, graphql} from 'lightning/uiGraphQLApi';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
-import getFieldsFromFieldSet from '@salesforce/apex/FieldSetHelper.getFieldsFromFieldSet';
+import getFieldsFromFieldSet from '@salesforce/apex/ObjectHelper.getFieldsFromFieldSet';
 import closeCasesList from '@salesforce/apex/LightningCaseCloseController.closeCasesList';
 import {parseBoolean, extractErrorMessages} from 'c/helperFunctions';
 
@@ -82,6 +82,7 @@ import CASE_NUMBER_FIELD from '@salesforce/schema/Case.CaseNumber';
 import IS_CLOSED_FIELD from '@salesforce/schema/Case.IsClosed';
 
 // Vars
+const OBJECT_NAME = 'Case';
 const FIELDSET_PREFIX = 'CQC_RT_';
 
 export default class LightningCaseCloseView extends LightningElement {
@@ -111,6 +112,7 @@ export default class LightningCaseCloseView extends LightningElement {
 
     record;
     isLoading = true;
+    caseStatusOptions = undefined;
     defaultStatus = null;
     fieldSet = null;
     validationError;
@@ -223,9 +225,9 @@ export default class LightningCaseCloseView extends LightningElement {
         this.isLoading = status;
     }
 
-    // Once field set is ready we can start loading the edit form
-    get fieldSetReady() {
-        return this.fieldSet != null;
+    // Once field set and status options are loaded, we can load form
+    get formReady() {
+        return this.fieldSet != null && this.caseStatusOptions != null;
     }
 
     // Case Status Options (Type = Closed)
@@ -312,7 +314,7 @@ export default class LightningCaseCloseView extends LightningElement {
     /**
      * Load the field set for the record type
      */
-    @wire(getFieldsFromFieldSet, {objectName: 'Case', fieldSetName: '$fieldSetName'})
+    @wire(getFieldsFromFieldSet, {objectName: OBJECT_NAME, fieldSetName: '$fieldSetName'})
     gotFieldsFromFieldSet({data, error}) {
         if (error) {
             this.handleGlobalError(error);

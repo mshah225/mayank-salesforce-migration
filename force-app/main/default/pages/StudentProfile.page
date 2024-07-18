@@ -5337,7 +5337,7 @@
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
                     var html = '';
-                    if (event.status && result?.length > 0) {
+                    if (event.status && result.balances) {
                         var formatter = new Intl.NumberFormat('en-US', {
                             style: 'currency',
                             currency: 'USD',
@@ -5401,7 +5401,7 @@
                 '{!$RemoteAction.StudentProfileController.getFinancialAidRefunds}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
-                    if (event.status && result?.length > 0) {
+                    if (event.status && result.refunds) {
                         var html =
                             '' +
                             "<div style='font-weight:bold;'> Posted Refunds </div>" +
@@ -5461,7 +5461,7 @@
                 '{!$RemoteAction.StudentProfileController.getDepositStatus}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
-                    if (event.status && result?.length > 0) {
+                    if (event.status && result.deposits) {
                         var html =
                             '' +
                             "<div class='table-responsive'>" +
@@ -5513,7 +5513,7 @@
                 '{!$RemoteAction.StudentProfileController.getRenewableAid}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
-                    if (event.status && result?.emplid != null) {
+                    if (event.status && result?.aid_years.length > 0) {
                         var html =
                             '' +
                             "<div class='table-responsive'>" +
@@ -5581,7 +5581,7 @@
                 '{!$RemoteAction.StudentProfileController.getBookPayments}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
-                    if (event.status && result?.emplid != null) {
+                    if (event.status && result?.aid_years.length > 0) {
                         var formatter = new Intl.NumberFormat('en-US', {
                             style: 'currency',
                             currency: 'USD',
@@ -5645,7 +5645,7 @@
                 '{!$RemoteAction.StudentProfileController.getTuitionResidencyStatus}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
-                    if (event.status && result?.length > 0 && result.tuition_residency?.length > 0) {
+                    if (event.status && result.tuition_residency?.length > 0) {
                         var html;
 
                         if (

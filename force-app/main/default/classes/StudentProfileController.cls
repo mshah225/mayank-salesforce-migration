@@ -902,7 +902,7 @@ global with sharing class StudentProfileController {
             WHERE
                 Contact__c = :theContact.Id
                 AND Test_Type__c IN :testCodes
-                AND Integration_Source__c = 'Student Records'
+                AND Integration_Source__c = 'PeopleSoft'
             ORDER BY Test_Type__c, Test_Component__c, Test_Date__c DESC
         ];
     }
@@ -928,7 +928,7 @@ global with sharing class StudentProfileController {
             WHERE
                 Contact__c = :theContact.Id
                 AND Test_Type__c IN :testCodes
-                AND Integration_Source__c = 'Student Records'
+                AND Integration_Source__c = 'PeopleSoft'
             ORDER BY Test_Type__c, Test_Component__c, Test_Date__c DESC
         ];
     }

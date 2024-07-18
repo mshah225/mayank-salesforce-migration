@@ -5400,7 +5400,7 @@
                 '{!$RemoteAction.StudentProfileController.getFinancialAidRefunds}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
-                    if (event.status && result.refund) {
+                    if (event.status && result.refunds) {
                         var html =
                             '' +
                             "<div style='font-weight:bold;'> Posted Refunds </div>" +

@@ -203,6 +203,9 @@ if [[ "${mergeableCoreBranchArray[*]}" =~ "${uat}" ]]; then
 				"url": "https://github.com/ASU/crm-salesforce-enterprise/tree/uat",
 				"action_id": "button-action"
 			}
+		},
+		{
+			"type": "divider"
 		},'
 else
 	uatBranchBlocks='
@@ -223,6 +226,9 @@ else
 				"url": "https://github.com/ASU/crm-salesforce-enterprise/tree/uat",
 				"action_id": "button-action"
 			}
+		},
+		{
+			"type": "divider"
 		},'
 fi
 blocks="$blocks$uatBranchBlocks"
@@ -247,9 +253,6 @@ if [[ "${mergeableCoreBranchArray[*]}" =~ "${wpc}" ]]; then
 				"url": "https://github.com/ASU/crm-salesforce-enterprise/tree/wpc",
 				"action_id": "button-action"
 			}
-		},
-        {
-			"type": "divider"
 		},'
 else
 	wpcBranchBlocks='
@@ -270,9 +273,6 @@ else
 				"url": "https://github.com/ASU/crm-salesforce-enterprise/tree/wpc",
 				"action_id": "button-action"
 			}
-		},
-        {
-			"type": "divider"
 		},'
 fi
 blocks="$blocks$wpcBranchBlocks"

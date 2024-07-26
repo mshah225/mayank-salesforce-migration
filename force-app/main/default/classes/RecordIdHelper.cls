@@ -1,4 +1,6 @@
 public class RecordIdHelper {
+    public static final String CANNOT_FIND_PREFIX_OBJECT_MAPPING_RESPONSE = 'Error';
+
     public static List<Record_Type_ids__c> RecordTypeIds {
         /*
          * Initializes to the values from the cache
@@ -149,7 +151,7 @@ public class RecordIdHelper {
                 return objPrefix[i].ObjectName__c;
             }
         }
-        return 'Error';
+        return CANNOT_FIND_PREFIX_OBJECT_MAPPING_RESPONSE;
     }
 
     /*
@@ -171,7 +173,7 @@ public class RecordIdHelper {
                 return objPrefix[i].Prefix__c;
             }
         }
-        return 'Error';
+        return CANNOT_FIND_PREFIX_OBJECT_MAPPING_RESPONSE;
     }
 
     /*

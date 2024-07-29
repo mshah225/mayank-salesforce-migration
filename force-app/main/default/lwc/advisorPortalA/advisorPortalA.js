@@ -506,7 +506,6 @@ export default class AdvisorPortalA extends LightningElement {
             AdvisorPortalModalMassClose.open({
                 size: 'medium',
                 description: 'Close all selected cases',
-                gradMode: this.currentFilter.career === 'GRD',
                 selectedContactWrappers: this.selectedResults,
                 loadingCb: (e) => {
                     this.handleLoading(e);

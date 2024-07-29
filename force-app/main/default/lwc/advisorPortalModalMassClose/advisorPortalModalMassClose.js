@@ -6,8 +6,6 @@
  * @api fields/functions:
  * selectedContactWrappers: [{cases: [{caseId: String}, ...]}, ...]
  *      The contact wrappers, contains contacts and cases, for which we need to close each selected case.
- * gradMode: Boolean
- *      True or false flag on whether we are in GRAD advisor mode or UGRAD advisor mode
  * loadingCb: Function(CustomEvent('loading', {detail: Boolean}))
  *      Callback that is run everytime this component wants to indicate it is busy loading something.
  *      The detail contains a boolean indicate if the loading counter should be incremented or decremented.
@@ -36,81 +34,35 @@
  *      This is needed because as a LightningModal, this componenet cannot raise events to its parent component
  */
 
-import {api, wire} from 'lwc';
+import {api} from 'lwc';
 import LightningModal from 'lightning/modal';
-import {gql, graphql} from 'lightning/uiGraphQLApi';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import {extractErrorMessages} from 'c/helperFunctions';
 
 export default class AdvisorPortalModalMassClose extends LightningModal {
     @api selectedContactWrappers = [];
-    @api gradMode = false;
 
     @api loadingCb;
     @api toastCb;
     @api navCb;
 
     // Extract case ids from contact wrappers
-    // has @api annotation to allow tests to verify value - do not get this in parent LWC
-    @api get caseIds() {
+    get caseIds() {
         let caseIds = [];
         for (const contactWrapper of this.selectedContactWrappers)
             for (const caseWrapper of contactWrapper.cases) caseIds.push(caseWrapper.caseId);
         return caseIds;
     }
 
-    // Get the Advisor Case Record Type Id
-    // has @api annotation to allow tests to verify value - do not get this in parent LWC
-    @api get advisorCaseRecordTypeId() {
-        // Filter list of record type info to contain only those of the relevant record type
-        let recordTypeGQLInfo = (this.recordTypeGQLInfo?.uiapi?.query?.RecordType?.edges ?? [])
-            .filter(
-                (v) =>
-                    v?.node?.DeveloperName?.value ===
-                    (this.gradMode ? 'ASU_Graduate_Advisor_Portal' : 'ASU_Advisor_Outreach')
-            )
-            .map((v) => v?.node?.Id);
-
-        // If we found the record type id, return it, otherwise use d
-        return recordTypeGQLInfo.length > 0 ? recordTypeGQLInfo[0] : null;
-    }
-
-    /**
-     * Get the record type names for Case (so we can get dev name for grad vs ugrad)
-     */
-    @wire(graphql, {
-        query: gql`
-            query recordTypes {
-                uiapi {
-                    query {
-                        RecordType(where: {SobjectType: {eq: "Case"}}) {
-                            edges {
-                                node {
-                                    Id
-                                    DeveloperName {
-                                        value
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        `,
-    })
-    gotRecordTypeInfoGQL({error, data}) {
-        if (error) {
-            this.handleGlobalError(error);
-        }
-
-        if (data) {
-            this.recordTypeGQLInfo = data;
-        }
-    }
-
     isSubmitting = false;
-    formReady = false;
-    errorMessage = null;
+
+    _errorMessage = null;
+    get errorMessage() {
+        return `${this._errorMessage}\nContact Salesforce Support: salesforce.support@asu.edu`;
+    }
+    set errorMessage(v) {
+        this._errorMessage = v;
+    }
 
     /**
      * Close the mass close modal
@@ -135,19 +87,13 @@ export default class AdvisorPortalModalMassClose extends LightningModal {
     statusHandler(evnt) {
         if (evnt.detail.type === 'success') {
             this.isSubmitting = false;
+            this.makeToast('success', 'Cases Closed', 'All cases closed successfully');
             this.closeModal();
         } else if (evnt.detail.type === 'form_error') {
             this.isSubmitting = false;
         } else if (evnt.detail.type === 'submitting') {
             this.isSubmitting = true;
         }
-    }
-
-    /**
-     * Once the form has finished loading
-     */
-    handleFormReady() {
-        this.formReady = true;
     }
 
     /**
@@ -160,7 +106,7 @@ export default class AdvisorPortalModalMassClose extends LightningModal {
 
     // Global Error from any error raising events in this component
     handleGlobalError(error) {
-        this.errorMessage = extractErrorMessages(error);
+        this.errorMessage = extractErrorMessages(error)[0];
     }
 
     // Call the loadingCb
@@ -193,11 +139,21 @@ export default class AdvisorPortalModalMassClose extends LightningModal {
             );
         }
     }
+}
 
-    /**
-     * Run callback using toast event
-     */
-    convertToastHandler(evnt) {
-        if (this.toastCb != null) this.toastCb(evnt);
+export class AdvisorPortalModalMassCloseTest extends AdvisorPortalModalMassClose {
+    @api get caseIds() {
+        return super.caseIds;
+    }
+
+    @api get errorMessage() {
+        return super.errorMessage;
+    }
+    set errorMessage(v) {
+        super.errorMessage = v;
+    }
+
+    @api get hasError() {
+        return super.hasError;
     }
 }

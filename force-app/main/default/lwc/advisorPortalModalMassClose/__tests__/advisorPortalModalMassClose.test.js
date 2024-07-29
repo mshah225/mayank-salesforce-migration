@@ -1,8 +1,7 @@
 /* eslint-disable no-undef */
 import {createElement} from 'lwc';
-import AdvisorPortalModalMassClose from 'c/advisorPortalModalMassClose';
-import {graphql} from 'lightning/uiGraphQLApi';
-import {flushPromises} from 'c/helperFunctions';
+import {AdvisorPortalModalMassCloseTest} from 'c/advisorPortalModalMassClose';
+import {flushPromises} from 'c/helperTestFunctions';
 
 // Mock realistic data
 const recordTypeInfoMock = require('./data/recordTypeInfo.json');
@@ -20,7 +19,7 @@ describe('c-advisor-portal-modal-mass-close', () => {
     test('Extracts case ids', async () => {
         // Arrange
         const element = createElement('c-advisor-portal-modal-mass-close', {
-            is: AdvisorPortalModalMassClose,
+            is: AdvisorPortalModalMassCloseTest,
         });
         element.selectedContactWrappers = [
             {cases: [{caseId: '5006t000006mwnuAAA'}, {caseId: '5006t000007ISX6AAO'}]},
@@ -40,52 +39,10 @@ describe('c-advisor-portal-modal-mass-close', () => {
         expect(element.caseIds).toContain('5006t000007J0cTAAS');
     });
 
-    test('Record Type, GRAD Mode = TRUE', async () => {
-        // Arrange
-        const element = createElement('c-advisor-portal-modal-mass-close', {
-            is: AdvisorPortalModalMassClose,
-        });
-        element.gradMode = true;
-
-        // Act
-        document.body.appendChild(element);
-
-        // Wires complete
-        graphql.emit(recordTypeInfoMock);
-
-        const gradRecordTypeId = recordTypeInfoMock.uiapi.query.RecordType.edges
-            .filter((v) => v.node.DeveloperName.value === 'ASU_Graduate_Advisor_Portal')
-            .map((v) => v.node.Id)[0];
-
-        // Form is loaded at start
-        expect(element.advisorCaseRecordTypeId).toEqual(gradRecordTypeId);
-    });
-
-    test('Record Type, GRAD Mode = FALSE', async () => {
-        // Arrange
-        const element = createElement('c-advisor-portal-modal-mass-close', {
-            is: AdvisorPortalModalMassClose,
-        });
-        element.gradMode = false;
-
-        // Act
-        document.body.appendChild(element);
-
-        // Wires complete
-        graphql.emit(recordTypeInfoMock);
-
-        const ugradRecordTypeId = recordTypeInfoMock.uiapi.query.RecordType.edges
-            .filter((v) => v.node.DeveloperName.value === 'ASU_Advisor_Outreach')
-            .map((v) => v.node.Id)[0];
-
-        // Form is loaded at start
-        expect(element.advisorCaseRecordTypeId).toEqual(ugradRecordTypeId);
-    });
-
     test('Submnit button triggers form commit', async () => {
         // Arrange
         const element = createElement('c-advisor-portal-modal-mass-close', {
-            is: AdvisorPortalModalMassClose,
+            is: AdvisorPortalModalMassCloseTest,
         });
         const commitFn = jest.fn();
         document.body.appendChild(element);
@@ -99,10 +56,33 @@ describe('c-advisor-portal-modal-mass-close', () => {
         expect(commitFn).toHaveBeenCalled();
     });
 
+    test('Success toasts', async () => {
+        // Arrange
+        const element = createElement('c-advisor-portal-modal-mass-close', {
+            is: AdvisorPortalModalMassCloseTest,
+        });
+        const toastHandler = jest.fn();
+        element.toastCb = toastHandler;
+        document.body.appendChild(element);
+
+        // Form is submitted successfully
+        element.modalBody$('c-lightning-case-close-view').dispatchEvent(
+            new CustomEvent('status', {
+                detail: {
+                    type: 'success',
+                },
+            })
+        );
+        await flushPromises();
+
+        // Modal was closed
+        expect(toastHandler).toHaveBeenCalledTimes(1);
+    });
+
     test('Success closes modal', async () => {
         // Arrange
         const element = createElement('c-advisor-portal-modal-mass-close', {
-            is: AdvisorPortalModalMassClose,
+            is: AdvisorPortalModalMassCloseTest,
         });
         document.body.appendChild(element);
 
@@ -122,7 +102,7 @@ describe('c-advisor-portal-modal-mass-close', () => {
     test('Cancel closes modal', async () => {
         // Arrange
         const element = createElement('c-advisor-portal-modal-mass-close', {
-            is: AdvisorPortalModalMassClose,
+            is: AdvisorPortalModalMassCloseTest,
         });
         document.body.appendChild(element);
 
@@ -136,7 +116,7 @@ describe('c-advisor-portal-modal-mass-close', () => {
     test('Errors are propagated', async () => {
         // Arrange
         const element = createElement('c-advisor-portal-modal-mass-close', {
-            is: AdvisorPortalModalMassClose,
+            is: AdvisorPortalModalMassCloseTest,
         });
         document.body.appendChild(element);
 
@@ -153,10 +133,9 @@ describe('c-advisor-portal-modal-mass-close', () => {
         );
         await flushPromises();
 
-        // Hides form
-        expect(element.shadowRoot.querySelector('c-lightning-case-close-view')).toBeFalsy();
-        // And ahow error message
-        expect(element.shadowRoot.querySelector('div[role="alert"]').textContent).toContain(
+        // Shows error message
+        expect(element.hasError).toEqual(true);
+        expect(element.errorMessage).toContain(
             'Could not find ObjectHelper.getFieldsFromFieldSet - you do not have permission to class ObjectHelper'
         );
     });

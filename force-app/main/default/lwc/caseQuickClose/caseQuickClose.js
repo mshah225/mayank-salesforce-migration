@@ -33,8 +33,6 @@ export default class CaseQuickClose extends LightningElement {
     isSubmitting = false;
     isFormReady = false;
     errorDetail = null;
-    errorContact = 'salesforce.support@asu.edu';
-    validationError;
     allowedCloseCaseSpamRTs = ['ASU_Service', 'ASU_Admission_Services', 'ASU_Secure_Case', 'ASU_Advisor_Outreach'];
 
     get recordIdList() {
@@ -58,13 +56,6 @@ export default class CaseQuickClose extends LightningElement {
     get isRTAllowedClosedSpam() {
         const currentRT = getFieldValue(this.record, RECORD_TYPE_DEVELOPER_NAME_FIELD) ?? null;
         return this.allowedCloseCaseSpamRTs.includes(currentRT);
-    }
-
-    get hasValidationError() {
-        return !!this.validationError;
-    }
-    set hasValidationError(error) {
-        this.validationError = error;
     }
 
     get lwcComponentName() {
@@ -133,14 +124,13 @@ export default class CaseQuickClose extends LightningElement {
     }
 
     get errorMessage() {
-        return this.errorDetail;
+        return this.errorDetail + `\nContact Salesforce Support: salesforce.support@asu.edu`;
     }
     set errorMessage(detail) {
         this.errorDetail = detail;
     }
-
-    get errorContactEmail() {
-        return this.errorContact;
+    get hasError() {
+        return this.errorDetail != null;
     }
 
     /**
@@ -173,12 +163,10 @@ export default class CaseQuickClose extends LightningElement {
         this.formVisible = true;
     }
 
-    handleOnCaseCloseSpamButton() {
-        this.loading = true;
-        this.handleCloseSpam();
-    }
-
+    // Close spam directly
     handleCloseSpam() {
+        this.loading = true;
+
         const fields = {};
         fields[ID_FIELD.fieldApiName] = this.recordId;
         fields[STATUS_FIELD.fieldApiName] = 'Closed: SPAM';
@@ -198,14 +186,6 @@ export default class CaseQuickClose extends LightningElement {
 
         updateRecord(recordInput)
             .then(() => {
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Case Closed',
-                        message: `Case Number: ${getFieldValue(this.record, CASE_NUMBER_FIELD) ?? 'UNKNOWN'}`,
-                        variant: 'success',
-                    })
-                );
-
                 this.handleOnCaseCloseSuccess();
             })
             .catch((error) => {
@@ -216,14 +196,20 @@ export default class CaseQuickClose extends LightningElement {
             });
     }
 
-    // Override Submit
+    // Submit form
     handleOnSubmit() {
-        // Submit form
         this.refs.caseCloseView.commit();
     }
 
     // Success
     handleOnCaseCloseSuccess() {
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: 'Case Closed',
+                message: `Case Number: ${getFieldValue(this.record, CASE_NUMBER_FIELD) ?? 'UNKNOWN'}`,
+                variant: 'success',
+            })
+        );
         this.handleResetForm();
     }
 
@@ -244,6 +230,6 @@ export default class CaseQuickClose extends LightningElement {
 
     // Global Error from any error raising events in this component
     handleGlobalError(error) {
-        this.errorMessage = extractErrorMessages(error);
+        this.errorMessage = extractErrorMessages(error)[0];
     }
 }

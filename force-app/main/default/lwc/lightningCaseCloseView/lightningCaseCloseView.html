@@ -1,87 +1,78 @@
 <template>
-    <!-- An overlay loading icon on initial load and on submit -->
-    <template lwc:if={loading}>
-        <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
-    </template>
-    <!-- /An overlay loading icon on initial load and on submit -->
+    <c-lightning-error-or-retry message={errorMessage} retry-enabled="false" has-error={hasError}>
+        <!-- An overlay loading icon on initial load and on submit -->
+        <template lwc:if={loading}>
+            <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
+        </template>
+        <!-- /An overlay loading icon on initial load and on submit -->
 
-    <template lwc:if={fieldSetReady}>
-        <lightning-record-edit-form
-            object-api-name="Case"
-            record-id={firstCaseId}
-            onload={handleOnFormLoad}
-            onsubmit={handleOnSubmit}
-            onsuccess={handleOnCaseCloseSuccess}
-            onerror={handleOnFormError}
-            lwc:ref="recordEditForm"
-        >
-            <!-- Validation Error -->
-            <template if:true={hasValidationError}>
-                <div class="slds-notify_container slds-is-relative toastzindex">
-                    <div class="slds-notify slds-notify_toast slds-theme_error toastnominwidth" role="alert">
-                        <div class="slds-notify__content">
-                            <h2 class="slds-text-heading_small">{validationError.message}</h2>
-                            <p if:true={validationError.detail}>{validationError.detail}</p>
+        <template lwc:if={wiresDone}>
+            <lightning-record-edit-form
+                object-api-name="Case"
+                record-id={firstCaseId}
+                onload={handleOnFormLoad}
+                onsubmit={handleOnSubmit}
+                lwc:ref="recordEditForm"
+            >
+                <!-- Validation Error -->
+                <template lwc:if={validationError}>
+                    <div class="slds-notify_container slds-is-relative toastzindex">
+                        <div class="slds-notify slds-notify_toast slds-theme_error" role="alert">
+                            <div class="slds-notify__content">
+                                <p>{validationErrorStr}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </template>
-            <!-- /Validation Error -->
+                </template>
+                <!-- /Validation Error -->
 
-            <!-- For Each Input Field (BEFORE Status) -->
-            <template for:each={inputFieldsBefore} for:item="item">
-                <lightning-input-field
-                    field-name={item.path}
-                    data-name={item.path}
-                    key={item.path}
-                    id={item.path}
-                    required={item.required}
-                >
-                </lightning-input-field>
-            </template>
-            <!-- /For Each Input Field (BEFORE Status) -->
+                <!-- For Each Input Field (BEFORE Status) -->
+                <template for:each={inputFieldsBefore} for:item="item">
+                    <lightning-input-field
+                        field-name={item.path}
+                        data-name={item.path}
+                        key={item.path}
+                        id={item.path}
+                        required={item.required}
+                    >
+                    </lightning-input-field>
+                </template>
+                <!-- /For Each Input Field (BEFORE Status) -->
 
-            <!-- Status Dropdown -->
-            <lightning-combobox
-                label={statusInputLabel}
-                placeholder={statusInputPlaceholder}
-                value={currentStatus}
-                options={statusOptions}
-                onchange={handleOnStatusChange}
-                class="customStatusBox"
-                required
-            ></lightning-combobox>
-            <!-- /Status Dropdown -->
+                <!-- Status Dropdown -->
+                <lightning-combobox
+                    label={statusInputLabel}
+                    data-name="Status"
+                    placeholder={statusInputPlaceholder}
+                    value={currentStatus}
+                    options={caseStatusOptions}
+                    lwc:ref="statusField"
+                    class="slds-m-bottom_x-small"
+                    required
+                ></lightning-combobox>
+                <!-- /Status Dropdown -->
 
-            <!-- Hidden status field - This needs to exist to handle dependent fields  -->
-            <lightning-input-field
-                field-name="Status"
-                lwc:ref="hiddenStatusField"
-                class="slds-hidden displaynone"
-                data-name="Status"
-            ></lightning-input-field>
-            <!-- /Hidden status field -->
+                <!-- For Each Input Field (AFTER Status) -->
+                <template for:each={inputFieldsAfter} for:item="item">
+                    <lightning-input-field
+                        field-name={item.path}
+                        data-name={item.path}
+                        key={item.path}
+                        id={item.path}
+                        required={item.required}
+                    >
+                    </lightning-input-field>
+                </template>
+                <!-- /For Each Input Field (AFTER Status) -->
 
-            <!-- For Each Input Field (AFTER Status) -->
-            <template for:each={inputFieldsAfter} for:item="item">
-                <lightning-input-field
-                    field-name={item.path}
-                    data-name={item.path}
-                    key={item.path}
-                    id={item.path}
-                    required={item.required}
-                >
-                </lightning-input-field>
-            </template>
-            <!-- /For Each Input Field (AFTER Status) -->
-
-            <!-- Hidden submit button -->
-            <lightning-button class="displaynone" lwc:ref="submitButton" type="submit" label="Submit">
-            </lightning-button>
-            <!-- /Hidden submit button -->
-        </lightning-record-edit-form>
-    </template>
-    <template lwc:else>
-        <div class="slds-p-around_medium"></div>
-    </template>
+                <!-- Hidden submit button -->
+                <lightning-button class="displaynone" lwc:ref="submitButton" type="submit" label="Submit">
+                </lightning-button>
+                <!-- /Hidden submit button -->
+            </lightning-record-edit-form>
+        </template>
+        <template lwc:else>
+            <div class="slds-p-around_medium"></div>
+        </template>
+    </c-lightning-error-or-retry>
 </template>

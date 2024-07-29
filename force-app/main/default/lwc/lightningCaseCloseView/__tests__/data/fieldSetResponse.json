@@ -57,5 +57,7 @@
             "typeApex": "STRING"
         }
     ],
-    "OBJECT_LABEL": "Case"
+    "OBJECT_LABEL": "Case",
+    "OBJECT_NAME": "Case",
+    "FIELD_SET_NAME": ""
 }

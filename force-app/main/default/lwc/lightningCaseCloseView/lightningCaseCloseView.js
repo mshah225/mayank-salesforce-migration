@@ -10,17 +10,8 @@
  * It also raises multiple events indicating progress on the form
  *
  * @api fields/functions:
- * massOperation: Boolean
- *      Flag to enable mass operation mode - in mass operation mode the form expects caseIds to have more than 1 record.
  * caseIds: Array<String>
  *      List of all case ids that need to be closed by the form.
- *      The first is closed using lightning-record-edit form and is used for checking validation rules (i.e. no missing required fields)
- * recordTypeIdOverride: String
- *      An override to force the close form to use a specific case record type id (since the fieldset used to populate the form is based on case record type)
- *      If left null, then it uses the record type of the first case in the caseIds list
- * showToasts: Boolean
- *      Flag to enable/disable if toasts are shown automatically upon success/error. If this is disabled, the parent LWC should handle notifying the user
- *      as on events this LWC raises.
  * commit(): Function<Promise>
  *      A function that calls the submit function for the lightning-record-edit form
  *      The parent should implement a submit button and when that is pressed, it should call this.
@@ -48,11 +39,10 @@
  *
  *
  * Events::
- * status - status events are information about the state of the lightning-record-edit form
+ * status - status events are information about the state of the form
  * {
  *   detail: {
- *     type: "success"|"form_error"|"submitting",
- *     event: onsuccess or onerror event from lightning-record-edit-form, or null
+ *     type: "success"|"form_error"|"submitting"
  *   }
  * }
  *
@@ -67,173 +57,176 @@
  * }
  */
 import {LightningElement, api, wire} from 'lwc';
-import {getRecord, getFieldValue} from 'lightning/uiRecordApi';
 import {getPicklistValues} from 'lightning/uiObjectInfoApi';
-import {gql, graphql} from 'lightning/uiGraphQLApi';
-import {ShowToastEvent} from 'lightning/platformShowToastEvent';
+import {getRecord, getFieldValue} from 'lightning/uiRecordApi';
+import {refreshApex} from '@salesforce/apex';
 import getFieldsFromFieldSet from '@salesforce/apex/ObjectHelper.getFieldsFromFieldSet';
-import closeCasesList from '@salesforce/apex/LightningCaseCloseController.closeCasesList';
-import {parseBoolean, extractErrorMessages} from 'c/helperFunctions';
+import updateRecords from '@salesforce/apex/RecordController.updateRecords';
+import {extractErrorMessages} from 'c/helperFunctions';
 
 // Fields/Objects
+import CASE_OBJ from '@salesforce/schema/Case';
 import RECORD_TYPE_ID_FIELD from '@salesforce/schema/Case.RecordTypeId';
+import RECORD_TYPE_NAME_FIELD from '@salesforce/schema/Case.RecordType.DeveloperName';
 import STATUS_FIELD from '@salesforce/schema/Case.Status';
-import CASE_NUMBER_FIELD from '@salesforce/schema/Case.CaseNumber';
 import IS_CLOSED_FIELD from '@salesforce/schema/Case.IsClosed';
 
 // Vars
-const OBJECT_NAME = 'Case';
 const FIELDSET_PREFIX = 'CQC_RT_';
 
 export default class LightningCaseCloseView extends LightningElement {
-    // Support both mass case mode, and (when false) single case mode
-    @api set massOperation(val) {
-        this._massOperation = parseBoolean(val);
-    }
-    get massOperation() {
-        return this._massOperation;
-    }
-    _massOperation = false;
-
     // List of cases that need to be modified
     @api caseIds = [];
 
-    // When in mass case mode, override which record type is used (since cases may have differing record types)?
-    @api recordTypeIdOverride = null;
-
-    // Show success/failure toasts
-    @api set showToasts(val) {
-        this._showToasts = parseBoolean(val);
-    }
-    get showToasts() {
-        return this._showToasts;
-    }
-    _showToasts = true;
-
-    record;
-    isLoading = true;
+    // Details about the first case record
+    caseRecord = undefined;
+    // Case Status options
     caseStatusOptions = undefined;
-    defaultStatus = null;
-    fieldSet = null;
-    validationError;
-    submittedFields = null; // fields on most recent submit attempt
-    recordTypeGQLInfo = null;
+    // Field set of which fields to display
+    fieldSet = undefined;
 
-    // First Case in list
-    get firstCaseId() {
-        return this.caseIds.length > 0 ? this.caseIds[0] : null;
+    // Validation errors from updating case - these are user-fixable and we show them and allow the user to modify the form and try again
+    validationError = undefined;
+
+    // The validation error message can contain escaped characters (such as quotes being represented using &quot;)
+    // so this getter converts those back into the not escaped variants for displaying to user
+    get validationErrorStr() {
+        // Not set, return null/undefined
+        if (this.validationError == null) return this.validationError;
+        // Set, therefore get nice error message
+        const node = document.createElement('span');
+        node.innerHTML = this.validationError;
+        return node.textContent;
     }
 
-    // Case Record
-    @wire(getRecord, {
-        recordId: '$firstCaseId',
-        fields: [STATUS_FIELD, IS_CLOSED_FIELD, RECORD_TYPE_ID_FIELD, CASE_NUMBER_FIELD],
-    })
-    wiredCase({error, data}) {
-        if (error) {
-            this.record = undefined;
-            this.handleGlobalError(error);
-        }
-        if (data) {
-            this.record = data;
-        }
+    // Any other error - these are unexpected and could be from permission issues or otherwise - these indicate an unfixable failure mode
+    unexpectedError = undefined;
+
+    /**
+     * Uses the first case to determine record type/prepopulate fields
+     */
+    get firstCaseId() {
+        return this.caseIds.length > 0 ? this.caseIds[0] : undefined; // undefined rather than null to prevent wires from running prematurely
     }
 
     /**
-     * Get the record type names for Case (so we can convert between name and id)
+     * Lookup fields for the first case record
      */
-    @wire(graphql, {
-        query: gql`
-            query recordTypes {
-                uiapi {
-                    query {
-                        RecordType(where: {SobjectType: {eq: "Case"}}) {
-                            edges {
-                                node {
-                                    Id
-                                    DeveloperName {
-                                        value
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        `,
+    @wire(getRecord, {
+        recordId: '$firstCaseId',
+        fields: [STATUS_FIELD, IS_CLOSED_FIELD, RECORD_TYPE_ID_FIELD, RECORD_TYPE_NAME_FIELD],
     })
-    gotRecordTypeInfoGQL({error, data}) {
-        if (error) {
+    wiredCase(result) {
+        this.caseWire = result;
+        const {error, data} = result;
+
+        if (error !== undefined) {
             this.handleGlobalError(error);
         }
 
-        if (data) {
-            this.recordTypeGQLInfo = data;
+        if (data !== undefined) {
+            this.caseRecord = data;
         }
     }
+    caseWire = undefined;
 
+    /**
+     * Get the current status if it is already closed
+     *
+     * This value is set on the status input field.
+     * We don't want to pass the status of a non-closed case,
+     * since the option will not be available in the dropdown for setting.
+     */
+    get currentStatus() {
+        return this.caseRecord
+            ? getFieldValue(this.caseRecord, IS_CLOSED_FIELD)
+                ? getFieldValue(this.caseRecord, STATUS_FIELD)
+                : undefined
+            : undefined;
+    }
+
+    /**
+     * The record type id of the first case, or undefined if this isn't set yet
+     */
     get recordTypeId() {
-        return this.recordTypeIdOverride ?? this.record?.recordTypeId ?? null;
+        return this.caseRecord ? getFieldValue(this.caseRecord, RECORD_TYPE_ID_FIELD) : undefined; // undefined rather than null to prevent wires from running prematurely
     }
+
+    /**
+     * The record type name of the first case, or undefined if this isn't set yet
+     */
     get recordTypeName() {
-        // Filter list of record type info to contain only those of the relevant record type
-        let recordTypeGQLInfo = (this.recordTypeGQLInfo?.uiapi?.query?.RecordType?.edges ?? [])
-            .filter((v) => this.recordTypeId !== null && v?.node?.Id === this.recordTypeId)
-            .map((v) => v?.node?.DeveloperName?.value);
-
-        // If there if data, then return it
-        return recordTypeGQLInfo.length > 0 ? recordTypeGQLInfo[0] : null;
+        return this.caseRecord ? getFieldValue(this.caseRecord, RECORD_TYPE_NAME_FIELD) : undefined; // undefined rather than null to prevent wires from running prematurely
     }
 
-    // Case Status Options
+    /**
+     * Get the case status options for this case record type
+     */
     @wire(getPicklistValues, {
         recordTypeId: '$recordTypeId',
         fieldApiName: STATUS_FIELD,
     })
     wiredStatusOptions({error, data}) {
-        if (error) {
-            this.caseStatusOptions = undefined;
+        if (error !== undefined) {
             this.handleGlobalError(error);
         }
-        if (data) {
+
+        if (data !== undefined) {
             this.caseStatusOptions = this.buildStatusOptions(data);
 
             // If we weren't able to get the status options, set error
-            try {
-                if (this.caseStatusOptions.length === 0) {
-                    throw new Error('Unable to access Status Options for Picklist.');
-                }
-            } catch (e) {
-                this.handleGlobalError(e);
+            if (this.caseStatusOptions.length === 0) {
+                this.handleGlobalError(new Error('Unable to access Status Options for Picklist.'));
             }
         }
     }
 
-    // Validation Error Override
-    get hasValidationError() {
-        return this.validationError ? true : false;
+    // Name of the field set (this is based on record type)
+    get fieldSetName() {
+        return this.recordTypeName ? FIELDSET_PREFIX + this.recordTypeName.replace(/ /g, '_') : undefined; // undefined rather than null to prevent wires from running prematurely
     }
-    set hasValidationError(error) {
-        this.validationError = error;
+
+    /**
+     * Load the field set for the record type
+     */
+    @wire(getFieldsFromFieldSet, {objectName: CASE_OBJ.objectApiName, fieldSetName: '$fieldSetName'})
+    gotFieldsFromFieldSet({data, error}) {
+        if (error !== undefined) {
+            this.handleGlobalError(error);
+        }
+
+        if (data !== undefined) {
+            this.fieldSet = data?.FIELD_LIST;
+
+            // Cannot find field set
+            if (this.fieldSet == null) {
+                this.handleGlobalError(new Error(`Unable to find Field Set with API name "${this.fieldSetName}"`));
+            } else {
+                // Check that has required status field
+                let hasStatusField = this.fieldSet.reduce((prev, cur) => {
+                    return prev || cur.fieldPath === STATUS_FIELD.fieldApiName;
+                }, false);
+
+                // Field set is missing status field
+                if (!hasStatusField) {
+                    this.handleGlobalError(
+                        new Error(
+                            'No Status field defined in fieldset. Please add the Case Status Field to the Field Set.'
+                        )
+                    );
+                }
+            }
+        }
     }
 
     // Loading Indicator
     get loading() {
-        return this.isLoading;
-    }
-    set loading(status) {
-        this.isLoading = status;
+        return !this.wiresDone || this.formLoading || this.submitting;
     }
 
     // Once field set and status options are loaded, we can load form
-    get formReady() {
-        return this.fieldSet != null && this.caseStatusOptions != null;
-    }
-
-    // Case Status Options (Type = Closed)
-    // this only has @api so the tests can verify the status options - do NOT access this from the parent LWC
-    @api get statusOptions() {
-        return this.caseStatusOptions;
+    get wiresDone() {
+        return this.caseRecord !== undefined && this.caseStatusOptions !== undefined && this.fieldSet !== undefined;
     }
 
     // Label of the status field we are re-creating
@@ -245,20 +238,17 @@ export default class LightningCaseCloseView extends LightningElement {
     get statusInputPlaceholder() {
         return 'Select ' + this.statusInputLabel;
     }
-    get statusRequired() {
-        return this.statusFieldRequired;
-    }
 
     // All the fields that go before "Status" on the form
     get inputFieldsBefore() {
-        if (this.fieldSet === null) return [];
+        if (this.fieldSet == null) return [];
 
         let allFields = this.fieldSet.map((element) => {
             return {path: element.fieldPath, required: element.required};
         });
         let isBeforeStatus = true;
         let beforeFields = allFields.reduce((prev, cur) => {
-            if (cur.path === 'Status') isBeforeStatus = false; // Added all fields before status
+            if (cur.path === STATUS_FIELD.fieldApiName) isBeforeStatus = false; // Added all fields before status
             if (isBeforeStatus) prev.push(cur);
             return prev;
         }, []);
@@ -268,7 +258,7 @@ export default class LightningCaseCloseView extends LightningElement {
 
     // All the fields that go after "Status" on the form
     get inputFieldsAfter() {
-        if (this.fieldSet === null) return [];
+        if (this.fieldSet == null) return [];
 
         let allFields = this.fieldSet.map((element) => {
             return {path: element.fieldPath, required: element.required};
@@ -276,23 +266,11 @@ export default class LightningCaseCloseView extends LightningElement {
         let isAfterStatus = false;
         let afterFields = allFields.reduce((prev, cur) => {
             if (isAfterStatus) prev.push(cur);
-            if (cur.path === 'Status') isAfterStatus = true; // Add all fields after Status
+            if (cur.path === STATUS_FIELD.fieldApiName) isAfterStatus = true; // Add all fields after Status
             return prev;
         }, []);
 
         return afterFields;
-    }
-
-    /**
-     * Get the current status
-     *
-     * This value set on the status input field.
-     * We don't want to pass its status on a non-closed case,
-     * since the option will not be available in the dropdown for setting.
-     */
-    get currentStatus() {
-        let isClosed = getFieldValue(this.record, IS_CLOSED_FIELD);
-        return isClosed ? getFieldValue(this.record, STATUS_FIELD) : this.defaultStatus;
     }
 
     // Build Status Options Array
@@ -307,204 +285,12 @@ export default class LightningCaseCloseView extends LightningElement {
             });
     }
 
-    get fieldSetName() {
-        return this.recordTypeName ? FIELDSET_PREFIX + this.recordTypeName.replace(/ /g, '_') : null;
-    }
-
-    /**
-     * Load the field set for the record type
-     */
-    @wire(getFieldsFromFieldSet, {objectName: OBJECT_NAME, fieldSetName: '$fieldSetName'})
-    gotFieldsFromFieldSet({data, error}) {
-        if (error) {
-            this.handleGlobalError(error);
-        }
-
-        if (data) {
-            try {
-                // Vars
-                this.fieldSet = data.FIELD_LIST;
-
-                // Error Check
-                if (this.fieldSet == null) {
-                    throw new Error(`Unable to find Field Set with API name "${this.fieldSetName}"`);
-                }
-
-                let hasStatusField = this.fieldSet.reduce((prev, cur) => {
-                    return prev || cur.fieldPath === 'Status';
-                }, false);
-
-                // Error Check
-                if (!hasStatusField) {
-                    throw new Error(
-                        'No Status field defined in fieldset. Please add the Case Status Field to the Field Set.'
-                    );
-                }
-            } catch (err) {
-                this.handleGlobalError(err);
-            }
-        }
-    }
-
-    /**
-     * Submit the edit form. This presses the submit button, this indirectly calling the `handleSubmit` function.
-     * But we call it this way to make sure event.detail.fields is set on the event and so the form can do its extra checks
-     */
-    @api async commit() {
-        try {
-            this.refs.submitButton.click();
-        } catch (err) {
-            this.handleGlobalError(err);
-        }
-    }
-
-    /**
-     * When the submit button is pressed, we need to validate the form and attempt to submit it.
-     *
-     * If this does attempt to submit the case, then this will trigger either the handleOnCaseCloseSuccess
-     * or handleOnFormError functions upon completion
-     */
-    handleOnSubmit(event) {
-        try {
-            // Cannot submit while loading - because either not ready yet, or submission is already in progress
-            if (this.loading) {
-                return;
-            }
-
-            // Get fields from form
-            this.submittedFields = event.detail.fields;
-
-            // Don't do default submission because we neeed to validate stuff first
-            event.preventDefault();
-
-            // Make sure our fields are validated
-            if (!this.validateFields()) {
-                this.reportFormError(null);
-                return;
-            }
-
-            this.loading = true;
-
-            // Dispatch submitting status event (so parent can disable submit button)
-            this.dispatchEvent(
-                new CustomEvent('status', {
-                    detail: {
-                        type: 'submitting',
-                        event: event,
-                    },
-                })
-            );
-            // Now call the default submit function (this will update record and update LDS)
-            this.refs.recordEditForm.submit();
-        } catch (err) {
-            this.handleGlobalError(err);
-        }
-    }
-
-    /**
-     * The case has been successfully updated, operate on other cases if mass operation - and then report success
-     */
-    async handleOnCaseCloseSuccess(event) {
-        // If this is a mass operation then we need to close all the other cases since the record-edit-form only allows us to close the first one.
-        if (this.massOperation) {
-            const caseList = [];
-
-            // Skip the first, since that was closed via the record-edit-form subimission
-            for (let i = 1; i < this.caseIds.length; i++) {
-                // Get case id
-                const caseId = this.caseIds[i];
-                // Copy all the other fields onto record and add to list
-                caseList.push(Object.assign({Id: caseId}, this.submittedFields));
-            }
-
-            if (caseList.length > 0) {
-                // Close the remaining cases if they are still open
-                try {
-                    await closeCasesList({cases: caseList});
-                    this.reportSuccesfulCaseClose(event);
-                } catch (err) {
-                    this.loading = false;
-                    this.handleGlobalError(err);
-                }
-            } else {
-                // There was only one case (even though in mass operation mode)
-                this.reportSuccesfulCaseClose(event);
-            }
-        }
-        // If this is not in massOperation mode, then no need to close any other cases
-        else {
-            this.reportSuccesfulCaseClose(event);
-        }
-    }
-
-    /**
-     * After successfully updating all cases, this is called.
-     * 1. Remove the loading icon
-     * 2. Alert the user/PARENT component of success
-     * 3. Show success toast
-     */
-    reportSuccesfulCaseClose(event) {
-        this.loading = false;
-
-        this.dispatchEvent(
-            new CustomEvent('status', {
-                detail: {
-                    type: 'success',
-                    event: event,
-                },
-            })
-        );
-
-        if (this.showToasts) {
-            const evt = new ShowToastEvent({
-                title: `${this.massOperation ? 'Cases' : 'Case'} Closed`,
-                message: this.massOperation
-                    ? 'All cases closed.'
-                    : `Case Number: ${getFieldValue(this.record, CASE_NUMBER_FIELD) ?? 'UNKNOWN'}`,
-                variant: 'success',
-            });
-            this.dispatchEvent(evt);
-        }
-
-        this.handleResetForm();
-    }
-
-    /**
-     * The case has failed to update, we should display the error since this indicates that a validation rule has failed
-     * This usually is because the user forgot to enter a required field.
-     *
-     * Send a status event indicating form error
-     */
-    handleOnFormError(event) {
-        this.loading = false;
-        this.hasValidationError = event.detail;
-        this.reportFormError(event);
-    }
-
-    reportFormError(event) {
-        this.dispatchEvent(
-            new CustomEvent('status', {
-                detail: {
-                    type: 'form_error',
-                    event: event,
-                },
-            })
-        );
-    }
-
-    /**
-     * Reset the form values, clearing any displayed errors
-     */
-    handleResetForm() {
-        this.loading = false;
-        this.hasValidationError = null;
-    }
-
     /**
      * The form takes time to load using Lightning Data Service, to populate options in dropdowns.
+     * Once loading is done, raise an event so parent knows it is ready to allow interaction with this component.
      */
     handleOnFormLoad() {
-        this.loading = false;
+        this.formLoading = false;
 
         this.dispatchEvent(
             new CustomEvent('ready', {
@@ -512,23 +298,100 @@ export default class LightningCaseCloseView extends LightningElement {
             })
         );
     }
+    formLoading = true;
 
     /**
-     * Set the hidden status field elements value based on the visible status dropdown.
-     * We need this hidden value in order to make updateDependentField work properly.
+     * When the submit button is /pressed/, we need to validate the form and attempt to submit it.
+     *
+     * But, we don't want to use the record-edit-form's standard submission, since we might have multiple
+     * records to update, so instead this uses the custom logic to submit
      */
-    handleOnStatusChange(event) {
-        let hiddenStatusField = this.refs.hiddenStatusField;
-        hiddenStatusField.value = event.detail.value;
+    handleOnSubmit(event) {
+        // Cannot submit while loading - because either not ready yet, or submission is already in progress
+        if (this.loading) {
+            return;
+        }
+
+        // Don't do default submission because we neeed to validate stuff first
+        event.preventDefault();
+
+        // Make sure our fields are validated
+        if (!this.validateFields()) {
+            this.sendStatusEvent('form_error');
+            return;
+        }
+
+        // get status value from status dropdwon
+        const statusValue = this.refs.statusField.value;
+
+        // Construct the updated cases
+        const caseList = [];
+        for (let i = 0; i < this.caseIds.length; i++) {
+            // Get case id
+            const caseId = this.caseIds[i];
+            // Copy all the other fields onto record and add to list
+            // eslint-disable-next-line compat/compat
+            caseList.push(Object.assign({Id: caseId, Status: statusValue}, event.detail.fields));
+        }
+
+        if (caseList.length > 0) {
+            // We are submitting, this will enable loading icon
+            this.submitting = true;
+            this.validationError = undefined;
+            // Dispatch submitting status event (so parent can disable submit button)
+            this.sendStatusEvent('submitting');
+
+            // Update cases
+            updateRecords({records: caseList})
+                .then((v) => {
+                    if (v.success) {
+                        this.validationError = undefined;
+                        this.sendStatusEvent('success');
+                        refreshApex(this.caseWire);
+                    } else {
+                        this.validationError = v.errorMessage;
+                        this.sendStatusEvent('form_error');
+                    }
+                })
+                .catch((e) => {
+                    this.handleGlobalError(e);
+                })
+                .finally(() => {
+                    this.submitting = false;
+                });
+        } else {
+            // There are no cases to update
+            this.handleGlobalError(new Error('No cases to close'));
+        }
+    }
+    submitting = false;
+
+    /**
+     * Submit the edit form. This presses the submit button, this indirectly calling the `handleSubmit` function.
+     * But we call it this way to make sure event.detail.fields is set on the event and so the form can do its extra checks
+     */
+    @api commit() {
+        this.refs.submitButton.click();
+    }
+
+    /**
+     * Raise a status event to communicate to the parent LWC the current state of an attempted submission
+     */
+    sendStatusEvent(status) {
+        this.dispatchEvent(
+            new CustomEvent('status', {
+                detail: {
+                    type: status,
+                },
+            })
+        );
     }
 
     /**
      * Handle unexpected errors, either by show a toast to the user and sending an error event
      */
     handleGlobalError(error) {
-        console.error('Error During Case Closure', error); // log it
-        console.error(extractErrorMessages(error));
-
+        this.unexpectedError = extractErrorMessages(error)[0];
         this.dispatchEvent(
             new CustomEvent('error', {
                 detail: {
@@ -536,19 +399,15 @@ export default class LightningCaseCloseView extends LightningElement {
                 },
             })
         );
+    }
 
-        if (this.showToasts) {
-            const messages = extractErrorMessages(error);
-            const evt = new ShowToastEvent({
-                title: 'Error During Case Closure',
-                message:
-                    messages.length > 0
-                        ? messages[0]
-                        : 'Unable to extract error message - full error object printed to Javascript console.',
-                variant: 'error',
-            });
-            this.dispatchEvent(evt);
-        }
+    // An error has occurred either during a wire or from the case update (and it wasn't an acceptable DmlError),
+    // or due to the payload being faulty
+    get hasError() {
+        return this.unexpectedError != null;
+    }
+    get errorMessage() {
+        return this.unexpectedError;
     }
 
     /**
@@ -566,5 +425,68 @@ export default class LightningCaseCloseView extends LightningElement {
             // reportValidity returns validity and also displays/clear message on element based on validity
             return validSoFar && field.reportValidity();
         }, true);
+    }
+}
+
+export class LightningCaseCloseViewTest extends LightningCaseCloseView {
+    @api
+    set caseIds(v) {
+        super.caseIds = v;
+    }
+    get caseIds() {
+        return super.caseIds;
+    }
+
+    @api get loading() {
+        return super.loading;
+    }
+
+    @api get currentStatus() {
+        return super.currentStatus;
+    }
+
+    @api get statusInputLabel() {
+        return super.statusInputLabel;
+    }
+
+    @api get statusInputPlaceholder() {
+        return super.statusInputPlaceholder;
+    }
+
+    @api
+    set caseStatusOptions(v) {
+        super.caseStatusOptions = v;
+    }
+    get caseStatusOptions() {
+        return super.caseStatusOptions;
+    }
+
+    @api get hasError() {
+        return super.hasError;
+    }
+
+    @api
+    set errorMessage(v) {
+        super.errorMessage = v;
+    }
+    get errorMessage() {
+        return super.errorMessage;
+    }
+
+    @api commit() {
+        const submitFields = {};
+        const inputFields = this.template.querySelectorAll('lightning-input-field');
+
+        for (const inputField of inputFields) {
+            submitFields[inputField.dataset.name] = submitFields.value;
+        }
+
+        this.template.querySelector('lightning-record-edit-form').dispatchEvent(
+            new CustomEvent('submit', {
+                detail: {
+                    fields: submitFields,
+                },
+            })
+        );
     }
 }

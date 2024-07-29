@@ -2,13 +2,27 @@
     "apiName": "Case",
     "childRelationships": {},
     "fields": {
-        "IsClosed": {"displayValue": null, "value": false},
+        "IsClosed": {"displayValue": null, "value": true},
+        "RecordType": {
+            "displayValue": "(Admin Only) ASU Advisor Outreach",
+            "value": {
+                "apiName": "RecordType",
+                "childRelationships": {},
+                "fields": {"DeveloperName": {"displayValue": null, "value": "ASU_Advisor_Outreach"}},
+                "id": "012d00000021xGKAAY",
+                "lastModifiedById": "005d0000003SdOZAA0",
+                "lastModifiedDate": "2023-03-17T19:20:29.000Z",
+                "recordTypeId": null,
+                "recordTypeInfo": null,
+                "systemModstamp": "2023-03-17T19:20:29.000Z"
+            }
+        },
         "RecordTypeId": {"displayValue": null, "value": "012d00000021xGKAAY"},
-        "Status": {"displayValue": "Left voicemail", "value": "Left voicemail"}
+        "Status": {"displayValue": "Conferred with Student by Email", "value": "Conferred with Student by Email"}
     },
     "id": "5005900000BNavNAAT",
     "lastModifiedById": "0050W000007OlNuQAK",
-    "lastModifiedDate": "2024-04-17T17:41:09.000Z",
+    "lastModifiedDate": "2024-07-26T21:39:08.000Z",
     "recordTypeId": "012d00000021xGKAAY",
     "recordTypeInfo": {
         "available": true,
@@ -17,5 +31,5 @@
         "name": "(Admin Only) ASU Advisor Outreach",
         "recordTypeId": "012d00000021xGKAAY"
     },
-    "systemModstamp": "2024-04-17T17:41:09.000Z"
+    "systemModstamp": "2024-07-26T21:39:08.000Z"
 }

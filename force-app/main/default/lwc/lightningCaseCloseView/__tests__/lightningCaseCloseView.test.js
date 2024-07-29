@@ -1,23 +1,27 @@
 /* eslint-disable no-undef */
 import {createElement} from 'lwc';
-import LightningCaseCloseView from 'c/lightningCaseCloseView';
+import {LightningCaseCloseViewTest} from 'c/lightningCaseCloseView';
 import {getRecord} from 'lightning/uiRecordApi';
 import {getPicklistValues} from 'lightning/uiObjectInfoApi';
-import {graphql} from 'lightning/uiGraphQLApi';
 import getFieldsFromFieldSet from '@salesforce/apex/ObjectHelper.getFieldsFromFieldSet';
-import closeCasesList from '@salesforce/apex/LightningCaseCloseController.closeCasesList';
-import {flushPromises} from 'c/helperFunctions';
+import updateRecords from '@salesforce/apex/RecordController.updateRecords';
+import {flushPromises} from 'c/helperTestFunctions';
 
-import CASE_NUMBER_FIELD from '@salesforce/schema/Case.CaseNumber';
+import CASE_OBJ from '@salesforce/schema/Case';
 import RECORD_TYPE_ID_FIELD from '@salesforce/schema/Case.RecordTypeId';
+import RECORD_TYPE_NAME_FIELD from '@salesforce/schema/Case.RecordType.DeveloperName';
 import STATUS_FIELD from '@salesforce/schema/Case.Status';
 import IS_CLOSED_FIELD from '@salesforce/schema/Case.IsClosed';
 
 // Mock realistic data
 const caseRecordMock = require('./data/caseRecord.json');
+const caseRecordNotClosedMock = require('./data/caseRecordNotClosed.json');
 const fieldSetResponseMock = require('./data/fieldSetResponse.json');
-const recordTypeInfoMock = require('./data/recordTypeInfo.json');
 const statusOptionsMock = require('./data/statusOptions.json');
+// Mock responses for updating records
+const updateRecordsSuccessMock = require('./data/updateRecordsSuccess.json');
+const updateRecordsFailureMock = require('./data/updateRecordsFailure.json');
+const updateRecordsErrorMock = require('./data/updateRecordsError.json');
 
 jest.mock(
     '@salesforce/apex/ObjectHelper.getFieldsFromFieldSet',
@@ -30,7 +34,7 @@ jest.mock(
     {virtual: true}
 );
 jest.mock(
-    '@salesforce/apex/LightningCaseCloseController.closeCasesList',
+    '@salesforce/apex/RecordController.updateRecords',
     () => {
         return {
             default: jest.fn(),
@@ -49,147 +53,136 @@ describe('c-lightning-case-close-view', () => {
         jest.clearAllMocks();
     });
 
-    test('Loads record record type and field set based on each other AND only shows form once field set is ready', async () => {
-        // Arrange
+    test('Loading until all wires are complete', async () => {
         const element = createElement('c-lightning-case-close-view', {
-            is: LightningCaseCloseView,
+            is: LightningCaseCloseViewTest,
         });
         element.caseIds = ['5005900000BNavNAAT'];
+        document.body.appendChild(element);
+        await flushPromises(); // all wires are queued
 
-        // Act
+        expect(element.loading).toEqual(true); // Still loading
+        expect(element.shadowRoot).not.toHaveChildElement('lightning-record-edit-form');
+
+        getRecord.emit(caseRecordMock); // return case record
+        await flushPromises();
+
+        expect(element.loading).toEqual(true); // Still loading
+        expect(element.shadowRoot).not.toHaveChildElement('lightning-record-edit-form');
+
+        getPicklistValues.emit(statusOptionsMock); // return status options
+        await flushPromises();
+
+        expect(element.loading).toEqual(true); // Still loading
+        expect(element.shadowRoot).not.toHaveChildElement('lightning-record-edit-form');
+
+        getFieldsFromFieldSet.emit(fieldSetResponseMock); // return field set fields
+        await flushPromises();
+
+        expect(element.loading).toEqual(true); // Still loading
+        expect(element.shadowRoot).toHaveChildElement('lightning-record-edit-form');
+
+        element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(new CustomEvent('load', {})); // Form fisnished loading
+        await flushPromises();
+
+        expect(element.loading).toEqual(false); // Still loading
+        expect(element.shadowRoot).toHaveChildElement('lightning-record-edit-form');
+    });
+
+    test('Loads status and field set based on case record type AND form only shown once they are ready', async () => {
+        const element = createElement('c-lightning-case-close-view', {
+            is: LightningCaseCloseViewTest,
+        });
+        element.caseIds = ['5005900000BNavNAAT'];
         document.body.appendChild(element);
         await flushPromises();
 
-        // Record done loading and record type info ready
-        expect(getRecord.getLastConfig()?.recordId).toEqual('5005900000BNavNAAT');
+        // Record done loading
+        expect(getRecord.getLastConfig()).toMatchObject({
+            recordId: '5005900000BNavNAAT',
+            fields: [STATUS_FIELD, IS_CLOSED_FIELD, RECORD_TYPE_ID_FIELD, RECORD_TYPE_NAME_FIELD],
+        });
         getRecord.emit(caseRecordMock);
-        graphql.emit(recordTypeInfoMock);
         await flushPromises();
 
         // But form is not ready yet
-        expect(element.shadowRoot.querySelector('lightning-record-edit-form')).toBeFalsy();
+        expect(element.shadowRoot).not.toHaveChildElement('lightning-record-edit-form');
 
-        // Got field set
-        expect(getFieldsFromFieldSet.getLastConfig()).toEqual({
-            fieldSetName: 'CQC_RT_ASU_Advisor_Outreach',
-            objectName: 'Case',
+        // Requested field set and status options
+        expect(getFieldsFromFieldSet.getLastConfig()).toMatchObject({
+            objectName: CASE_OBJ.objectApiName,
+            fieldSetName: `CQC_RT_${caseRecordMock.fields.RecordType.value.fields.DeveloperName.value}`,
         });
-        getFieldsFromFieldSet.emit(fieldSetResponseMock);
-        await flushPromises();
-
-        // Finally read now that field set is loaded
-        expect(element.shadowRoot.querySelector('lightning-record-edit-form')).toBeTruthy();
-    });
-
-    test('Loading until ready', async () => {
-        // Arrange
-        const element = createElement('c-lightning-case-close-view', {
-            is: LightningCaseCloseView,
+        expect(getPicklistValues.getLastConfig()).toMatchObject({
+            recordTypeId: caseRecordMock.fields.RecordTypeId.value,
+            fieldApiName: STATUS_FIELD,
         });
 
-        // Act
-        document.body.appendChild(element);
-
-        // Loading icon is shown initially
-        expect(element.shadowRoot.querySelector('lightning-spinner')).toBeTruthy();
-
-        // Finished loading fieldset
+        getPicklistValues.emit(statusOptionsMock);
         getFieldsFromFieldSet.emit(fieldSetResponseMock);
+
         await flushPromises();
 
-        // Loading icon is still shown
-        expect(element.shadowRoot.querySelector('lightning-spinner')).toBeTruthy();
-
-        // Edit form finished loading
-        element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(new CustomEvent('load', {}));
-        await flushPromises();
-
-        // Loading icon is hidden after loading
-        expect(element.shadowRoot.querySelector('lightning-spinner')).toBeFalsy();
+        // record edit form can now be shown
+        expect(element.shadowRoot).toHaveChildElement('lightning-record-edit-form');
     });
 
     test('Queries for (first) case details', async () => {
-        // Arrange
         const element = createElement('c-lightning-case-close-view', {
-            is: LightningCaseCloseView,
+            is: LightningCaseCloseViewTest,
         });
         element.caseIds = ['5005900000BNavNAAT', '5005900000BO6k1AAD'];
-
-        // Act
         document.body.appendChild(element);
         await flushPromises();
 
         // Queries for the first case record
-        expect(getRecord.getLastConfig()).toEqual({
+        expect(getRecord.getLastConfig()).toMatchObject({
             recordId: '5005900000BNavNAAT',
-            fields: [STATUS_FIELD, IS_CLOSED_FIELD, RECORD_TYPE_ID_FIELD, CASE_NUMBER_FIELD],
+            fields: [STATUS_FIELD, IS_CLOSED_FIELD, RECORD_TYPE_ID_FIELD, RECORD_TYPE_NAME_FIELD],
         });
     });
 
     test('Uses record type of first case', async () => {
-        // Arrange
         const element = createElement('c-lightning-case-close-view', {
-            is: LightningCaseCloseView,
+            is: LightningCaseCloseViewTest,
         });
-        element.caseIds = ['5005900000BNavNAAT'];
-
-        // Act
+        element.caseIds = ['5005900000BNavNAAT', '5005900000BO6k1AAD'];
         document.body.appendChild(element);
+        await flushPromises();
 
         // Wire requests return for case record and record type info
         getRecord.emit(caseRecordMock);
-        graphql.emit(recordTypeInfoMock);
         await flushPromises();
 
         // Uses case record type
-        expect(getFieldsFromFieldSet.getLastConfig()).toEqual({
-            fieldSetName: 'CQC_RT_ASU_Advisor_Outreach',
-            objectName: 'Case',
+        expect(getFieldsFromFieldSet.getLastConfig()).toMatchObject({
+            objectName: CASE_OBJ.objectApiName,
+            fieldSetName: `CQC_RT_${caseRecordMock.fields.RecordType.value.fields.DeveloperName.value}`,
         });
-    });
-
-    test('Uses override record type', async () => {
-        // Arrange
-        const element = createElement('c-lightning-case-close-view', {
-            is: LightningCaseCloseView,
-        });
-        element.caseIds = ['5005900000BNavNAAT'];
-        element.recordTypeIdOverride = '0126T000001QHKsQAO'; // GRAD Advisor
-
-        // Act
-        document.body.appendChild(element);
-
-        // Wire requests return for record type info
-        graphql.emit(recordTypeInfoMock);
-        await flushPromises();
-
-        // Uses override record type
-        expect(getFieldsFromFieldSet.getLastConfig()).toEqual({
-            fieldSetName: 'CQC_RT_ASU_Graduate_Advisor_Portal',
-            objectName: 'Case',
+        expect(getPicklistValues.getLastConfig()).toMatchObject({
+            recordTypeId: caseRecordMock.fields.RecordTypeId.value,
+            fieldApiName: STATUS_FIELD,
         });
     });
 
     test('Displays fields from fieldset', async () => {
-        // Arrange
         const element = createElement('c-lightning-case-close-view', {
-            is: LightningCaseCloseView,
+            is: LightningCaseCloseViewTest,
         });
         element.caseIds = ['5005900000BNavNAAT'];
-        element.recordTypeIdOverride = '0126T000001QHKsQAO';
-
-        // Act
         document.body.appendChild(element);
-
-        // Wire requests return for record type info and fieldset info
-        graphql.emit(recordTypeInfoMock);
-        getFieldsFromFieldSet.emit(fieldSetResponseMock);
         await flushPromises();
 
-        const allInputFields = element.shadowRoot.querySelectorAll('lightning-input-field');
+        // Wire requests all complete
+        getRecord.emit(caseRecordMock);
+        getFieldsFromFieldSet.emit(fieldSetResponseMock);
+        getPicklistValues.emit(statusOptionsMock);
+        await flushPromises();
+
+        const allInputFields = element.shadowRoot.querySelectorAll('lightning-input-field, lightning-combobox');
 
         // Correct number
-        expect(allInputFields).toHaveLength(7);
+        expect(allInputFields).toHaveLength(fieldSetResponseMock.FIELD_LIST.length);
         // And verifies they are in the proper order
         allInputFields.forEach((elem, indx) => {
             expect(elem.dataset).toHaveProperty('name', fieldSetResponseMock?.FIELD_LIST[indx]?.fieldPath);
@@ -197,69 +190,45 @@ describe('c-lightning-case-close-view', () => {
     });
 
     test('Gets (closed) status picklist options', async () => {
-        // Arrange
         const element = createElement('c-lightning-case-close-view', {
-            is: LightningCaseCloseView,
+            is: LightningCaseCloseViewTest,
         });
         element.caseIds = ['5005900000BNavNAAT'];
-
-        // Act
         document.body.appendChild(element);
-
-        // Wire requests return for case record and record type info
-        getRecord.emit(caseRecordMock);
-        graphql.emit(recordTypeInfoMock);
         await flushPromises();
 
-        // Queries for case status picklist options
-        expect(getPicklistValues.getLastConfig()).toEqual({
-            recordTypeId: '012d00000021xGKAAY',
-            fieldApiName: STATUS_FIELD,
-        });
-
-        // Promise returns
+        // Wires complete
+        getRecord.emit(caseRecordMock);
+        getFieldsFromFieldSet.emit(fieldSetResponseMock);
         getPicklistValues.emit(statusOptionsMock);
         await flushPromises();
 
+        const closedStatuses = statusOptionsMock.values.filter((v) => v?.attributes?.closed);
+
         // Populates combobox with options
-        expect(element.statusOptions).toHaveLength(4);
-        expect(element.statusOptions).toContainEqual({
-            label: 'Closed: Customer Self-Resolved',
-            value: 'Closed: Customer Self-Resolved',
-        });
-        expect(element.statusOptions).toContainEqual({
-            label: 'Conferred with Student by Email',
-            value: 'Conferred with Student by Email',
-        });
-        expect(element.statusOptions).toContainEqual({
-            label: 'Conferred with Student by Phone',
-            value: 'Conferred with Student by Phone',
-        });
-        expect(element.statusOptions).toContainEqual({
-            label: 'In Person Meeting',
-            value: 'In Person Meeting',
-        });
+        expect(element.caseStatusOptions).toHaveLength(closedStatuses.length);
+        for (let closedOpt of closedStatuses) {
+            expect(element.caseStatusOptions).toContainEqual({
+                label: closedOpt.label,
+                value: closedOpt.value,
+            });
+        }
     });
 
     test('ready event raised once form is loaded', async () => {
-        // Arrange
         const element = createElement('c-lightning-case-close-view', {
-            is: LightningCaseCloseView,
+            is: LightningCaseCloseViewTest,
         });
         element.caseIds = ['5005900000BNavNAAT'];
-
         const readyHandler = jest.fn();
         element.addEventListener('ready', readyHandler);
-
-        // Act
         document.body.appendChild(element);
         await flushPromises();
 
         // Wires are all ready
-        expect(getRecord.getLastConfig()?.recordId).toEqual('5005900000BNavNAAT');
         getRecord.emit(caseRecordMock);
-        graphql.emit(recordTypeInfoMock);
         getFieldsFromFieldSet.emit(fieldSetResponseMock);
+        getPicklistValues.emit(statusOptionsMock);
         await flushPromises();
 
         // Finally read now that field set is loaded
@@ -275,362 +244,263 @@ describe('c-lightning-case-close-view', () => {
         expect(readyHandler).toHaveBeenCalledTimes(1);
     });
 
-    test('Form errors are shown', async () => {
-        // Arrange
+    test('Prepopulates with status IF status is closed', async () => {
         const element = createElement('c-lightning-case-close-view', {
-            is: LightningCaseCloseView,
+            is: LightningCaseCloseViewTest,
         });
         element.caseIds = ['5005900000BNavNAAT'];
+        await flushPromises();
 
-        // Act
+        // Wires are all ready
+        getRecord.emit(caseRecordMock);
+        getFieldsFromFieldSet.emit(fieldSetResponseMock);
+        getPicklistValues.emit(statusOptionsMock);
+        await flushPromises();
+
+        // Selects the current CLOSED status
+        expect(element.currentStatus).toEqual(caseRecordMock.fields.Status.value);
+    });
+
+    test('Does NOT prepopulates with status if status is NOT closed', async () => {
+        const element = createElement('c-lightning-case-close-view', {
+            is: LightningCaseCloseViewTest,
+        });
+        element.caseIds = ['5005900000BNavNAAT'];
+        await flushPromises();
+
+        // Wires are all ready
+        getRecord.emit(caseRecordNotClosedMock);
+        getFieldsFromFieldSet.emit(fieldSetResponseMock);
+        getPicklistValues.emit(statusOptionsMock);
+        await flushPromises();
+
+        // Selects the current CLOSED status
+        expect(element.currentStatus).toEqual(undefined);
+    });
+
+    test('Form errors are shown', async () => {
+        const element = createElement('c-lightning-case-close-view', {
+            is: LightningCaseCloseViewTest,
+        });
+        element.caseIds = ['5005900000BNavNAAT'];
         document.body.appendChild(element);
+        await flushPromises();
 
         // Wire requests return
         getRecord.emit(caseRecordMock);
-        graphql.emit(recordTypeInfoMock);
         getPicklistValues.emit(statusOptionsMock);
         getFieldsFromFieldSet.emit(fieldSetResponseMock);
         await flushPromises();
-
         // And edit form is done loading
         element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(new CustomEvent('load', {}));
         await flushPromises();
 
-        // Error after attemping to submit form
-        element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(
-            new CustomEvent('error', {
-                detail: {
-                    message: 'An error occurred while trying to update the record. Please try again.',
-                    detail: '',
-                },
-            })
-        );
-        await flushPromises();
+        // Attempt to submit
+        updateRecords.mockResolvedValue(updateRecordsFailureMock);
+        element.commit();
+        await flushPromises(); // finished committing
+
+        // Get correct error message
+        let errorMsg = document.createElement('p');
+        errorMsg.innerHTML = updateRecordsFailureMock.errorMessage;
+        errorMsg = errorMsg.textContent;
 
         // Error is shown at top of form
         expect(element.shadowRoot.querySelector('div[role="alert"]')).toBeTruthy();
-        expect(element.shadowRoot.querySelector('div[role="alert"] h2').textContent).toEqual(
-            'An error occurred while trying to update the record. Please try again.'
-        );
+        expect(element.shadowRoot.querySelector('div[role="alert"]').textContent).toEqual(errorMsg);
     });
 
     test('Form errors hidden after success', async () => {
-        // Arrange
         const element = createElement('c-lightning-case-close-view', {
-            is: LightningCaseCloseView,
+            is: LightningCaseCloseViewTest,
         });
         element.caseIds = ['5005900000BNavNAAT'];
-
-        // Act
         document.body.appendChild(element);
+        await flushPromises();
 
         // Wire requests return
         getRecord.emit(caseRecordMock);
-        graphql.emit(recordTypeInfoMock);
         getPicklistValues.emit(statusOptionsMock);
         getFieldsFromFieldSet.emit(fieldSetResponseMock);
         await flushPromises();
-
-        // And edit form done loading
+        // And edit form is done loading
         element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(new CustomEvent('load', {}));
         await flushPromises();
 
-        // Error after attemping to submit form
-        element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(
-            new CustomEvent('error', {
-                detail: {
-                    message: 'An error occurred while trying to update the record. Please try again.',
-                    detail: '',
-                },
-            })
-        );
-        await flushPromises();
+        // Attempt to submit
+        updateRecords.mockResolvedValue(updateRecordsFailureMock);
+        element.commit();
+        await flushPromises(); // finished committing
 
         // Error is shown at top of form
         expect(element.shadowRoot.querySelector('div[role="alert"]')).toBeTruthy();
 
-        // Successfully submits form
-        element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(
-            new CustomEvent('success', {
-                detail: {},
-            })
-        );
-        await flushPromises();
+        // Attempt to submit
+        updateRecords.mockResolvedValue(updateRecordsSuccessMock); // Changes form to respond with success
+        element.commit();
+        await flushPromises(); // finished committing
 
-        // Error is shown at top of form
+        // Error removed from top of form
         expect(element.shadowRoot.querySelector('div[role="alert"]')).toBeFalsy();
     });
 
-    test('Multi-case close', async () => {
-        // Arrange
+    test('Status events, happy path', async () => {
         const element = createElement('c-lightning-case-close-view', {
-            is: LightningCaseCloseView,
-        });
-        element.caseIds = ['5005900000BNavNAAT', '5005900000BNavO', '5005900000BNavP', '5005900000BNavQ'];
-        element.massOperation = true;
-
-        // Act
-        document.body.appendChild(element);
-
-        // Wire requests return
-        getRecord.emit(caseRecordMock);
-        graphql.emit(recordTypeInfoMock);
-        getPicklistValues.emit(statusOptionsMock);
-        getFieldsFromFieldSet.emit(fieldSetResponseMock);
-        await flushPromises();
-
-        // And edit form done loading
-        element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(new CustomEvent('load', {}));
-        await flushPromises();
-
-        // Attempt to submit form
-        element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(
-            new CustomEvent('submit', {
-                detail: {
-                    fields: {
-                        Recommended_Actions_Other__c: 'Visting family',
-                        Recommended_Actions__c: 'other',
-                        Status: 'Conferred with Student by Phone',
-                    },
-                },
-            })
-        );
-        await flushPromises();
-
-        // And the close call will return a success
-        closeCasesList.mockResolvedValue(null);
-        await flushPromises();
-
-        // Successfully submits form
-        element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(
-            new CustomEvent('success', {
-                detail: {},
-            })
-        );
-        await flushPromises();
-
-        // Calls mass close for all the other cases
-        expect(closeCasesList).toHaveBeenCalledWith({
-            cases: [
-                {
-                    Id: '5005900000BNavO',
-                    Recommended_Actions_Other__c: 'Visting family',
-                    Recommended_Actions__c: 'other',
-                    Status: 'Conferred with Student by Phone',
-                },
-                {
-                    Id: '5005900000BNavP',
-                    Recommended_Actions_Other__c: 'Visting family',
-                    Recommended_Actions__c: 'other',
-                    Status: 'Conferred with Student by Phone',
-                },
-                {
-                    Id: '5005900000BNavQ',
-                    Recommended_Actions_Other__c: 'Visting family',
-                    Recommended_Actions__c: 'other',
-                    Status: 'Conferred with Student by Phone',
-                },
-            ],
-        });
-    });
-
-    test('Status events on success, single mode', async () => {
-        // Arrange
-        const element = createElement('c-lightning-case-close-view', {
-            is: LightningCaseCloseView,
+            is: LightningCaseCloseViewTest,
         });
         element.caseIds = ['5005900000BNavNAAT'];
-
         const statusHandler = jest.fn();
         element.addEventListener('status', statusHandler);
-
-        // Act
         document.body.appendChild(element);
 
         // Wire requests return
         getRecord.emit(caseRecordMock);
-        graphql.emit(recordTypeInfoMock);
         getPicklistValues.emit(statusOptionsMock);
         getFieldsFromFieldSet.emit(fieldSetResponseMock);
         await flushPromises();
-
-        // And edit form done loading
+        // And edit form is done loading
         element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(new CustomEvent('load', {}));
         await flushPromises();
 
-        // Successfully submits form
-        element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(
-            new CustomEvent('success', {
-                detail: {},
-            })
-        );
-        await flushPromises();
+        // Attempt to submit
+        updateRecords.mockResolvedValue(updateRecordsSuccessMock);
+        element.commit();
+
+        // Raised a "submitting" status event
+        expect(statusHandler).toHaveBeenCalledTimes(1);
+        expect(statusHandler.mock.lastCall[0]).toMatchObject({detail: {type: 'submitting'}});
+
+        await flushPromises(); // finished submitting
 
         // Raised the success stauts event
-        expect(statusHandler).toHaveBeenCalledTimes(1);
-        expect(statusHandler.mock.lastCall[0].detail.type).toEqual('success');
+        expect(statusHandler).toHaveBeenCalledTimes(2);
+        expect(statusHandler.mock.lastCall[0]).toMatchObject({detail: {type: 'success'}});
     });
 
-    test('Status events on success, multi-mode but single record', async () => {
-        // Arrange
+    test('Status events, form error path', async () => {
         const element = createElement('c-lightning-case-close-view', {
-            is: LightningCaseCloseView,
+            is: LightningCaseCloseViewTest,
         });
         element.caseIds = ['5005900000BNavNAAT'];
-        element.massOperation = true;
-
         const statusHandler = jest.fn();
         element.addEventListener('status', statusHandler);
-
-        // Act
         document.body.appendChild(element);
 
         // Wire requests return
         getRecord.emit(caseRecordMock);
-        graphql.emit(recordTypeInfoMock);
         getPicklistValues.emit(statusOptionsMock);
         getFieldsFromFieldSet.emit(fieldSetResponseMock);
         await flushPromises();
-
-        // And edit form done loading
+        // And edit form is done loading
         element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(new CustomEvent('load', {}));
         await flushPromises();
 
-        // Successfully submits form
-        element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(
-            new CustomEvent('success', {
-                detail: {},
-            })
-        );
-        await flushPromises();
+        // Attempt to submit
+        updateRecords.mockResolvedValue(updateRecordsFailureMock);
+        element.commit();
+
+        // Raised a "submitting" status event
+        expect(statusHandler).toHaveBeenCalledTimes(1);
+        expect(statusHandler.mock.lastCall[0]).toMatchObject({detail: {type: 'submitting'}});
+
+        await flushPromises(); // finished submitting
 
         // Raised the success stauts event
-        expect(statusHandler).toHaveBeenCalledTimes(1);
-        expect(statusHandler.mock.lastCall[0].detail.type).toEqual('success');
+        expect(statusHandler).toHaveBeenCalledTimes(2);
+        expect(statusHandler.mock.lastCall[0]).toMatchObject({detail: {type: 'form_error'}});
     });
 
-    test('Status events on success, multi-mode with multiple records', async () => {
-        // Arrange
+    test('Error from getRecord wire', async () => {
         const element = createElement('c-lightning-case-close-view', {
-            is: LightningCaseCloseView,
-        });
-        element.caseIds = ['5005900000BNavNAAT', '5005900000BNavO'];
-        element.massOperation = true;
-
-        const statusHandler = jest.fn();
-        element.addEventListener('status', statusHandler);
-
-        // Act
-        document.body.appendChild(element);
-
-        // Wire requests return
-        getRecord.emit(caseRecordMock);
-        graphql.emit(recordTypeInfoMock);
-        getPicklistValues.emit(statusOptionsMock);
-        getFieldsFromFieldSet.emit(fieldSetResponseMock);
-        await flushPromises();
-
-        // And edit form done loading
-        element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(new CustomEvent('load', {}));
-        await flushPromises();
-
-        // And the close call will return a success
-        closeCasesList.mockResolvedValue(null);
-        await flushPromises();
-
-        // Successfully submits form
-        element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(
-            new CustomEvent('success', {
-                detail: {},
-            })
-        );
-        await flushPromises();
-
-        // Raised the success stauts event
-        expect(statusHandler).toHaveBeenCalledTimes(1);
-        expect(statusHandler.mock.lastCall[0].detail.type).toEqual('success');
-    });
-
-    test('Status events on submit (to indicate loading)', async () => {
-        // Arrange
-        const element = createElement('c-lightning-case-close-view', {
-            is: LightningCaseCloseView,
+            is: LightningCaseCloseViewTest,
         });
         element.caseIds = ['5005900000BNavNAAT'];
-
-        const statusHandler = jest.fn();
-        element.addEventListener('status', statusHandler);
-
-        // Act
+        const errorHandler = jest.fn();
+        element.addEventListener('error', errorHandler);
         document.body.appendChild(element);
 
         // Wire requests return
-        getRecord.emit(caseRecordMock);
-        graphql.emit(recordTypeInfoMock);
-        getPicklistValues.emit(statusOptionsMock);
-        getFieldsFromFieldSet.emit(fieldSetResponseMock);
+        const errorStr = 'Apex methods that are to be cached must be marked as @AuraEnabled(cacheable=true)';
+        getRecord.error({message: errorStr});
         await flushPromises();
 
-        // And edit form done loading
-        element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(new CustomEvent('load', {}));
-        await flushPromises();
-
-        // Submit button is pressed
-        element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(
-            new CustomEvent('submit', {
-                detail: {
-                    fields: {
-                        Recommended_Actions_Other__c: 'Visting family',
-                        Recommended_Actions__c: 'other',
-                        Status: 'Conferred with Student by Phone',
-                    },
-                },
-            })
-        );
-        await flushPromises();
-
-        // Raised the success stauts event
-        expect(statusHandler).toHaveBeenCalledTimes(1);
-        expect(statusHandler.mock.lastCall[0].detail.type).toEqual('submitting');
+        // Error event was raised
+        expect(element.hasError).toEqual(true);
+        expect(element.errorMessage).toEqual(errorStr);
+        expect(errorHandler).toHaveBeenCalledTimes(1);
+        expect(errorHandler.mock.lastCall[0]).toMatchObject({detail: {errors: [errorStr]}});
     });
 
-    test('Status events on error', async () => {
-        // Arrange
+    test('Error from getPicklistValues wire', async () => {
         const element = createElement('c-lightning-case-close-view', {
-            is: LightningCaseCloseView,
+            is: LightningCaseCloseViewTest,
         });
         element.caseIds = ['5005900000BNavNAAT'];
+        const errorHandler = jest.fn();
+        element.addEventListener('error', errorHandler);
+        document.body.appendChild(element);
 
-        const statusHandler = jest.fn();
-        element.addEventListener('status', statusHandler);
+        // Wire requests return
+        const errorStr = 'Apex methods that are to be cached must be marked as @AuraEnabled(cacheable=true)';
+        getPicklistValues.error({message: errorStr});
+        await flushPromises();
 
-        // Act
+        // Error event was raised
+        expect(element.hasError).toEqual(true);
+        expect(element.errorMessage).toEqual(errorStr);
+        expect(errorHandler).toHaveBeenCalledTimes(1);
+        expect(errorHandler.mock.lastCall[0]).toMatchObject({detail: {errors: [errorStr]}});
+    });
+
+    test('Error from getFieldsFromFieldSet wire', async () => {
+        const element = createElement('c-lightning-case-close-view', {
+            is: LightningCaseCloseViewTest,
+        });
+        element.caseIds = ['5005900000BNavNAAT'];
+        const errorHandler = jest.fn();
+        element.addEventListener('error', errorHandler);
+        document.body.appendChild(element);
+
+        // Wire requests return
+        const errorStr = 'Apex methods that are to be cached must be marked as @AuraEnabled(cacheable=true)';
+        getFieldsFromFieldSet.error({message: errorStr});
+        await flushPromises();
+
+        // Error event was raised
+        expect(element.hasError).toEqual(true);
+        expect(element.errorMessage).toEqual(errorStr);
+        expect(errorHandler).toHaveBeenCalledTimes(1);
+        expect(errorHandler.mock.lastCall[0]).toMatchObject({detail: {errors: [errorStr]}});
+    });
+
+    test('Error from submitting form (non DML error)', async () => {
+        const element = createElement('c-lightning-case-close-view', {
+            is: LightningCaseCloseViewTest,
+        });
+        element.caseIds = ['5005900000BNavNAAT'];
+        const errorHandler = jest.fn();
+        element.addEventListener('error', errorHandler);
         document.body.appendChild(element);
 
         // Wire requests return
         getRecord.emit(caseRecordMock);
-        graphql.emit(recordTypeInfoMock);
         getPicklistValues.emit(statusOptionsMock);
         getFieldsFromFieldSet.emit(fieldSetResponseMock);
         await flushPromises();
-
-        // And edit form done loading
+        // And edit form is done loading
         element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(new CustomEvent('load', {}));
         await flushPromises();
 
-        // Error after attemping to submit form
-        element.shadowRoot.querySelector('lightning-record-edit-form').dispatchEvent(
-            new CustomEvent('error', {
-                detail: {
-                    message: 'An error occurred while trying to update the record. Please try again.',
-                    detail: '',
-                },
-            })
-        );
+        // Attempt to submit
+        updateRecords.mockRejectedValue(updateRecordsErrorMock);
+        element.commit();
+        await flushPromises();
         await flushPromises();
 
-        // Raised the success stauts event
-        expect(statusHandler).toHaveBeenCalledTimes(1);
-        expect(statusHandler.mock.lastCall[0].detail.type).toEqual('form_error');
+        // Error event was raised
+        expect(element.hasError).toEqual(true);
+        expect(element.errorMessage).toEqual(updateRecordsErrorMock.body.message);
+        expect(errorHandler).toHaveBeenCalledTimes(1);
+        expect(errorHandler.mock.lastCall[0]).toMatchObject({detail: {errors: [updateRecordsErrorMock.body.message]}});
     });
 });

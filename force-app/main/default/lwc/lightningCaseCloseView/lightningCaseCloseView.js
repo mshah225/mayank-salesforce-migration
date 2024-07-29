@@ -59,7 +59,7 @@
 import {LightningElement, api, wire} from 'lwc';
 import {getPicklistValues} from 'lightning/uiObjectInfoApi';
 import {getRecord, getFieldValue} from 'lightning/uiRecordApi';
-import {refreshApex} from '@salesforce/apex';
+import {notifyRecordUpdateAvailable} from 'lightning/uiRecordApi';
 import getFieldsFromFieldSet from '@salesforce/apex/ObjectHelper.getFieldsFromFieldSet';
 import updateRecords from '@salesforce/apex/RecordController.updateRecords';
 import {extractErrorMessages} from 'c/helperFunctions';
@@ -345,13 +345,19 @@ export default class LightningCaseCloseView extends LightningElement {
             updateRecords({records: caseList})
                 .then((v) => {
                     if (v.success) {
-                        this.validationError = undefined;
-                        this.sendStatusEvent('success');
-                        refreshApex(this.caseWire);
-                    } else {
                         this.validationError = v.errorMessage;
                         this.sendStatusEvent('form_error');
+                        return Promise.resolve();
                     }
+                    this.validationError = undefined;
+                    this.sendStatusEvent('success');
+
+                    // Update LDS cache
+                    return notifyRecordUpdateAvailable(
+                        (v.recordIds ?? []).map((recordId) => {
+                            return {recordId};
+                        })
+                    );
                 })
                 .catch((e) => {
                     this.handleGlobalError(e);

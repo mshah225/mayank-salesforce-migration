@@ -531,6 +531,7 @@ public class CaseService {
                 caseRecord.RecordTypeId == RecordIDHelper.getRecordTypeId('Case', 'ASU_Admission_Services') &&
                 !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Admission Services') &&
                 !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('External Unit') &&
+                !mapCCIdToName.get(caseRecord.CC_Functional_Group__c).equalsIgnoreCase('Business') &&
                 (caseRecord.CC_Category__c == null ||
                 (mapCCIdToName.containsKey(caseRecord.CC_Category__c) &&
                 !mapCCIdToName.get(caseRecord.CC_Category__c).containsIgnoreCase('Recruitment'))) &&

@@ -14,7 +14,7 @@ export default class TaggingComponent extends LightningElement {
     @api recordId;
     @api selectedTag;
     @api selectedTagId;
-    @track contactTagList;
+    @track contactTagList = [];
     @track tagList;
     @track tagSearch = "";
     @track tagFinalList;
@@ -48,6 +48,7 @@ export default class TaggingComponent extends LightningElement {
                                         label: key ? key : '',
                                         color: "background-color:" + obj[key].Tag__r.Background_Color__c + ";" + "color:" + obj[key].Tag__r.Tag_Label_Color__c ? "background-color:" + obj[key].Tag__r.Background_Color__c + ";" + "color:" + obj[key].Tag__r.Tag_Label_Color__c : '',
                                         image: obj[key].Tag__r.Tag_Icon_URL__c ? obj[key].Tag__r.Tag_Icon_URL__c : '',
+                                        hasImage: this.hasImageName(obj[key].Tag__r.Tag_Icon_URL__c),
                                         title: obj[key].Tag__r.Tag_Description__c ? obj[key].Tag__r.Tag_Description__c : '',
                                         isVerified: obj[key].isVerified__c ? obj[key].isVerified__c : false,
                                         isRemovable: obj[key].Tag__r.Removeable__c ? obj[key].Tag__r.Removeable__c : '',
@@ -57,14 +58,14 @@ export default class TaggingComponent extends LightningElement {
 
 
                                     renderFormat.push(tempJson);
-                                    console.log('renderFormat' + renderFormat);
+                                    console.log('renderFormat' + JSON.stringify(renderFormat));
 
                         }
                         //This line is used to sort the tag which are verified on the UI.
                         _data = renderFormat.map((a) => { if (a.isVerified) { a.sortBy = 1; } else { a.sortBy = 0; } return a; }).sort((a, b) => b.sortBy - a.sortBy)
-                        console.log('_data' + _data);
+                        console.log('_data' + JSON.stringify(_data));
                     }
-                    console.log('_data after the temp json creation' + _data);
+                    console.log('_data after the temp json creation' + JSON.stringify(_data));
                     this.contactTagList = _data;
 
                 }
@@ -275,10 +276,12 @@ export default class TaggingComponent extends LightningElement {
             label: event.target
                 && event.target.dataset ? event.target.dataset.label : '',
             image: event.target
-                && event.target.dataset ? event.target.dataset.image : ''
+                && event.target.dataset ? event.target.dataset.image : '',
+            hasImage: event.target
+                && event.target.dataset ? (event.target.dataset.hasimage == 'true' ? true : false ) : false
         };
 
-
+        console.log('current', this.currentSelectedTag)
 
     }
 
@@ -290,7 +293,17 @@ export default class TaggingComponent extends LightningElement {
             title: '',
             color: '',
             label: '',
-            image: ''
+            image: '',
+            hasImage: false
         };
+    }
+
+    // Check if there is an image name
+    hasImageName(url) {
+        // Define a regular expression to check if there's anything after /resource/
+        const regex = /\/resource\/(.+)$/;
+
+        // Test the URL against the regular expression
+        return regex.test(url);
     }
 }

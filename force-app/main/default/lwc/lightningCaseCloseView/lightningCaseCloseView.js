@@ -344,7 +344,7 @@ export default class LightningCaseCloseView extends LightningElement {
             // Update cases
             updateRecords({records: caseList})
                 .then((v) => {
-                    if (v.success) {
+                    if (!v.success) {
                         this.validationError = v.errorMessage;
                         this.sendStatusEvent('form_error');
                         return Promise.resolve();

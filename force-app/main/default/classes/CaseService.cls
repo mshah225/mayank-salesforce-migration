@@ -424,6 +424,9 @@ public class CaseService {
                     if (carFromCase != null) {
                         // If the case's source has a CAR, use that
                         assignmentDet = new CaseAssignmentDeterminer(firstOpp, carFromCase);
+                    } else if (sourceMap.containsKey(newCase.Case_Source__c) && sourceMap.get(newCase.Case_Source__c).Case_Assignment_Rule__c != null) {
+                        Campaign source = sourceMap.get(newCase.Case_Source__c);
+                        assignmentDet = new CaseAssignmentDeterminer(firstOpp, source.Case_Assignment_Rule__r);
                     } else if (
                         firstOpp != null &&
                         firstOpp.Territory_Assignment_Last_Rule_Type__c != 'Default User' &&

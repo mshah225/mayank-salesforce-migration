@@ -1,19 +1,23 @@
 @isTest
 public class RecordControllerTest {
     private static final String testUserAlias = 'testUsr1';
-    private static final String testSysAdminUserAlias = 'testUsr2';
+    private static final String testUserAlias2 = 'testUsr2';
+    private static final String testSysAdminUserAlias = 'testUsr3';
     private static final String testPermSetName = 'TestRecordControllerPermSet';
 
     @TestSetup
     private static void setup() {
-        String testProfileId, sysAdminProfileId;
+        String testProfileId, testProfileId2, sysAdminProfileId;
         System.runAs(new User(Id = UserInfo.getUserId())) {
             // Get these inside System.runAs because if they require cache to be refreshed that will insert non-setup objects
             // which will conflict with the setup object we are about to create
 
-            // This needs to be a profile with very minimal permissions, but who can be granted create/edit/delete permissions
-            // on Case records (Minimal Access - Salesforce cannot be given create on Case)
-            testProfileId = RecordIdHelper.getProfileID('ASU Read Only');
+            // Min Access profile
+            testProfileId = RecordIdHelper.getProfileID('Minimum Access - Salesforce');
+
+            // Low access but which can be granted create/edit/delete permissions
+            // (Minimum Access - Salesforce cannot be given create on Case)
+            testProfileId2 = RecordIdHelper.getProfileID('ASU Read Only');
 
             // This is for testing the Sys Admin overrides
             sysAdminProfileId = RecordIdHelper.getProfileID('System Administrator');
@@ -35,10 +39,22 @@ public class RecordControllerTest {
             LanguageLocaleKey = 'en_US'
         );
         User testUser2 = new User(
-            FirstName = 'Test Record Controller Sys Admin',
+            FirstName = 'Test Record Controller',
             LastName = 'Test User',
             Username = 'test.record.controller.2@test.test',
             Email = 'test.record.controller.2@test.test',
+            Alias = testUserAlias2,
+            TimeZoneSidKey = 'America/Phoenix',
+            LocaleSidKey = 'en_US',
+            EmailEncodingKey = 'ISO-8859-1',
+            ProfileId = testProfileId2,
+            LanguageLocaleKey = 'en_US'
+        );
+        User testUser3 = new User(
+            FirstName = 'Test Record Controller Sys Admin',
+            LastName = 'Test User',
+            Username = 'test.record.controller.3@test.test',
+            Email = 'test.record.controller.3@test.test',
             Alias = testSysAdminUserAlias,
             TimeZoneSidKey = 'America/Phoenix',
             LocaleSidKey = 'en_US',
@@ -46,13 +62,17 @@ public class RecordControllerTest {
             ProfileId = sysAdminProfileId,
             LanguageLocaleKey = 'en_US'
         );
-        insert new List<User>{ testUser, testUser2 };
+        insert new List<User>{ testUser, testUser2, testUser3 };
 
         PermissionSetAssignment psa = new PermissionSetAssignment(
             AssigneeId = testUser.Id,
             PermissionSetId = testPermSet.Id
         );
-        insert psa;
+        PermissionSetAssignment psa2 = new PermissionSetAssignment(
+            AssigneeId = testUser2.Id,
+            PermissionSetId = testPermSet.Id
+        );
+        insert new List<PermissionSetAssignment>{ psa, psa2 };
     }
 
     @isTest
@@ -94,7 +114,7 @@ public class RecordControllerTest {
 
     @isTest
     private static void testCreateNoFieldPerms() {
-        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias2 LIMIT 1];
         PermissionSet testPermSet = [SELECT Id FROM PermissionSet WHERE Name = :testPermSetName LIMIT 1];
 
         // Give object-level access (since this is check before field-level access)
@@ -159,7 +179,7 @@ public class RecordControllerTest {
 
     @isTest
     private static void testCreateSuccessful() {
-        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias2 LIMIT 1];
         PermissionSet testPermSet = [SELECT Id FROM PermissionSet WHERE Name = :testPermSetName LIMIT 1];
 
         // Give object-level and field-level access (since this is check before record-level access)
@@ -244,7 +264,7 @@ public class RecordControllerTest {
 
     @isTest
     private static void testCreateDmlError() {
-        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias2 LIMIT 1];
         PermissionSet testPermSet = [SELECT Id FROM PermissionSet WHERE Name = :testPermSetName LIMIT 1];
 
         // Give object-level and field-level access
@@ -342,7 +362,7 @@ public class RecordControllerTest {
 
     @isTest
     private static void testUpdateNoFieldPerms() {
-        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias2 LIMIT 1];
         PermissionSet testPermSet = [SELECT Id FROM PermissionSet WHERE Name = :testPermSetName LIMIT 1];
 
         // Give object-level access (since this is check before field-level access)
@@ -389,7 +409,7 @@ public class RecordControllerTest {
 
     @isTest
     private static void testUpdateNoRecordPerms() {
-        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias2 LIMIT 1];
         PermissionSet testPermSet = [SELECT Id FROM PermissionSet WHERE Name = :testPermSetName LIMIT 1];
 
         // Give object-level and field-level access (since this is check before record-level access)
@@ -447,7 +467,7 @@ public class RecordControllerTest {
 
     @isTest
     private static void testUpdateSuccessful() {
-        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias2 LIMIT 1];
         PermissionSet testPermSet = [SELECT Id FROM PermissionSet WHERE Name = :testPermSetName LIMIT 1];
 
         // Give object-level and field-level access (since this is check before record-level access)
@@ -527,7 +547,7 @@ public class RecordControllerTest {
 
     @isTest
     private static void testUpdateDmlError() {
-        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias2 LIMIT 1];
         PermissionSet testPermSet = [SELECT Id FROM PermissionSet WHERE Name = :testPermSetName LIMIT 1];
 
         // Give object-level and field-level access
@@ -617,7 +637,7 @@ public class RecordControllerTest {
 
     @isTest
     private static void testDeleteNoRecordPerms() {
-        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias2 LIMIT 1];
         PermissionSet testPermSet = [SELECT Id FROM PermissionSet WHERE Name = :testPermSetName LIMIT 1];
 
         // Give object-level and field-level access (since this is check before record-level access)
@@ -665,7 +685,7 @@ public class RecordControllerTest {
 
     @isTest
     private static void testDeleteSuccessful() {
-        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias LIMIT 1];
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias2 LIMIT 1];
         PermissionSet testPermSet = [SELECT Id FROM PermissionSet WHERE Name = :testPermSetName LIMIT 1];
 
         // Give object-level and field-level access (since this is check before record-level access)

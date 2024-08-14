@@ -20,6 +20,11 @@ public with sharing class CampusVisitWalkInFormController {
         
         List<Contact> matchedDetailsWithContacts = Database.query(buildContactQuery(conToSearch));
 
+        String soslSearch = buildContactSosl(conToSearch);
+        if (matchedDetailsWithContacts.size() == 0) {
+            matchedDetailsWithContacts = Search.query(soslSearch);
+        }
+
         if (matchedDetailsWithContacts.size() > 0) {
             return matchedDetailsWithContacts;
         }
@@ -59,6 +64,35 @@ public with sharing class CampusVisitWalkInFormController {
         }
 
         return query;
+    }
+
+    private static String buildContactSosl(Contact conToSearch) {
+        String temp = 'FIND {' + conToSearch.FirstName + ' ' + conToSearch.LastName + '} IN NAME FIELDS ' +
+        'RETURNING Contact(ASURITE_ID__c, FirstName, LastName, Middle_Name__c, Name, Phone, Email, MailingStreet, MailingPostalCode, Birthdate, Country_of_Citizenship__c, ' +
+        ' MailingState, MailingCountry, MailingCountryCode ' +
+        ' WHERE ';
+
+        if (!String.isBlank(conToSearch.Phone)) {
+            temp += 'Phone = \'' + conToSearch.Phone + '\' AND ';
+        }
+        if (!String.isBlank(conToSearch.MailingPostalCode)) {
+            temp += 'MailingPostalCode = \'' + conToSearch.MailingPostalCode + '\' AND ';
+        }
+        if (!String.isBlank(conToSearch.Email)) {
+            temp += 'Email = \'' + conToSearch.Email.trim() + '\' AND ';
+        }
+        if (conToSearch.Birthdate != null) {
+            temp += 'Birthdate = \'' + conToSearch.Birthdate + '\' AND ';
+        }
+
+        temp = temp.removeEnd(' AND ');
+        temp = temp.removeEnd(' WHERE ');
+
+        temp += ') WITH SPELL_CORRECTION = true';
+
+        
+
+        return temp;
     }
 
     @AuraEnabled

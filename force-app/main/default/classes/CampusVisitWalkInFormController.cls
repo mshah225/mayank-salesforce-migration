@@ -33,22 +33,22 @@ public with sharing class CampusVisitWalkInFormController {
         + 'FROM Contact '
         + 'WHERE ';
 
-        if (conToSearch.ASURite_ID__c != null) {
+        if (!String.isBlank(conToSearch.ASURite_ID__c)) {
             query += 'ASURite_ID__c = \'' + conToSearch.ASURite_ID__c.trim() + '\' ';
         } else {
-            if (conToSearch.FirstName != null) {
+            if (!String.isBlank(conToSearch.FirstName)) {
                 query += 'FirstName = \'' + conToSearch.FirstName.trim() + '\' AND ';
             }
-            if (conToSearch.LastName != null) {
+            if (!String.isBlank(conToSearch.LastName)) {
                 query += 'LastName = \'' + conToSearch.LastName.trim() + '\' AND ';
             }
-            if (conToSearch.Phone != null) {
+            if (!String.isBlank(conToSearch.Phone)) {
                 query += 'Phone = \'' + conToSearch.Phone + '\' AND ';
             }
-            if (conToSearch.MailingPostalCode != null) {
+            if (!String.isBlank(conToSearch.MailingPostalCode)) {
                 query += 'MailingPostalCode = \'' + conToSearch.MailingPostalCode + '\' AND ';
             }
-            if (conToSearch.Email != null) {
+            if (!String.isBlank(conToSearch.Email)) {
                 query += 'Email = \'' + conToSearch.Email.trim() + '\' AND ';
             }
             if (conToSearch.Birthdate != null) {

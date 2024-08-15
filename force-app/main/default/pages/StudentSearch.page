@@ -191,7 +191,8 @@
             searchMode,
             studentResultsByCampus = [],
             studentResultsBySearchTerm = [],
-            studentResultsToDisplay = [];
+            studentResultsToDisplay = [],
+            emplIdToHasClassesMp = {};
 
         /**
          * Sets up the page load event to include custom logic after the original onload event.
@@ -541,7 +542,6 @@
             let sanitizedQueryInput = userSearchInput.replace(/'/g, "\\'"); // Escape all single quotes in the query
             let consolidatedQuery =
                 'SELECT Id, ASURite_ID__c, Birthdate, EMPLID__c, Preferred_Full_Name__c, ' +
-                '(SELECT Id, EMPLID__c FROM Class_external__r), ' +
                 '(SELECT Id, Campus__r.Location_Code__c, College_Diploma_Description__c, Contact__c, Degree_Conferral_Date__c, ' +
                 'Plan_Code__c, Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c FROM Student_Plans__r) ' +
                 'FROM Contact ';
@@ -718,7 +718,14 @@
             if (error) return showErrorMessage(error);
 
             processStudentRecordsBySearchTerm(response.records);
-            buildSearchResults();
+
+            populateEmplIdToHasClassesMp(response.records)
+                .then(() => {
+                    buildSearchResults();
+                })
+                .catch((err) => {
+                    showErrorMessage(err);
+                });
         }
 
         /**
@@ -732,11 +739,6 @@
             // Clean up data by removing unnecessary attributes from main and nested records
             Object.values(studentResultsBySearchTerm).forEach((contact) => {
                 delete contact.attributes; // Assume top-level attributes to be removed
-                if (contact.Class_external__r) {
-                    contact.Class_external__r.records.forEach((classRecord) => {
-                        delete classRecord.attributes;
-                    });
-                }
                 if (contact.Student_Plans__r) {
                     contact.Student_Plans__r.records.forEach((plan) => {
                         delete plan.attributes;
@@ -807,6 +809,55 @@
         }
 
         /**
+         * Calls the DPL API for each EMPLID in studentResultsBySearchTerm to determine which have classes and which don't
+         */
+        function populateEmplIdToHasClassesMp() {
+            return new Promise((resolve, reject) => {
+                const allPromises = [];
+
+                // For each contact, use EMPLID to call DPL to check if they has classes
+                Object.values(studentResultsBySearchTerm).forEach((contact) => {
+                    allPromises.push(
+                        new Promise((dplResolvedForThisContact, dplRejectForThisContact) => {
+                            Visualforce.remoting.Manager.invokeAction(
+                                '{!$RemoteAction.StudentSearchController.hasClasses}',
+                                contact.EMPLID__c,
+                                (hasAtLeastOneClass, event) => {
+                                    if (event.status) {
+                                        // Resolve indicating if has at least on class or not
+                                        dplResolvedForThisContact({
+                                            EMPLID__c: contact.EMPLID__c,
+                                            hasClasses: hasAtLeastOneClass === true,
+                                        });
+                                    } else {
+                                        // Error happened, failure mode
+                                        dplRejectForThisContact({EMPLID__c: contact.EMPLID__c, error: event.message});
+                                    }
+                                },
+                                {escape: false, buffer: false}
+                                // buffer is NOT OK because if when batches they end up timing out if there are a lot (250)
+                            );
+                        })
+                    );
+                });
+
+                Promise.all(allPromises)
+                    .then((results) => {
+                        // Has classes map
+                        emplIdToHasClassesMp = {};
+                        // result for each EMPLID
+                        for (let result of results) emplIdToHasClassesMp[result.EMPLID__c] = result.hasClasses;
+                        // happy success
+                        resolve();
+                    })
+                    .catch((err) => {
+                        // any failed - reject with error
+                        reject(err.error);
+                    });
+            });
+        }
+
+        /**
          * Determines search mode based on user input and match count, displaying context-appropriate messages and potentially requesting user confirmation for ASURITE matches.
          */
         function determineSearchMode(totalSize) {
@@ -852,8 +903,6 @@
          * Compiles search results into a formatted HTML table, handling both campus-specific and general contact results.
          */
         function extractStudentData() {
-            showMessage();
-
             if (hasSearchTermResults()) {
                 studentResultsToDisplay = studentResultsBySearchTerm.map((record) => {
                     // Mapping basic and optional contact information from the student records.
@@ -866,7 +915,7 @@
                     const studentStatus =
                         record?.Student_Plans__r?.records?.length > 0
                             ? {hasProgramData: true, hasClassData: false}
-                            : record?.Class_external__r?.records?.length > 0
+                            : emplIdToHasClassesMp[record?.EMPLID__c] === true
                             ? {hasProgramData: false, hasClassData: true}
                             : {hasProgramData: false, hasClassData: false};
 
@@ -924,6 +973,7 @@
             extractStudentData();
             showCurrentSearchCount();
             showSearchResults();
+            hideMessage();
 
             if (studentResultsToDisplay?.length == 0) {
                 return;

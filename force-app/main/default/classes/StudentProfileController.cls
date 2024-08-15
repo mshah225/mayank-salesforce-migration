@@ -5,6 +5,41 @@
 global with sharing class StudentProfileController {
     private static List<String> vars = new List<String>();
 
+    private static final Map<String, String> MEETUP_DAY_MAP = new Map<String, String>{
+        'SUNDAY' => 'Su',
+        'MONDAY' => 'M',
+        'TUESDAY' => 'Tu',
+        'WEDNESDAY' => 'W',
+        'THURSDAY' => 'Th',
+        'FRIDAY' => 'F',
+        'SATURDAY' => 'Sa'
+    };
+
+    private static Map<String, String> LOCATION_CODE_TO_NAME_MAP {
+        get {
+            if (LOCATION_CODE_TO_NAME_MAP == null) {
+                LOCATION_CODE_TO_NAME_MAP = new Map<String, String>();
+                for (Location__c l : [SELECT Name, Location_Code__c FROM Location__c WHERE Location_Status__c = TRUE])
+                    LOCATION_CODE_TO_NAME_MAP.put(l.Location_Code__c, l.Name);
+            }
+            return LOCATION_CODE_TO_NAME_MAP;
+        }
+        set;
+    }
+
+    @TestVisible
+    private static final Map<String, String> GUEST_ACCESS_CODE_MAP = new Map<string, String>{
+        'ADMS' => 'Admissions Status',
+        'ACAD' => 'Class Schedule/Major/College',
+        'FAID' => 'Fin Aid, Acct Charges, Payment',
+        'GRAD' => 'Final Grades and GPA',
+        'PERS' => 'Name/addresses/phones/ASUemail',
+        'HOUS' => 'On-campus Housing',
+        'OTHR' => 'Other Educational Records',
+        'PPLS' => 'Parent PLUS Loans',
+        'TASK' => 'Tasks'
+    };
+
     private Boolean isContactId;
     private String aidYear;
 
@@ -1260,54 +1295,12 @@ global with sharing class StudentProfileController {
     }
 
     /**
-     * Retrieves advisor notes for the specified EMPLID and JSON advisor notes.
-     * @param emplid The EMPLID of the student.
-     * @param jsonAdvisorNotes The JSON string of advisor notes.
-     * @return List of AdvisingNoteWrapper containing the advisor notes.
-     */
-    @RemoteAction
-    global static List<AdvisingNoteWrapper> getPSAdvisorNotes(String emplid, String jsonAdvisorNotes) {
-        List<AdvisingNoteWrapper> advNoteWrapperList = new List<AdvisingNoteWrapper>();
-        List<PS_ASU_SP_ADNOTE_V__x> advisingNoteList = (List<PS_ASU_SP_ADNOTE_V__x>) JSON.deserialize(
-            jsonAdvisorNotes,
-            List<PS_ASU_SP_ADNOTE_V__x>.class
-        );
-
-        List<String> advAsuRiteIds = new List<String>();
-        for (PS_ASU_SP_ADNOTE_V__x note : advisingNoteList) {
-            if (note.CREATEOPRID__c != null && note.CREATEOPRID__c != '') {
-                advAsuRiteIds.add(note.CREATEOPRID__c + '@admin.asu.edu');
-            }
-        }
-
-        List<User> advUserList = [
-            SELECT Id, FederationIdentifier
-            FROM User
-            WHERE FederationIdentifier IN :advAsuRiteIds
-        ];
-
-        Map<String, String> advUserMap = new Map<String, String>();
-        for (User user : advUserList) {
-            advUserMap.put(user.FederationIdentifier, user.Id);
-        }
-
-        for (PS_ASU_SP_ADNOTE_V__x note : advisingNoteList) {
-            AdvisingNoteWrapper noteWrapper = new AdvisingNoteWrapper();
-            noteWrapper.note = note;
-            noteWrapper.advUserId = advUserMap.get(note.CREATEOPRID__c + '@admin.asu.edu');
-            advNoteWrapperList.add(noteWrapper);
-        }
-
-        return advNoteWrapperList;
-    }
-
-    /**
      * Retrieves advisor notes for the specified contact ID using Lightning Web Components.
      * @param contactId The contact ID of the student.
-     * @return List of AdvisingNoteWrapper containing the advisor notes.
+     * @return List of AdvisorNoteWrapper containing the advisor notes.
      */
     @AuraEnabled(cacheable=true)
-    public static List<AdvisingNoteWrapper> getPSAdvisorNotesLWC(String contactId) {
+    public static List<AdvisorNoteWrapper> getPSAdvisorNotesLWC(String contactId) {
         try {
             if (contactId == null)
                 return null;
@@ -1317,283 +1310,424 @@ global with sharing class StudentProfileController {
             if (c.EMPLID__c == null)
                 return null;
 
-            if (!Schema.sObjectType.PS_ASU_SP_ADNOTE_V__x.isAccessible()) {
-                throw new StudentProfileException(
-                    'User does not have permission to view ' + Schema.sObjectType.PS_ASU_SP_ADNOTE_V__x.getLabelPlural()
-                );
-            }
-
-            List<AdvisingNoteWrapper> advNoteWrapperList = new List<AdvisingNoteWrapper>();
-
-            // Get advising notes
-            List<PS_ASU_SP_ADNOTE_V__x> advisingNoteList = [
-                SELECT
-                    ACAD_CAREER__c,
-                    COMMENTS__c,
-                    CREATDTTM__c,
-                    CREATEOPRID__c,
-                    DisplayUrl,
-                    EMPLID__c,
-                    ExternalId,
-                    Id,
-                    NAME__c,
-                    STRM__c,
-                    Academic_Plan__c,
-                    Academic_Plan__r.Name,
-                    Academic_Program__c,
-                    Academic_Program__r.Name,
-                    Student_Career_Number__c
-                FROM PS_ASU_SP_ADNOTE_V__x
-                WHERE EMPLID__c = :c.EMPLID__c
-                WITH USER_MODE
-                ORDER BY CREATDTTM__c DESC
-            ];
-
-            Set<String> advAsuRiteIds = new Set<String>();
-            for (PS_ASU_SP_ADNOTE_V__x note : advisingNoteList)
-                if (note.CREATEOPRID__c != null && note.CREATEOPRID__c != '')
-                    advAsuRiteIds.add(note.CREATEOPRID__c + '@admin.asu.edu');
-
-            // Get the id for the users mentioned in advisor notes
-            List<User> advUserList = [
-                SELECT Id, FederationIdentifier
-                FROM User
-                WHERE FederationIdentifier IN :advAsuRiteIds
-            ];
-
-            Map<String, String> advUserMap = new Map<String, String>();
-            for (User user : advUserList)
-                advUserMap.put(user.FederationIdentifier, user.Id);
-
-            // Create wrappers
-            for (PS_ASU_SP_ADNOTE_V__x note : advisingNoteList) {
-                AdvisingNoteWrapper noteWrapper = new AdvisingNoteWrapper();
-                noteWrapper.note = note;
-                noteWrapper.advUserId = advUserMap.get(note.CREATEOPRID__c + '@admin.asu.edu');
-                advNoteWrapperList.add(noteWrapper);
-            }
-
-            return advNoteWrapperList;
+            return getAdvisingNotes(c.EMPLID__c);
         } catch (Exception e) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertStringToJSON('contactId', contactId));
+            ErrorLogger.log(e, vars, false);
+
             throw new AuraHandledException(e.getMessage());
         }
     }
 
     /**
-     * Retrieves comments for the specified EMPLID and JSON comments.
-     * @param emplid The EMPLID of the student.
-     * @param jsonComments The JSON string of comments.
-     * @return List of CommentWrapper containing the comments.
+     * Get all the classes for a student, by term, along with other enrollment data such as credits/gpa.
+     * @param emplId The student's EMPLID
+     * @return Map of termCode to enrollment wrapper.
      */
     @RemoteAction
-    global static List<CommentWrapper> getComments(String emplid, String jsonComments) {
-        List<PS_ASU_SP_COMMNT_V__x> commentsList = (List<PS_ASU_SP_COMMNT_V__x>) JSON.deserialize(
-            jsonComments,
-            List<PS_ASU_SP_COMMNT_V__x>.class
-        );
+    global static Map<String, TermClassesWrapper> getTermClasses(String emplId) {
+        try {
+            Map<String, TermClassesWrapper> termDefWrapper = new Map<String, TermClassesWrapper>();
+            Map<String, List<DataPotluck.DPLAcademicStatusReport>> termAndClassNumberToASR = new Map<String, List<DataPotluck.DPLAcademicStatusReport>>();
 
-        Set<String> commenterUserIds = new Set<String>();
-        for (PS_ASU_SP_COMMNT_V__x comment : commentsList) {
-            if (comment.COMNT_ID__c != null && comment.COMNT_ID__c != '') {
-                commenterUserIds.add(comment.COMNT_ID__c);
-            }
-        }
-
-        List<User> commenterUserList = [SELECT Id, EmployeeNumber FROM User WHERE EmployeeNumber IN :commenterUserIds];
-
-        Map<String, String> commenterUserMap = new Map<String, String>();
-        for (User user : commenterUserList) {
-            commenterUserMap.put(user.EmployeeNumber, user.Id);
-        }
-
-        List<CommentWrapper> commentWrapperList = new List<CommentWrapper>();
-        for (PS_ASU_SP_COMMNT_V__x comment : commentsList) {
-            CommentWrapper commentWrapper = new CommentWrapper();
-            commentWrapper.comment = comment;
-            commentWrapper.commenterUserId = commenterUserMap.get(comment.COMNT_ID__c);
-            commentWrapperList.add(commentWrapper);
-        }
-        return commentWrapperList;
-    }
-
-    /**
-     * Sorts the classes based on the specified parameter and JSON class list.
-     * @param paramToSortBy The parameter to sort by.
-     * @param listOfClassesJSON The JSON string of class list.
-     * @param sortDirection The sort direction (true for ascending, false for descending).
-     * @return List of sorted StudentProfileSortClasses.
-     */
-    @RemoteAction
-    global static List<StudentProfileSortClasses> sortClasses(
-        String paramToSortBy,
-        String listOfClassesJSON,
-        Boolean sortDirection
-    ) {
-        List<StudentProfileSortClasses> classList = new List<StudentProfileSortClasses>();
-        List<PS_ASU_SP_CLASS_V__x> listOfClasses = (List<PS_ASU_SP_CLASS_V__x>) JSON.deserialize(
-            listOfClassesJSON,
-            List<PS_ASU_SP_CLASS_V__x>.class
-        );
-        for (PS_ASU_SP_CLASS_V__x asuClass : listOfClasses) {
-            classList.add(new StudentProfileSortClasses(asuClass, paramToSortBy));
-        }
-
-        classList.sort();
-        if (!sortDirection) {
-            List<StudentProfileSortClasses> reversedList = new List<StudentProfileSortClasses>();
-            for (StudentProfileSortClasses sc : classList) {
-                if (reversedList.size() == 0) {
-                    reversedList.add(sc);
-                } else {
-                    reversedList.add(0, sc);
-                }
-            }
-            return reversedList;
-        }
-        return classList;
-    }
-
-    /**
-     * Sorts the exams based on the specified parameter and list of exams.
-     * @param paramToSortBy The parameter to sort by.
-     * @param listOfExams The list of exams to sort.
-     * @param sortDirection The sort direction (true for ascending, false for descending).
-     * @return List of sorted StudentProfileSortExams.
-     */
-    @RemoteAction
-    global static List<StudentProfileSortExams> sortExams(
-        String paramToSortBy,
-        List<PS_ASU_SP_TRNSFR_V__x> listOfExams,
-        Boolean sortDirection
-    ) {
-        List<StudentProfileSortExams> examList = new List<StudentProfileSortExams>();
-        for (PS_ASU_SP_TRNSFR_V__x exam : listOfExams) {
-            examList.add(new StudentProfileSortExams(exam, paramToSortBy));
-        }
-
-        examList.sort();
-        if (sortDirection) {
-            return examList;
-        }
-
-        List<StudentProfileSortExams> reversedList = new List<StudentProfileSortExams>();
-        for (StudentProfileSortExams sc : examList) {
-            if (reversedList.size() == 0) {
-                reversedList.add(sc);
-            } else {
-                reversedList.add(0, sc);
-            }
-        }
-        return reversedList;
-    }
-
-    /**
-     * Sorts the academic integrity data based on the specified parameter and JSON list.
-     * @param paramToSortBy The parameter to sort by.
-     * @param academicIntegrityListJson The JSON string of academic integrity list.
-     * @param sortDirection The sort direction (true for ascending, false for descending).
-     * @return List of sorted StudentProfileSortAcademicIntegrity.
-     */
-    @RemoteAction
-    global static List<StudentProfileSortAcademicIntegrity> sortAcademicIntegrityData(
-        String paramToSortBy,
-        String academicIntegrityListJson,
-        Boolean sortDirection
-    ) {
-        List<StudentProfileSortAcademicIntegrity> academicIntegrityListToSort = new List<StudentProfileSortAcademicIntegrity>();
-        List<PS_ASU_SP_CLASS_V__x> academicIntegrityList = (List<PS_ASU_SP_CLASS_V__x>) JSON.deserialize(
-            academicIntegrityListJson,
-            List<PS_ASU_SP_CLASS_V__x>.class
-        );
-        for (PS_ASU_SP_CLASS_V__x academicIntegrityItem : academicIntegrityList) {
-            academicIntegrityListToSort.add(
-                new StudentProfileSortAcademicIntegrity(academicIntegrityItem, paramToSortBy)
+            Map<String, List<DataPotluck.DPLEnrollment>> enrollmentInfo = StudentProfileCallout.getEnrollmentInfo(
+                emplId
             );
-        }
+            List<DataPotluck.DPLAcademicStatusReport> acadStatusReports = StudentProfileCallout.getAcademicStatusReports(
+                emplId
+            );
+            List<DataPotluck.DPLStudentCareerTerm> studentCareerTermList = StudentProfileCallout.getStudentCareerTermData(
+                emplId
+            );
 
-        academicIntegrityListToSort.sort();
-        if (!sortDirection) {
-            List<StudentProfileSortAcademicIntegrity> reversedList = new List<StudentProfileSortAcademicIntegrity>();
-            for (StudentProfileSortAcademicIntegrity listItem : academicIntegrityListToSort) {
-                if (reversedList.size() == 0) {
-                    reversedList.add(listItem);
-                } else {
-                    reversedList.add(0, listItem);
+            // Mpa term code to student career term
+            Map<String, DataPotluck.DPLStudentCareerTerm> studentCareerTermMp = new Map<String, DataPotluck.DPLStudentCareerTerm>();
+            for (DataPotluck.DPLStudentCareerTerm careerTerm : studentCareerTermList) {
+                studentCareerTermMp.put(careerTerm.strm, careerTerm);
+            }
+
+            // Map class number/term to ASRs for that class
+            for (DataPotluck.DPLAcademicStatusReport asr : acadStatusReports) {
+                if (!termAndClassNumberToASR.containsKey(asr.strm + '|' + asr.classNumber))
+                    termAndClassNumberToASR.put(
+                        asr.strm + '|' + asr.classNumber,
+                        new List<DataPotluck.DPLAcademicStatusReport>()
+                    );
+                termAndClassNumberToASR.get(asr.strm + '|' + asr.classNumber).add(asr);
+            }
+
+            // For each term create wrapper of all info
+            for (String termCode : enrollmentInfo.keySet()) {
+                TermClassesWrapper termClassWrap = new TermClassesWrapper();
+
+                // add each class enrollment
+                List<DataPotluck.DPLEnrollment> classEnrollmments = enrollmentInfo.get(termCode);
+                for (DataPotluck.DPLEnrollment classEnrollment : classEnrollmments) {
+                    List<DataPotluck.DPLAcademicStatusReport> correspondingAsrs = termAndClassNumberToASR.get(
+                        classEnrollment.strm + '|' + classEnrollment.classNumber
+                    );
+
+                    ClassEnrollment eWrap = new ClassEnrollment(classEnrollment, correspondingAsrs);
+
+                    if (eWrap.isEnrolled())
+                        termClassWrap.addEnrolledClass(eWrap);
+                    else
+                        termClassWrap.addDroppedClass(eWrap);
+                }
+
+                // And grab term details from career term object
+                DataPotluck.DPLStudentCareerTerm studentCareerTerm = studentCareerTermMp.containsKey(termCode)
+                    ? studentCareerTermMp.get(termCode)
+                    : null;
+                termClassWrap.setTermEarnedUnits(studentCareerTerm?.unitsTakenTowardGpaForDisplay);
+                termClassWrap.setCumulativeEarnedUnits(studentCareerTerm?.totalTakenTowardGpaForDisplay);
+                termClassWrap.setTermGpa(studentCareerTerm?.termGpaForDisplay);
+                termClassWrap.setCumulativeGpa(studentCareerTerm?.cumulativeGpaForDisplay);
+
+                // Add to map
+                termDefWrapper.put(termCode, termClassWrap);
+            }
+
+            return termDefWrapper;
+        } catch (Exception ex) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            ErrorLogger.log(ex, vars, false);
+            throw ex;
+        }
+    }
+
+    /**
+     * Retrieves all the credit by exam a student has achieved.
+     * @param emplId The student's EMPLID
+     * @return A list of all the credit by exam for the student.
+     */
+    @RemoteAction
+    global static List<CreditByExamWrapper> getCreditByExam(String emplId) {
+        try {
+            List<CreditByExamWrapper> wrapperList = new List<CreditByExamWrapper>();
+
+            StudentProfileTransferWork transferWork = StudentProfileCallout.getTransferWork(emplId);
+
+            Map<String, Set<String>> termToCourseIds = new Map<String, Set<String>>();
+
+            // Get all term and course ids (to do lookup for course names)
+            if (transferWork.external_exam_data != null)
+                for (StudentProfileTransferWork.ExternalExamDatum a : transferWork.external_exam_data)
+                    if (a.exam_data != null)
+                        for (StudentProfileTransferWork.ExternalExamExamDatum b : a.exam_data)
+                            if (!String.isBlank(b.articulation_term) && !String.isBlank(b.course_Id)) {
+                                if (!termToCourseIds.containsKey(b.articulation_term))
+                                    termToCourseIds.put(b.articulation_term, new Set<String>());
+                                termToCourseIds.get(b.articulation_term).add(b.course_Id);
+                            }
+
+            Map<String, DataPotluck.DPLCourse> termCourseIdOfferNumToCourseMp = new Map<String, DataPotluck.DPLCourse>();
+
+            // We need to do a lookup to get course name/catalog number
+            if (!termToCourseIds.isEmpty()) {
+                for (String termCode : termToCourseIds.keySet()) {
+                    List<DataPotluck.DPLCourse> courseList = StudentProfileCallout.getCourses(
+                        termCode,
+                        new List<String>(termToCourseIds.get(termCode))
+                    );
+
+                    for (DataPotluck.DPLCourse course : courseList)
+                        termCourseIdOfferNumToCourseMp.put(
+                            course.strm + '|' + course.courseId + '|' + course.courseOfferNumber,
+                            course
+                        );
                 }
             }
-            return reversedList;
-        }
-        return academicIntegrityListToSort;
-    }
 
-    /**
-     * Retrieves classes data based on the specified class list and ASR list.
-     * @param classListJson The JSON string of class list.
-     * @param asrListJson The JSON string of ASR list.
-     * @return ClassesWrapper containing the classes data.
-     */
-    @RemoteAction
-    global static ClassesWrapper getClassesData(String classListJson, String asrListJson) {
-        List<PS_ASU_SP_CLASS_V__x> classList = (List<PS_ASU_SP_CLASS_V__x>) JSON.deserialize(
-            classListJson,
-            List<PS_ASU_SP_CLASS_V__x>.class
-        );
-        List<PS_ASU_SP_ASR_CLSV__x> asrList = (List<PS_ASU_SP_ASR_CLSV__x>) JSON.deserialize(
-            asrListJson,
-            List<PS_ASU_SP_ASR_CLSV__x>.class
-        );
+            // Build the final wrappers to return
+            if (transferWork.external_exam_data != null)
+                for (StudentProfileTransferWork.ExternalExamDatum a : transferWork.external_exam_data)
+                    if (a.exam_data != null)
+                        for (StudentProfileTransferWork.ExternalExamExamDatum b : a.exam_data) {
+                            if (!String.isBlank(b.course_Id))
+                                wrapperList.add(
+                                    new CreditByExamWrapper(
+                                        b,
+                                        termCourseIdOfferNumToCourseMp
+                                            ?.get(b?.articulation_term + '|' + b?.course_Id + '|' + b?.course_offer_nbr)
+                                    )
+                                );
+                        }
 
-        ClassesWrapper classesData = new ClassesWrapper();
-        for (PS_ASU_SP_ASR_CLSV__x asr : asrList) {
-            classesData.asrClasses.add(asr.STRM__c + '|' + asr.SESSION_CODE__c + '|' + asr.CLASS_NBR__c);
-        }
+            // There might be duplicates - so look for the BEST version of each course and keep that one
+            for (Integer i = 0; i < wrapperList.size(); i++) {
+                for (Integer j = i + 1; j < wrapperList.size(); j++) {
+                    CreditByExamWrapper a = wrapperList[i];
+                    CreditByExamWrapper b = wrapperList[j];
 
-        for (PS_ASU_SP_CLASS_V__x course : classList) {
-            if (course.STDNT_ENRL_STATUS__c == 'E' && course.ENRL_STATUS_REASON__c == 'ENRL') {
-                classesData.enrolledClasses.add(course);
-            } else {
-                classesData.droppedClasses.add(course);
+                    // same soruce title - consolidate non null values
+                    if (a.courseTitle == b.courseTitle) {
+                        a.combine(b);
+                        // remove b now that b's details are on a
+                        wrapperList.remove(j);
+                        j -= 1;
+                    }
+                }
             }
-            classesData.classTerms.add(course.STRM__c + '|' + course.TERM_DESCR30__c);
-            classesData.classSessions.add(course.SESSION_CODE__c);
+
+            return wrapperList;
+        } catch (Exception ex) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            ErrorLogger.log(ex, vars, false);
+            throw ex;
         }
-        if (!classList.isEmpty()) {
-            classesData.classTerms.add('All|All');
-            classesData.classSessions.add('All');
-        }
-        return classesData;
     }
 
     /**
-     * Retrieves academic integrity data based on the specified academic integrity list and ASR list.
-     * @param academicIntegrityListJson The JSON string of academic integrity list.
-     * @param asrListJson The JSON string of ASR list.
-     * @return AcademicIntegrityWrapper containing the academic integrity data.
+     * Retrieves the guest access permissions for a student.
+     * @param emplId The student's EMPLID
+     * @return A list of all the guest access for the student.
      */
     @RemoteAction
-    global static AcademicIntegrityWrapper getAcademicIntegrityData(
-        String academicIntegrityListJson,
-        String asrListJson
-    ) {
-        List<PS_ASU_SP_CLASS_V__x> academicIntegrityList = (List<PS_ASU_SP_CLASS_V__x>) JSON.deserialize(
-            academicIntegrityListJson,
-            List<PS_ASU_SP_CLASS_V__x>.class
-        );
-        List<PS_ASU_SP_ASR_CLSV__x> asrList = (List<PS_ASU_SP_ASR_CLSV__x>) JSON.deserialize(
-            asrListJson,
-            List<PS_ASU_SP_ASR_CLSV__x>.class
-        );
+    global static List<GuestAccessWrapper> getGuestAccess(String emplId) {
+        try {
+            List<GuestAccessWrapper> wrapperList = new List<GuestAccessWrapper>();
 
-        AcademicIntegrityWrapper academicIntegrityData = new AcademicIntegrityWrapper();
-        for (PS_ASU_SP_ASR_CLSV__x asr : asrList) {
-            academicIntegrityData.asrClasses.add(asr.STRM__c + '|' + asr.SESSION_CODE__c + '|' + asr.CLASS_NBR__c);
+            List<DataPotluck.DPLGuestAccess> guestAccessList = StudentProfileCallout.getGuestAccess(emplId);
+            List<StudentProfileChecklistComment> commentList = StudentProfileCallout.getFerpaComments(emplId);
+
+            Set<String> authorEmplIdSet = new Set<String>();
+            Set<String> authorAsuriteSet = new Set<String>();
+            Set<String> guestEmplIdSet = new Set<String>();
+            for (DataPotluck.DPLGuestAccess gAccess : guestAccessList) {
+                if (!String.isBlank(gAccess.guestEmplid))
+                    guestEmplIdSet.add(gAccess.guestEmplid);
+                if (!String.isBlank(gAccess.recordAddedBy))
+                    authorAsuriteSet.add(gAccess.recordAddedBy);
+            }
+            for (StudentProfileChecklistComment cmm : commentList)
+                if (!String.isBlank(cmm.CMNT_ID))
+                    authorEmplIdSet.add(cmm.CMNT_ID);
+
+            StringAddressHelper addrFormat = new StringAddressHelper(
+                '%STREET% %CITY%, %STATE% %POSTAL%, %COUNTRY%',
+                true
+            );
+            Map<String, String> guestCodeToNameMp = new Map<String, String>();
+            // Construct name and address for each guest
+            for (Contact c : [
+                SELECT Id, Preferred_Full_Name__c, EMPLID__c, MailingAddress
+                FROM Contact
+                WHERE EMPLID__c IN :guestEmplIdSet
+            ]) {
+                String constructedName = '';
+
+                if (!String.isBlank(c.Preferred_Full_Name__c))
+                    constructedName += c.Preferred_Full_Name__c;
+                else if (!String.isBlank(c.EMPLID__c))
+                    constructedName += c.EMPLID__c;
+                else
+                    constructedName += '--';
+
+                if (c.MailingAddress != null) {
+                    String addrStr = addrFormat.format(c.MailingAddress);
+                    if (!String.isBlank(addrStr)) {
+                        constructedName += ', ' + addrStr;
+                    }
+                }
+
+                guestCodeToNameMp.put(c.EMPLID__c, constructedName);
+            }
+            // Add mappings for author ids
+            Map<String, String> authorCodeToNameMp = new Map<String, String>();
+            for (Contact c : [
+                SELECT Id, Preferred_Full_Name__c, EMPLID__c, ASURITE_ID__c
+                FROM Contact
+                WHERE ASURITE_ID__c IN :authorAsuriteSet OR EMPLID__c IN :authorEmplIdSet
+            ]) {
+                if (authorAsuriteSet.contains(c.ASURITE_ID__c) && !String.isBlank(c.Preferred_Full_Name__c))
+                    authorCodeToNameMp.put(c.ASURITE_ID__c, c.Preferred_Full_Name__c);
+                if (authorEmplIdSet.contains(c.EMPLID__c) && !String.isBlank(c.Preferred_Full_Name__c))
+                    authorCodeToNameMp.put(c.EMPLID__c, c.Preferred_Full_Name__c);
+            }
+
+            // Each from DPL
+            for (DataPotluck.DPLGuestAccess gAccess : guestAccessList) {
+                // Should we show this guest access?
+                // We only include those that acutally have some perms granted
+                if (gAccess.permissionCodes != null && !gAccess.permissionCodes.isEmpty()) {
+                    if (gAccess?.onlineAccess == true) {
+                        // for online access, we only want to show is status code is active and perms are set
+                        if (gAccess.statusCode == 'AC') {
+                            GuestAccessWrapper wrapper = new GuestAccessWrapper(
+                                gAccess,
+                                guestCodeToNameMp,
+                                authorCodeToNameMp
+                            );
+                            wrapperList.add(wrapper);
+                        }
+                    } else {
+                        // for non online access, this is just a consent record, so it doesn't need to be active
+                        GuestAccessWrapper wrapper = new GuestAccessWrapper(
+                            gAccess,
+                            guestCodeToNameMp,
+                            authorCodeToNameMp
+                        );
+                        wrapperList.add(wrapper);
+                    }
+                }
+            }
+
+            // FERPA access from checklist API
+            for (StudentProfileChecklistComment cmm : commentList) {
+                GuestAccessWrapper wrapper = new GuestAccessWrapper(cmm, authorCodeToNameMp);
+                wrapperList.add(wrapper);
+            }
+
+            wrapperList.sort();
+
+            return wrapperList;
+        } catch (Exception ex) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            ErrorLogger.log(ex, vars, false);
+            throw ex;
         }
+    }
 
-        for (PS_ASU_SP_CLASS_V__x course : academicIntegrityList) {
-            academicIntegrityData.academicIntegrityData.add(course);
+    /**
+     * Retrieves advising notes for a user - this includes the notes from the Advising Notes endpoint in DPL
+     * as well as any CMNT_CATEGORY == 'GRGCPS' comments from the checklist API.
+     * @param emplId The student's EMPLID
+     * @return A list of all the advising notes for the student.
+     */
+    @RemoteAction
+    global static List<AdvisorNoteWrapper> getAdvisingNotes(String emplId) {
+        try {
+            List<AdvisorNoteWrapper> wrapperList = new List<AdvisorNoteWrapper>();
+
+            List<StudentProfileChecklistComment> commentList = StudentProfileCallout.getGradComments(emplId);
+            List<DataPotluck.DPLAdvisingNote> advNoteList = StudentProfileCallout.getAdvisingNotes(emplId);
+
+            // Get user ids based on commenter ids
+            Set<String> emplIdSet = new Set<String>();
+            Set<String> federationIdSet = new Set<String>();
+
+            for (StudentProfileChecklistComment cmm : commentList)
+                if (!String.isBlank(cmm.CMNT_ID))
+                    emplIdSet.add(cmm.CMNT_ID);
+            for (DataPotluck.DPLAdvisingNote advNote : advNoteList)
+                if (!String.isBlank(advNote.createdByOprid))
+                    federationIdSet.add(advNote.createdByOprid + '@admin.asu.edu');
+
+            Map<String, User> commenterUserMap = new Map<String, User>();
+            for (User user : [
+                SELECT Id, Name, EmployeeNumber, FederationIdentifier
+                FROM User
+                WHERE EmployeeNumber IN :emplIdSet OR FederationIdentifier IN :federationIdSet
+            ]) {
+                if (emplIdSet.contains(user.EmployeeNumber))
+                    commenterUserMap.put(user.EmployeeNumber, user);
+                if (federationIdSet.contains(user.FederationIdentifier))
+                    commenterUserMap.put(user.FederationIdentifier, user);
+            }
+
+            // Get program and plan names
+            Set<String> programCodes = new Set<String>();
+            Set<String> planCodes = new Set<String>();
+            for (DataPotluck.DPLAdvisingNote advNote : advNoteList) {
+                if (!String.isBlank(advNote.acadProgramCode))
+                    programCodes.add(advNote.acadProgramCode);
+                if (!String.isBlank(advNote.acadPlanCode))
+                    planCodes.add(advNote.acadPlanCode);
+            }
+            for (StudentProfileChecklistComment cmm : commentList) {
+                if (!String.isBlank(cmm.ACAD_PROGRAM))
+                    programCodes.add(cmm.ACAD_PROGRAM);
+                if (!String.isBlank(cmm.ACAD_PLAN))
+                    planCodes.add(cmm.ACAD_PLAN);
+            }
+
+            Map<String, String> programCodeToName = new Map<String, String>();
+            Map<String, String> planCodeToName = new Map<String, String>();
+
+            if (!programCodes.isEmpty())
+                for (Program__c p : [
+                    SELECT Id, Name, Program_Code__c
+                    FROM Program__c
+                    WHERE Program_Code__c IN :programCodes
+                ])
+                    programCodeToName.put(p.Program_Code__c, p.Name);
+            if (!planCodes.isEmpty())
+                for (Plan__c p : [SELECT Id, Name, Plan_Code__c FROM Plan__c WHERE Plan_Code__c IN :planCodes])
+                    planCodeToName.put(p.Plan_Code__c, p.Name);
+
+            // Build response wrappers
+            for (DataPotluck.DPLAdvisingNote advNote : advNoteList) {
+                wrapperList.add(
+                    new AdvisorNoteWrapper(
+                        advNote,
+                        commenterUserMap.get(advNote.createdByOprid + '@admin.asu.edu'),
+                        programCodeToName.get(advNote.acadProgramCode),
+                        planCodeToName.get(advNote.acadPlanCode)
+                    )
+                );
+            }
+
+            for (StudentProfileChecklistComment cmm : commentList)
+                wrapperList.add(
+                    new AdvisorNoteWrapper(
+                        cmm,
+                        commenterUserMap.get(cmm.CMNT_ID),
+                        programCodeToName.get(cmm.ACAD_PROGRAM),
+                        planCodeToName.get(cmm.ACAD_PLAN)
+                    )
+                );
+
+            wrapperList.sort();
+
+            return wrapperList;
+        } catch (Exception ex) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            ErrorLogger.log(ex, vars, false);
+            throw ex;
         }
+    }
 
-        return academicIntegrityData;
+    /**
+     * Retrieves the comments (advising comments) for a student
+     * @param emplId The student's EMPLID
+     * @return A list of all the comments for the student
+     */
+    @RemoteAction
+    global static List<CommentWrapper> getComments(String emplId) {
+        try {
+            List<CommentWrapper> wrapperList = new List<CommentWrapper>();
+
+            List<StudentProfileChecklistComment> commentList = StudentProfileCallout.getComments(emplId);
+
+            // Get user ids based on commenter ids
+            Set<String> emplIdSet = new Set<String>();
+            for (StudentProfileChecklistComment cmm : commentList) {
+                if (!String.isBlank(cmm.CMNT_ID))
+                    emplIdSet.add(cmm.CMNT_ID);
+            }
+            Map<String, User> commenterUserMap = new Map<String, User>();
+            for (User user : [SELECT Id, Name, EmployeeNumber FROM User WHERE EmployeeNumber IN :emplIdSet])
+                commenterUserMap.put(user.EmployeeNumber, user);
+
+            // Build response wrappers
+            for (StudentProfileChecklistComment cmm : commentList)
+                wrapperList.add(new CommentWrapper(cmm, commenterUserMap.get(cmm.CMNT_ID)));
+
+            wrapperList.sort();
+
+            return wrapperList;
+        } catch (Exception ex) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            ErrorLogger.log(ex, vars, false);
+            throw ex;
+        }
     }
 
     /**
@@ -1897,37 +2031,434 @@ global with sharing class StudentProfileController {
     }
 
     /**
-     * Wrapper class for advising notes.
-     */
-    global class AdvisingNoteWrapper {
-        @AuraEnabled
-        public PS_ASU_SP_ADNOTE_V__x note { get; set; }
-        @AuraEnabled
-        public String advUserId { get; set; }
-    }
-
-    /**
-     * Wrapper class for classes data.
-     */
-    global class ClassesWrapper {
-        public Set<String> classTerms = new Set<String>();
-        public Set<String> classSessions = new Set<String>();
-        public Set<String> asrClasses = new Set<String>();
-        public List<PS_ASU_SP_CLASS_V__x> enrolledClasses = new List<PS_ASU_SP_CLASS_V__x>();
-        public List<PS_ASU_SP_CLASS_V__x> droppedClasses = new List<PS_ASU_SP_CLASS_V__x>();
-    }
-
-    /**
      * Wrapper class for academic integrity data.
      */
-    global class AcademicIntegrityWrapper {
-        public Set<String> asrClasses = new Set<String>();
-        public List<PS_ASU_SP_CLASS_V__x> academicIntegrityData = new List<PS_ASU_SP_CLASS_V__x>();
+
+    global class TermClassesWrapper {
+        public String termEarnedUnits;
+        public String cumEarnedUnits;
+        public String termGpa;
+        public String cumGpa;
+        public List<ClassEnrollment> enrolledClasses = new List<ClassEnrollment>();
+        public List<ClassEnrollment> droppedClasses = new List<ClassEnrollment>();
+
+        public TermClassesWrapper() {
+        }
+
+        public void setTermEarnedUnits(String v) {
+            if (v == null)
+                termEarnedUnits = '0';
+            else
+                termEarnedUnits = v;
+        }
+        public void setCumulativeEarnedUnits(String v) {
+            if (v == null)
+                cumEarnedUnits = '0';
+            else
+                cumEarnedUnits = v;
+        }
+        public void setTermGpa(String v) {
+            if (v == null)
+                termGpa = '0';
+            else
+                termGpa = v;
+        }
+        public void setCumulativeGpa(String v) {
+            if (v == null)
+                cumGpa = '0';
+            else
+                cumGpa = v;
+        }
+
+        public void addEnrolledClass(ClassEnrollment v) {
+            enrolledClasses.add(v);
+        }
+        public void addDroppedClass(ClassEnrollment v) {
+            droppedClasses.add(v);
+        }
+    }
+
+    global class ClassEnrollment {
+        public String termName;
+        public String termCode;
+        public String session;
+        public String classNumber;
+        public String catalogNumber;
+        public String classTitle;
+        public String topic;
+        public String units;
+        public String status;
+        public String instructor;
+        public String days;
+        public String times;
+        public String dates;
+        public String location;
+        public String grade;
+        public String confOfParticipation;
+        public Boolean asr;
+        public List<ASRWrapper> asrList;
+        public Boolean enrolled;
+        public Boolean hasAcademicIntegrity;
+        public String academicIntegrityGrade;
+
+        public ClassEnrollment(DataPotluck.DPLEnrollment cs, List<DataPotluck.DPLAcademicStatusReport> ars) {
+            termCode = cs?.strm != null ? cs.strm : '--';
+            termName = cs?.strmDescription != null ? cs?.strmDescription : '--';
+            session = cs?.sessionCode != null ? cs.sessionCode : '--';
+            classNumber = cs?.classNumber != null ? cs.classNumber : '--';
+            catalogNumber = (cs?.classDetail?.subject != null &&
+                cs?.classDetail?.catalogNumber != null)
+                ? cs.classDetail.subject + ' ' + cs?.classDetail.catalogNumber
+                : '--';
+            classTitle = cs?.classDetail?.description != null ? cs.classDetail.description : '--';
+            topic = cs?.classDetail?.courseTopicTitle != null ? cs.classDetail.courseTopicTitle : '--';
+            units = cs?.unitsTaken != null ? cs.unitsTaken.stripTrailingZeros().toPlainString() : '--';
+            status = cs?.enrollmentStatusReason != null ? cs.enrollmentStatusReason : '--';
+
+            List<String> instructorList = new List<String>();
+            List<String> daysList = new List<String>();
+            List<String> timesList = new List<String>();
+            List<String> datesList = new List<String>();
+            List<String> locationList = new List<String>();
+
+            if (cs?.classDetail?.meetings != null) {
+                for (DataPotluck.DPLMeeting meetup : cs.classDetail.meetings) {
+                    // Collate instructors for each meetup
+                    if (meetup.instructors != null)
+                        for (DataPotluck.DPLInstructor instructor : meetup.instructors)
+                            if (!String.isBlank(instructor.firstName) && !String.isBlank(instructor.lastName))
+                                instructorList.add(instructor.firstName + ' ' + instructor.lastName);
+
+                    // Collate meeting days for each meetup
+                    if (meetup.meetDays != null)
+                        for (String meetDay : meetup.meetDays)
+                            if (!String.isBlank(meetDay))
+                                if (MEETUP_DAY_MAP.containsKey(meetDay))
+                                    daysList.add(MEETUP_DAY_MAP.get(meetDay));
+                                else
+                                    daysList.add(meetDay);
+
+                    // Collate start/end times for each meetup
+                    if (meetup.startTime != null && meetup.endTime != null) {
+                        Datetime startDt = Datetime.newInstance(meetup.startTime);
+                        Datetime endDt = Datetime.newInstance(meetup.endTime);
+                        timesList.add(
+                            String.format(
+                                '{0} - {1}',
+                                new List<Object>{ startDt.format('hh:mm a', 'MST'), endDt.format('hh:mm a', 'MST') }
+                            )
+                        );
+                    }
+
+                    // Collate start/end dates for each meetup
+                    if (meetup.startDate != null && meetup.endDate != null) {
+                        Datetime startDt = Datetime.newInstance(meetup.startDate);
+                        Datetime endDt = Datetime.newInstance(meetup.endDate);
+                        datesList.add(
+                            String.format(
+                                '{0} - {1}',
+                                new List<Object>{ startDt.format('MM/dd/yy', 'MST'), endDt.format('MM/dd/yy', 'MST') }
+                            )
+                        );
+                    }
+
+                    // Collate locaitons for each meetup
+                    if (
+                        meetup?.facilityLocationCode == 'ONLINE' &&
+                        new List<String>{ 'ICOURSE', 'ASUONLINE' }.contains(cs?.classDetail?.locationCode)
+                    ) {
+                        // facility location is online, and course location is either iCourse or ASU Online
+                        // then use the course location
+
+                        // use location description if it is set, otherwise decode location code
+                        String v = cs?.classDetail?.locationDescription != null
+                            ? cs.classDetail.locationDescription
+                            : cs.classDetail.locationCode == 'ICOURSE' ? 'iCourse' : 'ASU Online';
+
+                        if (!locationList.contains(v))
+                            locationList.add(v);
+                    } else if (
+                        meetup?.facilityLocationCode == 'ONLINE' &&
+                        cs?.classDetail?.locationCode != 'ASUONLINE'
+                    ) {
+                        // facility location is online, and is not ASU Online
+                        // then default to using iCourse
+                        String v = 'iCourse';
+
+                        if (!locationList.contains(v))
+                            locationList.add(v);
+                    } else {
+                        // try to uset the facaility location, fallback on class location if it is null
+                        if (!String.isBlank(meetup?.facilityLocationCode)) {
+                            // If the location code matches a location in SF, use the name of location
+                            // otherwise, fallback on location code
+                            String v = LOCATION_CODE_TO_NAME_MAP.containsKey(meetup?.facilityLocationCode)
+                                ? LOCATION_CODE_TO_NAME_MAP.get(meetup.facilityLocationCode)
+                                : meetup?.facilityLocationCode;
+
+                            if (!locationList.contains(v))
+                                locationList.add(v);
+                        } else {
+                            // If the location code matches a location in SF, use the name of location, otherwise
+                            // fallback on location description, and lastly, fallback on location code
+                            String v = LOCATION_CODE_TO_NAME_MAP.containsKey(cs?.classDetail?.locationCode)
+                                ? LOCATION_CODE_TO_NAME_MAP.get(cs.classDetail.locationCode)
+                                : cs?.classDetail?.locationDescription != null
+                                      ? cs.classDetail.locationDescription
+                                      : cs?.classDetail?.locationCode;
+
+                            if (!locationList.contains(v))
+                                locationList.add(v);
+                        }
+                    }
+                }
+            }
+
+            instructor = !instructorList.isEmpty() ? String.join(instructorList, '\n') : '--';
+            days = !daysList.isEmpty() ? String.join(daysList, ' ') : '--';
+            times = !timesList.isEmpty() ? String.join(timesList, '\n') : '--';
+            dates = !datesList.isEmpty() ? String.join(datesList, '\n') : '--';
+            location = !locationList.isEmpty()
+                ? String.join(locationList, '\n')
+                : (cs?.classDetail?.locationDescription != null
+                      ? cs.classDetail.locationDescription
+                      : (cs?.classDetail?.locationCode != null ? cs.classDetail.locationCode : '--'));
+
+            grade = cs?.officialGrade != null ? cs.officialGrade : '--';
+            confOfParticipation = cs?.faConfirmationOfParticipation != null
+                ? (cs.faConfirmationOfParticipation ? 'Y' : 'N')
+                : '--';
+            asrList = new List<ASRWrapper>();
+            asr = (ars != null && !ars.isEmpty()); // if not null, then there is an ASR for this class
+            enrolled = cs?.enrollmentStatus == 'E' && cs?.enrollmentStatusReason == 'ENRL';
+
+            // If ASR info exists, populate it
+            if (asr) {
+                for (DataPotluck.DPLAcademicStatusReport ar : ars) {
+                    asrList.add(new ASRWrapper(ar));
+                }
+            }
+
+            // Temporary override for conf of participation based on SPP campus/start term
+            if (cs?.classDetail?.locationCode == null) {
+                confOfParticipation = '--';
+            } else if (new List<String>{ 'ASUONLINE' }.contains(cs?.classDetail?.locationCode)) {
+                if (cs?.strm != null && cs?.strm < '2221')
+                    confOfParticipation = '--';
+            } else {
+                if (cs?.strm != null && cs?.strm < '2227')
+                    confOfParticipation = '--';
+            }
+
+            // Only set academic integrity info if current user has permission to this info
+            // access granted via custom perm, or sys admin, or in tests
+            if (
+                UserInfo.getProfileId() == RecordIdHelper.getProfileID('System Administrator') ||
+                Test.isRunningTest() ||
+                FeatureManagement.checkPermission('Student_360_Visible')
+            ) {
+                // Set academic integrity grade if the student has one AND they weren't in class in auditting capacity
+                hasAcademicIntegrity =
+                    cs?.academicIntegrityGrade != null &&
+                    cs.academicIntegrityGrade.contains('X') &&
+                    cs?.auditGradingBasis != true;
+                academicIntegrityGrade = hasAcademicIntegrity ? cs.academicIntegrityGrade : '--';
+            }
+        }
+
+        public Boolean isEnrolled() {
+            return enrolled;
+        }
+    }
+
+    global class ASRWrapper {
+        public String asrRptNo;
+        public String asrGrade;
+        public String asrReason;
+        public String asrAction;
+        public String asrComment;
+
+        public ASRWrapper(DataPotluck.DPLAcademicStatusReport ar) {
+            asrRptNo = ar.asrPeriodCode != null ? ar.asrPeriodCode : '--';
+            asrGrade = ar.grade != null ? ar.grade : '--';
+            if (ar.reasons != null && !ar.reasons.isEmpty()) {
+                List<String> reasons = new List<String>();
+                for (DataPotluck.DPLASRReason descr : ar.reasons)
+                    reasons.add(descr.gradeReasonDescription);
+                asrReason = String.join(reasons, ', ');
+            } else {
+                asrReason = '--';
+            }
+            if (ar.actions != null && !ar.actions.isEmpty()) {
+                List<String> actions = new List<String>();
+                for (DataPotluck.DPLASRAction descr : ar.actions)
+                    actions.add(descr.gradeActionDescription);
+                asrAction = String.join(actions, ', ');
+            } else {
+                asrAction = '--';
+            }
+            asrComment = ar.commentText != null ? ar.commentText : '--';
+        }
     }
 
     /**
-     * Wrapper class for judicial data.
+     * Wrapper for Guest Access.
      */
+    global class GuestAccessWrapper implements Comparable {
+        public String author;
+        public String comment;
+        public Long commentTimestamp;
+
+        public GuestAccessWrapper(
+            DataPotluck.DPLGuestAccess gAccess,
+            Map<String, String> emplIdToNameMp,
+            Map<String, String> asuriteIdToNameMp
+        ) {
+            // Record author
+            author = gAccess?.recordAddedBy != null && asuriteIdToNameMp.containsKey(gAccess.recordAddedBy)
+                ? asuriteIdToNameMp.get(gAccess.recordAddedBy)
+                : !String.isBlank(gAccess?.recordAddedBy) ? gAccess.recordAddedBy : '--';
+
+            // Start of comment depends on if guest user has MyASU guest access
+            if (gAccess?.onlineAccess == true) {
+                comment = 'My ASU GUEST ACCESS for ';
+            } else {
+                comment = 'CONSENT FOR ';
+            }
+
+            // Add all codes to comment
+            if (gAccess.permissionCodes != null && !gAccess.permissionCodes.isEmpty()) {
+                List<String> permissionLabels = new List<String>();
+                for (String permCode : gAccess.permissionCodes) {
+                    if (GUEST_ACCESS_CODE_MAP.containsKey(permCode))
+                        permissionLabels.add(GUEST_ACCESS_CODE_MAP.get(permCode));
+                    else
+                        permissionLabels.add(permCode);
+                }
+                comment += String.join(permissionLabels, ', ');
+            } else {
+                comment += 'no listed perms';
+            }
+
+            // and specify who the guest is
+            // first use provisional name, then use EMPLID lookup, then external org name, and finally leave as -- if unknown
+            if (comment != null)
+                comment += ' TO ';
+            if (gAccess.provisionalGuestName != null) {
+                comment += gAccess.provisionalGuestName;
+            } else if (gAccess.guestEmplid != null && emplIdToNameMp.containsKey(gAccess.guestEmplid)) {
+                comment += emplIdToNameMp.get(gAccess.guestEmplid);
+            } else if (gAccess.externalOrganizationName != null) {
+                comment += gAccess.externalOrganizationName;
+            } else if (gAccess.relationshipDescription != null) {
+                comment += gAccess.relationshipDescription;
+            } else {
+                comment += '--';
+            }
+
+            // And timestamp
+            commentTimestamp = gAccess?.effectiveDate;
+        }
+
+        public GuestAccessWrapper(StudentProfileChecklistComment cmm, Map<String, String> emplIdToNameMp) {
+            // Record author
+            author = cmm?.CMNT_ID != null && emplIdToNameMp.containsKey(cmm.CMNT_ID)
+                ? emplIdToNameMp.get(cmm.CMNT_ID)
+                : !String.isBlank(cmm?.CMNT_ID) ? cmm.CMNT_ID : '--';
+
+            // comment
+            comment = cmm?.COMMENTS != null ? cmm.COMMENTS : '--';
+            // And timestamp
+            commentTimestamp = cmm?.COMMENT_DTTM != null ? cmm.COMMENT_DTTM.getTime() : null;
+        }
+
+        global Integer compareTo(Object comparison) {
+            GuestAccessWrapper that = (GuestAccessWrapper) comparison;
+
+            if (that.commentTimestamp == this.commentTimestamp)
+                return 0;
+            if (that.commentTimestamp == null)
+                return -1;
+            if (this.commentTimestamp == null)
+                return 1;
+
+            return that.commentTimestamp - this.commentTimestamp > 0 ? 1 : -1;
+        }
+    }
+
+    /**
+     * Advisor Note wrapper
+     */
+    global class AdvisorNoteWrapper implements Comparable {
+        @AuraEnabled
+        public String authorUserId;
+        @AuraEnabled
+        public String authorName;
+        @AuraEnabled
+        public String programName;
+        @AuraEnabled
+        public String planName;
+        @AuraEnabled
+        public Long commentDt;
+        @AuraEnabled
+        public String comment;
+
+        public AdvisorNoteWrapper(DataPotluck.DPLAdvisingNote advNote, User u, String programName, String planName) {
+            comment = advNote?.advisingNoteText != null ? advNote.advisingNoteText : '--';
+            commentDt = advNote?.createdAt != null ? advNote.createdAt : null;
+            this.programName = programName != null
+                ? programName
+                : (advNote?.acadProgramCode != null && !String.isBlank(advNote.acadProgramCode)
+                      ? advNote.acadProgramCode
+                      : '--');
+            this.planName = planName != null
+                ? planName
+                : (advNote?.acadPlanCode != null && !String.isBlank(advNote.acadPlanCode)
+                      ? advNote.acadPlanCode
+                      : '--');
+            authorName = u?.Name != null
+                ? u.Name
+                : (advNote?.createdByOprid != null && !String.isBlank(advNote?.createdByOprid)
+                      ? advNote.createdByOprid
+                      : '--');
+            authorUserId = u?.Id; // null if unset since we will check this for null in JS to determine if make a link or not
+
+            // standardize newlines in comment
+            comment = comment.replaceAll('[\\n\\r]+', '\n');
+        }
+
+        public AdvisorNoteWrapper(StudentProfileChecklistComment cmm, User u, String programName, String planName) {
+            comment = cmm?.COMMENTS != null ? cmm.COMMENTS : '--';
+            commentDt = cmm?.COMMENT_DTTM != null ? cmm.COMMENT_DTTM.getTime() : null;
+            this.programName = programName != null
+                ? programName
+                : (cmm?.ACAD_PROGRAM != null && !String.isBlank(cmm.ACAD_PROGRAM) ? cmm.ACAD_PROGRAM : '--');
+            this.planName = planName != null
+                ? planName
+                : (cmm?.ACAD_PLAN != null && !String.isBlank(cmm.ACAD_PLAN) ? cmm.ACAD_PLAN : '--');
+            authorName = u?.Name != null
+                ? u.Name
+                : (cmm?.CMNT_ID != null && !String.isBlank(cmm.CMNT_ID) ? cmm.CMNT_ID : '--');
+            authorUserId = u?.Id; // null if unset since we will check this for null in JS to determine if make a link or not
+
+            // standardize newlines in comment
+            comment = comment.replaceAll('[\\n\\r]+', '\n');
+        }
+
+        global Integer compareTo(Object comparison) {
+            AdvisorNoteWrapper that = (AdvisorNoteWrapper) comparison;
+
+            if (that.commentDt == this.commentDt)
+                return 0;
+            if (that.commentDt == null)
+                return -1;
+            if (this.commentDt == null)
+                return 1;
+
+            return that.commentDt - this.commentDt > 0 ? 1 : -1;
+        }
+    }
+
     global class JudicialWrapper {
         public String CASE_NUMBER { get; set; }
         public String FILE_ID { get; set; }
@@ -1960,9 +2491,74 @@ global with sharing class StudentProfileController {
     /**
      * Wrapper class for comments.
      */
-    global class CommentWrapper {
-        public PS_ASU_SP_COMMNT_V__x comment { get; set; }
-        public String commenterUserId { get; set; }
+    global class CommentWrapper implements Comparable {
+        public String authorUserId;
+        public String authorName;
+        public Long commentDt;
+        public String comment;
+
+        public CommentWrapper(StudentProfileChecklistComment cmm, User u) {
+            comment = cmm?.COMMENTS != null ? cmm.COMMENTS : '--';
+            commentDt = cmm?.COMMENT_DTTM != null ? cmm.COMMENT_DTTM.getTime() : null;
+            authorName = u?.Name != null ? u.Name : (cmm?.CMNT_ID != null ? cmm.CMNT_ID : '--');
+            authorUserId = u?.Id; // null if unset since we will check this for null in JS to determine if make a link or not
+        }
+
+        global Integer compareTo(Object comparison) {
+            CommentWrapper that = (CommentWrapper) comparison;
+
+            if (that.commentDt == this.commentDt)
+                return 0;
+            if (that.commentDt == null)
+                return -1;
+            if (this.commentDt == null)
+                return 1;
+
+            return that.commentDt - this.commentDt > 0 ? 1 : -1;
+        }
+    }
+
+    /**
+     * Wrapper class for credits by exam
+     */
+    global class CreditByExamWrapper {
+        public String title;
+        public String courseTitle;
+        public String score;
+        public String unitsTransferred;
+
+        public CreditByExamWrapper(
+            StudentProfileTransferWork.ExternalExamExamDatum examData,
+            DataPotluck.DPLCourse cs
+        ) {
+            title = cs?.description != null ? cs.description : '--';
+            courseTitle = (cs?.subject != null &&
+                cs?.catalogNumber != null)
+                ? cs.subject + ' ' + cs?.catalogNumber
+                : '--';
+
+            // This is a temporary hardcode for the (Elective Credit) /course/.
+            // This is not a real course, since it is not enrollable - it is just a credit ASU gives to students as a result of taking CLEP
+            // This is the ONLY course like this, where it has a course id but where DPL doesn't include it
+            if (cs == null && examData.course_Id == '001013') {
+                title = '(Elective Credit)';
+                courseTitle = 'ASU RDE';
+            }
+
+            score = examData?.score != null ? examData.score.toString() : '--';
+            unitsTransferred = examData?.unit_transfer != null ? examData.unit_transfer.toString() : '--';
+        }
+
+        public void combine(CreditByExamWrapper replica) {
+            if (courseTitle == '--')
+                courseTitle = replica.courseTitle;
+            if (title == '--')
+                title = replica.title;
+            if (score == '--')
+                score = replica.score;
+            if (unitsTransferred == '--')
+                unitsTransferred = replica.unitsTransferred;
+        }
     }
 
     /**

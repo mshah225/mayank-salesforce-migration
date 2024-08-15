@@ -36,7 +36,8 @@ public class RelationshipDispatcher implements TriggerDispatcherInterface {
      */
     public void afterInsert() {
         RelationshipService.createReciprocal(newList);
-        RelationshipService.insertCreatedByProfileName(newList);
+        RelationshipService.populateCreatedBy(newList);
+        RelationshipService.createSubscribers(newList);
     }
 
     /**

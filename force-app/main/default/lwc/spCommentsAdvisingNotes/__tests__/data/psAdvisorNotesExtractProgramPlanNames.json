@@ -1,55 +1,26 @@
 [
     {
-        "advUserId": "0050W000007OI1kQAG",
-        "note": {
-            "ACAD_CAREER__c": "GRAD",
-            "COMMENTS__c": "Name for program and plan.",
-            "CREATDTTM__c": "2021-03-10T12:38:25.000Z",
-            "CREATEOPRID__c": "wlgibson",
-            "DisplayUrl": "PS_ASU_SP_ADNOTE_V('1215721572')",
-            "EMPLID__c": "1215721572",
-            "ExternalId": "1215721572",
-            "Id": "000000000000000AAA",
-            "NAME__c": "Wendy Gibson-Wright",
-            "STRM__c": "2217",
-            "Academic_Plan__c": "ESCSEIMCS",
-            "Academic_Program__c": "GRES",
-            "Academic_Plan__r": {"Name": "Comp Sci (Cybersecurity)", "Id": "a0Dd000000R5jIzEAJ"},
-            "Academic_Program__r": {"Name": "Ira A Fulton Engineering", "Id": "a0Dd000000R5jIzEAJ"}
-        }
+        "authorUserId": "0050W000007OI1kQAG",
+        "authorName": "Wendy Gibson-Wright",
+        "programName": "Ira A Fulton Engineering",
+        "planName": "Comp Sci (Cybersecurity)",
+        "commentDt": 1615379905000,
+        "comment": "Name for program and plan."
     },
     {
-        "advUserId": "005d0000006GR22AAG",
-        "note": {
-            "ACAD_CAREER__c": "UGRD",
-            "COMMENTS__c": "No names, code only.",
-            "CREATDTTM__c": "2020-12-22T10:32:31.000Z",
-            "CREATEOPRID__c": "lcolli1",
-            "DisplayUrl": "PS_ASU_SP_ADNOTE_V('1215721572')",
-            "EMPLID__c": "1215721572",
-            "ExternalId": "1215721572",
-            "Id": "000000000000000AAA",
-            "NAME__c": "Leah Miller",
-            "STRM__c": "2211",
-            "Academic_Plan__c": "ESCSEIBS",
-            "Academic_Program__c": "UGES"
-        }
+        "authorUserId": "005d0000006GR22AAG",
+        "authorName": "Leah Miller",
+        "programName": "UGES",
+        "planName": "ESCSEIBS",
+        "commentDt": 1608633151000,
+        "comment": "No names, code only."
     },
     {
-        "advUserId": "0050W000007OI1kQAG",
-        "note": {
-            "ACAD_CAREER__c": "UGRD",
-            "COMMENTS__c": "No codes.",
-            "CREATDTTM__c": "2020-07-23T14:36:58.000Z",
-            "CREATEOPRID__c": "wlgibson",
-            "DisplayUrl": "PS_ASU_SP_ADNOTE_V('1215721572')",
-            "EMPLID__c": "1215721572",
-            "ExternalId": "1215721572",
-            "Id": "000000000000000AAA",
-            "NAME__c": "Wendy Gibson-Wright",
-            "STRM__c": "2207",
-            "Academic_Plan__c": null,
-            "Academic_Program__c": null
-        }
+        "authorUserId": "0050W000007OI1kQAG",
+        "authorName": "Wendy Gibson-Wright",
+        "programName": "--",
+        "planName": "--",
+        "commentDt": 1595515018000,
+        "comment": "No codes."
     }
 ]

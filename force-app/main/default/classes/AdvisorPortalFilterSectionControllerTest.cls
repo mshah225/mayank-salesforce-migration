@@ -152,9 +152,9 @@ private class AdvisorPortalFilterSectionControllerTest {
         Date tPlus9d = System.today().addDays(9);
         Date tPlus10d = System.today().addDays(10);
 
-        // Turn off autosubscriber service since the Subscription IDs in the custom metadata reference objects
+        // Turn off auto subscription since the Subscription IDs in the custom metadata reference objects
         // that don't exist in a test context
-        AutoSubscriberService.disableAutoSubscriberService = true;
+        SubscriberAutoSubscriptionService.disableAutoSubscriptions = true;
 
         // Also create some case classifications for the success student trigger to use
         Case_Classification__c asuCoachOutreachFuncGrp = newFunctionalGroup('ASU Coach Outreach');

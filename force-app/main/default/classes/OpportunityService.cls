@@ -850,4 +850,47 @@ public class OpportunityService {
             }
         }
     }
+
+    public static void updateOpportunityTypeForGrads(List<Opportunity> newOpps) {
+
+        List<Id> planIdsFromOpp = new List<Id>();
+
+
+        for (Opportunity opp : newOpps) {
+            planIdsFromOpp.add(opp.Academic_Plan__c);
+        }
+
+        Map<Id, RecordType> recordTypeIdsForGradOpps = new Map<Id, RecordType>([
+            SELECT Id 
+            FROM RecordType
+            WHERE (DeveloperName = 'Graduate_Application' OR DeveloperName = 'Graduate_Prospect') 
+            AND sObjectType = 'Opportunity'
+        ]);
+
+        Map<Id, Plan__c> plansForOpp = new Map<Id, Plan__c>([
+            SELECT Degree_Level__c 
+            FROM Plan__c
+            WHERE Id IN: planIdsFromOpp
+        ]);
+
+        for (Opportunity opp : newOpps) {
+            if (recordTypeIdsForGradOpps.get(opp.RecordTypeId) != null) {
+                Plan__c planForOpp = plansForOpp.get(opp.Academic_Plan__c);
+
+                if (planForOpp == null) {
+                    continue;
+                }
+
+                if (planForOpp.Degree_Level__c == null) {
+                    opp.Type = 'Certificate';
+                } else if (planForOpp.Degree_Level__c == 'Masters') {
+                    opp.Type = 'Masters';
+                } else if (planForOpp.Degree_Level__c == 'Doctorate') {
+                    opp.Type = 'Doctoral';
+                } else if (planForOpp.Degree_Level__c == 'Juris Doctor' || planForOpp.Degree_Level__c == '1st Prof') {
+                    opp.Type = 'Juris Doctor';
+                }
+            }
+        }
+    }
 }

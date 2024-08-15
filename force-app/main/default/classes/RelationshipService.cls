@@ -1,28 +1,21 @@
 public class RelationshipService {
     /**
-     * When a relationship is inserted a "Reciprocal" (recip)
-     * relationship must be created. The primary difference between the two relationships
-     * is that the Contact__c and Related_Contact__c field values are flipped. The relationships
-     * are linked 1:1 via the Reciprocal_Relationship__c field.
-     * <p>
-     * If a relationship is inserted and the Reciprocal_Relationship__c field is pre-populated,
-     * we only need to update the recip to ensure that the values match.
-     * </p>
+     * Creates reciprocal relationships for the given list of relationships.
      *
-     * @param List<SObject> List of newly inserted relationships
+     * @param newRels List of newly inserted relationships.
      */
     public static void createReciprocal(List<Relationship__c> newRels) {
-        Id contactToAccountRTID; // Id of contact to account record type
-        ID accountToContactRTID; // Id of account to contact record type
-        Map<Id, Id> recipRTIDMap = new Map<Id, Id>(); // Id of record type to it's reciprocal
-        Map<String, Relationships__c> relationshipTypes = Relationships__c.getAll(); // Map of relationship types to their recip values
+        Id contactToAccountRTID;
+        ID accountToContactRTID;
+        Map<Id, Id> recipRTIDMap = new Map<Id, Id>();
+        Map<String, Relationships__c> relationshipTypes = Relationships__c.getAll();
         Map<String, Relationship_SubType__c> relationshipSubTypes = Relationship_SubType__c.getAll();
-        Relationship__c rel; // Temporary relationship
-        Map<Id, Relationship__c> sourceToRecip = new Map<Id, Relationship__c>(); // Source Id to recip relationship object
-        Map<Id, Id> sourceToRecipId = new Map<Id, Id>(); // Contains the source Id to the Id for it's reciprocal
+        Relationship__c rel;
+        Map<Id, Relationship__c> sourceToRecip = new Map<Id, Relationship__c>();
+        Map<Id, Id> sourceToRecipId = new Map<Id, Id>();
         List<Relationship__c> relsToUpdate = new List<Relationship__c>();
 
-        // Build reciprocal map
+        // Fetching RecordType IDs for relationship mapping
         contactToAccountRTID = [
             SELECT Id
             FROM RecordType
@@ -42,7 +35,7 @@ public class RelationshipService {
         recipRTIDMap.put(contactToAccountRTID, accountToContactRTID);
         recipRTIDMap.put(accountToContactRTID, contactToAccountRTID);
 
-        // Create reciprocal relationships
+        // Processing each new relationship to create reciprocal relationships
         for (Relationship__c relation : newRels) {
             if (relationshipTypes.containsKey(relation.Relationship_Type__c)) {
                 if (relation.Reciprocal_Relationship__c == null) {
@@ -62,24 +55,20 @@ public class RelationshipService {
                         Source_Date__c = relation.Source_Date__c
                     );
 
-                    if (
-                        relationshipTypes.get(relation.Relationship_Type__c) != null &&
-                        relationshipTypes.get(relation.Relationship_Type__c).Reciprocal__c != null
-                    ) {
+                    // Setting reciprocal relationship type and sub-type
+                    if (relationshipTypes.get(relation.Relationship_Type__c)?.Reciprocal__c != null) {
                         rel.Relationship_Type__c = relationshipTypes.get(relation.Relationship_Type__c).Reciprocal__c;
                     } else {
                         rel.Relationship_Type__c = null;
                     }
 
-                    if (
-                        relationshipSubTypes.get(relation.Sub_Type__c) != null &&
-                        relationshipSubTypes.get(relation.Sub_Type__c).Reciprocal_SubType__c != null
-                    ) {
+                    if (relationshipSubTypes.get(relation.Sub_Type__c)?.Reciprocal_SubType__c != null) {
                         rel.Sub_Type__c = relationshipSubTypes.get(relation.Sub_Type__c).Reciprocal_SubType__c;
                     } else {
                         rel.Sub_Type__c = null;
                     }
 
+                    // Setting reciprocal record type
                     if (recipRTIDMap.get(relation.RecordTypeId) == null) {
                         rel.RecordTypeId = relation.RecordTypeId;
                     } else {
@@ -88,8 +77,6 @@ public class RelationshipService {
 
                     sourceToRecip.put(relation.Id, rel);
                 } else if (relation.Reciprocal_Relationship__c != null) {
-                    // I am the recip and I have the Id of my source
-                    // Map my source to my id in a queryable way (Map<Id, Id>)
                     sourceToRecipId.put(relation.Reciprocal_Relationship__c, relation.Id);
                 }
             } else {
@@ -97,7 +84,7 @@ public class RelationshipService {
             }
         }
 
-        // Insert Reciprocal relationships
+        // Inserting reciprocal relationships
         try {
             if (!sourceToRecip.isEmpty()) {
                 insert sourceToRecip.values();
@@ -108,6 +95,7 @@ public class RelationshipService {
             ErrorLogger.log(e, vars, false);
         }
 
+        // Updating reciprocal relationships
         if (!sourceToRecipId.isEmpty()) {
             for (Relationship__c relation : [
                 SELECT Id, Reciprocal_Relationship__c
@@ -131,21 +119,19 @@ public class RelationshipService {
     }
 
     /**
-     * When a relationship is updated (restricted by record type) the "Reciprocal" (recip)
-     * relationship must be updated. The primary difference between the two relationships
-     * is that the Contact__c and Related_Contact__c field values are flipped. The relationships
-     * are linked 1:1 via the Reciprocal_Relationship__c field.
+     * Updates reciprocal relationships for the given list of relationships.
      *
-     * @param List<SObject> List of newly inserted relationships
+     * @param newRels List of newly updated relationships.
      */
     public static void updateReciprocal(List<SObject> newRels) {
-        Map<String, Relationships__c> relationshipTypes = Relationships__c.getAll(); // Map of relationship types to their recip values
+        Map<String, Relationships__c> relationshipTypes = Relationships__c.getAll();
         Map<String, Relationship_SubType__c> relationshipSubTypes = Relationship_SubType__c.getAll();
-        Map<Id, Relationship__c> recipToSource = new Map<Id, Relationship__c>(); // Id of recip relationship to it's source
+        Map<Id, Relationship__c> recipToSource = new Map<Id, Relationship__c>();
         List<Relationship__c> relsToUpdate = new List<Relationship__c>();
         List<Relationship__c> relsWithoutRecips = new List<Relationship__c>();
-        Relationship__c rel; // Temporary relationship
+        Relationship__c rel;
 
+        // Processing each relationship to update reciprocal relationships
         for (Relationship__c relation : (List<Relationship__c>) newRels) {
             if (relationshipTypes.containsKey(relation.Relationship_Type__c)) {
                 if (relation.Reciprocal_Relationship__c != null) {
@@ -158,6 +144,7 @@ public class RelationshipService {
             }
         }
 
+        // Fetching reciprocal relationships and updating them
         if (!recipToSource.isEmpty()) {
             for (Relationship__c relation : [
                 SELECT
@@ -182,7 +169,6 @@ public class RelationshipService {
             ]) {
                 rel = recipToSource.get(relation.Id);
 
-                // Ensure field values are set to corresponding reciprocal field values
                 relation.Contact__c = rel.Related_Contact__c;
                 relation.Related_Contact__c = rel.Contact__c;
                 relation.Account__c = rel.Related_Account__c;
@@ -197,19 +183,14 @@ public class RelationshipService {
                 relation.Source__c = rel.Source__c;
                 relation.Source_Date__c = rel.Source_Date__c;
 
-                if (
-                    relationshipTypes.get(rel.Relationship_Type__c) != null &&
-                    relationshipTypes.get(rel.Relationship_Type__c).Reciprocal__c != null
-                ) {
+                // Setting reciprocal relationship type and sub-type
+                if (relationshipTypes.get(rel.Relationship_Type__c)?.Reciprocal__c != null) {
                     relation.Relationship_Type__c = relationshipTypes.get(rel.Relationship_Type__c).Reciprocal__c;
                 } else {
                     relation.Relationship_Type__c = null;
                 }
 
-                if (
-                    relationshipSubTypes.get(rel.Sub_Type__c) != null &&
-                    relationshipSubTypes.get(rel.Sub_Type__c).Reciprocal_SubType__c != null
-                ) {
+                if (relationshipSubTypes.get(rel.Sub_Type__c)?.Reciprocal_SubType__c != null) {
                     relation.Sub_Type__c = relationshipSubTypes.get(rel.Sub_Type__c).Reciprocal_SubType__c;
                 } else {
                     relation.Sub_Type__c = null;
@@ -229,19 +210,21 @@ public class RelationshipService {
             }
         }
 
+        // Creating reciprocal relationships for those without recips
         if (!relsWithoutRecips.isEmpty()) {
             createReciprocal(relsWithoutRecips);
         }
     }
 
     /**
-     * When a relationship is deleted, the reciprocal also needs to be deleted
+     * Deletes reciprocal relationships for the given list of relationships.
      *
-     * @param List<SObject> List of old inserted relationships
+     * @param oldRels List of relationships to delete.
      */
     public static void deleteReciprocal(List<Relationship__c> oldRels) {
         Set<Id> relsToDelete = new Set<Id>();
 
+        // Collecting reciprocal relationship IDs to delete
         for (Relationship__c relation : oldRels) {
             if (relation.Reciprocal_Relationship__c != null) {
                 relsToDelete.add(relation.Reciprocal_Relationship__c);
@@ -253,18 +236,22 @@ public class RelationshipService {
             for (Id idForRel : relsToDelete) {
                 relationsToDelete.add(new Relationship__c(id = idForRel));
             }
-            delete relationsToDelete;
+            try {
+                delete relationsToDelete;
+            } catch (Exception e) {
+                // Handle exceptions during deletion
+            }
         }
     }
 
     /**
-     * Creates a new relationship between an account and contact
+     * Creates a new relationship between an account and contact.
      *
-     * @param c contact Id
-     * @param a accojnt Id
-     * @param rt record type id
-     * @param title title of relationship
-     * @return relationship object
+     * @param contactId The contact ID.
+     * @param accountId The account ID.
+     * @param recordTypeId The record type ID.
+     * @param title The title of the relationship.
+     * @return The created relationship object.
      */
     public static Relationship__c createContactAccountRelationship(
         Id contactId,
@@ -276,14 +263,19 @@ public class RelationshipService {
             Related_Account__c = accountId,
             Contact__c = contactId,
             Relationship_Type__c = 'Employee',
-            RecordTypeId = recordTypeID,
+            RecordTypeId = recordTypeId,
             Title__c = title
         );
 
         return r;
     }
 
-    public static void insertCreatedByProfileName(List<Relationship__c> newRelationships) {
+    /**
+     * Populates the Relationship_Created_By__c field based on the created by profile name.
+     *
+     * @param newRelationships List of newly created relationships.
+     */
+    public static void populateCreatedBy(List<Relationship__c> newRelationships) {
         Set<Id> newRelationshipIds = new Set<Id>();
         List<Relationship__c> relationshipsToUpdate = new List<Relationship__c>();
 
@@ -303,7 +295,7 @@ public class RelationshipService {
         }
 
         try {
-            if (relationshipsToUpdate.size() > 0) {
+            if (!relationshipsToUpdate.isEmpty()) {
                 update relationshipsToUpdate;
             }
         } catch (Exception e) {
@@ -311,5 +303,18 @@ public class RelationshipService {
             vars.add(ErrorLogger.convertStringToJSON('Exception: ', e.getMessage()));
             ErrorLogger.log(e, vars, false);
         }
+    }
+
+    /**
+     * Creates subscribers for the given relationships.
+     *
+     * @param relationships List of relationships.
+     */
+    public static void createSubscribers(List<Relationship__c> relationships) {
+        SubscriberAutoSubscriptionService autoSubscriptionService = new SubscriberAutoSubscriptionService(
+            relationships,
+            'Relationship'
+        );
+        autoSubscriptionService.processRelationshipRecords();
     }
 }

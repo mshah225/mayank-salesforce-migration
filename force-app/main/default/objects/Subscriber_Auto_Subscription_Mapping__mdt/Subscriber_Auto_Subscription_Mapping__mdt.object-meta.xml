@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Used to evaluate automatic subscription criteria and is dependent on object type
-        and functional group.</description>
-    <label>Subscriber Auto Subscription Mapping</label>
-    <pluralLabel>Subscriber Auto Subscription Mappings</pluralLabel>
-    <visibility>Public</visibility>
-</CustomObject>

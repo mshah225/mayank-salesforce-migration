@@ -152,6 +152,17 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
         });
     }
 
+    navigateToCampaignPage() {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: this.propertyValue,
+                objectApiName: 'Campaign',
+                actionName: 'view'
+            },
+        });
+    }
+
     updateSelectedCampaignMembers() {
         const idList = this.selectedContacts.map((row) => {
             return row.Id;
@@ -255,6 +266,5 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
                 }
             });
         }
-        
     }
 }

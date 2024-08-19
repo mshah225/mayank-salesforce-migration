@@ -21,7 +21,7 @@ public with sharing class CampusVisitWalkInFormController {
         List<Contact> matchedDetailsWithContacts = Database.query(buildContactQuery(conToSearch));
 
         String soslSearch = buildContactSosl(conToSearch);
-        if (matchedDetailsWithContacts.size() == 0) {
+        if (matchedDetailsWithContacts.size() == 0 && (conToSearch.FirstName != null || conToSearch.LastName != null)) {
             matchedDetailsWithContacts = Search.query(soslSearch);
         }
 

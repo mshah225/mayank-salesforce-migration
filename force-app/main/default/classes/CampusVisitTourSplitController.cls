@@ -30,12 +30,7 @@ public class CampusVisitTourSplitController {
 
             pod.addMember(cm);
         }
-
-        System.debug(recreatedPods);
-
-        for (TourPod poddy : recreatedPods.values()) {
-            System.debug(poddy);
-        }
+        
         return recreatedPods.values();
     }
 

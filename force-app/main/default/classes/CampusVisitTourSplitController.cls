@@ -16,6 +16,29 @@ public class CampusVisitTourSplitController {
         update cmsToUpdate;
     }
 
+    @AuraEnabled
+    public static List<TourPod> refreshCampaignMemberTable(List<CampaignMember> cmsToUpdate) {
+        Map<String, TourPod> recreatedPods = new Map<String, TourPod>();
+
+        for (CampaignMember cm : cmsToUpdate) {
+            String tourGroupId = '' + cm.Tour_Group_Id__c;
+            TourPod pod = recreatedPods.get(tourGroupId);
+            if (pod == null) {
+                pod = new TourPod(999, (Integer)cm.Tour_Group_Id__c);
+                recreatedPods.put(tourGroupId, pod);
+            }
+
+            pod.addMember(cm);
+        }
+
+        System.debug(recreatedPods);
+
+        for (TourPod poddy : recreatedPods.values()) {
+            System.debug(poddy);
+        }
+        return recreatedPods.values();
+    }
+
     @AuraEnabled(cacheable=true)
     public static Map<String, Integer> getCampaignMemberAcademicSessions(String campaignId) {
 

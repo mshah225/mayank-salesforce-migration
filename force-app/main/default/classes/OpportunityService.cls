@@ -893,4 +893,35 @@ public class OpportunityService {
             }
         }
     }
+    
+    public static void checkAndCreateMasterTracker(List<Opportunity> newOpps) {
+        for (Opportunity newOpp : newOpps) {
+
+            if (meetsMasterTrackerConditions(newOpp)) {
+                Graduate_Master_Tracker__c masterTracker = MasterTrackerService.createMasterTrackerRecord(newOpp);
+
+                newOpp.Sync_to_Master_Tracker_Record__c = true;
+                newOpp.Graduate_Master_Tracker__c = masterTracker.Id;
+            }
+            
+        }
+    }
+
+    private static Boolean meetsMasterTrackerConditions(Opportunity opp) {
+        return opp.Interview_Status__c == 'Complete' && opp.Plan__c == 'FTMBA' && 
+        opp.Round__c != null && opp.Interview_Date__c < Date.today() &&
+        opp.Graduate_Master_Tracker__c == null;
+    }
+
+    public static void disableSyncingForMasterTracker(Map<Id, Opportunity> newOpps, Map<Id, Opportunity> oldOpps) {
+
+        for (Id newOppId : newOpps.keyset()) {
+            Opportunity newOpp = newOpps.get(newOppId);
+            Opportunity oldOpp = oldOpps.get(newOppId);
+            if (newOpp.File_Review_Status__c == 'Final Review Complete' && oldOpp.File_Review_Status__c != 'Final Review Complete'
+            && newOpp.Interview_Status__c == 'Complete' && oldOpp.Interview_Status__c != 'Complete') {
+                newOpp.Sync_to_Master_Tracker_Record__c = false;
+            }
+        }
+    }
 }

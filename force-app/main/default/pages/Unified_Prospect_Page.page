@@ -274,6 +274,16 @@
                 </apex:pageBlockSection>
             </apex:pageBlock>
 
+            <apex:pageBlock id="lead_source_info">
+                <apex:pageBlockSection title="Lead Source Information" collapsible="false" columns="2">         
+
+                        <apex:inputField value="{!opportunity.LeadSource}" required="false" id="leadSource" label="Lead Source" />
+
+                        <apex:inputField value="{!opportunity.Lead_Source_Subtype__c}" required="false" id="leadSourceSubType" label="Most Recent Lead Source Subtype"  />
+
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+
             <apex:pageBlock id="sourceEventBlock">
                 <apex:pageBlockSection id="sourceEventSection" title="Create EITHER a Case or Event" collapsible="false" columns="1">
                     <apex:tabPanel switchType="client" selectedTab="source" id="theTabPanel" tabClass="activeTab" inactiveTabClass="inactiveTab"

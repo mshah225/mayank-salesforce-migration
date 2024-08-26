@@ -1,4 +1,8 @@
 public class CaseService {
+
+    public static List<Case_Assignment_Rule__c> carsFromCaseDetails;
+
+
     /**
      * Returns the fields needed on the Service Center for a given case
      * @param The Case Id to look up
@@ -237,6 +241,7 @@ public class CaseService {
         Map<ID, Contact> relatedContactMap = new Map<ID, Contact>();
         Map<Id, Campaign> sourceMap = new Map<Id, Campaign>();
         Id recruitmentCaseRecordTypeId = RecordIDHelper.getRecordTypeId('Case', 'ASU_Admission_Services');
+        createPotentialCARList(newList);
 
         Set<Id> caseContactIdSet = new Set<ID>();
         Set<Id> campaignIdSet = new Set<Id>();
@@ -351,7 +356,47 @@ public class CaseService {
                     }
                 }
             }
+            
+            if (FeatureManagement.checkPermission('Case_Service_CAR') && newCase.Case_Assignment_Rule__c != null) {
+                
+                Contact con = relatedContactMap.get(newCase.ContactId);
+                Opportunity firstOpp = null;
+                CaseAssignmentDeterminer assignmentDet = null;
 
+                if (con != null) {
+                    List<Opportunity> opList = con.Opportunities__r;
+                    firstOpp = opList == null || opList.isEmpty() ? null : opList[0];
+                }
+
+                if (newCase.Associate_Case_to_Active_Opportunity__c == true && firstOpp != null) {
+                    newCase.Opportunity__c = firstOpp.Id;
+                }
+                
+                Case_Assignment_Rule__c carFromCase = [
+                    SELECT
+                    Id,
+                    Queue_ID__c,
+                    Origin__c,
+                    CC_Category__c,
+                    CC_Sub_Category__c,
+                    CC_Functional_Group__c,
+                    Type_of_Additional_Assignment_Needed__c
+                    FROM Case_Assignment_Rule__c
+                    WHERE Id =: newCase.Case_Assignment_Rule__c
+                ];
+
+                if (firstOpp == null) {
+                    assignmentDet = new CaseAssignmentDeterminer(carFromCase);
+                } else {                    
+                    assignmentDet = new CaseAssignmentDeterminer(firstOpp, carFromCase);
+                }
+                
+                if (assignmentDet != null) {
+                    assignmentDet.setCaseFields(newCase);
+                    return;
+                }
+            }
+            
             if (recruitmentCaseRecordTypeId != null && newCase.RecordTypeId == recruitmentCaseRecordTypeId) {
                 Contact con = relatedContactMap.get(newCase.ContactId);
                 Opportunity firstOpp = null;
@@ -365,7 +410,7 @@ public class CaseService {
                 if (newCase.Associate_Case_to_Active_Opportunity__c == true && firstOpp != null) {
                     newCase.Opportunity__c = firstOpp.Id;
                 }
-
+                
                 if (!UserInfo.getFirstName().equals('API') || UserInfo.getLastName().equals('ASU EMAIL SERVICE')) {
                     // If in a non API user context or are running as the email service
                     // then we should perform assignment by looking at fields on the case
@@ -373,22 +418,25 @@ public class CaseService {
                 } else {
                     // In API user context we should use the CAR of the case to determine
                     // how to perform assignment
-                    if (sourceMap.containsKey(newCase.Case_Source__c)) {
+
+                    Case_Assignment_Rule__c carFromCase = getCARFromCaseDetails(newCase);
+
+                    if (carFromCase != null) {
+                        // If the case's source has a CAR, use that
+                        assignmentDet = new CaseAssignmentDeterminer(firstOpp, carFromCase);
+                    } else if (sourceMap.containsKey(newCase.Case_Source__c) && sourceMap.get(newCase.Case_Source__c).Case_Assignment_Rule__c != null) {
                         Campaign source = sourceMap.get(newCase.Case_Source__c);
-                        if (source.Case_Assignment_Rule__c != null) {
-                            // If the case's source has a CAR, use that
-                            assignmentDet = new CaseAssignmentDeterminer(firstOpp, source.Case_Assignment_Rule__r);
-                        } else if (
-                            firstOpp != null &&
-                            firstOpp.Territory_Assignment_Last_Rule_Type__c != 'Default User' &&
-                            firstOpp.Owner.IsActive == true
-                        ) {
-                            // Is the case's source has no CAR but the Opporunity has enough detail, use that
-                            assignmentDet = new CaseAssignmentDeterminer(firstOpp);
-                        } else {
-                            // Lastly, fallback on using the default CAR
-                            assignmentDet = new CaseAssignmentDeterminer(firstOpp, defaultCAR);
-                        }
+                        assignmentDet = new CaseAssignmentDeterminer(firstOpp, source.Case_Assignment_Rule__r);
+                    } else if (
+                        firstOpp != null &&
+                        firstOpp.Territory_Assignment_Last_Rule_Type__c != 'Default User' &&
+                        firstOpp.Owner.IsActive == true
+                    ) {
+                        // Is the case's source has no CAR but the Opporunity has enough detail, use that
+                        assignmentDet = new CaseAssignmentDeterminer(firstOpp);
+                    } else {
+                        // Lastly, fallback on using the default CAR
+                        assignmentDet = new CaseAssignmentDeterminer(firstOpp, defaultCAR);
                     }
                 }
                 if (assignmentDet != null)
@@ -589,6 +637,86 @@ public class CaseService {
         }
     }
 
+    public static void createPotentialCARList(List<Case> caseIn) {
+        Set<String> programCode = new Set<String>();
+        Set<String> ownerOrgCode = new Set<String>();
+        Set<String> career = new Set<String>();
+        Set<String> source = new Set<String>();
+
+        for (Case caseDetail : caseIn) {
+            if (caseDetail.Program_Code__c != null) {
+                programCode.add(caseDetail.Program_Code__c);
+            }
+            if (caseDetail.Owner_Organization_Code__c != null) {
+                ownerOrgCode.add(caseDetail.Owner_Organization_Code__c);
+            }
+            if (caseDetail.Career__c != null) {
+                career.add(caseDetail.Career__c);
+            }
+            if (caseDetail.Case_Source__c != null) {
+                source.add(caseDetail.Case_Source__c);
+            }
+        }
+
+        carsFromCaseDetails = [
+            SELECT
+                Id,
+                Queue_ID__c,
+                Origin__c,
+                CC_Category__c,
+                CC_Sub_Category__c,
+                CC_Functional_Group__c,
+                Type_of_Additional_Assignment_Needed__c,
+                Case_Source_Campaign__c,
+                Program_Code__c,
+                Career__c,
+                Owner_Organization_Code__c
+
+            FROM Case_Assignment_Rule__c
+            WHERE  (Case_Source_Campaign__c IN: source AND Career__c IN: career) OR 
+            (Program_Code__c IN: programCode AND Owner_Organization_Code__c IN: ownerOrgCode) OR 
+            (Program_Code__c IN: programCode AND Owner_Organization_Code__c = null) OR 
+            (Career__c IN: career AND Case_Source_Campaign__c = null)
+        ];
+    }
+
+    public static Case_Assignment_Rule__c getCARFromCaseDetails(Case caseIn) {
+        Integer foundCARPriority = 0;
+        Case_Assignment_Rule__c foundCAR = null;
+
+        for (Case_Assignment_Rule__c potentialCarMatch : carsFromCaseDetails) {
+            if (caseIn.Case_Source__c == potentialCarMatch.Case_Source_Campaign__c && caseIn.Career__c == potentialCarMatch.Career__c) {
+                if (foundCARPriority < 4) {
+                    foundCAR = potentialCarMatch;
+                    foundCARPriority = 4; 
+                }
+            }
+
+            if (caseIn.Program_Code__c == potentialCarMatch.Program_Code__c && caseIn.Owner_Organization_Code__c == potentialCarMatch.Owner_Organization_Code__c) {
+                if (foundCARPriority < 3) {
+                    foundCAR = potentialCarMatch;
+                    foundCARPriority = 3; 
+                }
+            }
+
+            if (caseIn.Program_Code__c == potentialCarMatch.Program_Code__c && potentialCarMatch.Owner_Organization_Code__c == null) {
+                if (foundCARPriority < 2) {
+                    foundCAR = potentialCarMatch;
+                    foundCARPriority = 2; 
+                }
+            }
+
+            if (caseIn.Career__c == potentialCarMatch.Career__c && potentialCarMatch.Case_Source_Campaign__c == null) {
+                if (foundCARPriority < 1) {
+                    foundCAR = potentialCarMatch;
+                    foundCARPriority = 1; 
+                }
+            }
+        }
+
+        return foundCAR;
+    }
+
     public class CaseAssignmentDeterminer {
         /**
          * Determine how to assign the case using details from opportunity
@@ -646,6 +774,10 @@ public class CaseService {
             setFieldsFromCar(car);
         }
 
+        public CaseAssignmentDeterminer(Case_Assignment_Rule__c car) {          
+            setFieldsFromCar(car);
+        }
+
         public void setCaseFields(Case newCase) {
             newCase.OwnerId = ownerId == null ? newCase.OwnerId : ownerId;
             newCase.Origin__c = origin == null ? newCase.Origin__c : origin;
@@ -655,6 +787,7 @@ public class CaseService {
             newCase.Type_of_Additional_Assignment_Needed__c = typeOfAdditionalAssignment == null
                 ? newCase.Type_of_Additional_Assignment_Needed__c
                 : typeOfAdditionalAssignment;
+            newCase.Case_Assignment_Rule__c = carId == null ? newCase.Case_Assignment_Rule__c : carId;
         }
 
         private void setFieldsFromCar(Case_Assignment_Rule__c car) {
@@ -668,6 +801,8 @@ public class CaseService {
                 subCategory = car.CC_Sub_Category__c;
             if (car.CC_Functional_Group__c != null)
                 functionalGroup = car.CC_Functional_Group__c;
+            if (car.Id != null)
+                carId = car.Id;
         }
 
         private Boolean useOppForTerritoryManager(Opportunity opp) {
@@ -685,5 +820,6 @@ public class CaseService {
         public String category = null;
         public String subCategory = null;
         public String typeOfAdditionalAssignment = null;
+        public String carId = null;
     }
 }

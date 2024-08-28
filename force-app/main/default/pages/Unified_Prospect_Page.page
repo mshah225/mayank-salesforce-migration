@@ -279,7 +279,7 @@
 
                         <apex:inputField value="{!opportunity.LeadSource}" required="false" id="leadSource" label="Lead Source" />
 
-                        <apex:inputField value="{!opportunity.Lead_Source_Subtype__c}" required="false" id="leadSourceSubType" label="Most Recent Lead Source Subtype"  />
+                        <apex:inputField value="{!opportunity.Lead_Source_Subtype__c}" required="false" id="leadSourceSubType" label="Lead Source Subtype"  />
 
                 </apex:pageBlockSection>
             </apex:pageBlock>

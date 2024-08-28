@@ -43,7 +43,7 @@ public with sharing class MasterTrackerService {
             Test_Source__c = 'Educational Testing Service' AND
             Test_Type__c =: oppIn.Admission_Test_Type__c
             AND Test_Component__c = 'DISPLAY'
-            AND Test_Date__c < LAST_N_DAYS:1825
+            AND Test_Date__c = LAST_N_DAYS:1825
         ];
 
         if (testScores.size() == 0) {

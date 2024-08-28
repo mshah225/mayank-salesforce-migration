@@ -16,15 +16,14 @@ public class TestScoreDispatcher implements TriggerDispatcherInterface {
         this.oldMap = oldMap;
     }
 
-    public void beforeInsert() {
-        TestScoreService.checkIfTestShouldSyncWithMasterTracker(newMap);
+    public void beforeInsert() { 
     }
-
     public void beforeUpdate() {
     }
     public void beforeDelete() {
     }
-    public void afterInsert() {
+    public void afterInsert() {        
+        TestScoreService.checkIfTestShouldSyncWithMasterTracker(newMap);
     }
     public void afterUpdate() {
     }

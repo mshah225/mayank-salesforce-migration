@@ -393,7 +393,7 @@ public class CaseService {
                 
                 if (assignmentDet != null) {
                     assignmentDet.setCaseFields(newCase);
-                    return;
+                    continue;
                 }
             }
             

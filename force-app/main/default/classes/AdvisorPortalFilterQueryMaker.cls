@@ -47,10 +47,12 @@ public class AdvisorPortalFilterQueryMaker {
             Map<Id, List<Case>> contactIdToCasesMap = new Map<Id, List<Case>>();
             for (Case c : allCases) {
                 Id contactId = c.ContactId;
-                contactIds.add(contactId);
-                if (!contactIdToCasesMap.containsKey(contactId))
-                    contactIdToCasesMap.put(contactId, new List<Case>());
-                contactIdToCasesMap.get(contactId).add(c);
+                if (contactId != null) {
+                    contactIds.add(contactId);
+                    if (!contactIdToCasesMap.containsKey(contactId))
+                        contactIdToCasesMap.put(contactId, new List<Case>());
+                    contactIdToCasesMap.get(contactId).add(c);
+                }
             }
 
             // convert to wrappers
@@ -64,7 +66,7 @@ public class AdvisorPortalFilterQueryMaker {
                 AdvisorPortalContact contactWrapper = new AdvisorPortalContact(contact);
 
                 List<AdvisorPortalCase> caseWrappers = new List<AdvisorPortalCase>();
-                for (Case c : contactIdToCasesMap.get(contact.Id)) {
+                for (Case c : contactIdToCasesMap.get(contactId)) {
                     caseWrappers.add(new AdvisorPortalCase(c));
                 }
                 if (!caseWrappers.isEmpty()) {

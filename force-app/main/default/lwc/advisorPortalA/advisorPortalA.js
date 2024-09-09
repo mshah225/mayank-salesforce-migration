@@ -35,8 +35,8 @@ export default class AdvisorPortalA extends LightningElement {
     caseStatusPicklistValues = [];
     campusPicklistValues = [];
     caseSubjectPicklistValues = [];
-    caseCategoryPicklistValues = [];
-    caseSubCategoryPicklistValues = [];
+    caseCategoryPicklistValues = undefined;
+    caseSubCategoryPicklistValues = undefined;
     academicProgramOptions = [];
     schoolDepartmentOptions = [];
     academicPlanOptions = [];
@@ -82,29 +82,40 @@ export default class AdvisorPortalA extends LightningElement {
     // Retrieve default filter
     @wire(getDefaultFilter, {})
     gotDefaultFilter(result) {
-        if (falseWireRun(result)) return; // Sometimes the wire is run with null data and error - this should be considered a fake run and nothing should happen
+        const {data, error} = result;
 
-        let {data, error} = result;
-        if (data != null) {
-            this.currentFilter = JSON.parse(data);
-        } else if (error != null) {
-            this.currentFilter = {};
-            // eslint-disable-next-line no-console
-            console.error('gotDefaultFilter', error);
+        let defaultFilter;
+
+        if (data !== undefined) {
+            defaultFilter = cloneObj(data);
         }
 
-        if (this.currentFilter != null) {
-            // default filter settings if none exists
-            if (this.currentFilter.caseTypeState == null) this.currentFilter.caseTypeState = 'ProactiveCasesState';
-            if (this.currentFilter.career == null) this.currentFilter.career = 'UGRD';
+        if (error !== undefined) {
+            // eslint-disable-next-line no-console
+            console.error('gotDefaultFilter', error);
 
+            const eMsg = extractErrorMessages(error);
+            this.showToast(
+                'Error',
+                'Unexpected error while loading default filter - You should open a bug ticket with the Salesforce team. Error message: \n' +
+                    eMsg[0],
+                'error',
+                60000
+            );
+        }
+
+        if (defaultFilter != null) {
             this.loadMore(); // for any picklist options that depend on filter being set
+            this.currentFilter = cloneObj(defaultFilter);
+
             Promise.all([
                 this.getViewAsOptions(), // once the default filter is loaded - we can get the view as options
                 this.refreshCampusValues(), // depends on career
                 this.refreshSchoolDepartmentPicklistVaues(), // depends on acad program
                 this.refreshAcademicPlanPicklistValues(), // depends on acad program, school, and degree level
+                this.refreshSelectedUsers(), // actually reload cases and searhc and all that...
             ]).then(() => {
+                this.currentFilter = cloneObj(defaultFilter); // re-select default filter values (since might have been invalid while reloading options and been kicked out)
                 this.loadLess();
             });
         }
@@ -201,6 +212,7 @@ export default class AdvisorPortalA extends LightningElement {
                     this.loadingCampusValues = false;
                 }),
                 this.getViewAsOptions(),
+                this.refreshSelectedUsers(),
             ]);
         } else if (changedField === 'degreeLevel') {
             this.loadingAcadPlan = true;
@@ -364,12 +376,15 @@ export default class AdvisorPortalA extends LightningElement {
     // The selected users has changed (now re-search stuff)
     changeSelectedUsers(e) {
         this.selectedUsers = [...e.detail];
+        this.refreshSelectedUsers();
+    }
 
+    refreshSelectedUsers() {
         this.loadingCaseStatus = true;
         this.loadingCaseCategory = true;
         this.loadingCaseSubCategory = true;
         this.loadMore();
-        Promise.all([
+        return Promise.all([
             this.refreshCaseSubjectPicklistValues().then(() => {
                 this.loadingCaseStatus = false;
             }),
@@ -545,6 +560,13 @@ export default class AdvisorPortalA extends LightningElement {
         const message = e.detail.message;
         const type = e.detail.type;
         const duration = e.duration ? e.duration : 5000;
+        this.showToast(title, message, type, duration);
+    }
+    handleLightningToast(e) {
+        const title = e.toastAttributes.title;
+        const message = e.toastAttributes.message;
+        const type = e.toastAttributes.type;
+        const duration = e.toastAttributes.duration || 5000;
         this.showToast(title, message, type, duration);
     }
     showToast(title, message, type, duration) {

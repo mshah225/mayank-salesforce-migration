@@ -30,6 +30,8 @@ export function buildPicklistOptionsArray(optionsMap) {
  *          More than one layer of Proxies makes JSON.stringify unusably slow
  */
 export function cloneObj(obj) {
+    if (obj === null) return null;
+    if (obj === undefined) return undefined;
     return JSON.parse(JSON.stringify(obj));
 }
 

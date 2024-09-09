@@ -1,5 +1,39 @@
 public class AdvisorPortalFilterSectionController {
     /**
+     * Check if the current user has permission to access UGRAD advisor portal
+     */
+    @AuraEnabled(cacheable=true)
+    public static Boolean hasUgradAccess() {
+        try {
+            Boolean hasPermSet = PermissionSetHelper.currentUserHasPermissionSet(
+                'Role_Academic_Advisor_Portal_Service_Users'
+            );
+            Boolean isSysAdmin = ProfileHelper.currentUserHasProfile('System Administrator');
+
+            return hasPermSet || isSysAdmin;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    /**
+     * Check if the current user has permission to access GRAD advisor portal
+     */
+    @AuraEnabled(cacheable=true)
+    public static Boolean hasGradAccess() {
+        try {
+            Boolean hasPermSet = PermissionSetHelper.currentUserHasPermissionSet(
+                'Role_Graduate_Academic_Advisor_Portal_Service_Users'
+            );
+            Boolean isSysAdmin = ProfileHelper.currentUserHasProfile('System Administrator');
+
+            return hasPermSet || isSysAdmin;
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+    }
+
+    /**
      * Gets active picklist values for a provided Object and Field name.
      *
      * @param objectName, the name of the Object the picklist lives on.

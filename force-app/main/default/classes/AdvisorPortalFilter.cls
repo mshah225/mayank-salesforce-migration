@@ -34,6 +34,7 @@ public class AdvisorPortalFilter {
     };
 
     // Control variables
+    @AuraEnabled
     public String version {
         get {
             // Since we must support saving filters in the advisor portal, we must have some versioning in case we ever change this class
@@ -44,35 +45,63 @@ public class AdvisorPortalFilter {
     }
 
     // Some fields that are always set
+    @AuraEnabled
     public String caseTypeState; // "AllCasesState" | "ProactiveCasesState" | "WatchlistCasesState"
+    @AuraEnabled
     public String career; // "GRD" | "UGRD"
 
     // -----  Used in which mode?  ---------------------  UGRAD  ------  GRAD  ------ -- v1 -- v2 --
+    @AuraEnabled
     public String studentString; //.....................  ugrad  ......  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String campus; //............................  ugrad  ......  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String academicLevel; //.....................  ugrad  .................... ..  y ..  y ..
+    @AuraEnabled
     public String studentGroupCode; //..................  ugrad  .................... ..  y ..  y ..
+    @AuraEnabled
     public String major; //.............................  ugrad  .................... ..  y ..  y ..
+    @AuraEnabled
     public String degreeLevel; //......................................  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String academicProgram; //..................................  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String schoolDepartment; //.................................  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String academicPlan; //.....................................  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String admitTermFrom; //....................................  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String admitTermTo; //......................................  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String residency; //.........................  ugrad........  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String caseStatus; //........................  ugrad........  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String caseCategory; //......................  ugrad........  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String caseSubCategory; //..................................  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String caseSubject; //.......................  ugrad  .................... ..  y ..  y ..
+    @AuraEnabled
     public String specialPopulation; //................................  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String outlookScore; //......................  ugrad  .................... ..  y ..  y ..
+    @AuraEnabled
     public String outlookChange; //.....................  ugrad  .................... ..  y ..  y ..
+    @AuraEnabled
     public String caseCount; //.........................  ugrad........  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String createdFromDate; //...................  ugrad........  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String createdToDate; //.....................  ugrad........  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String followUpFromDate; //..................  ugrad........  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String followUpToDate; //....................  ugrad........  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String persistenceFromDate; //...............  ugrad  .................... ..  y ..  y ..
+    @AuraEnabled
     public String persistenceToDate; //.................  ugrad  .................... ..  y ..  y ..
 
     public AdvisorPortalFilter() {
@@ -593,34 +622,26 @@ public class AdvisorPortalFilter {
      * later change the format, we need to be able to update there filter to the newest formats.
      */
     public void upgradeToMostRecentVersion() {
-        List<String> versionPath = new List<String>();
-        versionPath.add(version);
+        List<String> upgradePath = new List<String>();
+        upgradePath.add(version);
 
-        if (version == null || version == 'v1') {
-            // From v1 -> v2 we began base64 encoding these text fields (since they could include a semicolon)
-            if (!String.isBlank(caseSubject))
-                caseSubject = String.join(encodeBase64ElementsOfArray(caseSubject.split(';')), ';');
-            if (!String.isBlank(caseCategory))
-                caseCategory = String.join(encodeBase64ElementsOfArray(caseCategory.split(';')), ';');
-            if (!String.isBlank(caseSubCategory))
-                caseSubCategory = String.join(encodeBase64ElementsOfArray(caseSubCategory.split(';')), ';');
+        if (version == 'v1') {
+            // from v1 -> v2 we began base64 encoding subject, category, and subcategory
             version = 'v2';
-            versionPath.add('v2');
+            upgradePath.add('v2');
+
+            // Convert fields
+            if (String.isNotBlank(caseSubject))
+                caseSubject = String.join(encodeBase64ElementsOfArray(caseSubject.split(';')), ';');
+            if (String.isNotBlank(caseCategory))
+                caseCategory = String.join(encodeBase64ElementsOfArray(caseCategory.split(';')), ';');
+            if (String.isNotBlank(caseSubCategory))
+                caseSubCategory = String.join(encodeBase64ElementsOfArray(caseSubCategory.split(';')), ';');
         }
 
-        if (version == 'v2') {
-            // OK - nothing to do yet since v2 is most recent, put v2 -> v3 here once we get to v3
-        }
-
-        // Throw an error if we aren't at the most recent version after upgrading
         if (version != mostRecentVersion) {
             throw new AdvisorPortalFilterUpgradeException(
-                'After upgrading, the filter should have version ' +
-                    mostRecentVersion +
-                    ' but it instead has version ' +
-                    version +
-                    '.  Upgrade path was ' +
-                    String.join(versionPath, ' -> ')
+                'Failed to upgrade filter to most recent version. Upgrade path was: ' + String.join(upgradePath, ' -> ')
             );
         }
     }

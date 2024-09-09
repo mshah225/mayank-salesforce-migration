@@ -11,7 +11,10 @@
     <template if:false={showFauxView}>
         <div>
             <div class="slds-text-align_right slds-var-m-bottom_x-small">
-                <c-advisor-portal-feedback-button  current-filter={currentFilter} onshowtoast={handleToast}></c-advisor-portal-feedback-button>
+                <c-advisor-portal-feedback-button
+                    current-filter={currentFilter}
+                    onshowtoast={handleToast}
+                ></c-advisor-portal-feedback-button>
             </div>
         </div>
 
@@ -40,8 +43,7 @@
                         <div class="slds-card slds-var-p-around_small">
                             <c-advisor-portal-save-filters
                                 current-filter={currentFilter}
-                                onloading={handleLoading}
-                                onshowtoast={handleToast}
+                                onlightning__showtoast={handleLightningToast}
                             ></c-advisor-portal-save-filters>
                         </div>
                     </div>

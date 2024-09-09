@@ -1151,6 +1151,96 @@ private class AdvisorPortalFilterSectionControllerTest {
     }
 
     @isTest
+    private static void testHasUgradAccess() {
+        /** setup */
+        User testSysAdmin = TestUserHelper.createTestSysAdmin();
+        USer testStandardUser = TestUserHelper.createTestStandardUser();
+        insert new List<User>{ testSysAdmin, testStandardUser };
+        PermissionSetAssignment psa = new PermissionSetAssignment(
+            AssigneeId = testStandardUser.Id,
+            PermissionSetId = [
+                SELECT Id
+                FROM PermissionSet
+                WHERE Name = 'Role_Academic_Advisor_Portal_Service_Users'
+                LIMIT 1
+            ]
+            .Id
+        );
+        insert psa;
+
+        Boolean sysAdminHasAccess, standardUserHasAccess;
+
+        System.runAs(testSysAdmin) {
+            sysAdminHasAccess = AdvisorPortalFilterSectionController.hasUgradAccess();
+        }
+
+        System.runAs(testStandardUser) {
+            standardUserHasAccess = AdvisorPortalFilterSectionController.hasUgradAccess();
+        }
+
+        Assert.isTrue(sysAdminHasAccess, 'Sys admin should always have access, but they do not');
+        Assert.isTrue(
+            standardUserHasAccess,
+            'Role_Academic_Advisor_Portal_Service_Users permission set should grant access, but it did not'
+        );
+    }
+
+    @isTest
+    private static void testHasGradAccess() {
+        /** setup */
+        User testSysAdmin = TestUserHelper.createTestSysAdmin();
+        USer testStandardUser = TestUserHelper.createTestStandardUser();
+        insert new List<User>{ testSysAdmin, testStandardUser };
+        PermissionSetAssignment psa = new PermissionSetAssignment(
+            AssigneeId = testStandardUser.Id,
+            PermissionSetId = [
+                SELECT Id
+                FROM PermissionSet
+                WHERE Name = 'Role_Graduate_Academic_Advisor_Portal_Service_Users'
+                LIMIT 1
+            ]
+            .Id
+        );
+        insert psa;
+
+        Boolean sysAdminHasAccess, standardUserHasAccess;
+
+        System.runAs(testSysAdmin) {
+            sysAdminHasAccess = AdvisorPortalFilterSectionController.hasGradAccess();
+        }
+
+        System.runAs(testStandardUser) {
+            standardUserHasAccess = AdvisorPortalFilterSectionController.hasGradAccess();
+        }
+
+        Assert.isTrue(sysAdminHasAccess, 'Sys admin should always have access, but they do not');
+        Assert.isTrue(
+            standardUserHasAccess,
+            'Role_Graduate_Academic_Advisor_Portal_Service_Users permission set should grant access, but it did not'
+        );
+    }
+
+    @isTest
+    private static void testHasNoAccess() {
+        /** setup */
+         USer testStandardUser = TestUserHelper.createTestStandardUser();
+        insert new List<User>{  testStandardUser };
+ 
+        Boolean standardUserHasNoUgradAccess, standardUserHasNoGradAccess;
+ 
+        System.runAs(testStandardUser) {
+            standardUserHasNoUgradAccess = AdvisorPortalFilterSectionController.hasUgradAccess();
+            standardUserHasNoGradAccess = AdvisorPortalFilterSectionController.hasUgradAccess();
+        }
+
+        Assert.isFalse(standardUserHasNoUgradAccess, 'User should, without Role_Academic_Advisor_Portal_Service_Users, have no access to UGRAD advsior portal - but they did');
+        Assert.isFalse(
+            standardUserHasNoGradAccess,
+            'User should, without Role_Graduate_Academic_Advisor_Portal_Service_Users, have no access to GRAD advsior portal - but they did'
+        );
+    }
+
+    @isTest
     private static void testGetResidencyOptions() {
         LogSuite.activateTestFlowSuite('testGetResidencyOptions');
         Test.startTest();

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import {createElement} from 'lwc';
 import LightningErrorOrRetry from 'c/lightningErrorOrRetry';
 

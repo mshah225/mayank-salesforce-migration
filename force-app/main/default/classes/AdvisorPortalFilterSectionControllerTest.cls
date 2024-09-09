@@ -103,6 +103,14 @@ private class AdvisorPortalFilterSectionControllerTest {
      *   + G-CAT-2 (category)
      *       + G-SUBCAT-2-1 (subcategory)
      *       + G-SUBCAT-2-2 (subcategory)
+     *   + G-CAT-3 (category)
+     *       + G-SUBCAT-3-1 (subcategory) (active=FALSE)
+     *       + G-SUBCAT-3-1 (subcategory) (visible=FALSWE)
+     *   + G-CAT-4 (category) (active=FALSE)
+     *       + G-SUBCAT-4-1 (subcategory)
+     *   + G-CAT-5 (category) (visible=FALSWE)
+     *       + G-SUBCAT-5-1 (subcategory)
+     *   + Watchlist (category)
      *
      * 17 cases
      * +----------------------+-------------+----------------------------------+----------+------------------+----------------+------------+----------------+
@@ -872,14 +880,42 @@ private class AdvisorPortalFilterSectionControllerTest {
 
         Case_Classification__c gradFuncGrp = newFunctionalGroup('ASU Graduate Advisor Portal');
         insert gradFuncGrp;
+        Case_Classification__c watchlistCategory2 = newCaseClassification('Watchlist', gradFuncGrp.Id);
         Case_Classification__c gradCategory1 = newCaseClassification('G-CAT-1', gradFuncGrp.Id);
         Case_Classification__c gradCategory2 = newCaseClassification('G-CAT-2', gradFuncGrp.Id);
-        insert new List<Case_Classification__c>{ gradCategory1, gradCategory2 };
+        Case_Classification__c gradCategory3 = newCaseClassification('G-CAT-3', gradFuncGrp.Id);
+        Case_Classification__c gradCategory4 = newCaseClassification('G-CAT-4', gradFuncGrp.Id);
+        gradCategory4.Active__c = false;
+        Case_Classification__c gradCategory5 = newCaseClassification('G-CAT-5', gradFuncGrp.Id);
+        gradCategory5.Visible__c = false;
+        insert new List<Case_Classification__c>{
+            watchlistCategory2,
+            gradCategory1,
+            gradCategory2,
+            gradCategory3,
+            gradCategory4,
+            gradCategory5
+        };
         Case_Classification__c gradSubcat1_1 = newCaseSubClassification('G-SUBCAT-1-1', gradCategory1.Id);
         Case_Classification__c gradSubcat1_2 = newCaseSubClassification('G-SUBCAT-1-2', gradCategory1.Id);
         Case_Classification__c gradSubcat2_1 = newCaseSubClassification('G-SUBCAT-2-1', gradCategory2.Id);
         Case_Classification__c gradSubcat2_2 = newCaseSubClassification('G-SUBCAT-2-2', gradCategory2.Id);
-        insert new List<Case_Classification__c>{ gradSubcat1_1, gradSubcat1_2, gradSubcat2_1, gradSubcat2_2 };
+        Case_Classification__c gradSubcat3_1 = newCaseSubClassification('G-SUBCAT-3-1', gradCategory3.Id);
+        gradSubcat3_1.Active__c = false;
+        Case_Classification__c gradSubcat3_2 = newCaseSubClassification('G-SUBCAT-3-2', gradCategory3.Id);
+        gradSubcat3_2.Visible__c = false;
+        Case_Classification__c gradSubcat4_1 = newCaseSubClassification('G-SUBCAT-4-1', gradCategory4.Id);
+        Case_Classification__c gradSubcat5_1 = newCaseSubClassification('G-SUBCAT-5-1', gradCategory5.Id);
+        insert new List<Case_Classification__c>{
+            gradSubcat1_1,
+            gradSubcat1_2,
+            gradSubcat2_1,
+            gradSubcat2_2,
+            gradSubcat3_1,
+            gradSubcat3_2,
+            gradSubcat4_1,
+            gradSubcat5_1
+        };
 
         // And then the cases
         String caseUGrad = RecordIdHelper.getRecordTypeId('Case', 'ASU_Advisor_Outreach');
@@ -1229,7 +1265,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<Case_Classification__c> allGradCategories = [
             SELECT Id, Name
             FROM Case_Classification__c
-            WHERE Parent__r.Name = 'ASU Graduate Advisor Portal' AND Name != 'Watchlist' AND Active__c = TRUE
+            WHERE
+                Parent__r.Name = 'ASU Graduate Advisor Portal'
+                AND Name != 'Watchlist'
+                AND Active__c = TRUE
+                AND Visible__c = TRUE
+                AND Parent__r.Active__c = TRUE
+                AND Parent__r.Visible__c = TRUE
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
@@ -1263,6 +1305,9 @@ private class AdvisorPortalFilterSectionControllerTest {
                 Parent__r.Parent__r.Name = 'ASU Graduate Advisor Portal'
                 AND Parent__r.Name != 'Watchlist'
                 AND Active__c = TRUE
+                AND Visible__c = TRUE
+                AND Parent__r.Active__c = TRUE
+                AND Parent__r.Visible__c = TRUE
         ];
 
         List<String> allSubCategories = new List<String>();
@@ -1477,16 +1522,11 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter.caseTypeState = 'AllCasesState';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -1511,16 +1551,11 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter.caseTypeState = 'AllCasesState';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -1561,40 +1596,23 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter4.studentString = 'asimms4';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
-        String resultsJSON3 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results3 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter3)
         );
-        String resultsJSON4 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results4 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter4)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
-        List<AdvisorPortalContact> results3 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON3,
-            List<AdvisorPortalContact>.class
-        );
-        List<AdvisorPortalContact> results4 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON4,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assertEquals(1, results.size(), 'Should get 1 contact-case wrapper returned');
         System.assertEquals('Anya Simms', results[0].portalContact.Name, 'Should get second test contact');
@@ -1653,26 +1671,16 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter2.campus = '0011221101;0011221102';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -1726,26 +1734,16 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter2.academicLevel = 'Freshman;Junior';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -1787,26 +1785,16 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter2.studentGroupCode = 'STGRP2';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -1848,26 +1836,16 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter2.major = 'Computer Science';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -1925,26 +1903,16 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter2.degreeLevel = 'masters;certificate';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -1999,26 +1967,16 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter2.academicProgram = 'IRAAFUL;PREMED';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -2078,26 +2036,16 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter2.academicPlan = 'BUSNESS;TVFILM';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -2177,36 +2125,21 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter3.admitTermFrom = '2191';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
 
-        String resultsJSON3 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results3 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter3)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results3 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON3,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -2265,26 +2198,16 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter2.residency = 'Resident;Non-Resident';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -2331,26 +2254,16 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter2.caseStatus = 'Email Sent;Busy Signal';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -2400,26 +2313,16 @@ private class AdvisorPortalFilterSectionControllerTest {
             EncodingUtil.base64Encode(Blob.valueOf('CAT-3'));
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -2469,26 +2372,16 @@ private class AdvisorPortalFilterSectionControllerTest {
             EncodingUtil.base64Encode(Blob.valueOf('CAT-3'));
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -2547,26 +2440,16 @@ private class AdvisorPortalFilterSectionControllerTest {
             EncodingUtil.base64Encode(Blob.valueOf('G-SUBCAT-2-1'));
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -2616,26 +2499,16 @@ private class AdvisorPortalFilterSectionControllerTest {
             EncodingUtil.base64Encode(Blob.valueOf('Bee girl'));
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -2685,26 +2558,16 @@ private class AdvisorPortalFilterSectionControllerTest {
             EncodingUtil.base64Encode(Blob.valueOf('Bee girl'));
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -2759,26 +2622,16 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter2.outlookScore = 'very low;low';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -2825,26 +2678,16 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter2.outlookChange = 'down;up';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -2874,16 +2717,11 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter.specialPopulation = 'accelerated 4+1 degrees';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -2909,16 +2747,11 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter.specialPopulation = 'format students';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -2944,16 +2777,11 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter.specialPopulation = 'provivisional admits, not met yet';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -2979,16 +2807,11 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter.specialPopulation = 'veterans';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -3014,16 +2837,11 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter.specialPopulation = 'applied to graduate';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -3049,16 +2867,11 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter.specialPopulation = 'mayo students';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -3084,17 +2897,11 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter.specialPopulation = 'cintana students';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
         assertCorrectReturned(expectedStudents, results);
@@ -3119,16 +2926,11 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter.specialPopulation = 'research assistants';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -3154,16 +2956,11 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter.specialPopulation = 'teaching assistants';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -3189,16 +2986,11 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter.specialPopulation = 'concurrent enrollment';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -3224,16 +3016,11 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter.specialPopulation = 'active students with registation hold';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -3456,66 +3243,36 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter6.specialPopulation = 'active students with registation hold';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
 
-        String resultsJSON3 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results3 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter3)
         );
 
-        String resultsJSON4 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results4 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter4)
         );
 
-        String resultsJSON5 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results5 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter5)
         );
 
-        String resultsJSON6 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results6 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter6)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results3 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON3,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results4 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON4,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results5 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON5,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results6 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON6,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -3576,26 +3333,16 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter2.caseCount = '4';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -3683,36 +3430,21 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter3.createdToDate = endOftMinus3d.format('yyyy-MM-dd');
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
 
-        String resultsJSON3 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results3 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter3)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results3 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON3,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -3783,36 +3515,21 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter3.followUpToDate = String.valueof(tPlus3d);
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
 
-        String resultsJSON3 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results3 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter3)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results3 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON3,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -3886,36 +3603,21 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter3.persistenceToDate = String.valueof(tMinus4d);
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
 
-        String resultsJSON3 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results3 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter3)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results3 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON3,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -3960,26 +3662,16 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter2.caseTypeState = 'AllCasesState';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -4010,16 +3702,11 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter.caseTypeState = 'WatchlistCasesState';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());
@@ -4068,26 +3755,16 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter2.studentGroupCode = 'STGRP4';
 
         Test.startTest();
-        String resultsJSON = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
-        String resultsJSON2 = AdvisorPortalFilterSectionController.getFilteredCases(
+        List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
             new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
-
-        List<AdvisorPortalContact> results = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON,
-            List<AdvisorPortalContact>.class
-        );
-
-        List<AdvisorPortalContact> results2 = (List<AdvisorPortalContact>) JSON.deserialize(
-            resultsJSON2,
-            List<AdvisorPortalContact>.class
-        );
 
         System.assert(!expectedStudents.isEmpty(), 'Should have some matches - otherwise the test is pointless');
         System.assertEquals(expectedStudents.size(), results.size());

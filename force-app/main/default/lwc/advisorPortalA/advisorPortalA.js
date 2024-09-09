@@ -12,7 +12,7 @@ import getCaseSubClassificationPicklistValues from '@salesforce/apex/AdvisorPort
 import getAcademicProgramPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicProgramPicklistValues';
 import getSchoolDepartmentPicklistVaues from '@salesforce/apex/AdvisorPortalFilterSectionController.getSchoolDepartmentPicklistVaues';
 import getAcademicPlanPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicPlanPicklistValues';
-import {buildPicklistOptionsArray, falseWireRun} from 'c/helperFunctions';
+import {buildPicklistOptionsArray, falseWireRun, cloneObj, extractErrorMessages} from 'c/helperFunctions';
 import LightningCaseTransferModal from 'c/lightningCaseTransferModal';
 import AdvisorPortalModalMassEmail from 'c/advisorPortalModalMassEmail';
 import AdvisorPortalModalMassClose from 'c/advisorPortalModalMassClose';
@@ -337,17 +337,24 @@ export default class AdvisorPortalA extends LightningElement {
         this.loadMore();
         getFilteredCases({viewAsOptions: this.selectedUsers, filterJSON: JSON.stringify(this.currentFilter)})
             .then((val) => {
-                this.allResults = JSON.parse(val);
+                this.allResults = cloneObj(val);
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
                 console.error(err);
-                this.showToast(
-                    'Error',
-                    'Unexpected error while retrieving cases - more details can be found in the JS console.  You should open a bug ticket with the Salesforce team.',
-                    'error',
-                    5000
-                );
+
+                let errorStr = 'ERROR';
+                try {
+                    errorStr =
+                        'Unexpected error while retrieving cases. ' +
+                        extractErrorMessages(err)[0] +
+                        '. More details can be found in the JS console.  You should open a bug ticket with the Salesforce team.';
+                } catch (e) {
+                    errorStr +=
+                        'Unexpected error while retrieving cases. We could not extract a human readable error message. More details can be found in the JS console.  You should open a bug ticket with the Salesforce team.';
+                }
+
+                this.showToast('Error', errorStr, 'error', 5000);
             })
             .finally(() => {
                 this.loadLess();

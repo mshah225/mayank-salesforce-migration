@@ -1,0 +1,9 @@
+{
+    "uiapi": {
+        "query": {
+            "Case_Classification__c": {
+                "edges": []
+            }
+        }
+    }
+}

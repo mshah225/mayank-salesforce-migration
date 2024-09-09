@@ -1,7 +1,7 @@
 <template>
     <template lwc:if={loading}>
         <div class="slds-is-relative slds-p-vertical_large">
-            <lightning-spinner variant="brand" size="small"> </lightning-spinner>
+            <lightning-spinner variant="brand" size={iconSize}> </lightning-spinner>
         </div>
     </template>
     <template lwc:elseif={hasContent}>

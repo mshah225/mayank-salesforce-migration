@@ -191,9 +191,11 @@ public class AdvisorPortalFilterSectionController {
                 .returnField('Id')
                 .returnField('Name')
                 .restrictEqual('Parent__r.Parent__r.Name', 'ASU Graduate Advisor Portal')
-                .restrictNotEqual('Parent__r.Name', 'Watchlist')
-                .restrictEqual('Active__c', true)
-                .restrictEqual('Visible__c', true)
+                .restrictNotEqual('Parent__r.Name', 'Watchlist') // Not watchlist parent
+                .restrictEqual('Active__c', true) // this is active
+                .restrictEqual('Visible__c', true) // this is visible
+                .restrictEqual('Parent__r.Active__c', true) // parent is active
+                .restrictEqual('Parent__r.Visible__c', true) // parent is visible
                 .restrictEqual('RecordTypeId', subcategoryRecordType);
 
             // Additionally filter on parent__r.name if category is set
@@ -448,7 +450,7 @@ public class AdvisorPortalFilterSectionController {
     }
 
     @AuraEnabled
-    public static String getFilteredCases(List<Id> viewAsOptions, String filterJSON) {
+    public static List<AdvisorPortalContact> getFilteredCases(List<Id> viewAsOptions, String filterJSON) {
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterJSON);
 
         List<AdvisorPortalContact> results = new List<AdvisorPortalContact>();
@@ -468,7 +470,7 @@ public class AdvisorPortalFilterSectionController {
                 .query();
         }
 
-        return JSON.serialize(results);
+        return results;
     }
 
     public class AdvisorPortalException extends Exception {

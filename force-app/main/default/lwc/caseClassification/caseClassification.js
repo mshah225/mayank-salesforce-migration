@@ -2,14 +2,15 @@
 import {LightningElement, api, wire} from 'lwc';
 import {getRecord, getFieldValue} from 'lightning/uiRecordApi';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
-import getClassifications from '@salesforce/apex/CaseClassificationLWCService.getClassifications';
+import {gql, graphql} from 'lightning/uiGraphQLApi';
+import {extractErrorMessages} from 'c/helperFunctions';
 
 // Case fields
 import FUNCTIONAL_GROUP_ID_FIELD from '@salesforce/schema/Case.CC_Functional_Group__c';
 import CATEGORY_ID_FIELD from '@salesforce/schema/Case.CC_Category__c';
 import SUB_CATEGORY_ID_FIELD from '@salesforce/schema/Case.CC_Sub_Category__c';
 
-const fields = [FUNCTIONAL_GROUP_ID_FIELD, CATEGORY_ID_FIELD, SUB_CATEGORY_ID_FIELD];
+const CASE_FIELDS = [FUNCTIONAL_GROUP_ID_FIELD, CATEGORY_ID_FIELD, SUB_CATEGORY_ID_FIELD];
 
 export default class CaseClassification extends LightningElement {
     @api recordId;
@@ -20,233 +21,206 @@ export default class CaseClassification extends LightningElement {
     @api lwcToastSuccessTitle = 'Success!';
     @api lwcToastSuccessMessage = 'Case classification has been updated.';
 
-    isEditFormVisible = false;
-    isLoading = true;
-    isLaunchButtonVisible = true;
-    errorDetail = '';
-    record;
-    rawClassificationData;
+    // Errors state
     validationError;
 
-    // Holds selectable options
-    categoryOptions = [];
-    subCategoryOptions = [];
-
     // Current state
-    selectedFunctionalGroupValue = '';
-    selectedCategoryValue = '';
-    selectedSubCategoryValue = '';
-    categoryFieldDisabled = true;
-    subCategoryFieldDisabled = true;
-
-    // Launch Button (this.lwcEditButtonLabel)
-    get launchButtonVisible() {
-        return this.isLaunchButtonVisible;
-    }
-    set launchButtonVisible(isVisible) {
-        this.isLaunchButtonVisible = isVisible;
-    }
-
-    // Component Name (this.componentName)
-    get componentName() {
-        return this.lwcComponentName;
-    }
-
-    // Component Icon Name (this.componentIconName)
-    get componentIconName() {
-        return this.lwcComponentIconName;
-    }
+    selectedFunctionalGroup = null;
+    selectedCategory = null;
+    selectedSubCategory = null;
 
     // Loading Indicator
+    loadingOverride = false;
     get loading() {
-        return this.isLoading;
+        return this.loadingOverride || this.caseRecord == null || this.caseClassificationWrapper == null;
     }
-    set loading(status) {
-        this.isLoading = status;
-    }
-
-    // Edit Form Visible
-    get editFormVisible() {
-        return this.isEditFormVisible;
-    }
-    set editFormVisible(isVisible) {
-        this.isEditFormVisible = isVisible;
+    set loading(v) {
+        this.loadingOverride = v;
     }
 
-    // Category field disabled attribute
+    // Cannot select category is functional group is not set
     get categoryDisabled() {
-        return this.categoryFieldDisabled;
-    }
-    set categoryDisabled(status) {
-        this.categoryFieldDisabled = status;
+        return this.selectedFunctionalGroup == null;
     }
 
-    // Sub-Category field disabled attribute
+    // Cannot select subcategory is category dropdown is disabled or if category is not set
     get subCategoryDisabled() {
-        return this.subCategoryFieldDisabled;
-    }
-    set subCategoryDisabled(status) {
-        this.subCategoryFieldDisabled = status;
-    }
-
-    // The selected functional group
-    get selectedFunctionalGroup() {
-        return this.selectedFunctionalGroupValue;
-    }
-    set selectedFunctionalGroup(fg) {
-        this.selectedFunctionalGroupValue = fg;
-    }
-
-    // The selected category
-    get selectedCategory() {
-        return this.selectedCategoryValue;
-    }
-    set selectedCategory(cat) {
-        this.selectedCategoryValue = cat;
-    }
-
-    // The selected sub-category
-    get selectedSubCategory() {
-        return this.selectedSubCategoryValue;
-    }
-    set selectedSubCategory(sub) {
-        this.selectedSubCategoryValue = sub;
+        return this.categoryFieldDisabled || this.selectedCategory == null;
     }
 
     // Error Message
-    get errorMessage() {
-        return this.errorDetail;
+    get hasError() {
+        return this.caseError !== undefined || this.caseClassificationErrorx;
     }
-    set errorMessage(detail) {
-        this.errorDetail = this.reduceErrors(detail);
+    get errorMessage() {
+        if (this.caseError !== undefined) return extractErrorMessages(this.caseError)[0];
+        if (this.caseClassificationError !== undefined) return extractErrorMessages(this.caseClassificationError)[0];
+        return '';
     }
 
     // Validation Error Override
     get hasValidationError() {
         return this.validationError ? true : false;
     }
-    set hasValidationError(error) {
-        this.validationError = error;
+    set hasValidationError(v) {
+        this.validationError = v;
     }
 
     /**
      * Wire method for getting the case details
      * @param {*} recordId
      */
-    @wire(getRecord, {recordId: '$recordId', fields}) wiredCase({error, data}) {
+    @wire(getRecord, {recordId: '$recordId', fields: CASE_FIELDS})
+    wiredCase({error, data}) {
         if (error) {
-            this.record = undefined;
-            this.errorMessage = error;
-            this.loading = false;
+            this.caseRecord = undefined;
+            this.caseError = error;
         }
+
         if (data) {
             // Case data
-            this.record = data;
+            this.caseRecord = data;
+            this.caseError = undefined;
 
             // Set the current fields
-            this.selectedFunctionalGroup = getFieldValue(this.record, FUNCTIONAL_GROUP_ID_FIELD);
-            this.selectedCategory = getFieldValue(this.record, CATEGORY_ID_FIELD);
-            this.selectedSubCategory = getFieldValue(this.record, SUB_CATEGORY_ID_FIELD);
-
-            // Load Classifications
-            this.loadClassifications();
+            this.selectedFunctionalGroup = getFieldValue(this.caseRecord, FUNCTIONAL_GROUP_ID_FIELD);
+            this.selectedCategory = getFieldValue(this.caseRecord, CATEGORY_ID_FIELD);
+            this.selectedSubCategory = getFieldValue(this.caseRecord, SUB_CATEGORY_ID_FIELD);
         }
+    }
+    caseRecord = undefined;
+    caseError = undefined;
+
+    /**
+     * Get the service indicators for this student
+     */
+    @wire(graphql, {
+        query: gql`
+            query CaseClassifications($funcGrpId: ID!, $selectedIds: [ID]!) {
+                uiapi {
+                    query {
+                        Case_Classification__c(
+                            first: 2000
+                            where: {
+                                and: [
+                                    {or: [{Parent__c: {eq: $funcGrpId}}, {Parent__r: {Parent__c: {eq: $funcGrpId}}}]}
+                                    {
+                                        or: [
+                                            {Id: {in: $selectedIds}}
+                                            {and: [{Active__c: {eq: true}}, {Visible__c: {eq: true}}]}
+                                        ]
+                                    }
+                                ]
+                            }
+                        ) {
+                            edges {
+                                node {
+                                    Id
+                                    Name {
+                                        value
+                                    }
+                                    Parent__c {
+                                        value
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `,
+        variables: '$gqlVariables',
+        operationName: 'CaseClassifications',
+    })
+    gotCaseClassifications({errors, data}) {
+        if (errors !== undefined) {
+            this.caseClassificationError = errors;
+            this.caseClassificationWrapper = undefined;
+        }
+
+        // We only care about this after the caseRecord has loaded successfully
+        if (this.caseRecord != null && data !== undefined) {
+            this.caseClassificationWrapper = data;
+            this.caseClassificationError = undefined;
+        }
+    }
+    get gqlVariables() {
+        // if caseRecord is not ready return undefined to prevent this from running
+        return this.caseRecord == null
+            ? undefined
+            : {
+                  funcGrpId: getFieldValue(this.caseRecord, FUNCTIONAL_GROUP_ID_FIELD),
+                  selectedIds: [
+                      getFieldValue(this.caseRecord, FUNCTIONAL_GROUP_ID_FIELD),
+                      getFieldValue(this.caseRecord, CATEGORY_ID_FIELD),
+                      getFieldValue(this.caseRecord, SUB_CATEGORY_ID_FIELD),
+                  ].filter((v) => v != null),
+              };
+    }
+
+    caseClassificationWrapper = undefined;
+    caseClassificationError = undefined;
+
+    get caseClassifications() {
+        return (this.caseClassificationWrapper?.uiapi?.query?.Case_Classification__c?.edges ?? []).map((cc) => {
+            return {
+                Id: cc?.node?.Id,
+                Name: cc?.node?.Name?.value,
+                Parent__c: cc?.node?.Parent__c?.value,
+            };
+        });
     }
 
     /**
-     * Imperatively load case classifications
+     * Only the children of the functional group
      */
-    loadClassifications() {
-        // Get all classifications
-        getClassifications()
-            .then((result) => {
-                this.rawClassificationData = result;
-                this.renderDropdowns();
-                this.loading = false;
+    get categoryOptions() {
+        let categoryOptions = this.caseClassifications
+            // Filter options by selected functional group
+            .filter(
+                (v) =>
+                    this.selectedFunctionalGroup !== null &&
+                    this.selectedFunctionalGroup !== 'NULL' &&
+                    v.Parent__c === this.selectedFunctionalGroup
+            )
+            // sort the sub categories alphabetically
+            .map((element) => {
+                return {
+                    label: element.Name,
+                    value: element.Id,
+                };
             })
-            .catch((error) => {
-                this.rawClassificationData = undefined;
-                this.errorMessage = error;
-                this.loading = false;
-            });
+            .sort((a, b) => a.label.localeCompare(b.label));
+        // Add empty option to remove category
+        categoryOptions.unshift({label: '--', value: 'NULL'});
+
+        return categoryOptions;
     }
 
     /**
-     * Render the initial dropdowns
+     * Only the options of the selected category
      */
-    renderDropdowns() {
-        this.renderCategories();
-        this.renderSubCategories();
-    }
-
-    /**
-     * Render the category dropdown options
-     */
-    renderCategories() {
-        // If we have a functional group selected, show us appropriate category options
-        if (this.selectedFunctionalGroup) {
-            // Set options
-            this.categoryOptions = this.rawClassificationData
-                // Filter options by selected functional group
-                .filter((f) => f.Parent__c === this.selectedFunctionalGroup)
-                .map((element) => {
-                    return {
-                        label: element.Name,
-                        value: element.Id,
-                    };
-                });
-            // Enable the combo box
-            this.categoryDisabled = false;
-
+    get subCategoryOptions() {
+        let subCategoryOptions = this.caseClassifications
+            // Filter options by selected functional group
+            .filter(
+                (v) =>
+                    this.selectedCategory != null &&
+                    this.selectedCategory !== 'NULL' &&
+                    v.Parent__c === this.selectedCategory
+            )
             // sort the sub categories alphabetically
-            this.categoryOptions.sort((a, b) => a.label.localeCompare(b.label));
+            .map((element) => {
+                return {
+                    label: element.Name,
+                    value: element.Id,
+                };
+            })
+            .sort((a, b) => a.label.localeCompare(b.label));
+        // Add empty option to remove category
+        subCategoryOptions.unshift({label: '--', value: 'NULL'});
 
-            // Add empty option to remove category
-            this.categoryOptions.unshift({label: '--', value: ''});
-        }
-    }
-
-    /**
-     * Render the Sub Category dropdown options
-     */
-    renderSubCategories() {
-        // If we have a category selected, show us appropriate sub-category options
-        if (this.selectedCategory) {
-            // Set options
-            this.subCategoryOptions = this.rawClassificationData
-                // Filter options by selected category
-                .filter((f) => f.Parent__c === this.selectedCategory)
-                .map((element) => {
-                    return {
-                        label: element.Name,
-                        value: element.Id,
-                    };
-                });
-            // Enable the combo box
-            this.subCategoryDisabled = false;
-
-            // sort the sub categories alphabetically
-            this.subCategoryOptions.sort((a, b) => a.label.localeCompare(b.label));
-
-            // Add empty option to remove sub-category
-            this.subCategoryOptions.unshift({label: '--', value: ''});
-        }
-    }
-
-    /**
-     * Clear the selected category and disable the input
-     */
-    clearCategory() {
-        this.selectedCategory = '';
-        this.categoryDisabled = true;
-    }
-
-    /**
-     * Clear the selected sub-category and disable the input
-     */
-    clearSubCategory() {
-        this.selectedSubCategory = '';
-        this.subCategoryDisabled = true;
+        return subCategoryOptions;
     }
 
     /**
@@ -254,13 +228,12 @@ export default class CaseClassification extends LightningElement {
      * @param {*} event
      */
     handleCategoryChange(event) {
-        // Reset the sub-category selection
-        this.clearSubCategory();
+        // Unset sub category
+        this.selectedSubCategory = null;
 
         // Set category
         const selectedCategory = event.target.value;
         this.selectedCategory = selectedCategory;
-        this.renderSubCategories();
     }
 
     /**
@@ -273,27 +246,14 @@ export default class CaseClassification extends LightningElement {
     }
 
     /**
-     * Show record edit form
-     * @param {*} event
-     */
-    handleOnEditButtonClick() {
-        this.loading = true;
-        this.launchButtonVisible = false;
-        this.editFormVisible = true;
-    }
-
-    /**
      * Record edit form (onsubmit)
      */
     handleOnEditFormSubmit() {
         // Set fields for update
         const fields = {
-            CC_Category__c: this.selectedCategory,
-            CC_Sub_Category__c: this.selectedSubCategory,
+            CC_Category__c: this.selectedCategory === 'NULL' ? null : this.selectedCategory,
+            CC_Sub_Category__c: this.selectedSubCategory === 'NULL' ? null : this.selectedSubCategory,
         };
-
-        // Debug
-        console.log(`Selected Values:`, fields);
 
         // Make sure our fields are validated
         if (!this.validateFields()) {
@@ -324,13 +284,6 @@ export default class CaseClassification extends LightningElement {
     }
 
     /**
-     * Record edit form (onload)
-     */
-    handleOnEditFormLoad() {
-        this.loading = false;
-    }
-
-    /**
      * Record edit form (onerror)
      * @param {*} event
      */
@@ -344,48 +297,7 @@ export default class CaseClassification extends LightningElement {
      */
     handleOnEditFormReset() {
         this.loading = false;
-        this.editFormVisible = false;
-        this.launchButtonVisible = true;
-        this.errorMessage = '';
         this.hasValidationError = null;
-    }
-
-    /**
-     * Reduces one or more LDS errors into a string[] of error messages.
-     * @param {*} errors
-     * @returns
-     */
-    reduceErrors(errors) {
-        if (!Array.isArray(errors)) {
-            errors = [errors];
-        }
-
-        return (
-            errors
-                // Remove null/undefined items
-                .filter((error) => !!error)
-                // Extract an error message
-                .map((error) => {
-                    // UI API read errors
-                    if (Array.isArray(error.body)) {
-                        return error.body.map((e) => e.message);
-                    }
-                    // UI API DML, Apex and network errors
-                    else if (error.body && typeof error.body.message === 'string') {
-                        return error.body.message;
-                    }
-                    // JS errors
-                    else if (typeof error.message === 'string') {
-                        return error.message;
-                    }
-                    // Unknown error shape so try HTTP status text
-                    return error.statusText;
-                })
-                // Flatten
-                .reduce((prev, curr) => prev.concat(curr), [])
-                // Remove empty strings
-                .filter((message) => !!message)
-        );
     }
 
     /**
@@ -397,5 +309,123 @@ export default class CaseClassification extends LightningElement {
             // reportValidity returns validity and also displays/clear message on element based on validity
             return validSoFar && field.reportValidity();
         }, true);
+    }
+}
+
+export class CaseClassificationTest extends CaseClassification {
+    @api get recordId() {
+        return super.recordId;
+    }
+    set recordId(v) {
+        super.recordId = v;
+    }
+
+    @api get lwcComponentIconName() {
+        return super.lwcComponentIconName;
+    }
+    set lwcComponentIconName(v) {
+        super.lwcComponentIconName = v;
+    }
+
+    @api get lwcComponentName() {
+        return super.lwcComponentName;
+    }
+    set lwcComponentName(v) {
+        super.lwcComponentName = v;
+    }
+
+    @api get lwcRecordSubmitButtonLabel() {
+        return super.lwcRecordSubmitButtonLabel;
+    }
+    set lwcRecordSubmitButtonLabel(v) {
+        super.lwcRecordSubmitButtonLabel = v;
+    }
+
+    @api get lwcRecordSubmitButtonVariant() {
+        return super.lwcRecordSubmitButtonVariant;
+    }
+    set lwcRecordSubmitButtonVariant(v) {
+        super.lwcRecordSubmitButtonVariant = v;
+    }
+
+    @api get lwcToastSuccessTitle() {
+        return super.lwcToastSuccessTitle;
+    }
+    set lwcToastSuccessTitle(v) {
+        super.lwcToastSuccessTitle = v;
+    }
+
+    @api get lwcToastSuccessMessage() {
+        return super.lwcToastSuccessMessage;
+    }
+    set lwcToastSuccessMessage(v) {
+        super.lwcToastSuccessMessage = v;
+    }
+
+    @api get loading() {
+        return super.loading;
+    }
+    set loading(v) {
+        super.loading = v;
+    }
+
+    @api get selectedFunctionalGroup() {
+        return super.selectedFunctionalGroup;
+    }
+    set selectedFunctionalGroup(v) {
+        super.selectedFunctionalGroup = v;
+    }
+
+    @api get selectedCategory() {
+        return super.selectedCategory;
+    }
+    set selectedCategory(v) {
+        super.selectedCategory = v;
+    }
+
+    @api get selectedSubCategory() {
+        return super.selectedSubCategory;
+    }
+    set selectedSubCategory(v) {
+        super.selectedSubCategory = v;
+    }
+
+    @api get categoryDisabled() {
+        return super.categoryDisabled;
+    }
+    set categoryDisabled(v) {
+        super.categoryDisabled = v;
+    }
+
+    @api get subCategoryDisabled() {
+        return super.subCategoryDisabled;
+    }
+    set subCategoryDisabled(v) {
+        super.subCategoryDisabled = v;
+    }
+
+    @api get categoryOptions() {
+        return super.categoryOptions;
+    }
+    set categoryOptions(v) {
+        super.categoryOptions = v;
+    }
+
+    @api get subCategoryOptions() {
+        return super.subCategoryOptions;
+    }
+    set subCategoryOptions(v) {
+        super.subCategoryOptions = v;
+    }
+
+    @api get errorMessage() {
+        return super.errorMessage;
+    }
+
+    @api get hasValidationError() {
+        return super.hasValidationError;
+    }
+    set hasValidationError(v) {
+        super.hasValidationError = v;
     }
 }

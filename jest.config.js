@@ -13,6 +13,7 @@ module.exports = {
         '^lightning/platformShowToastEvent$':
             '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/platformShowToastEvent',
         '^lightning/uiRecordApi$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/uiRecordApi',
+        '^lightning/uiGraphQLApi$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/uiGraphQLApi',
         '^lightning/messageService$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/messageService',
         '^lightning/actions$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/actions',
         '^lightning/alert$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/alert',

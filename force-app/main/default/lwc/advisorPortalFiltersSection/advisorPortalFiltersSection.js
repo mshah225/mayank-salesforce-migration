@@ -118,27 +118,27 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
     ];
     outlookChangeOptions = [
         {label: 'Up', value: 'Up'},
-        {label: 'Down', value: 'Down'},
         {label: 'No change', value: 'No Change'},
+        {label: 'Down', value: 'Down'},
     ];
     degreeLevelOptions = [
-        {label: 'Masters', value: 'masters'},
-        {label: 'Doctorate', value: 'doctorate'},
         {label: 'Certificate', value: 'certificate'},
+        {label: 'Doctorate', value: 'doctorate'},
+        {label: 'Masters', value: 'masters'},
         {label: 'Non-degree', value: 'non-degree'},
     ];
     specialPopulationOptions = [
         {label: 'Accelerated Masters', value: 'accelerated 4+1 degrees'},
-        {label: 'Format Students', value: 'format students'},
-        {label: 'Provisional Admits, not met yet', value: 'provivisional admits, not met yet'},
-        {label: 'Veterans', value: 'veterans'},
+        {label: 'Active Students with Registation Hold', value: 'active students with registation hold'},
         {label: 'Applied to Graduate', value: 'applied to graduate'},
-        {label: 'Mayo Students', value: 'mayo students'},
         {label: 'Cintana Students', value: 'cintana students'},
+        {label: 'Concurrent Enrollment', value: 'concurrent enrollment'},
+        {label: 'Format Students', value: 'format students'},
+        {label: 'Mayo Students', value: 'mayo students'},
+        {label: 'Provisional Admits, not met yet', value: 'provivisional admits, not met yet'},
         {label: 'Research Assistants', value: 'research assistants'},
         {label: 'Teaching Assistants', value: 'teaching assistants'},
-        {label: 'Concurrent Enrollment', value: 'concurrent enrollment'},
-        {label: 'Active Students with Registation Hold', value: 'active students with registation hold'},
+        {label: 'Veterans', value: 'veterans'},
     ];
 
     /**

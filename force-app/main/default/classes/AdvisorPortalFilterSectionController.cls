@@ -53,39 +53,38 @@ public class AdvisorPortalFilterSectionController {
      * @return picklistValuesByLabel, a Map of picklist values by their labels.
      */
     @AuraEnabled(cacheable=true)
-    public static Map<String, String> getCampusValues(String filterJSON) {
-        Map<String, String> campusMap = new Map<String, String>();
+    public static List<LabelValue> getCampusValues(String filterJSON) {
+        List<LabelValue> campusLs = new List<LabelValue>();
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterJSON);
 
         if (filter != null) {
             List<Location__c> campusLocations = [
                 SELECT Name, Graduate_Enabled__c, Location_Code__c
                 FROM Location__c
-                ORDER BY CreatedDate, Name
+                ORDER BY Name ASC
             ];
 
             if (filter.career != null && filter.career == 'GRD') {
                 // Load only some locations for graduate students
                 for (Location__c campus : campusLocations)
                     if (campus.Graduate_Enabled__c)
-                        campusMap.put(campus.Name, campus.Location_Code__c);
+                        campusLs.add(new LabelValue(campus.Name, campus.Location_Code__c));
             } else {
                 // Load all locations for undergraduate students
                 for (Location__c campus : campusLocations)
-                    campusMap.put(campus.Name, campus.Location_Code__c);
+                    campusLs.add(new LabelValue(campus.Name, campus.Location_Code__c));
             }
         }
-        return campusMap;
+        return campusLs;
     }
 
     /**
      * Gets active Custom Metadata Case Status values to display on the filter section in the Advisor Portal.
-     *
-     * @return caseStatusValuesByLabel, a Map of Advisor_Portal_Case_Status__mdt record values by label.
+     * @return caseStatusValuesByLabel, a list of status based on Advisor_Portal_Case_Status__mdt
      */
     @AuraEnabled(cacheable=true)
-    public static Map<String, String> getCaseStatusSettings() {
-        Map<String, String> caseStatusValuesByLabel = new Map<String, String>();
+    public static List<LabelValue> getCaseStatusSettings() {
+        List<LabelValue> ls = new List<LabelValue>();
 
         for (Advisor_Portal_Case_Status__mdt statusSetting : [
             SELECT Label, Value__c
@@ -93,10 +92,10 @@ public class AdvisorPortalFilterSectionController {
             WHERE Active__c = TRUE
             ORDER BY Label ASC
         ]) {
-            caseStatusValuesByLabel.put(statusSetting.Label, statusSetting.Value__c);
+            ls.add(new LabelValue(statusSetting.Label, statusSetting.Value__c));
         }
 
-        return caseStatusValuesByLabel;
+        return ls;
     }
 
     /**
@@ -106,8 +105,8 @@ public class AdvisorPortalFilterSectionController {
      * @return caseSubjectValuesByLabel, a Map of Case Subjects.
      */
     @AuraEnabled(cacheable=true)
-    public static Map<String, String> getCaseSubjectPicklistValues(String filterJSON, List<Id> viewAsOptions) {
-        Map<String, String> caseSubjectValuesByLabel = new Map<String, String>();
+    public static List<LabelValue> getCaseSubjectPicklistValues(String filterJSON, List<Id> viewAsOptions) {
+        List<LabelValue> caseSubjectValuesByLabel = new List<LabelValue>();
         List<String> recordTypeIds = new List<String>();
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterJSON);
 
@@ -124,12 +123,13 @@ public class AdvisorPortalFilterSectionController {
             FROM Case
             WHERE IsClosed = FALSE AND RecordTypeId IN :recordTypeIds AND Subject != NULL AND OwnerId IN :viewAsOptions
             GROUP BY Subject
+            ORDER BY Subject ASC
             LIMIT 2000
         ]) {
             if (result.get('Subject') != null) {
                 String label = (String) result.get('Subject');
                 String value = EncodingUtil.base64Encode(Blob.valueOf(label));
-                caseSubjectValuesByLabel.put(label, value);
+                caseSubjectValuesByLabel.add(new LabelValue(label, value));
             }
         }
 
@@ -143,8 +143,8 @@ public class AdvisorPortalFilterSectionController {
      * @return caseClassificationValuesByLabel, a Map of Case Subjects.
      */
     @AuraEnabled(cacheable=true)
-    public static Map<String, String> getCaseClassificationPicklistValues(String filterJSON, List<Id> viewAsOptions) {
-        Map<String, String> caseClassificationValuesByLabel = new Map<String, String>();
+    public static List<LabelValue> getCaseClassificationPicklistValues(String filterJSON, List<Id> viewAsOptions) {
+        List<LabelValue> caseClassificationValuesByLabel = new List<LabelValue>();
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterJSON);
 
         Boolean gradMode = filter != null && filter.career == 'GRD';
@@ -164,10 +164,11 @@ public class AdvisorPortalFilterSectionController {
                     AND Name != 'Watchlist'
                     AND Active__c = TRUE
                     AND Visible__c = TRUE
+                ORDER BY Name ASC
             ]) {
                 String label = category.Name;
                 String value = EncodingUtil.base64Encode(Blob.valueOf(label));
-                caseClassificationValuesByLabel.put(label, value);
+                caseClassificationValuesByLabel.add(new LabelValue(label, value));
             }
         } else {
             /**
@@ -183,12 +184,13 @@ public class AdvisorPortalFilterSectionController {
                     AND CC_Category__c != NULL
                     AND OwnerId IN :viewAsOptions
                 GROUP BY CC_Category__r.Name
+                ORDER BY CC_Category__r.Name ASC
                 LIMIT 2000
             ]) {
                 if (result.get('CategoryName') != null) {
                     String label = (String) result.get('CategoryName');
                     String value = EncodingUtil.base64Encode(Blob.valueOf(label));
-                    caseClassificationValuesByLabel.put(label, value);
+                    caseClassificationValuesByLabel.add(new LabelValue(label, value));
                 }
             }
         }
@@ -204,11 +206,8 @@ public class AdvisorPortalFilterSectionController {
      * @return caseSubClassificationValuesByLabel, a Map of Case Subclassifications.
      */
     @AuraEnabled(cacheable=true)
-    public static Map<String, String> getCaseSubClassificationPicklistValues(
-        String filterJSON,
-        List<Id> viewAsOptions
-    ) {
-        Map<String, String> caseSubClassificationValuesByLabel = new Map<String, String>();
+    public static List<LabelValue> getCaseSubClassificationPicklistValues(String filterJSON, List<Id> viewAsOptions) {
+        List<LabelValue> caseSubClassificationValuesByLabel = new List<LabelValue>();
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterJSON);
 
         Boolean gradMode = filter != null && filter.career == 'GRD';
@@ -230,7 +229,8 @@ public class AdvisorPortalFilterSectionController {
                 .restrictEqual('Visible__c', true) // this is visible
                 .restrictEqual('Parent__r.Active__c', true) // parent is active
                 .restrictEqual('Parent__r.Visible__c', true) // parent is visible
-                .restrictEqual('RecordTypeId', subcategoryRecordType);
+                .restrictEqual('RecordTypeId', subcategoryRecordType)
+                .setOrder('Name ASC');
 
             // Additionally filter on parent__r.name if category is set
             if (filter != null)
@@ -244,7 +244,7 @@ public class AdvisorPortalFilterSectionController {
             for (Case_Classification__c category : Database.query(queryString)) {
                 String label = category.Name;
                 String value = EncodingUtil.base64Encode(Blob.valueOf(label));
-                caseSubClassificationValuesByLabel.put(label, value);
+                caseSubClassificationValuesByLabel.add(new LabelValue(label, value));
             }
         } else {
             /**
@@ -273,7 +273,7 @@ public class AdvisorPortalFilterSectionController {
             for (AggregateResult plan : Database.query(queryString)) {
                 String label = (String) plan.get('SubCategoryName');
                 String value = EncodingUtil.base64Encode(Blob.valueOf(label));
-                caseSubClassificationValuesByLabel.put(label, value);
+                caseSubClassificationValuesByLabel.add(new LabelValue(label, value));
             }
         }
 
@@ -286,8 +286,8 @@ public class AdvisorPortalFilterSectionController {
      * @return a map of active program names to their program codes
      */
     @AuraEnabled(cacheable=true)
-    public static Map<String, String> getAcademicProgramPicklistValues() {
-        Map<String, String> labelToValueMap = new Map<String, String>();
+    public static List<LabelValue> getAcademicProgramPicklistValues() {
+        List<LabelValue> labelToValueLs = new List<LabelValue>();
 
         // Find programs where they have at least one active plan within them by
         // looking at all active plans and taking each unique program from there
@@ -306,10 +306,10 @@ public class AdvisorPortalFilterSectionController {
         );
 
         for (AggregateResult plan : activePlans) {
-            labelToValueMap.put((String) plan.get('expr0'), (String) plan.get('expr1'));
+            labelToValueLs.add(new LabelValue((String) plan.get('expr0'), (String) plan.get('expr1')));
         }
 
-        return labelToValueMap;
+        return labelToValueLs;
     }
 
     /**
@@ -319,8 +319,8 @@ public class AdvisorPortalFilterSectionController {
      * @return labelToValueMap, a Map of picklist values by their labels.
      */
     @AuraEnabled(cacheable=true)
-    public static Map<String, String> getSchoolDepartmentPicklistVaues(String filterJSON) {
-        Map<String, String> labelToValueMap = new Map<String, String>();
+    public static List<LabelValue> getSchoolDepartmentPicklistVaues(String filterJSON) {
+        List<LabelValue> labelToValueLs = new List<LabelValue>();
 
         // Find organizations that have active plans and which are active themselves
         // looking at all active plans and taking each unique organization from there
@@ -348,10 +348,10 @@ public class AdvisorPortalFilterSectionController {
         for (AggregateResult plan : Database.query(queryString)) {
             String label = (String) plan.get('expr1') + ' / ' + (String) plan.get('expr0');
             String value = (String) plan.get('expr1');
-            labelToValueMap.put(label, value);
+            labelToValueLs.add(new LabelValue(label, value));
         }
 
-        return labelToValueMap;
+        return labelToValueLs;
     }
 
     /**
@@ -363,8 +363,8 @@ public class AdvisorPortalFilterSectionController {
      * @return labelToValueMap, a Map of picklist values by their labels.
      */
     @AuraEnabled(cacheable=true)
-    public static Map<String, String> getAcademicPlanPicklistValues(String filterJSON) {
-        Map<String, String> labelToValueMap = new Map<String, String>();
+    public static List<LabelValue> getAcademicPlanPicklistValues(String filterJSON) {
+        List<LabelValue> labelToValueLs = new List<LabelValue>();
 
         DynamicSoqlBuilder soqlBuilder = new DynamicSoqlBuilder(Schema.SObjectType.Plan__c)
             .returnField(Schema.SObjectType.Plan__c.fields.Name)
@@ -477,10 +477,10 @@ public class AdvisorPortalFilterSectionController {
 
         LogSuite.log('query', queryString);
         for (Plan__c plan : Database.query(queryString)) {
-            labelToValueMap.put(plan.Plan_Code__c + ' / ' + plan.Name, plan.Plan_Code__c);
+            labelToValueLs.add(new LabelValue(plan.Plan_Code__c + ' / ' + plan.Name, plan.Plan_Code__c));
         }
 
-        return labelToValueMap;
+        return labelToValueLs;
     }
 
     @AuraEnabled

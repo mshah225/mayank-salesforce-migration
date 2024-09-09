@@ -1223,17 +1223,20 @@ private class AdvisorPortalFilterSectionControllerTest {
     @isTest
     private static void testHasNoAccess() {
         /** setup */
-         USer testStandardUser = TestUserHelper.createTestStandardUser();
-        insert new List<User>{  testStandardUser };
- 
+        USer testStandardUser = TestUserHelper.createTestStandardUser();
+        insert new List<User>{ testStandardUser };
+
         Boolean standardUserHasNoUgradAccess, standardUserHasNoGradAccess;
- 
+
         System.runAs(testStandardUser) {
             standardUserHasNoUgradAccess = AdvisorPortalFilterSectionController.hasUgradAccess();
             standardUserHasNoGradAccess = AdvisorPortalFilterSectionController.hasUgradAccess();
         }
 
-        Assert.isFalse(standardUserHasNoUgradAccess, 'User should, without Role_Academic_Advisor_Portal_Service_Users, have no access to UGRAD advsior portal - but they did');
+        Assert.isFalse(
+            standardUserHasNoUgradAccess,
+            'User should, without Role_Academic_Advisor_Portal_Service_Users, have no access to UGRAD advsior portal - but they did'
+        );
         Assert.isFalse(
             standardUserHasNoGradAccess,
             'User should, without Role_Graduate_Academic_Advisor_Portal_Service_Users, have no access to GRAD advsior portal - but they did'
@@ -1266,19 +1269,25 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         Test.startTest();
-        Map<String, String> caseStatusMap = AdvisorPortalFilterSectionController.getCaseStatusSettings();
+        List<LabelValue> caseStatusLs = AdvisorPortalFilterSectionController.getCaseStatusSettings();
         Test.stopTest();
 
         System.assertEquals(
             validStatuses.size(),
-            caseStatusMap.size(),
+            caseStatusLs.size(),
             'Controller should have returned values for the Case Status picklist based upon the custom metadata type.'
         );
+
         for (Advisor_Portal_Case_Status__mdt status : validStatuses) {
-            System.assert(
-                caseStatusMap.keySet().contains(status.Label),
-                'Ensure the picklist map contains all statuses.'
-            );
+            Boolean found = false;
+            for (LabelValue lv : caseStatusLs) {
+                if (lv.label == status.Label) {
+                    found = true;
+                    break;
+                }
+            }
+
+            Assert.isTrue(found, 'Case status list is missing status: ' + status.Label);
         }
     }
 
@@ -1301,17 +1310,22 @@ private class AdvisorPortalFilterSectionControllerTest {
 
         // Act
         Test.startTest();
-        Map<String, String> subjectMap = AdvisorPortalFilterSectionController.getCaseSubjectPicklistValues(
+        List<LabelValue> subjectLs = AdvisorPortalFilterSectionController.getCaseSubjectPicklistValues(
             JSON.serialize(filter),
             new List<String>{ testUser.Id }
         );
         Test.stopTest();
 
         for (Case c : testCases) {
-            System.assert(
-                subjectMap.keySet().contains(c.Subject),
-                'Should contain all subjects that this user has cases for'
-            );
+            Boolean found = false;
+            for (LabelValue lv : subjectLs) {
+                if (lv.label == c.Subject) {
+                    found = true;
+                    break;
+                }
+            }
+
+            Assert.isTrue(found, 'Subject list is missing subject: ' + c.Subject);
         }
     }
 
@@ -1333,17 +1347,21 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter.career = 'UGRD';
 
         Test.startTest();
-        Map<String, String> classificationMap = AdvisorPortalFilterSectionController.getCaseClassificationPicklistValues(
+        List<LabelValue> classificationLs = AdvisorPortalFilterSectionController.getCaseClassificationPicklistValues(
             JSON.serialize(filter),
             new List<String>{ testUser.Id }
         );
         Test.stopTest();
 
         for (Case c : testCases) {
-            System.assert(
-                classificationMap.keySet().contains(c.CC_Category__r.Name),
-                'Should contain all UGRAD categories that this user has cases for'
-            );
+            Boolean found = false;
+            for (LabelValue lv : classificationLs) {
+                if (lv.label == c.CC_Category__r.Name) {
+                    found = true;
+                    break;
+                }
+            }
+            Assert.isTrue(found, 'Is missing UGRAD category: ' + c.CC_Category__r.Name);
         }
     }
 
@@ -1369,17 +1387,22 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter.career = 'GRD';
 
         Test.startTest();
-        Map<String, String> classificationMap = AdvisorPortalFilterSectionController.getCaseClassificationPicklistValues(
+        List<LabelValue> classificationLs = AdvisorPortalFilterSectionController.getCaseClassificationPicklistValues(
             JSON.serialize(filter),
             new List<String>{ testUser.Id }
         );
         Test.stopTest();
 
         for (Case_Classification__c c : allGradCategories) {
-            System.assert(
-                classificationMap.keySet().contains(c.Name),
-                'The picklist should have returned all GRAD categories, but is missing: ' + c.Name
-            );
+            Boolean found = false;
+            for (LabelValue lv : classificationLs) {
+                if (lv.label == c.Name) {
+                    found = true;
+                    break;
+                }
+            }
+
+            Assert.isTrue(found, 'The picklist should have returned all GRAD categories, but is missing: ' + c.Name);
         }
     }
 
@@ -1431,17 +1454,17 @@ private class AdvisorPortalFilterSectionControllerTest {
             EncodingUtil.base64Encode(Blob.valueOf('G-CAT-2'));
 
         Test.startTest();
-        Map<String, String> classificationMap1 = AdvisorPortalFilterSectionController.getCaseSubClassificationPicklistValues(
+        List<LabelValue> classificationLs1 = AdvisorPortalFilterSectionController.getCaseSubClassificationPicklistValues(
             JSON.serialize(filter1),
             new List<String>{ testUser.Id }
         );
 
-        Map<String, String> classificationMap2 = AdvisorPortalFilterSectionController.getCaseSubClassificationPicklistValues(
+        List<LabelValue> classificationLs2 = AdvisorPortalFilterSectionController.getCaseSubClassificationPicklistValues(
             JSON.serialize(filter2),
             new List<String>{ testUser.Id }
         );
 
-        Map<String, String> classificationMap3 = AdvisorPortalFilterSectionController.getCaseSubClassificationPicklistValues(
+        List<LabelValue> classificationLs3 = AdvisorPortalFilterSectionController.getCaseSubClassificationPicklistValues(
             JSON.serialize(filter3),
             new List<String>{ testUser.Id }
         );
@@ -1449,17 +1472,34 @@ private class AdvisorPortalFilterSectionControllerTest {
 
         // No category selected
         for (String subcatName : allSubCategories) {
-            System.assert(
-                classificationMap1.keySet().contains(subcatName),
+            Boolean found = false;
+            for (LabelValue lv : classificationLs1) {
+                if (lv.label == subcatName) {
+                    found = true;
+                    break;
+                }
+            }
+
+            Assert.isTrue(
+                found,
                 'The picklist should have returned all GRAD subcategories, but is missing: ' + subcatName
             );
         }
 
         // 1 category selected
         for (String subcatName : categorySubcategoryMap.get('G-CAT-1')) {
-            System.assert(
-                classificationMap2.keySet().contains(subcatName),
-                'The picklist should have returned all GRAD subcategories, but is missing: ' + subcatName
+            Boolean found = false;
+            for (LabelValue lv : classificationLs1) {
+                if (lv.label == subcatName) {
+                    found = true;
+                    break;
+                }
+            }
+
+            Assert.isTrue(
+                found,
+                'The picklist should have returned subcategories under the G-CAT-1 category, but is missing: ' +
+                subcatName
             );
         }
 
@@ -1468,9 +1508,18 @@ private class AdvisorPortalFilterSectionControllerTest {
         mixedSubCategories.addAll(categorySubcategoryMap.get('G-CAT-1'));
         mixedSubCategories.addAll(categorySubcategoryMap.get('G-CAT-2'));
         for (String subcatName : mixedSubCategories) {
-            System.assert(
-                classificationMap3.keySet().contains(subcatName),
-                'The picklist should have returned all GRAD subcategories, but is missing: ' + subcatName
+            Boolean found = false;
+            for (LabelValue lv : classificationLs1) {
+                if (lv.label == subcatName) {
+                    found = true;
+                    break;
+                }
+            }
+
+            Assert.isTrue(
+                found,
+                'The picklist should have returned subcategories under G-CAT-1 and G-CAT-2, but is missing: ' +
+                subcatName
             );
         }
     }
@@ -1492,19 +1541,33 @@ private class AdvisorPortalFilterSectionControllerTest {
         filter2.career = 'GRD';
 
         Test.startTest();
-        Map<String, String> campusMap = AdvisorPortalFilterSectionController.getCampusValues(JSON.serialize(filter));
+        List<LabelValue> campusLs = AdvisorPortalFilterSectionController.getCampusValues(JSON.serialize(filter));
 
-        Map<String, String> campusMap2 = AdvisorPortalFilterSectionController.getCampusValues(JSON.serialize(filter2));
+        List<LabelValue> campusLs2 = AdvisorPortalFilterSectionController.getCampusValues(JSON.serialize(filter2));
         Test.stopTest();
 
-        System.assertEquals(ugradCampuses.size(), campusMap.size(), 'Should contain correct number of campuses');
+        Assert.areEqual(ugradCampuses.size(), campusLs.size(), 'Should contain correct number of campuses');
         for (Location__c l : ugradCampuses) {
-            System.assert(campusMap.keySet().contains(l.Name), 'Should contain all locations');
+            Boolean found = false;
+            for (LabelValue lv : campusLs) {
+                if (lv.label == l.Name) {
+                    found = true;
+                    break;
+                }
+            }
+            Assert.isTrue(found, 'Missing location: ' + l.Name);
         }
 
-        System.assertEquals(gradCampuses.size(), campusMap2.size(), 'Should contain correct number of campuses');
+        Assert.areEqual(gradCampuses.size(), campusLs2.size(), 'Should contain correct number of campuses');
         for (Location__c l : gradCampuses) {
-            System.assert(campusMap2.keySet().contains(l.Name), 'Should contain all grad locations');
+            Boolean found = false;
+            for (LabelValue lv : campusLs2) {
+                if (lv.label == l.Name) {
+                    found = true;
+                    break;
+                }
+            }
+            Assert.isTrue(found, 'Missing grad location: ' + l.Name);
         }
     }
 
@@ -1526,17 +1589,25 @@ private class AdvisorPortalFilterSectionControllerTest {
         );
 
         Test.startTest();
-        Map<String, String> programMap = AdvisorPortalFilterSectionController.getAcademicProgramPicklistValues();
+        List<LabelValue> programLs = AdvisorPortalFilterSectionController.getAcademicProgramPicklistValues();
         Test.stopTest();
 
         for (AggregateResult plan : activePlans) {
             String expectedKey = (String) plan.get('expr0');
-            System.assert(
-                programMap.keySet().contains(expectedKey),
+            Boolean found = false;
+            for (LabelValue lv : programLs) {
+                if (lv.label == expectedKey) {
+                    found = true;
+                    break;
+                }
+            }
+
+            Assert.isTrue(
+                found,
                 'Should contain all active programs (which is ALL programs for our test data) but "' +
                     expectedKey +
                     '" is missing from ' +
-                    programMap.keySet()
+                    programLs
             );
         }
     }
@@ -1558,37 +1629,59 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         Test.startTest();
-        Map<String, String> planMap = AdvisorPortalFilterSectionController.getAcademicPlanPicklistValues('{}');
-        Map<String, String> limitedPlanMap = AdvisorPortalFilterSectionController.getAcademicPlanPicklistValues(
+        List<LabelValue> planLs = AdvisorPortalFilterSectionController.getAcademicPlanPicklistValues('{}');
+        List<LabelValue> limitedPlanLs = AdvisorPortalFilterSectionController.getAcademicPlanPicklistValues(
             '{"academicProgram":"IRAAFUL"}'
         );
         Test.stopTest();
 
         for (Plan__c p : testPlans) {
             String expectedKey = p.Plan_Code__c + ' / ' + p.Name;
-            System.assert(
-                planMap.keySet().contains(expectedKey),
+            Boolean found = false;
+            for (LabelValue lv : planLs) {
+                if (lv.label == expectedKey) {
+                    found = true;
+                    break;
+                }
+            }
+
+            Assert.isTrue(
+                found,
                 'Should contain all active plans (which is ALL plans for our test data) but "' +
                     expectedKey +
                     '" is missing from ' +
-                    planMap.keySet()
+                    planLs
             );
 
             if (p.Program__r.Program_Code__c == 'IRAAFUL') {
-                System.assert(
-                    limitedPlanMap.keySet().contains(expectedKey),
+                Boolean found2 = false;
+                for (LabelValue lv : limitedPlanLs) {
+                    if (lv.label == expectedKey) {
+                        found2 = true;
+                        break;
+                    }
+                }
+                Assert.isTrue(
+                    found2,
                     'Should contain only plans under the IRAAFUL program and it is missing "' +
                         expectedKey +
                         '" from ' +
-                        limitedPlanMap.keySet()
+                        limitedPlanLs
                 );
             } else {
-                System.assert(
-                    !limitedPlanMap.keySet().contains(expectedKey),
+                Boolean found2 = false;
+                for (LabelValue lv : limitedPlanLs) {
+                    if (lv.label == expectedKey) {
+                        found2 = true;
+                        break;
+                    }
+                }
+                Assert.isFalse(
+                    found2,
                     'Should contain only plans under the IRAAFUL program but it contains "' +
                         expectedKey +
                         '" in ' +
-                        limitedPlanMap.keySet()
+                        limitedPlanLs
                 );
             }
         }

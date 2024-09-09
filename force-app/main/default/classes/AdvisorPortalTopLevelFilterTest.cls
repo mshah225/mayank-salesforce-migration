@@ -139,14 +139,11 @@ private class AdvisorPortalTopLevelFilterTest {
 
         // Get options
         String viewAsOptionListStr;
-        List<OrderedMapStringToString.LabelValue> viewAsOptionList;
+        List<LabelValue> viewAsOptionList;
         System.runAs(testUser) {
             viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions(false);
         }
-        viewAsOptionList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
-            viewAsOptionListStr,
-            List<OrderedMapStringToString.LabelValue>.class
-        );
+        viewAsOptionList = (List<LabelValue>) JSON.deserialize(viewAsOptionListStr, List<LabelValue>.class);
         OrderedMapStringToString viewAsOptionMap = new OrderedMapStringToString(viewAsOptionList);
 
         List<String> groupIds = new List<String>();
@@ -171,14 +168,11 @@ private class AdvisorPortalTopLevelFilterTest {
 
         // Get options
         String viewAsOptionListStr;
-        List<OrderedMapStringToString.LabelValue> viewAsOptionList;
+        List<LabelValue> viewAsOptionList;
         System.runAs(testUser) {
             viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions(false);
         }
-        viewAsOptionList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
-            viewAsOptionListStr,
-            List<OrderedMapStringToString.LabelValue>.class
-        );
+        viewAsOptionList = (List<LabelValue>) JSON.deserialize(viewAsOptionListStr, List<LabelValue>.class);
         OrderedMapStringToString viewAsOptionMap = new OrderedMapStringToString(viewAsOptionList);
 
         List<String> groupIds = new List<String>();
@@ -214,14 +208,11 @@ private class AdvisorPortalTopLevelFilterTest {
 
         // Get options
         String viewAsOptionListStr;
-        List<OrderedMapStringToString.LabelValue> viewAsOptionList;
+        List<LabelValue> viewAsOptionList;
         System.runAs(testUser) {
             viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions(false);
         }
-        viewAsOptionList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
-            viewAsOptionListStr,
-            List<OrderedMapStringToString.LabelValue>.class
-        );
+        viewAsOptionList = (List<LabelValue>) JSON.deserialize(viewAsOptionListStr, List<LabelValue>.class);
         OrderedMapStringToString viewAsOptionMap = new OrderedMapStringToString(viewAsOptionList);
 
         List<String> groupIds = new List<String>();
@@ -263,14 +254,11 @@ private class AdvisorPortalTopLevelFilterTest {
 
         // Get options
         String viewAsOptionListStr;
-        List<OrderedMapStringToString.LabelValue> viewAsOptionList;
+        List<LabelValue> viewAsOptionList;
         System.runAs(testUser) {
             viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions(false);
         }
-        viewAsOptionList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
-            viewAsOptionListStr,
-            List<OrderedMapStringToString.LabelValue>.class
-        );
+        viewAsOptionList = (List<LabelValue>) JSON.deserialize(viewAsOptionListStr, List<LabelValue>.class);
         OrderedMapStringToString viewAsOptionMap = new OrderedMapStringToString(viewAsOptionList);
 
         List<String> groupIds = new List<String>();
@@ -301,14 +289,11 @@ private class AdvisorPortalTopLevelFilterTest {
 
         // Get options
         String viewAsOptionListStr;
-        List<OrderedMapStringToString.LabelValue> viewAsOptionList;
+        List<LabelValue> viewAsOptionList;
         System.runAs(testUser) {
             viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions(true);
         }
-        viewAsOptionList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
-            viewAsOptionListStr,
-            List<OrderedMapStringToString.LabelValue>.class
-        );
+        viewAsOptionList = (List<LabelValue>) JSON.deserialize(viewAsOptionListStr, List<LabelValue>.class);
         OrderedMapStringToString viewAsOptionMap = new OrderedMapStringToString(viewAsOptionList);
 
         assertContainsAllOptionsInProperOrder(viewAsOptionList, testUser.Id, null, null, null);
@@ -329,14 +314,11 @@ private class AdvisorPortalTopLevelFilterTest {
 
         // Get options
         String viewAsOptionListStr;
-        List<OrderedMapStringToString.LabelValue> viewAsOptionList;
+        List<LabelValue> viewAsOptionList;
         System.runAs(testUser) {
             viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions(true);
         }
-        viewAsOptionList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
-            viewAsOptionListStr,
-            List<OrderedMapStringToString.LabelValue>.class
-        );
+        viewAsOptionList = (List<LabelValue>) JSON.deserialize(viewAsOptionListStr, List<LabelValue>.class);
         OrderedMapStringToString viewAsOptionMap = new OrderedMapStringToString(viewAsOptionList);
 
         List<String> groupIds = new List<String>();
@@ -361,14 +343,11 @@ private class AdvisorPortalTopLevelFilterTest {
 
         // Get options
         String viewAsOptionListStr;
-        List<OrderedMapStringToString.LabelValue> viewAsOptionList;
+        List<LabelValue> viewAsOptionList;
         System.runAs(testUser) {
             viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions(true);
         }
-        viewAsOptionList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
-            viewAsOptionListStr,
-            List<OrderedMapStringToString.LabelValue>.class
-        );
+        viewAsOptionList = (List<LabelValue>) JSON.deserialize(viewAsOptionListStr, List<LabelValue>.class);
         OrderedMapStringToString viewAsOptionMap = new OrderedMapStringToString(viewAsOptionList);
 
         List<String> groupIds = new List<String>();
@@ -404,14 +383,11 @@ private class AdvisorPortalTopLevelFilterTest {
 
         // Get options
         String viewAsOptionListStr;
-        List<OrderedMapStringToString.LabelValue> viewAsOptionList;
+        List<LabelValue> viewAsOptionList;
         System.runAs(testUser) {
             viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions(true);
         }
-        viewAsOptionList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
-            viewAsOptionListStr,
-            List<OrderedMapStringToString.LabelValue>.class
-        );
+        viewAsOptionList = (List<LabelValue>) JSON.deserialize(viewAsOptionListStr, List<LabelValue>.class);
         OrderedMapStringToString viewAsOptionMap = new OrderedMapStringToString(viewAsOptionList);
 
         List<String> groupIds = new List<String>();
@@ -453,14 +429,11 @@ private class AdvisorPortalTopLevelFilterTest {
 
         // Get options
         String viewAsOptionListStr;
-        List<OrderedMapStringToString.LabelValue> viewAsOptionList;
+        List<LabelValue> viewAsOptionList;
         System.runAs(testUser) {
             viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions(false);
         }
-        viewAsOptionList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
-            viewAsOptionListStr,
-            List<OrderedMapStringToString.LabelValue>.class
-        );
+        viewAsOptionList = (List<LabelValue>) JSON.deserialize(viewAsOptionListStr, List<LabelValue>.class);
         OrderedMapStringToString viewAsOptionMap = new OrderedMapStringToString(viewAsOptionList);
 
         List<String> groupIds = new List<String>();
@@ -502,14 +475,11 @@ private class AdvisorPortalTopLevelFilterTest {
 
         // Get options
         String viewAsOptionListStr;
-        List<OrderedMapStringToString.LabelValue> viewAsOptionList;
+        List<LabelValue> viewAsOptionList;
         System.runAs(testUser) {
             viewAsOptionListStr = AdvisorPortalTopLevelFilterController.viewAsOptions(true);
         }
-        viewAsOptionList = (List<OrderedMapStringToString.LabelValue>) JSON.deserialize(
-            viewAsOptionListStr,
-            List<OrderedMapStringToString.LabelValue>.class
-        );
+        viewAsOptionList = (List<LabelValue>) JSON.deserialize(viewAsOptionListStr, List<LabelValue>.class);
         OrderedMapStringToString viewAsOptionMap = new OrderedMapStringToString(viewAsOptionList);
 
         List<String> groupIds = new List<String>();
@@ -526,7 +496,7 @@ private class AdvisorPortalTopLevelFilterTest {
     }
 
     private static void assertContainsAllOptionsInProperOrder(
-        List<OrderedMapStringToString.LabelValue> optionsList,
+        List<LabelValue> optionsList,
         String userId,
         List<String> ownersOfPods,
         List<String> ownersOfManagedPods,
@@ -546,7 +516,7 @@ private class AdvisorPortalTopLevelFilterTest {
         if (subordinateIds == null)
             subordinateIds = new List<String>();
 
-        for (OrderedMapStringToString.LabelValue labelValue : optionsList) {
+        for (LabelValue labelValue : optionsList) {
             String label = labelValue.label;
             String value = labelValue.value;
 
@@ -600,7 +570,7 @@ private class AdvisorPortalTopLevelFilterTest {
 
         System.debug('==================');
 
-        for (OrderedMapStringToString.LabelValue labelValue : optionsList) {
+        for (LabelValue labelValue : optionsList) {
             System.debug(labelValue);
         }
         System.debug('---');

@@ -250,7 +250,7 @@ export default class AdvisorPortalA extends LightningElement {
     refreshResidencyPicklistValues() {
         return getPicklistValues({objectName: 'Student_Program_Plan__c', fieldName: 'Residency__c'})
             .then((val) => {
-                this.residencyPicklistValues = buildPicklistOptionsArray(val);
+                this.residencyPicklistValues = buildPicklistOptionsArray(val, {alphabetize: true});
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -260,7 +260,7 @@ export default class AdvisorPortalA extends LightningElement {
     refreshCaseStatusSettings() {
         return getCaseStatusSettings()
             .then((val) => {
-                this.caseStatusPicklistValues = buildPicklistOptionsArray(val);
+                this.caseStatusPicklistValues = val;
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -271,7 +271,7 @@ export default class AdvisorPortalA extends LightningElement {
         const filterJSON = JSON.stringify(this.currentFilter);
         return getCampusValues({filterJSON})
             .then((val) => {
-                this.campusPicklistValues = buildPicklistOptionsArray(val);
+                this.campusPicklistValues = val;
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -282,7 +282,7 @@ export default class AdvisorPortalA extends LightningElement {
         const filterJSON = JSON.stringify(this.currentFilter);
         return getCaseSubjectPicklistValues({filterJSON, viewAsOptions: this.selectedUsers})
             .then((val) => {
-                this.caseSubjectPicklistValues = buildPicklistOptionsArray(val);
+                this.caseSubjectPicklistValues = val;
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -293,7 +293,7 @@ export default class AdvisorPortalA extends LightningElement {
         const filterJSON = JSON.stringify(this.currentFilter);
         return getCaseClassificationPicklistValues({filterJSON, viewAsOptions: this.selectedUsers})
             .then((val) => {
-                this.caseCategoryPicklistValues = buildPicklistOptionsArray(val);
+                this.caseCategoryPicklistValues = val;
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -304,7 +304,7 @@ export default class AdvisorPortalA extends LightningElement {
         const filterJSON = JSON.stringify(this.currentFilter);
         return getCaseSubClassificationPicklistValues({filterJSON, viewAsOptions: this.selectedUsers})
             .then((val) => {
-                this.caseSubCategoryPicklistValues = buildPicklistOptionsArray(val);
+                this.caseSubCategoryPicklistValues = val;
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -314,7 +314,7 @@ export default class AdvisorPortalA extends LightningElement {
     refreshAcademicProgramPicklistValues() {
         return getAcademicProgramPicklistValues()
             .then((val) => {
-                this.academicProgramOptions = buildPicklistOptionsArray(val);
+                this.academicProgramOptions = val;
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -325,7 +325,7 @@ export default class AdvisorPortalA extends LightningElement {
         const filterJSON = JSON.stringify(this.currentFilter);
         return getSchoolDepartmentPicklistVaues({filterJSON})
             .then((val) => {
-                this.schoolDepartmentOptions = buildPicklistOptionsArray(val);
+                this.schoolDepartmentOptions = val;
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -336,7 +336,7 @@ export default class AdvisorPortalA extends LightningElement {
         const filterJSON = JSON.stringify(this.currentFilter);
         return getAcademicPlanPicklistValues({filterJSON})
             .then((val) => {
-                this.academicPlanOptions = buildPicklistOptionsArray(val);
+                this.academicPlanOptions = val;
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console

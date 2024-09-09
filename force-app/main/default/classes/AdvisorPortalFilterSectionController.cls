@@ -330,13 +330,43 @@ public class AdvisorPortalFilterSectionController {
     public static Map<String, String> getAcademicPlanPicklistValues(String filterJSON) {
         Map<String, String> labelToValueMap = new Map<String, String>();
 
-        DynamicSoqlBuilder soqlBuilder = new DynamicSoqlBuilder('Plan__c')
-            .returnField('Name')
-            .returnField('Plan_Code__c')
-            .restrictEqual('Plan_Status__c', true)
+        DynamicSoqlBuilder soqlBuilder = new DynamicSoqlBuilder(Schema.SObjectType.Plan__c)
+            .returnField(Schema.SObjectType.Plan__c.fields.Name)
+            .returnField(Schema.SObjectType.Plan__c.fields.Plan_Code__c)
+            .restrictEqual(Schema.SObjectType.Plan__c.fields.Plan_Status__c, true)
             .restrictEqual('Program__r.Career__c', 'Graduate')
             .restrictNotIn('Program__r.Program_Code__c', new List<String>{ 'GRPR', 'GCNV' })
-            .restrictLessThanOrEqual('Plan_Effective_Date__c', new DynamicSoqlBuilderRestriction.Keyword('TODAY'))
+            // No GERT plans
+            .restrict(
+                new DynamicSoqlBuilderRestriction.NotRestriction(
+                    new DynamicSoqlBuilderRestriction.AndRestriction(
+                        new List<DynamicSoqlBuilderRestriction>{
+                            new DynamicSoqlBuilderRestriction.LikeRestriction('Program__r.Program_Code__c', 'GR%'),
+                            new DynamicSoqlBuilderRestriction.EqualRestriction(
+                                Schema.SObjectType.Plan__c.fields.Plan_Type__c.getName(),
+                                'CER'
+                            ),
+                            new DynamicSoqlBuilderRestriction.OrRestriction(
+                                new List<DynamicSoqlBuilderRestriction>{
+                                    new DynamicSoqlBuilderRestriction.LikeRestriction(
+                                        Schema.SObjectType.Plan__c.fields.Plan_Code__c.getName(),
+                                        '%GERT'
+                                    ),
+                                    new DynamicSoqlBuilderRestriction.LikeRestriction(
+                                        Schema.SObjectType.Plan__c.fields.Name.getName(),
+                                        'UG-%'
+                                    )
+                                }
+                            )
+                        }
+                    )
+                )
+            )
+            // Only active plans
+            .restrictLessThanOrEqual(
+                Schema.SObjectType.Plan__c.fields.Plan_Effective_Date__c,
+                new DynamicSoqlBuilderRestriction.Keyword('TODAY')
+            )
             .setOrder('Plan_Code__c ASC');
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterJSON);
@@ -350,8 +380,14 @@ public class AdvisorPortalFilterSectionController {
                     degreeLevelRestrict.add(
                         new DynamicSoqlBuilderRestriction.AndRestriction(
                             new List<DynamicSoqlBuilderRestriction>{
-                                new DynamicSoqlBuilderRestriction.EqualRestriction('Plan_Type__c', 'MAJ'),
-                                new DynamicSoqlBuilderRestriction.EqualRestriction('Degree_Level__c', 'Masters')
+                                new DynamicSoqlBuilderRestriction.EqualRestriction(
+                                    Schema.SObjectType.Plan__c.fields.Plan_Type__c.getName(),
+                                    'MAJ'
+                                ),
+                                new DynamicSoqlBuilderRestriction.EqualRestriction(
+                                    Schema.SObjectType.Plan__c.fields.Degree_Level__c.getName(),
+                                    'Masters'
+                                )
                             }
                         )
                     );
@@ -360,17 +396,33 @@ public class AdvisorPortalFilterSectionController {
                     degreeLevelRestrict.add(
                         new DynamicSoqlBuilderRestriction.AndRestriction(
                             new List<DynamicSoqlBuilderRestriction>{
-                                new DynamicSoqlBuilderRestriction.EqualRestriction('Plan_Type__c', 'MAJ'),
-                                new DynamicSoqlBuilderRestriction.EqualRestriction('Degree_Level__c', 'Doctorate')
+                                new DynamicSoqlBuilderRestriction.EqualRestriction(
+                                    Schema.SObjectType.Plan__c.fields.Plan_Type__c.getName(),
+                                    'MAJ'
+                                ),
+                                new DynamicSoqlBuilderRestriction.EqualRestriction(
+                                    Schema.SObjectType.Plan__c.fields.Degree_Level__c.getName(),
+                                    'Doctorate'
+                                )
                             }
                         )
                     );
                 }
                 if (degreeLevels.contains('certificate')) {
-                    degreeLevelRestrict.add(new DynamicSoqlBuilderRestriction.EqualRestriction('Plan_Type__c', 'CER'));
+                    degreeLevelRestrict.add(
+                        new DynamicSoqlBuilderRestriction.EqualRestriction(
+                            Schema.SObjectType.Plan__c.fields.Plan_Type__c.getName(),
+                            'CER'
+                        )
+                    );
                 }
                 if (degreeLevels.contains('non-degree')) {
-                    degreeLevelRestrict.add(new DynamicSoqlBuilderRestriction.EqualRestriction('Plan_Type__c', 'NDG'));
+                    degreeLevelRestrict.add(
+                        new DynamicSoqlBuilderRestriction.EqualRestriction(
+                            Schema.SObjectType.Plan__c.fields.Plan_Type__c.getName(),
+                            'NDG'
+                        )
+                    );
                 }
 
                 if (degreeLevelRestrict.isNotEmpty()) {

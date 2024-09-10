@@ -1,11 +1,21 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Sender_Id_Units__c</fullName>
-    <description>Sender Id Units</description>
+    <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description
+    >Which Sender Id Units should be included as a part of this rule and used in the query (comma separated)?
+E.g. If we are only interested in messages with SenderIdUnit__c='EdPlus', then this should be:
+EdPlus</description>
     <externalId>false</externalId>
     <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText
+    >Which Sender Id Units should be included as a part of this rule and used in the query (comma separated)?
+E.g. If we are only interested in messages with SenderIdUnit__c='EdPlus', then this should be:
+EdPlus</inlineHelpText>
     <label>Sender Id Units</label>
     <length>32768</length>
+    <securityClassification>Internal</securityClassification>
     <type>LongTextArea</type>
     <visibleLines>3</visibleLines>
 </CustomField>

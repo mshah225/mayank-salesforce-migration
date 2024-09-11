@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>All_SMS_Stall_Detection_Rules</fullName>
     <columns>MasterLabel</columns>
     <columns>DeveloperName</columns>
     <columns>NamespacePrefix</columns>
+    <columns>Sender_Id_Units__c</columns>
     <columns>At_Least_N_Hours_Old__c</columns>
     <columns>Number_Of_Days__c</columns>
     <columns>Statuses__c</columns>

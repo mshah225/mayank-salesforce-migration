@@ -77,8 +77,6 @@ public with sharing class ScheduledStalledSMSDetectorTest {
 
     @isTest
     private static void testEmailSends() {
-        if (true)
-            return;
         ScheduledStalledSMSDetector smsDetector = new ScheduledStalledSMSDetector();
 
         Test.startTest();
@@ -93,12 +91,10 @@ public with sharing class ScheduledStalledSMSDetectorTest {
 
     @isTest
     private static void SMSDetectionRuleSetFiltering() {
-        if (true)
-            return;
         SMS_Stall_Detection_Rule__mdt metadata1 = new SMS_Stall_Detection_Rule__mdt(
             Email_Addresses__c = 'test1@test.com',
-            Report_Fields__c = 'Id,smagicinteract__SMSText__c' //,
-            // Sender_Id_Units__c = 'EdPlus'
+            Report_Fields__c = 'Id,smagicinteract__SMSText__c',
+            Sender_Id_Units__c = 'EdPlus'
         );
         SMS_Stall_Detection_Rule__mdt metadata2 = new SMS_Stall_Detection_Rule__mdt(
             Email_Addresses__c = 'test2@test.com',
@@ -151,50 +147,48 @@ public with sharing class ScheduledStalledSMSDetectorTest {
             System.assertEquals('EdPlus', sms.SenderIdUnit__c);
             System.assert(
                 sms.smagicinteract__SMSText__c == 'Test0' ||
-                    sms.smagicinteract__SMSText__c == 'Test1' ||
-                    sms.smagicinteract__SMSText__c == 'Test2'
+                sms.smagicinteract__SMSText__c == 'Test1' ||
+                sms.smagicinteract__SMSText__c == 'Test2'
             );
         }
         for (smagicinteract__smsMagic__c sms : results2) {
             System.assertEquals('QUEUED', sms.smagicinteract__Status__c);
             System.assert(
                 sms.smagicinteract__SMSText__c == 'Test0' ||
-                    sms.smagicinteract__SMSText__c == 'Test1' ||
-                    sms.smagicinteract__SMSText__c == 'Test2' ||
-                    sms.smagicinteract__SMSText__c == 'Test3'
+                sms.smagicinteract__SMSText__c == 'Test1' ||
+                sms.smagicinteract__SMSText__c == 'Test2' ||
+                sms.smagicinteract__SMSText__c == 'Test3'
             );
         }
         for (smagicinteract__smsMagic__c sms : results3) {
             System.assert(sms.CreatedDate < System.now().addHours(-1));
             System.assert(
                 sms.smagicinteract__SMSText__c == 'Test0' ||
-                    sms.smagicinteract__SMSText__c == 'Test2' ||
-                    sms.smagicinteract__SMSText__c == 'Test3' ||
-                    sms.smagicinteract__SMSText__c == 'Test4' ||
-                    sms.smagicinteract__SMSText__c == 'Test5'
+                sms.smagicinteract__SMSText__c == 'Test2' ||
+                sms.smagicinteract__SMSText__c == 'Test3' ||
+                sms.smagicinteract__SMSText__c == 'Test4' ||
+                sms.smagicinteract__SMSText__c == 'Test5'
             );
         }
         for (smagicinteract__smsMagic__c sms : results4) {
             System.assert(sms.CreatedDate > System.now().addDays(-7));
             System.assert(
                 sms.smagicinteract__SMSText__c == 'Test0' ||
-                    sms.smagicinteract__SMSText__c == 'Test1' ||
-                    sms.smagicinteract__SMSText__c == 'Test3' ||
-                    sms.smagicinteract__SMSText__c == 'Test4'
+                sms.smagicinteract__SMSText__c == 'Test1' ||
+                sms.smagicinteract__SMSText__c == 'Test3' ||
+                sms.smagicinteract__SMSText__c == 'Test4'
             );
         }
     }
 
     @isTest
     private static void SMSDetectionRuleSetCreation() {
-        if (true)
-            return;
         SMS_Stall_Detection_Rule__mdt metadata1 = new SMS_Stall_Detection_Rule__mdt(
             At_Least_N_Hours_Old__c = 1,
             Number_Of_Days__c = 7,
             Email_Addresses__c = 'test1@test.com, test2@test.com',
             Report_Fields__c = 'Id,SenderIdUnit__c,Name',
-            // Sender_Id_Units__c = 'EdPlus',
+            Sender_Id_Units__c = 'EdPlus',
             Statuses__c = 'SUBMITTED,ERROR'
         );
         SMS_Stall_Detection_Rule__mdt metadata2 = new SMS_Stall_Detection_Rule__mdt(
@@ -206,7 +200,7 @@ public with sharing class ScheduledStalledSMSDetectorTest {
             Report_Fields__c = 'SenderIdUnit__c',
             At_Least_N_Hours_Old__c = 0,
             Number_Of_Days__c = 12,
-            // Sender_Id_Units__c = 'FYS,EdPlus',
+            Sender_Id_Units__c = 'FYS,EdPlus',
             Statuses__c = 'QUEUED,ERROR'
         );
 
@@ -318,14 +312,12 @@ public with sharing class ScheduledStalledSMSDetectorTest {
 
     @isTest
     private static void SMSDetectionRuleSetQueryConstruction() {
-        if (true)
-            return;
         SMS_Stall_Detection_Rule__mdt metadata1 = new SMS_Stall_Detection_Rule__mdt(
             At_Least_N_Hours_Old__c = 1,
             Number_Of_Days__c = 7,
             Email_Addresses__c = 'test1@test.com, test2@test.com',
             Report_Fields__c = 'Id,SenderIdUnit__c,Name',
-            // Sender_Id_Units__c = 'EdPlus',
+            Sender_Id_Units__c = 'EdPlus',
             Statuses__c = 'SUBMITTED,ERROR'
         );
         SMS_Stall_Detection_Rule__mdt metadata2 = new SMS_Stall_Detection_Rule__mdt(
@@ -408,8 +400,6 @@ public with sharing class ScheduledStalledSMSDetectorTest {
 
     @isTest
     private static void SMSDetectionRuleSetDescribeSMS() {
-        if (true)
-            return;
         ScheduledStalledSMSDetector.SMSDetectionRuleSet ruleSet1 = new ScheduledStalledSMSDetector.SMSDetectionRuleSet(
             new SMS_Stall_Detection_Rule__mdt(
                 Email_Addresses__c = 'test1@test.com, test2@test.com',

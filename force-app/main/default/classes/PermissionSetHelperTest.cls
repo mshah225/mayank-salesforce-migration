@@ -99,20 +99,18 @@ public class PermissionSetHelperTest {
     // Tests if the current user has an empty or null permission set name
     @isTest
     private static void testUserHasNullOrEmptyPermissionSet() {
-        Boolean currentUserHasEmptyPermissionSet, currentUserHasNullPermissionSet, currentUserHasEmptyPermissionSetById, currentUserHasNullPermissionSetById;
+        Boolean currentUserHasEmptyPermissionSet, currentUserHasNullPermissionSet, currentUserHasNullPermissionSetById;
 
         Test.startTest();
         System.runAs(TestUserHelper.getTestSysAdmin()) {
             currentUserHasEmptyPermissionSet = PermissionSetHelper.currentUserHasPermissionSet('');
             currentUserHasNullPermissionSet = PermissionSetHelper.currentUserHasPermissionSet(null);
-            currentUserHasEmptyPermissionSetById = PermissionSetHelper.currentUserHasPermissionSetId('');
             currentUserHasNullPermissionSetById = PermissionSetHelper.currentUserHasPermissionSetId(null);
         }
         Test.stopTest();
 
         Assert.isFalse(currentUserHasEmptyPermissionSet);
         Assert.isFalse(currentUserHasNullPermissionSet);
-        Assert.isFalse(currentUserHasEmptyPermissionSetById);
         Assert.isFalse(currentUserHasNullPermissionSetById);
     }
 

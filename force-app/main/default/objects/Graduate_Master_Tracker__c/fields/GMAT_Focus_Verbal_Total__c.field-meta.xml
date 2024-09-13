@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>GMAT_Focus_Verbal_Total__c</fullName>
+    <description>[Apex] - If the applicant took the GMAT prior to July 1, 2024, the score will be stored here. If they took it after July 1, 2024, then the score will be in the display score, verbal and quantitative score fields. Apex code copies the test details and puts them here.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>[Apex] - If the applicant took the GMAT prior to July 1, 2024, the score will be stored here. If they took it after July 1, 2024, then the score will be in the display score, verbal and quantitative score fields. Apex code copies the test details and puts them here.</inlineHelpText>
+    <label>GMAT Focus Verbal Total</label>
+    <precision>4</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

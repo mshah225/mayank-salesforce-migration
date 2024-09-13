@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Interview_2_Score__c</fullName>
+    <description>[Apex] - This data is copied from the interview details related to Opportunity for this record.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>[Apex] - This data is copied from the interview details related to Opportunity for this record.</inlineHelpText>
+    <label>Interview 2 Score</label>
+    <precision>2</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Report_Fields__c</fullName>
+    <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>Which fields should be a part of the report (comma separated)?
+E.g. if emails should include the Id and smagicinteract__PhoneNumber__c of the stalled SMS message, this should be:
+Id, smagicinteract__PhoneNumber__c</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Which fields should be a part of the report (comma separated)?
+E.g. if emails should include the Id and smagicinteract__PhoneNumber__c of the stalled SMS message, this should be:
+Id, smagicinteract__PhoneNumber__c</inlineHelpText>
+    <label>Report Fields</label>
+    <length>1024</length>
+    <securityClassification>Internal</securityClassification>
+    <type>LongTextArea</type>
+    <visibleLines>8</visibleLines>
+</CustomField>

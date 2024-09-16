@@ -5,15 +5,22 @@ public class AdvisorPortalContact {
         'Customer Replied'
     };
 
+    @AuraEnabled
     public Contact portalContact;
 
+    @AuraEnabled
     public Boolean isSelected;
 
+    @AuraEnabled
     public Boolean isOutreachCustomer;
+    @AuraEnabled
     public Boolean isGradStudent;
+    @AuraEnabled
     public Boolean hasCases;
+    @AuraEnabled
     public Boolean hasMultipleCases;
 
+    @AuraEnabled
     public List<AdvisorPortalCase> cases;
 
     public AdvisorPortalContact(Contact theContact) {
@@ -44,7 +51,7 @@ public class AdvisorPortalContact {
         this.hasCases = !this.cases.isEmpty();
         this.hasMultipleCases = this.cases.size() > 1;
     }
-    
+
     public List<AdvisorPortalCase> getCases() {
         return this.cases;
     }

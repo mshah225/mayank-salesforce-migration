@@ -1,0 +1,115 @@
+{
+    "uiapi": {
+        "query": {
+            "Case_Classification__c": {
+                "edges": [
+                    {
+                        "node": {
+                            "Id": "a2459000001N9SOAA0",
+                            "Name": {"value": "ASU Salesforce Support"},
+                            "Parent__c": {"value": null}
+                        }
+                    },
+                    {
+                        "node": {
+                            "Id": "a2459000001N9SPAA0",
+                            "Name": {"value": "General"},
+                            "Parent__c": {"value": "a2459000001N9SOAA0"}
+                        }
+                    },
+                    {
+                        "node": {
+                            "Id": "a2459000001NIZLAA4",
+                            "Name": {"value": "Test FG-4"},
+                            "Parent__c": {"value": null}
+                        }
+                    },
+                    {
+                        "node": {
+                            "Id": "a2459000001NIZMAA4",
+                            "Name": {"value": "Test Classification-41"},
+                            "Parent__c": {"value": "a2459000001NIZLAA4"}
+                        }
+                    },
+                    {
+                        "node": {
+                            "Id": "a2459000001NIZNAA4",
+                            "Name": {"value": "Test Classification-42"},
+                            "Parent__c": {"value": "a2459000001NIZLAA4"}
+                        }
+                    },
+                    {
+                        "node": {
+                            "Id": "a2459000001NIZOAA4",
+                            "Name": {"value": "Test SubClassification-411"},
+                            "Parent__c": {"value": "a2459000001NIZMAA4"}
+                        }
+                    },
+                    {
+                        "node": {
+                            "Id": "a2459000001NIZPAA4",
+                            "Name": {"value": "Test SubClassification-412"},
+                            "Parent__c": {"value": "a2459000001NIZMAA4"}
+                        }
+                    },
+                    {
+                        "node": {
+                            "Id": "a2459000001NIZQAA4",
+                            "Name": {"value": "Test SubClassification-413"},
+                            "Parent__c": {"value": "a2459000001NIZMAA4"}
+                        }
+                    },
+                    {
+                        "node": {
+                            "Id": "a2459000001NIZRAA4",
+                            "Name": {"value": "Test SubClassification-414"},
+                            "Parent__c": {"value": "a2459000001NIZMAA4"}
+                        }
+                    },
+                    {
+                        "node": {
+                            "Id": "a2459000001NIZSAA4",
+                            "Name": {"value": "Test SubClassification-415"},
+                            "Parent__c": {"value": "a2459000001NIZMAA4"}
+                        }
+                    },
+                    {
+                        "node": {
+                            "Id": "a2459000001NIZTAA4",
+                            "Name": {"value": "Test SubClassification-421"},
+                            "Parent__c": {"value": "a2459000001NIZNAA4"}
+                        }
+                    },
+                    {
+                        "node": {
+                            "Id": "a2459000001NIZUAA4",
+                            "Name": {"value": "Test SubClassification-422"},
+                            "Parent__c": {"value": "a2459000001NIZNAA4"}
+                        }
+                    },
+                    {
+                        "node": {
+                            "Id": "a2459000001NIZVAA4",
+                            "Name": {"value": "Test SubClassification-423"},
+                            "Parent__c": {"value": "a2459000001NIZNAA4"}
+                        }
+                    },
+                    {
+                        "node": {
+                            "Id": "a2459000001NIZWAA4",
+                            "Name": {"value": "Test SubClassification-424"},
+                            "Parent__c": {"value": "a2459000001NIZNAA4"}
+                        }
+                    },
+                    {
+                        "node": {
+                            "Id": "a2459000001NIZXAA4",
+                            "Name": {"value": "Test SubClassification-425"},
+                            "Parent__c": {"value": "a2459000001NIZNAA4"}
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

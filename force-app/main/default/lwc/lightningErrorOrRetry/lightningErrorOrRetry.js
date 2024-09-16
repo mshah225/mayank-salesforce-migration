@@ -10,6 +10,14 @@ export default class LightningErrorOrRetry extends LightningElement {
     }
     _hasError = false;
 
+    @api set retryEnabled(val) {
+        this._retryEnabled = parseBoolean(val);
+    }
+    get retryEnabled() {
+        return this._retryEnabled;
+    }
+    _retryEnabled = true;
+
     @api message;
 
     sendRetryEvent() {

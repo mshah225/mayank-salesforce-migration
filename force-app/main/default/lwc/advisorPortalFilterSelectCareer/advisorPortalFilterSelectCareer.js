@@ -1,48 +1,17 @@
 /* eslint-disable no-console */
-import {LightningElement, api} from 'lwc';
+import {LightningElement, api, wire} from 'lwc';
+import {cloneObj} from 'c/helperFunctions';
 
-import currentUserHasPermissionSet from '@salesforce/apex/PermissionsHelper.currentUserHasPermissionSet';
+import hasUgradAccess from '@salesforce/apex/AdvisorPortalFilterSectionController.hasUgradAccess';
+import hasGradAccess from '@salesforce/apex/AdvisorPortalFilterSectionController.hasGradAccess';
 
 export default class AdvisorPortalFilterSelectCareer extends LightningElement {
-    hasUndergradAdvisorPermission;
-    hasGradAdvisorPermission;
-    isFilterDisabled = false;
-
-    async connectedCallback() {
-        // check if the current user has permission to view undergrad cases
-        await currentUserHasPermissionSet({permissionSetName: 'Role_Academic_Advisor_Portal_Service_Users'})
-            .then((result) => {
-                this.hasUndergradAdvisorPermission = result;
-            })
-            .catch((error) => {
-                console.log('Error occurred while checking for undergrad advisor permission');
-                console.log(error);
-            });
-        // check if the current user has permission to view grad cases
-        await currentUserHasPermissionSet({permissionSetName: 'Role_Graduate_Academic_Advisor_Portal_Service_Users'})
-            .then((result) => {
-                this.hasGradAdvisorPermission = result;
-            })
-            .catch((error) => {
-                console.log('Error occurred while checking for grad advisor permission');
-                console.log(error);
-            });
-
-        // user has permission to change filters when they have both undergrad and grad advisor permissions
-        if (!this.hasUndergradAdvisorPermission || !this.hasGradAdvisorPermission) {
-            this.isFilterDisabled = true;
-        }
-
-        this.value = this.hasUndergradAdvisorPermission ? 'UGRD' : this.hasGradAdvisorPermission ? 'GRD' : 'UGRD';
-        this.sendEvent();
-    }
-
     @api
     get currentFilter() {
         return this._currentFilter;
     }
     set currentFilter(val) {
-        this._currentFilter = val;
+        this._currentFilter = cloneObj(val);
         if (val != null && val.career != null && val.career !== '') {
             this.quietSelect(val.career);
         }
@@ -53,6 +22,39 @@ export default class AdvisorPortalFilterSelectCareer extends LightningElement {
         {label: 'Undergraduate', value: 'UGRD'},
         {label: 'Graduate', value: 'GRD'},
     ];
+
+    hasUndergradAdvisorPermission = false;
+    @wire(hasUgradAccess, {})
+    checkedIfUserIsUndergradAdvisor(result) {
+        const {data, error} = result;
+
+        if (data !== undefined) {
+            this.hasUndergradAdvisorPermission = data;
+        }
+
+        if (error !== undefined) {
+            console.error('Could not determine if user is undergrad advisor', error);
+        }
+    }
+
+    hasGradAdvisorPermission = false;
+    @wire(hasGradAccess, {})
+    checkedIfUserIsGradAdvisor(result) {
+        const {data, error} = result;
+
+        if (data !== undefined) {
+            this.hasGradAdvisorPermission = data;
+        }
+
+        if (error !== undefined) {
+            console.error('Could not determine if user is grad advisor', error);
+        }
+    }
+
+    get isFilterDisabled() {
+        const hasBothPerms = this.hasGradAdvisorPermission && this.hasUndergradAdvisorPermission;
+        return !hasBothPerms;
+    }
 
     @api
     quietSelect(val) {

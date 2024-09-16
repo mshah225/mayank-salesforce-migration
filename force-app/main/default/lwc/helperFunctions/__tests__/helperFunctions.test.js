@@ -31,14 +31,40 @@ describe('Test Helper Functions', () => {
 
     test('Build Picklist Options Array', () => {
         const mapOfCampusNameToCode = {
+            'Tempe': 'TEMPE',
+            'West': 'WEST',
             'Downtown Phoenix': 'DTPHX',
             'Online': 'ONLNE',
             'Polytechnic': 'POLY',
-            'Tempe': 'TEMPE',
-            'West': 'WEST',
         };
 
         const optionsList = buildPicklistOptionsArray(mapOfCampusNameToCode);
+
+        // Each field should cause a label-value pair
+        expect(optionsList.length).toBe(5);
+        // Same order, label is attribute name, value is attribute value
+        expect(optionsList[0].label).toBe('Tempe');
+        expect(optionsList[0].value).toBe('TEMPE');
+        expect(optionsList[1].label).toBe('West');
+        expect(optionsList[1].value).toBe('WEST');
+        expect(optionsList[2].label).toBe('Downtown Phoenix');
+        expect(optionsList[2].value).toBe('DTPHX');
+        expect(optionsList[3].label).toBe('Online');
+        expect(optionsList[3].value).toBe('ONLNE');
+        expect(optionsList[4].label).toBe('Polytechnic');
+        expect(optionsList[4].value).toBe('POLY');
+    });
+
+    test('Build Picklist Options Array, Alphabetize=TRUE', () => {
+        const mapOfCampusNameToCode = {
+            'Tempe': 'TEMPE',
+            'West': 'WEST',
+            'Downtown Phoenix': 'DTPHX',
+            'Online': 'ONLNE',
+            'Polytechnic': 'POLY',
+        };
+
+        const optionsList = buildPicklistOptionsArray(mapOfCampusNameToCode, {alphabetize: true});
 
         // Each field should cause a label-value pair
         expect(optionsList.length).toBe(5);

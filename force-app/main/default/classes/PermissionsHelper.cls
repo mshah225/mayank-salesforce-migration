@@ -1,4 +1,6 @@
 /**
+ * @deprecated - Use ProfileHelper, PermissionSetHelper, and CustomPermissionHelper instead
+ *
  * A helper class providing utility methods for working with profiles and permissions in Salesforce.
  */
 public class PermissionsHelper {
@@ -18,6 +20,8 @@ public class PermissionsHelper {
     }
 
     /**
+     * @deprecated - Use ProfileHelper.getProfileId instead
+     *
      * Gets the profile ID by profile name.
      *
      * @param profileName The name of the profile.
@@ -70,6 +74,8 @@ public class PermissionsHelper {
     }
 
     /**
+     * @deprecated - Use ProfileHelper.currentUserHasProfile instead
+     *
      * Checks if the current user has a specific profile.
      *
      * @param profileName The name of the profile.
@@ -80,6 +86,8 @@ public class PermissionsHelper {
     }
 
     /**
+     * @deprecated - Use ProfileHelper.userHasProfile instead
+     *
      * Checks if a user has a specific profile.
      *
      * @param profileName The name of the profile.
@@ -96,6 +104,8 @@ public class PermissionsHelper {
     }
 
     /**
+     * @deprecated - Use ProfileHelper.currentUserHasProfileId instead
+     *
      * Checks if the current user has a specific profile ID.
      *
      * @param profileId The ID of the profile.
@@ -106,6 +116,8 @@ public class PermissionsHelper {
     }
 
     /**
+     * @deprecated - Use ProfileHelper.userHasProfileId instead
+     *
      * Checks if a user has a specific profile ID.
      *
      * @param profileId The ID of the profile.
@@ -121,6 +133,8 @@ public class PermissionsHelper {
     }
 
     /**
+     * @deprecated - Use PermissionSetHelper.currentUserHasPermissionSet instead
+     *
      * Checks if the current user has a specific permission set.
      *
      * @param permissionSetName The name of the permission set.
@@ -132,6 +146,8 @@ public class PermissionsHelper {
     }
 
     /**
+     * @deprecated - Use PermissionSetHelper.userHasPermissionSet instead
+     *
      * Checks if a user has a specific permission set.
      *
      * @param permissionSetName The name of the permission set.
@@ -154,6 +170,8 @@ public class PermissionsHelper {
     }
 
     /**
+     * @deprecated - Use PermissionSetHelper.currentUserHasPermissionSetId instead
+     *
      * Checks if the current user has a specific permission set ID.
      *
      * @param permissionSetId The ID of the permission set.
@@ -164,6 +182,8 @@ public class PermissionsHelper {
     }
 
     /**
+     * @deprecated - Use PermissionSetHelper.userHasPermissionSetId instead
+     *
      * Checks if a user has a specific permission set ID.
      *
      * @param permissionSetId The ID of the permission set.
@@ -184,6 +204,8 @@ public class PermissionsHelper {
     }
 
     /**
+     * @deprecated - Use CustomPermissionHelper.userHasCustomPermission instead
+     *
      * Checks if a user has a specific custom permission.
      *
      * @param customPermissionName The name of the custom permission.
@@ -220,6 +242,8 @@ public class PermissionsHelper {
     }
 
     /**
+     * @deprecated - Use Schema.sObjectType.Case.isCreateable() instead
+     *
      * Checks if the current user has permissions to create cases.
      *
      * @return Boolean indicating if the current user has permissions to create cases.

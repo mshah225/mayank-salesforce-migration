@@ -12,9 +12,6 @@ export default class AdvisorPortalUserSelect extends LightningElement {
         if (this.closeModalTimeout != null) clearTimeout(this.closeModalTimeout);
         this.closeModalTimeout = null;
         this.setDropdownState(false);
-
-        // and apply this set of users
-        this.applyChanges();
     }
     get allUserOptions() {
         return this._allUserOptions;

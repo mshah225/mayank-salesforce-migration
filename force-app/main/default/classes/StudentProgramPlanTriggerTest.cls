@@ -2,16 +2,16 @@
 public with sharing class StudentProgramPlanTriggerTest {
     @TestSetup
     static void setup() {
-        Contact c = new Contact(FirstName = 'AutoSubscriberHelperTest', LastName = 'TestContact');
+        Contact c = new Contact(FirstName = 'SubscriberAutoSubscriptionHelperTest', LastName = 'TestContact');
         insert c;
     }
 
     @isTest
     private static void testAutoSubscribing() {
         Contact c = [SELECT Id FROM Contact LIMIT 1];
-        Auto_Subscriber_Setting__mdt subscriberSetting = [
+        Subscriber_Auto_Subscription_Mapping__mdt subscriberSetting = [
             SELECT Subscriptions_To_Add__c
-            FROM Auto_Subscriber_Setting__mdt
+            FROM Subscriber_Auto_Subscription_Mapping__mdt
             WHERE Active__c = TRUE AND Related_Object__r.DeveloperName = 'Student_Program_Plan'
         ];
 
@@ -33,7 +33,7 @@ public with sharing class StudentProgramPlanTriggerTest {
             WHERE Subscription__c IN :settingSubcriptionIds AND Contact__c = :c.Id
         ];
 
-        // For each subscription object in this org that matches one of the Ids set in Auto_Subscriber_Setting__mdt
+        // For each subscription object in this org that matches one of the Ids set in Subscriber_Auto_Subscription_Mapping__mdt
         // check if a subscriber was created
         // If the Ids don't match any subscriptions in this org (because this org doesn't have the correct subscription objects)
         // then this will not assert anything - which is fine

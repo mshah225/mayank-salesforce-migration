@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Enabled__c</fullName>
+    <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <defaultValue>true</defaultValue>
+    <description>If this rule is enabled or not.  When disabled, no emails will be sent out for these rules.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>If this rule is enabled or not.  When disabled, no emails will be sent out for these rules.</inlineHelpText>
+    <label>Enabled</label>
+    <securityClassification>Internal</securityClassification>
+    <type>Checkbox</type>
+</CustomField>

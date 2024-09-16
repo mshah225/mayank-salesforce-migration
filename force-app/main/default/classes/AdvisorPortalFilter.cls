@@ -1,3 +1,22 @@
+/**
+ * An instance of this class is a specific set of filters you should apply on the advisor portal when retrieving cases/contacts
+ *
+ * We support version-ing, since these filters can be saved. Before returning a saved filter, we always run upgradeToMostRecentVersion
+ * to update it to the most recent version though, so when using a filter to filter cases/contacts you can always be sure that it is
+ * of the most recent version.
+ *
+ * Also, because of versioning (and because we want to use JSON.deserialize), all fields should be strings (as this gives us maximum flexibility
+ * to avoid having deserialization fail on old versions).
+ *
+ * There are several functions that you should use when using the filter to filter cases/contacts
+ * 1. shouldUse returns a boolean indicating if you SHOULD apply a filter or not, this allows us to avoid applying empty filters
+ *    or applying GRAD filters when in UGRAD mode
+ * 2. The getter functions return the filter value in the form that you can use in SOQL. For example Outlook Scores are decimals
+ *    the outlookScore field is a String, but getOutlookScores will return a List<Decimal> after parsing that string.
+ *    You'll always want to use the getters because they get you the correct object type and also do things like base64 decode strings before returning
+ *    Also, they will return null if that filter is empty.
+ */
+
 public class AdvisorPortalFilter {
     // Static variables to describe state of the world
     public static final String mostRecentVersion = 'v2';
@@ -15,9 +34,10 @@ public class AdvisorPortalFilter {
     };
 
     // Control variables
+    @AuraEnabled
     public String version {
         get {
-            // Since we must support saving filters in the advisor portal, we must have some versioning in case we ever drastically change this class
+            // Since we must support saving filters in the advisor portal, we must have some versioning in case we ever change this class
             // Default to the most recent version
             return version == null ? mostRecentVersion : version;
         }
@@ -25,35 +45,63 @@ public class AdvisorPortalFilter {
     }
 
     // Some fields that are always set
+    @AuraEnabled
     public String caseTypeState; // "AllCasesState" | "ProactiveCasesState" | "WatchlistCasesState"
+    @AuraEnabled
     public String career; // "GRD" | "UGRD"
 
     // -----  Used in which mode?  ---------------------  UGRAD  ------  GRAD  ------ -- v1 -- v2 --
+    @AuraEnabled
     public String studentString; //.....................  ugrad  ......  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String campus; //............................  ugrad  ......  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String academicLevel; //.....................  ugrad  .................... ..  y ..  y ..
+    @AuraEnabled
     public String studentGroupCode; //..................  ugrad  .................... ..  y ..  y ..
+    @AuraEnabled
     public String major; //.............................  ugrad  .................... ..  y ..  y ..
+    @AuraEnabled
     public String degreeLevel; //......................................  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String academicProgram; //..................................  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String schoolDepartment; //.................................  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String academicPlan; //.....................................  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String admitTermFrom; //....................................  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String admitTermTo; //......................................  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String residency; //.........................  ugrad........  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String caseStatus; //........................  ugrad........  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String caseCategory; //......................  ugrad........  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String caseSubCategory; //..................................  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String caseSubject; //.......................  ugrad  .................... ..  y ..  y ..
+    @AuraEnabled
     public String specialPopulation; //................................  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String outlookScore; //......................  ugrad  .................... ..  y ..  y ..
+    @AuraEnabled
     public String outlookChange; //.....................  ugrad  .................... ..  y ..  y ..
+    @AuraEnabled
     public String caseCount; //.........................  ugrad........  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String createdFromDate; //...................  ugrad........  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String createdToDate; //.....................  ugrad........  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String followUpFromDate; //..................  ugrad........  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String followUpToDate; //....................  ugrad........  grad  ...... ..  y ..  y ..
+    @AuraEnabled
     public String persistenceFromDate; //...............  ugrad  .................... ..  y ..  y ..
+    @AuraEnabled
     public String persistenceToDate; //.................  ugrad  .................... ..  y ..  y ..
 
     public AdvisorPortalFilter() {
@@ -221,7 +269,6 @@ public class AdvisorPortalFilter {
         return val;
     }
     public List<String> getCampuses() {
-        RuleSet ruleSet = new RuleSet(version);
         String val = null;
         List<String> val_arr = null;
 
@@ -229,21 +276,12 @@ public class AdvisorPortalFilter {
         if (!String.isBlank(this.campus))
             val = this.campus;
 
-        if (val != null) {
-            // Split using array delimiter
-            List<String> val_split = val.split(ruleSet.arrayDelim);
-            val_arr = val_split;
-
-            // Decode each element of the array if they are base64 encoded
-            if (ruleSet.arrayElemsAreBase64Encoded.contains('campus')) {
-                val_arr = decodeBase64ElementsOfArray(val_arr);
-            }
-        }
+        if (val != null)
+            val_arr = val.split(';');
 
         return val_arr;
     }
     public List<String> getAcademicLevels() {
-        RuleSet ruleSet = new RuleSet(version);
         String val = null;
         List<String> val_arr = null;
 
@@ -251,16 +289,8 @@ public class AdvisorPortalFilter {
         if (!String.isBlank(this.academicLevel))
             val = this.academicLevel;
 
-        if (val != null) {
-            // Split using array delimiter
-            List<String> val_split = val.split(ruleSet.arrayDelim);
-            val_arr = val_split;
-
-            // Decode each element of the array if they are base64 encoded
-            if (ruleSet.arrayElemsAreBase64Encoded.contains('academicLevel')) {
-                val_arr = decodeBase64ElementsOfArray(val_arr);
-            }
-        }
+        if (val != null)
+            val_arr = val.split(';');
 
         return val_arr;
     }
@@ -283,7 +313,6 @@ public class AdvisorPortalFilter {
         return val;
     }
     public List<String> getDegreeLevels() {
-        RuleSet ruleSet = new RuleSet(version);
         String val = null;
         List<String> val_arr = null;
 
@@ -291,21 +320,12 @@ public class AdvisorPortalFilter {
         if (!String.isBlank(this.degreeLevel))
             val = this.degreeLevel;
 
-        if (val != null) {
-            // Split using array delimiter
-            List<String> val_split = val.split(ruleSet.arrayDelim);
-            val_arr = val_split;
-
-            // Decode each element of the array if they are base64 encoded
-            if (ruleSet.arrayElemsAreBase64Encoded.contains('degreeLevel')) {
-                val_arr = decodeBase64ElementsOfArray(val_arr);
-            }
-        }
+        if (val != null)
+            val_arr = val.split(';');
 
         return val_arr;
     }
     public List<String> getAcademicPrograms() {
-        RuleSet ruleSet = new RuleSet(version);
         String val = null;
         List<String> val_arr = null;
 
@@ -313,21 +333,12 @@ public class AdvisorPortalFilter {
         if (!String.isBlank(this.academicProgram))
             val = this.academicProgram;
 
-        if (val != null) {
-            // Split using array delimiter
-            List<String> val_split = val.split(ruleSet.arrayDelim);
-            val_arr = val_split;
-
-            // Decode each element of the array if they are base64 encoded
-            if (ruleSet.arrayElemsAreBase64Encoded.contains('academicProgram')) {
-                val_arr = decodeBase64ElementsOfArray(val_arr);
-            }
-        }
+        if (val != null)
+            val_arr = val.split(';');
 
         return val_arr;
     }
     public List<String> getSchoolDepartments() {
-        RuleSet ruleSet = new RuleSet(version);
         String val = null;
         List<String> val_arr = null;
 
@@ -335,21 +346,12 @@ public class AdvisorPortalFilter {
         if (!String.isBlank(this.schoolDepartment))
             val = this.schoolDepartment;
 
-        if (val != null) {
-            // Split using array delimiter
-            List<String> val_split = val.split(ruleSet.arrayDelim);
-            val_arr = val_split;
-
-            // Decode each element of the array if they are base64 encoded
-            if (ruleSet.arrayElemsAreBase64Encoded.contains('schoolDepartment')) {
-                val_arr = decodeBase64ElementsOfArray(val_arr);
-            }
-        }
+        if (val != null)
+            val_arr = val.split(';');
 
         return val_arr;
     }
     public List<String> getAcademicPlans() {
-        RuleSet ruleSet = new RuleSet(version);
         String val = null;
         List<String> val_arr = null;
 
@@ -357,16 +359,8 @@ public class AdvisorPortalFilter {
         if (!String.isBlank(this.academicPlan))
             val = this.academicPlan;
 
-        if (val != null) {
-            // Split using array delimiter
-            List<String> val_split = val.split(ruleSet.arrayDelim);
-            val_arr = val_split;
-
-            // Decode each element of the array if they are base64 encoded
-            if (ruleSet.arrayElemsAreBase64Encoded.contains('academicPlan')) {
-                val_arr = decodeBase64ElementsOfArray(val_arr);
-            }
-        }
+        if (val != null)
+            val_arr = val.split(';');
 
         return val_arr;
     }
@@ -389,7 +383,6 @@ public class AdvisorPortalFilter {
         return val;
     }
     public List<String> getResidencies() {
-        RuleSet ruleSet = new RuleSet(version);
         String val = null;
         List<String> val_arr = null;
 
@@ -397,21 +390,12 @@ public class AdvisorPortalFilter {
         if (!String.isBlank(this.residency))
             val = this.residency;
 
-        if (val != null) {
-            // Split using array delimiter
-            List<String> val_split = val.split(ruleSet.arrayDelim);
-            val_arr = val_split;
-
-            // Decode each element of the array if they are base64 encoded
-            if (ruleSet.arrayElemsAreBase64Encoded.contains('residency')) {
-                val_arr = decodeBase64ElementsOfArray(val_arr);
-            }
-        }
+        if (val != null)
+            val_arr = val.split(';');
 
         return val_arr;
     }
     public List<String> getCaseStatuses() {
-        RuleSet ruleSet = new RuleSet(version);
         String val = null;
         List<String> val_arr = null;
 
@@ -419,21 +403,12 @@ public class AdvisorPortalFilter {
         if (!String.isBlank(this.caseStatus))
             val = this.caseStatus;
 
-        if (val != null) {
-            // Split using array delimiter
-            List<String> val_split = val.split(ruleSet.arrayDelim);
-            val_arr = val_split;
-
-            // Decode each element of the array if they are base64 encoded
-            if (ruleSet.arrayElemsAreBase64Encoded.contains('caseStatus')) {
-                val_arr = decodeBase64ElementsOfArray(val_arr);
-            }
-        }
+        if (val != null)
+            val_arr = val.split(';');
 
         return val_arr;
     }
     public List<String> getCaseCategories() {
-        RuleSet ruleSet = new RuleSet(version);
         String val = null;
         List<String> val_arr = null;
 
@@ -441,21 +416,12 @@ public class AdvisorPortalFilter {
         if (!String.isBlank(this.caseCategory))
             val = this.caseCategory;
 
-        if (val != null) {
-            // Split using array delimiter
-            List<String> val_split = val.split(ruleSet.arrayDelim);
-            val_arr = val_split;
-
-            // Decode each element of the array if they are base64 encoded
-            if (ruleSet.arrayElemsAreBase64Encoded.contains('caseCategory')) {
-                val_arr = decodeBase64ElementsOfArray(val_arr);
-            }
-        }
+        if (val != null)
+            val_arr = decodeBase64ElementsOfArray(val.split(';'));
 
         return val_arr;
     }
     public List<String> getCaseSubCategories() {
-        RuleSet ruleSet = new RuleSet(version);
         String val = null;
         List<String> val_arr = null;
 
@@ -463,21 +429,12 @@ public class AdvisorPortalFilter {
         if (!String.isBlank(this.caseSubCategory))
             val = this.caseSubCategory;
 
-        if (val != null) {
-            // Split using array delimiter
-            List<String> val_split = val.split(ruleSet.arrayDelim);
-            val_arr = val_split;
-
-            // Decode each element of the array if they are base64 encoded
-            if (ruleSet.arrayElemsAreBase64Encoded.contains('caseSubCategory')) {
-                val_arr = decodeBase64ElementsOfArray(val_arr);
-            }
-        }
+        if (val != null)
+            val_arr = decodeBase64ElementsOfArray(val.split(';'));
 
         return val_arr;
     }
     public List<String> getCaseSubjects() {
-        RuleSet ruleSet = new RuleSet(version);
         String val = null;
         List<String> val_arr = null;
 
@@ -485,21 +442,12 @@ public class AdvisorPortalFilter {
         if (!String.isBlank(this.caseSubject))
             val = this.caseSubject;
 
-        if (val != null) {
-            // Split using array delimiter
-            List<String> val_split = val.split(ruleSet.arrayDelim);
-            val_arr = val_split;
-
-            // Decode each element of the array if they are base64 encoded
-            if (ruleSet.arrayElemsAreBase64Encoded.contains('caseSubject')) {
-                val_arr = decodeBase64ElementsOfArray(val_arr);
-            }
-        }
+        if (val != null)
+            val_arr = decodeBase64ElementsOfArray(val.split(';'));
 
         return val_arr;
     }
     public List<String> getSpecialPopulations() {
-        RuleSet ruleSet = new RuleSet(version);
         String val = null;
         List<String> val_arr = null;
 
@@ -507,21 +455,12 @@ public class AdvisorPortalFilter {
         if (!String.isBlank(this.specialPopulation))
             val = this.specialPopulation;
 
-        if (val != null) {
-            // Split using array delimiter
-            List<String> val_split = val.split(ruleSet.arrayDelim);
-            val_arr = val_split;
-
-            // Decode each element of the array if they are base64 encoded
-            if (ruleSet.arrayElemsAreBase64Encoded.contains('specialPopulation')) {
-                val_arr = decodeBase64ElementsOfArray(val_arr);
-            }
-        }
+        if (val != null)
+            val_arr = val.split(';');
 
         return val_arr;
     }
     public List<Decimal> getOutlookScores() {
-        RuleSet ruleSet = new RuleSet(version);
         String val = null;
         List<String> val_arr_str = null;
         List<Decimal> val_arr_dec = null;
@@ -532,13 +471,7 @@ public class AdvisorPortalFilter {
 
         if (val != null) {
             // Split using array delimiter
-            List<String> val_split = val.split(ruleSet.arrayDelim);
-            val_arr_str = val_split;
-
-            // Decode each element of the array if they are base64 encoded
-            if (ruleSet.arrayElemsAreBase64Encoded.contains('outlookScore')) {
-                val_arr_str = decodeBase64ElementsOfArray(val_arr_str);
-            }
+            val_arr_str = val.split(';');
 
             // Convert labels to corresponding values
             val_arr_dec = new List<Decimal>();
@@ -552,7 +485,6 @@ public class AdvisorPortalFilter {
         return val_arr_dec;
     }
     public List<Decimal> getOutlookChanges() {
-        RuleSet ruleSet = new RuleSet(version);
         String val = null;
         List<String> val_arr_str = null;
         List<Decimal> val_arr_dec = null;
@@ -563,13 +495,8 @@ public class AdvisorPortalFilter {
 
         if (val != null) {
             // Split using array delimiter
-            List<String> val_split = val.split(ruleSet.arrayDelim);
-            val_arr_str = val_split;
+            val_arr_str = val.split(';');
 
-            // Decode each element of the array if they are base64 encoded
-            if (ruleSet.arrayElemsAreBase64Encoded.contains('outlookChange')) {
-                val_arr_str = decodeBase64ElementsOfArray(val_arr_str);
-            }
             // Convert labels to corresponding values
             val_arr_dec = new List<Decimal>();
             for (String elem : val_arr_str) {
@@ -695,89 +622,28 @@ public class AdvisorPortalFilter {
      * later change the format, we need to be able to update there filter to the newest formats.
      */
     public void upgradeToMostRecentVersion() {
-        RuleSet mostRecentVerRS = new RuleSet(mostRecentVersion);
-        RuleSet curVerRS = new RuleSet(version);
+        List<String> upgradePath = new List<String>();
+        upgradePath.add(version);
 
-        // Convert format for all arrays (that is all we need to do, since everything else is currently identical from rule set to rule set)
-        campus = convStrArrFromRSToRS(campus, 'campus', curVerRS, mostRecentVerRS);
-        academicLevel = convStrArrFromRSToRS(academicLevel, 'academicLevel', curVerRS, mostRecentVerRS);
-        degreeLevel = convStrArrFromRSToRS(degreeLevel, 'degreeLevel', curVerRS, mostRecentVerRS);
-        academicProgram = convStrArrFromRSToRS(academicProgram, 'academicProgram', curVerRS, mostRecentVerRS);
-        schoolDepartment = convStrArrFromRSToRS(schoolDepartment, 'schoolDepartment', curVerRS, mostRecentVerRS);
-        academicPlan = convStrArrFromRSToRS(academicPlan, 'academicPlan', curVerRS, mostRecentVerRS);
-        residency = convStrArrFromRSToRS(residency, 'residency', curVerRS, mostRecentVerRS);
-        caseStatus = convStrArrFromRSToRS(caseStatus, 'caseStatus', curVerRS, mostRecentVerRS);
-        caseCategory = convStrArrFromRSToRS(caseCategory, 'caseCategory', curVerRS, mostRecentVerRS);
-        caseSubject = convStrArrFromRSToRS(caseSubject, 'caseSubject', curVerRS, mostRecentVerRS);
-        specialPopulation = convStrArrFromRSToRS(specialPopulation, 'specialPopulation', curVerRS, mostRecentVerRS);
-        outlookScore = convStrArrFromRSToRS(outlookScore, 'outlookScore', curVerRS, mostRecentVerRS);
-        outlookChange = convStrArrFromRSToRS(outlookChange, 'outlookChange', curVerRS, mostRecentVerRS);
+        if (version == 'v1') {
+            // from v1 -> v2 we began base64 encoding subject, category, and subcategory
+            version = 'v2';
+            upgradePath.add('v2');
 
-        version = mostRecentVersion;
-    }
-
-    /**
-     * Take the string representation of an array under one rule set and convert it to the string represenation in another rule set
-     *
-     * @param fieldValueString The array-representing-string to convert, it should follow the rules of fromRs
-     * @param fieldName The field the string is for
-     * @param fromRs The Rule Set the current string follows
-     * @param toRs The Rule Set the resultant string should follow
-     *
-     * @return A new array-representing-string that follows the rules of toRS
-     */
-    public static String convStrArrFromRSToRS(String fieldValueString, String fieldName, RuleSet fromRs, RuleSet toRs) {
-        if (fieldValueString == null)
-            return null;
-        return convArrToStrUsingRS(convStrToArrUsingRS(fieldValueString, fieldName, fromRs), fieldName, toRs);
-    }
-
-    /**
-     * Breaks up a string that represents an array into the corresponding array. Follows a ruleset
-     * to determine delimiter and if it needs to decode each element from base64
-     *
-     * @param fieldValueString The string to extract the array from
-     * @param fieldName The field that this string corresponds to
-     * @param rs The ruleset to convert using
-     *
-     * @return The array the string represented
-     */
-    @TestVisible
-    private static List<String> convStrToArrUsingRS(String fieldValueString, String fieldName, RuleSet rs) {
-        if (fieldValueString == null)
-            return null;
-
-        List<String> newValues = fieldValueString.split(rs.arrayDelim); //split using delimiter
-
-        // Convert from base64 if needed
-        if (rs.arrayElemsAreBase64Encoded.contains(fieldName)) {
-            newValues = decodeBase64ElementsOfArray(newValues);
+            // Convert fields
+            if (String.isNotBlank(caseSubject))
+                caseSubject = String.join(encodeBase64ElementsOfArray(caseSubject.split(';')), ';');
+            if (String.isNotBlank(caseCategory))
+                caseCategory = String.join(encodeBase64ElementsOfArray(caseCategory.split(';')), ';');
+            if (String.isNotBlank(caseSubCategory))
+                caseSubCategory = String.join(encodeBase64ElementsOfArray(caseSubCategory.split(';')), ';');
         }
 
-        return newValues;
-    }
-
-    /**
-     * Converts an array of values to the string representation for a specific ruleset (following if that ruleset
-     * requires base64 encoding and using that ruleset's delimiter)
-     *
-     * @param fieldValues The array to convert
-     * @param fieldName The field that this array corresponds to
-     * @param rs The ruleset to convert using
-     *
-     * @return A string representing that array for this ruleset
-     */
-    @TestVisible
-    private static String convArrToStrUsingRS(List<String> fieldValues, String fieldName, RuleSet rs) {
-        if (fieldValues == null)
-            return null;
-
-        List<String> newValues = new List<String>(fieldValues);
-        // Convert to base64 if needed
-        if (rs.arrayElemsAreBase64Encoded.contains(fieldName)) {
-            newValues = encodeBase64ElementsOfArray(newValues);
+        if (version != mostRecentVersion) {
+            throw new AdvisorPortalFilterUpgradeException(
+                'Failed to upgrade filter to most recent version. Upgrade path was: ' + String.join(upgradePath, ' -> ')
+            );
         }
-        return String.join(newValues, rs.arrayDelim); // create with current array delimiter;
     }
 
     /**
@@ -818,27 +684,6 @@ public class AdvisorPortalFilter {
         return newArr;
     }
 
-    /*
-     * Rule sets describe how to handle each version of the filter
-     * Such as which delimiter was used for arrays
-     *   and which values are base64 encoded
-     */
-    public class RuleSet {
-        String version;
-        List<String> arrayElemsAreBase64Encoded = new List<String>();
-        String arrayDelim;
-
-        public RuleSet(String version) {
-            this.version = version;
-
-            if (version == 'v1') {
-                arrayDelim = ';';
-            } else if (version == 'v2') {
-                arrayDelim = ';';
-                arrayElemsAreBase64Encoded.add('caseSubject');
-                arrayElemsAreBase64Encoded.add('caseCategory');
-                arrayElemsAreBase64Encoded.add('caseSubCategory');
-            }
-        }
+    public class AdvisorPortalFilterUpgradeException extends Exception {
     }
 }

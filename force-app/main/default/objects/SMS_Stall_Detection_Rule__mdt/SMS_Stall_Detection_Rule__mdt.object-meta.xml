@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Rules for the stalled SMS detection system.  Including who to email when stalled SMS are detected and the upper/lower bound what time periods to detect through (stalled SMS from up to two weeks ago, but no less than one hour ago).</description>
+    <label>SMS Stall Detection Rule</label>
+    <pluralLabel>SMS Stall Detection Rules</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

@@ -1,8 +1,9 @@
 import {LightningElement, api, wire} from 'lwc';
 import getPSAdvisorNotes from '@salesforce/apex/StudentProfileController.getPSAdvisorNotesLWC';
 import {refreshApex} from '@salesforce/apex';
-import {cloneObj, extractErrorMessages} from 'c/helperFunctions';
+import {extractErrorMessages} from 'c/helperFunctions';
 import {NavigationMixin} from 'lightning/navigation';
+import {cloneObj} from 'c/helperFunctions';
 
 export default class SpCommentsAdvisingNotes extends NavigationMixin(LightningElement) {
     // If embedded on a contact record page
@@ -73,10 +74,10 @@ export default class SpCommentsAdvisingNotes extends NavigationMixin(LightningEl
                     attributes: {
                         objectApiName: 'User',
                         actionName: 'view',
-                        recordId: c.advUserId,
+                        recordId: c.authorUserId,
                     },
                 }).then((url) => {
-                    userIdsToUrls[c.advUserId] = url;
+                    userIdsToUrls[c.authorUserId] = url;
                 })
             );
         }
@@ -117,31 +118,31 @@ export default class SpCommentsAdvisingNotes extends NavigationMixin(LightningEl
         let rows = [];
 
         let indx = 1;
-        for (let c of this.dataWrapper ?? []) {
-            const n = cloneObj(c.note);
 
+        const advisorNoteList = this.dataWrapper ?? [];
+
+        for (let c of advisorNoteList) {
             let dateStr = '--';
             try {
-                const d = new Date(new Date(n.CREATDTTM__c).toLocaleString('en-US', {timeZone: 'Etc/GMT'})); // format date time
+                const d = new Date(c.commentDt); // format date time
                 dateStr = `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
             } catch (e) {
                 console.error(e);
             }
 
-            // Set all custom fields
-            n.c__UserId = c.advUserId;
-            n.c__Date = dateStr;
-            n.c__ProgramName = n.Academic_Program__r?.Name || n.Academic_Program__c || '--';
-            n.c__PlanName = n.Academic_Plan__r?.Name || n.Academic_Plan__c || '--';
-            n.id1 = `ID-${indx}a`;
-            n.id2 = `ID-${indx}b`;
-
-            // add urls once they are ready
-            n.href = c.advUserId != null ? this.userIdsToUrls[c.advUserId] ?? '#' : null;
-
+            // Set all fields
+            rows.push({
+                c__UserName: c.authorName,
+                c__UserId: c.authorUserId,
+                href: c.authorUserId != null ? this.userIdsToUrls[c.authorUserId] ?? '#' : null, // add urls once they are ready
+                c__ProgramName: c.programName,
+                c__PlanName: c.planName,
+                c__Date: dateStr,
+                c__Comment: c.comment,
+                id1: `ID-${indx}a`,
+                id2: `ID-${indx}b`,
+            });
             indx += 1;
-
-            rows.push(n);
         }
 
         return rows;

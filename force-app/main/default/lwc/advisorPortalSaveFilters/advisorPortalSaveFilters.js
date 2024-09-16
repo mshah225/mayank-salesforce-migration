@@ -1,109 +1,70 @@
-/* eslint-disable no-alert */
-/* eslint-disable no-console */
 import {LightningElement, api} from 'lwc';
 import setDefaultFilter from '@salesforce/apex/AdvisorPortalFilterSavingService.setDefaultFilter';
 import clearDefaultFilter from '@salesforce/apex/AdvisorPortalFilterSavingService.clearDefaultFilter';
-import LightningQuestionAnswerModal from 'c/lightningQuestionAnswerModal';
+import LightningConfirm from 'lightning/confirm';
+import {ShowToastEvent} from 'lightning/platformShowToastEvent';
+import {cloneObj, extractErrorMessages} from 'c/helperFunctions';
 
 export default class AdvisorPortalSaveFilters extends LightningElement {
-    @api currentFilter;
-    saveButtons = [];
-    resetButtons = [];
-
-    saveQuestions = [
-        {
-            key: 'A',
-            question: 'Save your current selection as your default filters?',
-            type: 'label',
-            subtype: 'center',
-        },
-    ];
-    resetQuestions = [
-        {
-            key: 'B',
-            question: 'Reset my default filters?',
-            type: 'label',
-            subtype: 'center',
-        },
-    ];
+    @api
+    get currentFilter() {
+        return this._currentFilter;
+    }
+    set currentFilter(val) {
+        this._currentFilter = cloneObj(val);
+    }
+    _currentFilter = null;
 
     openSaveModal() {
-        LightningQuestionAnswerModal.open({
-            size: 'small',
-            description: 'Do you want to save your filters?',
-            title: 'Save Filters?',
-            questions: this.saveQuestions,
-            buttonDescription: {
-                okButtonLabel: 'Save my Default Filters',
-                cancelButtonLabel: 'Cancel',
-                awaitBeforeClosing: (resp) => {
-                    if (resp.state === 'success') {
-                        this.makeToast('loading', '', '');
-
-                        return setDefaultFilter({json: JSON.stringify(this.currentFilter)})
-                            .then(() => {
-                                this.makeToast('success', 'Success', 'Filters saved as default.');
-                            })
-                            .catch((err) => {
-                                console.error(err);
-                                this.makeToast('error', 'Error', err.body.message);
-                            });
-                    } else {
-                        return Promise.resolve();
-                    }
-                },
-            },
-        });
+        LightningConfirm.open({
+            message: 'Do you want to save your filters?',
+            label: 'Save Filters',
+            theme: 'success',
+        })
+            .then((v) => {
+                // Need to save filter?
+                if (v === true) {
+                    return setDefaultFilter({json: JSON.stringify(this.currentFilter)}).then(() => {
+                        this.makeToast('success', 'Success', 'Filters saved as default.');
+                    });
+                }
+                return Promise.resolve();
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error('Error during saving default filter', err);
+                this.makeToast('error', 'Error', extractErrorMessages(err)[0]);
+            });
     }
 
     openResetModal() {
-        LightningQuestionAnswerModal.open({
-            size: 'small',
-            description: 'Do you want to clear your saved filters??',
-            title: 'Delete Saved Filters?',
-            questions: this.resetQuestions,
-            buttonDescription: {
-                okButtonLabel: 'Reset my Default Filters',
-                cancelButtonLabel: 'Cancel',
-                awaitBeforeClosing: (resp) => {
-                    if (resp.state === 'success') {
-                        this.makeToast('loading', '', '');
-
-                        return clearDefaultFilter()
-                            .then(() => {
-                                this.dispatchEvent(
-                                    new CustomEvent('clearappliedfilters', {
-                                        detail: {},
-                                    })
-                                );
-                                this.makeToast('success', 'Success', 'Default filter cleared.');
-                            })
-                            .catch((err) => {
-                                console.error(err);
-                                this.makeToast('error', 'Error', err.body.message);
-                            });
-                    } else {
-                        return Promise.resolve();
-                    }
-                },
-            },
-        });
+        LightningConfirm.open({
+            message: 'Do you want to clear your saved filters?',
+            label: 'Delete Saved Filters',
+            theme: 'warning',
+        })
+            .then((v) => {
+                // Need to save filter?
+                if (v === true) {
+                    return clearDefaultFilter().then(() => {
+                        this.makeToast('success', 'Success', 'Default filter cleared.');
+                    });
+                }
+                return Promise.resolve();
+            })
+            .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error('Error during clearing default filter', err);
+                this.makeToast('error', 'Error', extractErrorMessages(err)[0]);
+            });
     }
 
     makeToast(type, title, body) {
-        this.dispatchEvent(
-            new CustomEvent('showtoast', {
-                detail: {
-                    title: title,
-                    message: body,
-                    type: type,
-                    duration: 5000,
-                },
-            })
-        );
-    }
-
-    sendLoadingEvent(loadMore) {
-        this.dispatchEvent(new CustomEvent('loading', {detail: loadMore}));
+        const evt = new ShowToastEvent({
+            title: title,
+            message: body,
+            variant: type,
+        });
+        this.dispatchEvent(evt);
     }
 }

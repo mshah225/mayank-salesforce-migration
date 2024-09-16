@@ -1,0 +1,21 @@
+{
+    "apiName": "Case",
+    "childRelationships": {},
+    "fields": {
+        "CC_Category__c": {"displayValue": null, "value": "a2459000001NIZMAA4"},
+        "CC_Functional_Group__c": {"displayValue": null, "value": "a2459000001NIZLAA4"},
+        "CC_Sub_Category__c": {"displayValue": null, "value": "a2459000001NIZSAA4"}
+    },
+    "id": "5005900000BNasPAAT",
+    "lastModifiedById": "0050W000007OlNuQAK",
+    "lastModifiedDate": "2024-06-12T21:27:43.000Z",
+    "recordTypeId": "012d0000000x2VTAAY",
+    "recordTypeInfo": {
+        "available": true,
+        "defaultRecordTypeMapping": true,
+        "master": false,
+        "name": "ASU Service",
+        "recordTypeId": "012d0000000x2VTAAY"
+    },
+    "systemModstamp": "2024-06-12T21:27:43.000Z"
+}

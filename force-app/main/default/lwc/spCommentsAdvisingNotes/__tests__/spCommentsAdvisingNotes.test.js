@@ -91,16 +91,16 @@ describe('c-sp-comments-advising-notes', () => {
             const actualRowPart2 = advisorNoteTableNode.querySelectorAll('tr')[2 * i + 1];
 
             // Has all values
-            expect(actualRowPart1.querySelectorAll('td')[0].textContent?.trim()).toEqual(expectedRowData.NAME__c);
+            expect(actualRowPart1.querySelectorAll('td')[0].textContent?.trim()).toEqual(expectedRowData.c__UserName);
             expect(actualRowPart1.querySelectorAll('td')[0].querySelector('a').dataset.userid?.trim()).toEqual(
                 expectedRowData.c__UserId
             );
-            expect(actualRowPart1.querySelectorAll('td')[1].textContent?.trim()).toEqual(expectedRowData.c__DATE);
+            expect(actualRowPart1.querySelectorAll('td')[1].textContent?.trim()).toEqual(expectedRowData.c__Date);
             expect(actualRowPart1.querySelectorAll('td')[2].textContent?.trim()).toEqual(expectedRowData.c__PlanName);
             expect(actualRowPart1.querySelectorAll('td')[3].textContent?.trim()).toEqual(
                 expectedRowData.c__ProgramName
             );
-            expect(actualRowPart2.textContent?.trim()).toEqual(expectedRowData.COMMENTS__c);
+            expect(actualRowPart2.textContent?.trim()).toEqual(expectedRowData.c__Comment);
         }
     });
 
@@ -186,7 +186,7 @@ describe('c-sp-comments-advising-notes', () => {
                 attributes: {
                     objectApiName: 'User',
                     actionName: 'view',
-                    recordId: psAdvisorNotesMock[0].advUserId,
+                    recordId: psAdvisorNotesMock[0].authorUserId,
                 },
             },
         });
@@ -199,7 +199,7 @@ describe('c-sp-comments-advising-notes', () => {
                 attributes: {
                     objectApiName: 'User',
                     actionName: 'view',
-                    recordId: psAdvisorNotesMock[1].advUserId,
+                    recordId: psAdvisorNotesMock[1].authorUserId,
                 },
             },
         });

@@ -1193,7 +1193,7 @@
                                                         </span>
                                                         {!currentTermName} Term Enrolled Hours
                                                     </th>
-                                                    <td id="currentTermEnrolled" style="font-weight: bold">
+                                                    <td class="hoursCount" style="font-weight: bold">
                                                         <i class="fa fa-spinner fa-pulse"></i>
                                                     </td>
                                                 </tr>
@@ -1204,7 +1204,7 @@
                                                         </span>
                                                         {!nextTermName} Term Enrolled Hours
                                                     </th>
-                                                    <td id="nextTermEnrolled" style="font-weight: bold">
+                                                    <td class="hoursCount" style="font-weight: bold">
                                                         <i class="fa fa-spinner fa-pulse"></i>
                                                     </td>
                                                 </tr>
@@ -1215,7 +1215,7 @@
                                                         </span>
                                                         {!futureTermName} Term Enrolled Hours
                                                     </th>
-                                                    <td id="futureTermEnrolled" style="font-weight: bold">
+                                                    <td class="hoursCount" style="font-weight: bold">
                                                         <i class="fa fa-spinner fa-pulse"></i>
                                                     </td>
                                                 </tr>
@@ -1989,6 +1989,7 @@
                                             <apex:column headerValue="Plan Type" value="{!app.Plan_Type_Text__c}" />
                                             <apex:column headerValue="Degree" value="{!app.Degree__c}" />
                                             <apex:column headerValue="Campus" value="{!app.Campus__r.Name}" />
+                                            <apex:column headerValue="Req Term" value="{!app.Requirement_Term__c}" />
                                             <apex:column headerValue="Grad Term" value="{!app.Completion_Term__c}" />
                                             <apex:column headerValue="Primary" value="{!app.Primary_Flag__c}" />
                                         </apex:dataTable>
@@ -2366,22 +2367,17 @@
                                                     <tr>
                                                         <th>Academic Status Report</th>
                                                         <td id="sr_asr">
-                                                            <div
-                                                                id="sr_asr_errors"
-                                                                class="fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom"
-                                                            ></div>
+                                                            <div id="sr_asr_errors"></div>
                                                         </td>
                                                     </tr>
                                                     <tr id="sr_asr_info_tr" style="display: none">
                                                         <th colspan="2">
                                                             ASR Information
                                                             <br />
-                                                            <div class="overflow:auto;max-height:400px;">
-                                                                <table
-                                                                    id="sr_asr_info_table"
-                                                                    class="table table-striped table-bordered"
-                                                                ></table>
-                                                            </div>
+                                                            <div
+                                                                id="sr_asr_info_table_wrapper"
+                                                                class="overflow:auto;max-height:400px;"
+                                                            ></div>
                                                         </th>
                                                     </tr>
                                                     <tr>
@@ -3712,16 +3708,24 @@
         });
 
         var indicatorTabLoaded = false;
-        var advisorNotesLoaded = false;
-        var commentsLoaded = false;
-        var guestAccessLoaded = false;
         var indicatorHistoryLoaded = false;
         var transcriptsLoaded = false;
         var classesData;
+        let enrolledClassSortField = 'termCode';
+        let enrolledClassSortDirection = -1;
+        let droppedClassSortField = 'termCode';
+        let droppedClassSortDirection = -1;
+        let acadIntClassSortField = 'termCode';
+        let acadIntClassSortDirection = -1;
         var financialAidData;
-        let academicIntegrityData;
         let emergencyContactsData;
         let judicialData;
+
+        var commentData;
+
+        var examCreditsData;
+        let examCreditsSortDirection = 1;
+        let examCreditsSortField = 'title';
 
         var enrolledWrapper;
         var droppedWrapper;
@@ -3762,6 +3766,22 @@
                 element.innerHTML = element.innerHTML.replace(/undefined/g, '--');
                 element.innerHTML = element.innerHTML.replace(/NaN/g, '--');
             }
+        }
+
+        // Set the contents of this node as a loading icon. Delete all other contents of the node.
+        function setAsLoadingIcon(node) {
+            const iconNode = document.createElement('i');
+            iconNode.classList.add('fa');
+            iconNode.classList.add('fa-spinner');
+            iconNode.classList.add('fa-pulse');
+            iconNode.classList.add('fa-2x');
+            iconNode.classList.add('fa-fw');
+            iconNode.classList.add('margin-bottom');
+
+            // Clear all existing contents
+            while (node.firstChild) node.removeChild(node.lastChild);
+
+            node.appendChild(iconNode);
         }
 
         /**
@@ -3809,901 +3829,846 @@
          */
 
         function loadClassesTab() {
-            getEnrolledClasses();
+            getClassInfo();
             getCreditByExamData();
             getTransferWork();
         }
 
         // Method to get Enrolled Classes
-        function getEnrolledClasses() {
+        function getClassInfo() {
             if (classesData != null) return;
-            document.getElementById('psEnrolledClassesErrors').innerHTML =
-                "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-            document.getElementById('psDroppedWithdrawnClassesErrors').innerHTML =
-                "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
 
-            var classQuery =
-                'SELECT ACAD_CAREER__c, ASU_SCH_DATES__c, CATALOG_NBR__c, CLASS_DESCR__c, ' +
-                'CLASS_NBR__c, CRSE_GRADE_OFF__c, CRSE_ID__c, CUM_GPA__c, CUR_GPA__c, ' +
-                'DisplayUrl, EARN_CREDIT__c, EMPLID__c, ENRL_STATUS_REASON__c, ExternalId, ' +
-                'FT_FULL_NAME__c, Id, SCH_DAILY_TIME__c, SCH_HTML_DAY1__c, SESSION_CODE__c, ' +
-                'SSR_CLSTOPIC_DESCR__c, SSR_MTG_LOC_LONG__c, STDNT_ENRL_STATUS__c, STRM__c,  ' +
-                'SUBJECT__c, TERM_DESCR30__c, UNT_TAKEN__c, VALID_ATTEMPT__c, CONFIRMATION_OF_PARTICIPATION__c ' +
-                'FROM PS_ASU_SP_CLASS_V__x  ' +
-                "WHERE EMPLID__c = '{!theContact.EMPLID__c}'  " +
-                'ORDER BY STRM__c DESC, CLASS_NBR__c ASC';
-            var asrQuery =
-                'SELECT CLASS_NBR__c, SESSION_CODE__c, STRM__c ' +
-                'FROM PS_ASU_SP_ASR_CLSV__x ' +
-                "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
-                "AND STRM__c = '{!currentTerm}'";
-            var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
-            conn.query(classQuery, function (err, response) {
-                if (err) {
-                    document.getElementById('psAdvisingNotesResponseErrors').innerHTML = err;
-                } else {
-                    conn.query(asrQuery, function (errorAsr, responseAsr) {
-                        if (errorAsr) {
-                            document.getElementById('psAdvisingNotesResponseErrors').innerHTML = errorAsr;
-                        } else {
-                            let classResponse = response.records;
-                            let asrResponse = responseAsr.records;
-                            let currentTermClassSessionMap = new Map();
-                            let currentTermEnrolled = 0;
-                            let nextTermClassSessionMap = new Map();
-                            let nextTermEnrolled = 0;
-                            let futureTermClassSessionMap = new Map();
-                            let futureTermEnrolled = 0;
+            // Show loading icon for enrolled and dropped
+            setAsLoadingIcon(document.getElementById('psEnrolledClassesErrors'));
+            setAsLoadingIcon(document.getElementById('psDroppedWithdrawnClassesErrors'));
+            // Show loading icon for ASR table
+            setAsLoadingIcon(document.getElementById('sr_asr_errors'));
+            // Show loading icon for academic integrity table
+            setAsLoadingIcon(document.getElementById('academic-integrity-errors'));
 
-                            classResponse.forEach(function (record) {
-                                delete record.attributes;
+            // And figure it out
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getTermClasses}',
+                '{!theContact.EMPLID__c}',
+                (result, event) => {
+                    if (event.status) {
+                        document.getElementById('psEnrolledClassesErrors').innerHTML = '';
+                        document.getElementById('psDroppedWithdrawnClassesErrors').innerHTML = '';
+                        document.getElementById('sr_asr_errors').innerHTML = '';
+                        document.getElementById('academic-integrity-errors').innerHTML = '';
 
-                                if (record.STDNT_ENRL_STATUS__c === 'E' && record.ENRL_STATUS_REASON__c === 'ENRL') {
-                                    if (record.STRM__c === '{!currentTerm}') {
-                                        currentTermEnrolled += record.UNT_TAKEN__c;
-                                        if (!currentTermClassSessionMap.has(record.SESSION_CODE__c)) {
-                                            currentTermClassSessionMap.set(record.SESSION_CODE__c, record.UNT_TAKEN__c);
-                                        } else {
-                                            currentTermClassSessionMap.set(
-                                                record.SESSION_CODE__c,
-                                                currentTermClassSessionMap.get(record.SESSION_CODE__c) +
-                                                    record.UNT_TAKEN__c
-                                            );
-                                        }
-                                    } else if (record.STRM__c === '{!nextTerm}') {
-                                        nextTermEnrolled += record.UNT_TAKEN__c;
-                                        if (!nextTermClassSessionMap.has(record.SESSION_CODE__c)) {
-                                            nextTermClassSessionMap.set(record.SESSION_CODE__c, record.UNT_TAKEN__c);
-                                        } else {
-                                            nextTermClassSessionMap.set(
-                                                record.SESSION_CODE__c,
-                                                nextTermClassSessionMap.get(record.SESSION_CODE__c) +
-                                                    record.UNT_TAKEN__c
-                                            );
-                                        }
-                                    } else if (record.STRM__c === '{!futureTerm}') {
-                                        futureTermEnrolled += record.UNT_TAKEN__c;
-                                        if (!futureTermClassSessionMap.has(record.SESSION_CODE__c)) {
-                                            futureTermClassSessionMap.set(record.SESSION_CODE__c, record.UNT_TAKEN__c);
-                                        } else {
-                                            futureTermClassSessionMap.set(
-                                                record.SESSION_CODE__c,
-                                                futureTermClassSessionMap.get(record.SESSION_CODE__c) +
-                                                    record.UNT_TAKEN__c
-                                            );
-                                        }
-                                    }
-                                }
+                        classesData = result;
+
+                        // Get term and session lists
+                        const termOptions = [];
+                        const sessionOptions = [];
+
+                        // For every class, add its term/session to those lists
+                        Object.keys(classesData)
+                            .reduce((prev, cur) => {
+                                return prev
+                                    .concat(classesData[cur].enrolledClasses)
+                                    .concat(classesData[cur].droppedClasses);
+                            }, [])
+                            .forEach((cs) => {
+                                if (!termOptions.map((opt) => opt.value).includes(cs.termCode))
+                                    termOptions.push({label: cs.termName, value: cs.termCode});
+                                if (!sessionOptions.map((opt) => opt.value).includes(cs.session))
+                                    sessionOptions.push({label: cs.session, value: cs.session});
                             });
 
-                            buildSessionRows(
-                                currentTermClassSessionMap,
-                                '#currentTermEnrolledHours',
-                                '#currentTermEnrolled',
-                                currentTermEnrolled
-                            );
-                            buildSessionRows(
-                                nextTermClassSessionMap,
-                                '#nextTermEnrolledHours',
-                                '#nextTermEnrolled',
-                                nextTermEnrolled
-                            );
-                            buildSessionRows(
-                                futureTermClassSessionMap,
-                                '#futureEnrolledHours',
-                                '#futureTermEnrolled',
-                                futureTermEnrolled
-                            );
+                        // Sort options in ASC order
+                        termOptions.sort((a, b) => {
+                            if (a.value < b.value) return 1;
+                            return -1;
+                        });
+                        sessionOptions.sort((a, b) => {
+                            if (a.value < b.value) return 1;
+                            return -1;
+                        });
 
-                            function buildSessionRows(sessionMap, termHoursId, termEnrolledId, termEnrolledHours) {
-                                let termRowHTML = '';
-                                new Map([...sessionMap.entries()].sort()).forEach(function (value, key) {
-                                    termRowHTML +=
-                                        '' +
-                                        '<tr class="gradExtraInfo hide">\n' +
-                                        '<th class="gradTD" style="border-right:none;">\n' +
-                                        '<span style="margin-left:3rem;">Session ' +
-                                        key +
-                                        '</span>\n' +
-                                        '</th>\n' +
-                                        '<td class="gradTD" style="border-left:none;">\n' +
-                                        '' +
-                                        value +
-                                        '\n' +
-                                        '</td>\n' +
-                                        '</tr>';
-                                });
+                        // And all "ALL" options at end
+                        termOptions.push({label: 'All', value: 'ALL'});
+                        sessionOptions.push({label: 'All', value: 'ALL'});
 
-                                if (termEnrolledHours > 0) {
-                                    $j(termHoursId).after(termRowHTML).find('span.hide').removeClass('hide');
-                                }
-                                $j(termEnrolledId).html(termEnrolledHours);
-                            }
+                        // Term and Session Dropdowns
+                        const picklistWrapper = document.getElementById('ps_classes_term_picklist');
+                        picklistWrapper.innerHTML = '';
 
-                            asrResponse.forEach(function (record) {
-                                delete record.attributes;
-                            });
-                            classResponse = JSON.stringify(classResponse);
-                            asrResponse = JSON.stringify(asrResponse);
-
-                            Visualforce.remoting.Manager.invokeAction(
-                                '{!$RemoteAction.StudentProfileController.getClassesData}',
-                                classResponse,
-                                asrResponse,
-                                function (result, event) {
-                                    if (event.status) {
-                                        document.getElementById('psEnrolledClassesErrors').innerHTML = '';
-                                        document.getElementById('psDroppedWithdrawnClassesErrors').innerHTML = '';
-                                        classesData = result;
-                                        enrolledWrapper = result.enrolledClasses;
-                                        droppedWrapper = result.droppedClasses;
-
-                                        var selectHtml = '';
-                                        if (classesData.classSessions?.length > 0) {
-                                            selectHtml +=
-                                                "<label for='ps_classes_session_select'>Session:&nbsp;</label><select id='ps_classes_session_select' onchange='filterClasses()'>";
-                                            for (var i = 0; i < classesData.classSessions.length; i++) {
-                                                selectHtml += '<option ';
-                                                if (classesData.classSessions[i] == 'All') {
-                                                    selectHtml += " selected='selected' ";
-                                                }
-                                                selectHtml +=
-                                                    " value='" +
-                                                    classesData.classSessions[i] +
-                                                    "'>" +
-                                                    classesData.classSessions[i] +
-                                                    '</option>';
-                                            }
-                                            selectHtml += '</select>&nbsp;&nbsp;';
-                                        }
-
-                                        if (classesData.classTerms?.length > 0) {
-                                            selectHtml +=
-                                                "<label for='ps_classes_term_select'>Term:&nbsp;</label><select id='ps_classes_term_select' onchange='filterClasses()'>";
-                                            for (var i = 0; i < classesData.classTerms.length; i++) {
-                                                var parsedTerms = classesData.classTerms[i].split('|');
-                                                selectHtml +=
-                                                    "<option value='" +
-                                                    parsedTerms[0] +
-                                                    "'>" +
-                                                    parsedTerms[1] +
-                                                    '</option>';
-                                            }
-                                            selectHtml += '</select>';
-                                        }
-                                        document.getElementById('ps_classes_term_picklist').innerHTML = selectHtml;
-
-                                        if (result.enrolledClasses?.length > 0) {
-                                            document.getElementById('ps_enrolled_classes').style.display = 'initial';
-
-                                            var html =
-                                                '' +
-                                                "<div class='table-responsive'>" +
-                                                "<table id='enrolled_classes_table' class='table table-striped table-bordered'> " +
-                                                '<thead>' +
-                                                '<tr style="cursor:pointer">' +
-                                                '<th scope="row" onclick="sortEnrolledOnClick(\'Term\')">Term</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Session\')">Session</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Class\')">Class</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Course\')">Course</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Title\')">Title</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Topic\')">Topic</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Units\')">Units</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Instructor\')">Instructor(s)</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Days\')">Days</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Times\')">Times</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Dates\')">Dates</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Location\')">Location</th>' +
-                                                '<th scope="col" onclick="sortEnrolledOnClick(\'Grade\')">Grade</th>' +
-                                                '<th scope="col">Conf. Of Participation ' +
-                                                '<a class="fa fa-question-circle" title="Yes means:&#10;-Student participated in this class in Canvas&#10;-Student completed the Confirmation of Participation (COP) survey&#10;-Student is an international student and exempt from the process&#10;&#10;No means:&#10;-Student has not met any of those conditions&#10;&#10;-- means:&#10;-The class was taken before ASU tracked COP in this way" data-placement="right"></a>' +
-                                                '</th>' +
-                                                '<th scope="col">ASR</th>' +
-                                                '</tr>' +
-                                                '</thead>' +
-                                                '<tbody>';
-                                            for (var i = 0; i < result.enrolledClasses.length; i++) {
-                                                var asrValue = '--';
-
-                                                html +=
-                                                    '' +
-                                                    '<tr>' +
-                                                    '<th scope="row">' +
-                                                    result.enrolledClasses[i].TERM_DESCR30__c +
-                                                    '</td>' +
-                                                    '<td data-header="Session">' +
-                                                    result.enrolledClasses[i].SESSION_CODE__c +
-                                                    '</td>' +
-                                                    '<td data-header="Class">' +
-                                                    Math.floor(result.enrolledClasses[i].CLASS_NBR__c) +
-                                                    '</td>' +
-                                                    '<td data-header="Course">' +
-                                                    result.enrolledClasses[i].SUBJECT__c +
-                                                    ' ' +
-                                                    result.enrolledClasses[i].CATALOG_NBR__c +
-                                                    '</td>' +
-                                                    '<td data-header="Title">' +
-                                                    result.enrolledClasses[i].CLASS_DESCR__c +
-                                                    '</td>' +
-                                                    '<td data-header="Topic">' +
-                                                    result.enrolledClasses[i].SSR_CLSTOPIC_DESCR__c +
-                                                    '</td>' +
-                                                    '<td data-header="Units">' +
-                                                    result.enrolledClasses[i].UNT_TAKEN__c +
-                                                    '</td>' +
-                                                    '<td data-header="Instructor(s)">' +
-                                                    result.enrolledClasses[i].FT_FULL_NAME__c +
-                                                    '</td>' +
-                                                    '<td data-header="Days">' +
-                                                    result.enrolledClasses[i].SCH_HTML_DAY1__c +
-                                                    '</td>' +
-                                                    '<td data-header="Times">' +
-                                                    result.enrolledClasses[i].SCH_DAILY_TIME__c +
-                                                    '</td>' +
-                                                    '<td data-header="Dates">' +
-                                                    result.enrolledClasses[i].ASU_SCH_DATES__c +
-                                                    '</td>' +
-                                                    '<td data-header="Location">' +
-                                                    result.enrolledClasses[i].SSR_MTG_LOC_LONG__c +
-                                                    '</td>' +
-                                                    '<td data-header="Grade">' +
-                                                    result.enrolledClasses[i].CRSE_GRADE_OFF__c +
-                                                    '</td>' +
-                                                    '<td data-header="Participation">' +
-                                                    result.enrolledClasses[i].CONFIRMATION_OF_PARTICIPATION__c +
-                                                    '</td>' +
-                                                    "<td style='display:none'>" +
-                                                    result.enrolledClasses[i].EARN_CREDIT__c +
-                                                    '' +
-                                                    result.enrolledClasses[i].VALID_ATTEMPT__c +
-                                                    '</td>' +
-                                                    "<td style='display:none'>" +
-                                                    result.enrolledClasses[i].CUR_GPA__c +
-                                                    '</td>' +
-                                                    "<td style='display:none'>" +
-                                                    result.enrolledClasses[i].CUM_GPA__c +
-                                                    '</td>' +
-                                                    "<td style='display:none'>" +
-                                                    result.enrolledClasses[i].STRM__c +
-                                                    '</td>';
-
-                                                if (
-                                                    result.asrClasses?.indexOf(
-                                                        result.enrolledClasses[i].STRM__c +
-                                                            '|' +
-                                                            result.enrolledClasses[i].SESSION_CODE__c +
-                                                            '|' +
-                                                            result.enrolledClasses[i].CLASS_NBR__c
-                                                    ) > -1
-                                                ) {
-                                                    // ASR link opens Undergraduate Indicators tab when clicked
-                                                    html +=
-                                                        '<td data-header="ASR">' +
-                                                        '<a href="#" onclick="document.getElementById(\x27ugIndicatorsLink\x27).click(); return false;">!</a>' +
-                                                        '</td>';
-                                                } else {
-                                                    html += '<td data-header="ASR">--</td>';
-                                                }
-
-                                                html += '</tr>';
-                                            }
-
-                                            html += '</tbody></table></div>';
-
-                                            html +=
-                                                "<div style='float:right; font-weight:bold;' id='ps_enrolled_classes_summary'/><br/>";
-                                            html +=
-                                                '<div>* in Location column in the table above means: No Scheduled Meetings/Locations</div>';
-
-                                            document.getElementById('ps_enrolled_classes').innerHTML = html;
-                                            cleanUndefinedFields('ps_enrolled_classes');
-                                            asrResponseTable = result.asrClasses;
-                                        } else {
-                                            document.getElementById('psEnrolledClassesErrors').innerHTML =
-                                                'No enrolled classes found for {!theContact.Preferred_First_Name__c}.';
-                                        }
-
-                                        if (result.droppedClasses?.length > 0) {
-                                            document.getElementById('ps_dropped_withdrawn_classes').style.display =
-                                                'initial';
-
-                                            var html =
-                                                '' +
-                                                "<div class='table-responsive'>" +
-                                                "<table id='dropped_classes_table' class='table table-striped table-bordered'> " +
-                                                '<thead>' +
-                                                '<tr style="cursor:pointer">' +
-                                                '<th scope="row" onclick="sortDroppedOnClick(\'Term\')">Term</th>' +
-                                                '<th scope="col" onclick="sortDroppedOnClick(\'Session\')">Session</th>' +
-                                                '<th scope="col" onclick="sortDroppedOnClick(\'Class\')">Class</th>' +
-                                                '<th scope="col" onclick="sortDroppedOnClick(\'Course\')">Course</th>' +
-                                                '<th scope="col" onclick="sortDroppedOnClick(\'Title\')">Title</th>' +
-                                                '<th scope="col" onclick="sortDroppedOnClick(\'Topic\')">Topic</th>' +
-                                                '<th scope="col" onclick="sortDroppedOnClick(\'Units\')">Units</th>' +
-                                                '<th scope="col" onclick="sortDroppedOnClick(\'Status\')">Status</th>' +
-                                                '<th scope="col">Conf. Of Participation ' +
-                                                '<a class="fa fa-question-circle" title="Yes means:&#10;-Student participated in this class in Canvas&#10;-Student completed the Confirmation of Participation (COP) survey&#10;-Student is an international student and exempt from the process&#10;&#10;No means:&#10;-Student has not met any of those conditions&#10;&#10;-- means:&#10;-The class was taken before ASU tracked COP in this way" data-placement="right"></a>' +
-                                                '</th>' +
-                                                '<th scope="col">ASR</th>' +
-                                                '</tr>' +
-                                                '</thead>' +
-                                                '<tbody>';
-
-                                            for (var i = 0; i < result.droppedClasses.length; i++) {
-                                                html +=
-                                                    '' +
-                                                    '<tr>' +
-                                                    '<th scope="row">' +
-                                                    result.droppedClasses[i].TERM_DESCR30__c +
-                                                    '</td>' +
-                                                    '<td data-header="Session">' +
-                                                    result.droppedClasses[i].SESSION_CODE__c +
-                                                    '</td>' +
-                                                    '<td data-header="Class">' +
-                                                    Math.floor(result.droppedClasses[i].CLASS_NBR__c) +
-                                                    '</td>' +
-                                                    '<td data-header="Course">' +
-                                                    result.droppedClasses[i].SUBJECT__c +
-                                                    ' ' +
-                                                    result.droppedClasses[i].CATALOG_NBR__c +
-                                                    '</td>' +
-                                                    '<td data-header="Title">' +
-                                                    result.droppedClasses[i].CLASS_DESCR__c +
-                                                    '</td>' +
-                                                    '<td data-header="Topic">' +
-                                                    result.droppedClasses[i].SSR_CLSTOPIC_DESCR__c +
-                                                    '</td>' +
-                                                    '<td data-header="Units">' +
-                                                    result.droppedClasses[i].UNT_TAKEN__c +
-                                                    '</td>' +
-                                                    '<td data-header="Status">' +
-                                                    result.droppedClasses[i].ENRL_STATUS_REASON__c +
-                                                    '</td>' +
-                                                    '<td data-header="Participation">' +
-                                                    result.droppedClasses[i].CONFIRMATION_OF_PARTICIPATION__c +
-                                                    '</td>';
-                                                if (
-                                                    asrResponseTable?.indexOf(
-                                                        result.droppedClasses[i].STRM__c +
-                                                            '|' +
-                                                            result.droppedClasses[i].SESSION_CODE__c +
-                                                            '|' +
-                                                            result.droppedClasses[i].CLASS_NBR__c
-                                                    ) > -1
-                                                ) {
-                                                    html +=
-                                                        '<td data-header="ASR">' +
-                                                        '<a href="#" onclick="document.getElementById(\x27ugIndicatorsLink\x27).click(); return false;">!</a>' +
-                                                        '</td>';
-                                                } else {
-                                                    html += '<td data-header="ASR">--</td>';
-                                                }
-
-                                                html += '</tr>';
-                                            }
-
-                                            html += '</tbody></table></div>';
-
-                                            document.getElementById('ps_dropped_withdrawn_classes').innerHTML = html;
-                                            cleanUndefinedFields('ps_dropped_withdrawn_classes');
-                                        } else {
-                                            document.getElementById('psDroppedWithdrawnClassesErrors').innerHTML =
-                                                'No dropped or withdrawn classes found for {!theContact.Preferred_First_Name__c}.';
-                                        }
-
-                                        filterClasses();
-                                    } else if (event.type === 'exception') {
-                                        document.getElementById('psEnrolledClassesErrors').innerHTML =
-                                            event.message + '<br/>\n<pre>' + event.where + '</pre>';
-                                        document.getElementById('psDroppedWithdrawnClassesErrors').innerHTML =
-                                            event.message + '<br/>\n<pre>' + event.where + '</pre>';
-                                    } else {
-                                        document.getElementById('psEnrolledClassesErrors').innerHTML = event.message;
-                                        document.getElementById('psDroppedWithdrawnClassesErrors').innerHTML =
-                                            event.message;
-                                    }
-                                },
-                                {buffer: false, escape: true, timeout: 120000}
-                            );
+                        // Session dropdown
+                        const sessionLabelElem = document.createElement('label');
+                        picklistWrapper.appendChild(sessionLabelElem);
+                        sessionLabelElem.for = 'ps_classes_session_select';
+                        sessionLabelElem.appendChild(document.createTextNode('Session:\u00A0'));
+                        const sessionPicklist = document.createElement('select');
+                        picklistWrapper.appendChild(sessionPicklist);
+                        sessionPicklist.id = 'ps_classes_session_select';
+                        sessionPicklist.addEventListener('change', (evnt) => {
+                            regenerateClassList();
+                        });
+                        for (const sessionOption of sessionOptions) {
+                            const selectOptElem = document.createElement('option');
+                            sessionPicklist.appendChild(selectOptElem);
+                            selectOptElem.appendChild(document.createTextNode(sessionOption.label));
+                            selectOptElem.value = sessionOption.value;
+                            if (sessionOption.value === 'ALL') selectOptElem.selected = 'selected';
                         }
+
+                        // Term dropdown
+                        const termLabelElem = document.createElement('label');
+                        picklistWrapper.appendChild(termLabelElem);
+                        termLabelElem.for = 'ps_classes_term_select';
+                        termLabelElem.appendChild(document.createTextNode('Term:\u00A0'));
+                        const termPicklist = document.createElement('select');
+                        picklistWrapper.appendChild(termPicklist);
+                        termPicklist.id = 'ps_classes_term_select';
+                        termPicklist.addEventListener('change', (evnt) => {
+                            regenerateClassList();
+                        });
+                        let first = true;
+                        for (const termOption of termOptions) {
+                            const selectOptElem = document.createElement('option');
+                            termPicklist.appendChild(selectOptElem);
+                            selectOptElem.appendChild(document.createTextNode(termOption.label));
+                            selectOptElem.value = termOption.value;
+                            if (first) {
+                                selectOptElem.selected = 'selected';
+                                first = false;
+                            }
+                        }
+
+                        // Set current/next/future term credit numbers
+                        const buildSessionRows = (wrapperSelector, classObj) => {
+                            if ((classObj?.enrolledClasses?.length ?? 0) > 0) {
+                                let creditCount = 0;
+                                let creditsPerSession = new Map();
+
+                                for (const cs of classObj.enrolledClasses) {
+                                    if (!creditsPerSession.has(cs.session)) creditsPerSession.put(cs.session, 0);
+                                    creditsPerSession.put(
+                                        cs.session,
+                                        creditsPerSession.get(cs.session) + Number(cs.units)
+                                    );
+
+                                    creditCount += Number(cs.units);
+                                }
+
+                                // Number of total credits this semester
+                                document.querySelector(`${wrapperSelector} .hoursCount`).innerHTML = `${creditCount}`;
+
+                                // show toggle for credits per session
+                                document
+                                    .querySelector(wrapperSelector)
+                                    .querySelector('span.hide')
+                                    .classList.remove('hide');
+
+                                // Credits per session
+                                [...creditsPerSession.entries()]
+                                    .sort((a, b) => {
+                                        return a[0] < b[0];
+                                    })
+                                    .forEach((v) => {
+                                        const session = v[0];
+                                        const hours = v[1];
+
+                                        // row
+                                        let creditsPerSessionTrElem = document.createElement('tr');
+                                        creditsPerSessionTrElem.classList.add('gradExtraInfo');
+                                        creditsPerSessionTrElem.classList.add('hide');
+
+                                        // session label
+                                        let creditsPerSessionThElem = document.createElement('th');
+                                        creditsPerSessionTrElem.appendChild(creditsPerSessionThElem);
+                                        creditsPerSessionThElem.classList.add('gradTD');
+                                        creditsPerSessionThElem.style.borderRight = 'none';
+                                        creditsPerSessionThElem.style.paddingLeft = '3rem';
+                                        creditsPerSessionThElem.appendChild(
+                                            document.createTextNode(`Session ${session}`)
+                                        );
+
+                                        // credits count
+                                        let creditsPerSessionTdElem = document.createElement('td');
+                                        creditsPerSessionTrElem.appendChild(creditsPerSessionTdElem);
+                                        creditsPerSessionTdElem.classList.add('gradTD');
+                                        creditsPerSessionTdElem.style.borderLeft = 'none';
+                                        creditsPerSessionTdElem.appendChild(document.createTextNode(`${hours}`));
+
+                                        // add to table
+                                        $j(wrapperSelector).after(creditsPerSessionTrElem);
+                                    });
+                            } else {
+                                document.querySelector(wrapperSelector).querySelector('.hoursCount').innerHTML = '0';
+                            }
+                        };
+
+                        buildSessionRows('#currentTermEnrolledHours', classesData['{!currentTerm}']);
+                        buildSessionRows('#nextTermEnrolledHours', classesData['{!nextTerm}']);
+
+                        // Only shows future enrolled hours if current term is summer
+                        if ('{!currentTerm}'.slice(-1) !== '1')
+                            document.getElementById('futureEnrolledHours').style.display = 'none';
+                        else buildSessionRows('#futureEnrolledHours', classesData['{!futureTerm}']);
+
+                        // Build initial class list
+                        regenerateClassList();
+                        // And build ASR table as well (on ugrad indicators tab)
+                        regenerateAsrInfoTable();
+                        // And build the academic integrity table as well (on care and concern tab)
+                        regenerateAcademicIntegrityTable();
+                    } else if (event.type === 'exception') {
+                        document.getElementById('psEnrolledClassesErrors').innerHTML =
+                            event.message + '<br/>\n<pre>' + event.where + '</pre>';
+                        document.getElementById('psDroppedWithdrawnClassesErrors').innerHTML =
+                            event.message + '<br/>\n<pre>' + event.where + '</pre>';
+                        document.getElementById('sr_asr_errors').innerHTML =
+                            event.message + '<br/>\n<pre>' + event.where + '</pre>';
+                        document.getElementById('academic-integrity-errors').innerHTML =
+                            event.message + '<br/>\n<pre>' + event.where + '</pre>';
+                    } else {
+                        document.getElementById('psEnrolledClassesErrors').innerHTML = event.message;
+                        document.getElementById('psDroppedWithdrawnClassesErrors').innerHTML = event.message;
+                        document.getElementById('sr_asr_errors').innerHTML = event.message;
+                        document.getElementById('academic-integrity-errors').innerHTML = event.message;
+                    }
+                },
+                {escape: false, buffer: false}
+            );
+        }
+
+        // Build the class tables based on global state variables - while applying ordering / filtering
+        function regenerateClassList() {
+            // Get selected term and session
+            const termSelect = document.getElementById('ps_classes_term_select');
+            const sessionSelect = document.getElementById('ps_classes_session_select');
+            const searchTerm =
+                termSelect.options[termSelect.selectedIndex] == null
+                    ? null
+                    : termSelect.options[termSelect.selectedIndex].value;
+            const searchSession =
+                sessionSelect.options[sessionSelect.selectedIndex] == null
+                    ? null
+                    : sessionSelect.options[sessionSelect.selectedIndex].value;
+
+            /**
+             * Update headers
+             */
+            const enrolledHeader = document.getElementById('enrolled_classes_header');
+            const droppedHeader = document.getElementById('dropped_classes_header');
+            // clear existing
+            enrolledHeader.innerHTML = '';
+            droppedHeader.innerHTML = '';
+            // set new label
+            if (searchTerm == null || searchTerm === 'ALL') {
+                enrolledHeader.appendChild(document.createTextNode('Enrolled Classes'));
+                droppedHeader.appendChild(document.createTextNode('Dropped/Withdrawn Classes'));
+            } else {
+                const termName = termSelect.options[termSelect.selectedIndex].label;
+                enrolledHeader.appendChild(document.createTextNode(`${termName} Enrolled Classes`));
+                droppedHeader.appendChild(document.createTextNode(`${termName} Dropped/Withdrawn Classes`));
+            }
+
+            /**
+             *  Enrolled classes
+             */
+            const filteredEnrolledClasses = Object.keys(classesData)
+                .reduce((prev, cur) => {
+                    return prev.concat(classesData[cur].enrolledClasses);
+                }, [])
+                .filter((v) => searchTerm == null || searchTerm == 'ALL' || searchTerm === v.termCode)
+                .filter((v) => searchSession == null || searchSession == 'ALL' || searchSession === v.session)
+                .sort((a, b) => {
+                    if (enrolledClassSortField == null) return 0;
+
+                    let aValue = a[enrolledClassSortField];
+                    let bValue = b[enrolledClassSortField];
+
+                    // -- should come after Z, and ~ > Z in ASCII
+                    if (aValue === '--') aValue = '~';
+                    if (bValue === '--') bValue = '~';
+
+                    if (aValue < bValue) {
+                        return -1 * enrolledClassSortDirection;
+                    } else {
+                        return 1 * enrolledClassSortDirection;
+                    }
+                });
+
+            if (filteredEnrolledClasses.length > 0) {
+                /**
+                 *  <div class="table-responsive">
+                 *      <table class="table table-striped table-bordered">
+                 *          <thead>
+                 *              <tr>
+                 *                  <th scope="col" onclick=[sortEnrolledClasses] data-field="term">Term</th>
+                 *                  ...
+                 *              </tr>
+                 *          </thead>
+                 *          <tbody>
+                 *              <tr>
+                 *                  <td></td>
+                 *                  ...
+                 *              </tr>
+                 *              ...
+                 *          </tbody>
+                 *      </table>
+                 *  </div>
+                 */
+                const tableDivWrap = document.createElement('div');
+                tableDivWrap.classList.add('table-responsive');
+                const tableElem = document.createElement('table');
+                tableDivWrap.appendChild(tableElem);
+                tableElem.classList.add('table');
+                tableElem.classList.add('table-striped');
+                tableElem.classList.add('table-bordered');
+                tableElem.classList.add('table-respect-newline');
+                const theadElem = document.createElement('thead');
+                tableElem.appendChild(theadElem);
+                let trElem, tdElem, thElem, textElem;
+                trElem = document.createElement('tr');
+                theadElem.appendChild(trElem);
+                trElem.style.cursor = 'pointer';
+
+                /**
+                 * Add all the headers for the table
+                 */
+                const headers = [
+                    {label: 'Term', fieldName: 'termCode'},
+                    {label: 'Session', fieldName: 'session'},
+                    {label: 'Class', fieldName: 'classNumber'},
+                    {label: 'Course', fieldName: 'catalogNumber'},
+                    {label: 'Title', fieldName: 'classTitle'},
+                    {label: 'Topic', fieldName: 'topic'},
+                    {label: 'Units', fieldName: 'units'},
+                    {label: 'Instructor(s)', fieldName: 'instructor'},
+                    {label: 'Days', fieldName: 'days'},
+                    {label: 'Times', fieldName: 'times'},
+                    {label: 'Dates', fieldName: 'dates'},
+                    {label: 'Location', fieldName: 'location'},
+                    {label: 'Grade', fieldName: 'grade'},
+                    {
+                        label: 'Conf. Of Participation',
+                        fieldName: 'confOfParticipation',
+                        tooltip:
+                            'Yes means:\n-Student participated in this class in Canvas\n-Student completed the Confirmation of Participation (COP) survey\n-Student is an international student and exempt from the process\n\nNo means:\n-Student has not met any of those conditions\n\n-- means:\n-The class was taken before ASU tracked COP in this way',
+                    },
+                    {label: 'ASR', fieldName: 'asr'},
+                ];
+                for (const hd of headers) {
+                    // <th>
+                    thElem = document.createElement('th');
+                    thElem.scope = 'col';
+                    thElem.dataset.field = hd.fieldName;
+                    // listener to allow sorting
+                    thElem.addEventListener('click', (evnt) => {
+                        if (enrolledClassSortField === evnt.target.dataset['field']) {
+                            enrolledClassSortDirection = -1 * enrolledClassSortDirection;
+                        } else {
+                            enrolledClassSortField = evnt.target.dataset['field'];
+                            enrolledClassSortDirection = 1;
+                        }
+                        regenerateClassList();
                     });
+
+                    // add label
+                    thElem.appendChild(document.createTextNode(hd.label));
+
+                    // add tooltip
+                    if (hd.tooltip != null) {
+                        let tooltipElem = document.createElement('a');
+                        tooltipElem.classList.add('fa');
+                        tooltipElem.classList.add('fa-question-circle');
+                        tooltipElem.title = hd.tooltip;
+                        tooltipElem.dataset.placement = 'right';
+                        thElem.appendChild(tooltipElem);
+                    }
+
+                    // </th>
+                    trElem.appendChild(thElem);
+                }
+
+                const tbodyElem = document.createElement('tbody');
+                tableElem.appendChild(tbodyElem);
+
+                /**
+                 * Add each class to the table
+                 */
+                for (const cs of filteredEnrolledClasses) {
+                    trElem = document.createElement('tr');
+                    tbodyElem.appendChild(trElem);
+
+                    // Term Name
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.termName));
+                    tdElem.style.fontWeight = 'bold';
+                    trElem.appendChild(tdElem);
+
+                    // Session
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.session));
+                    trElem.appendChild(tdElem);
+
+                    // Class
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.classNumber));
+                    trElem.appendChild(tdElem);
+
+                    // Course
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.catalogNumber));
+                    trElem.appendChild(tdElem);
+
+                    // Title
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.classTitle));
+                    trElem.appendChild(tdElem);
+
+                    // Topic
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.topic));
+                    trElem.appendChild(tdElem);
+
+                    // Units
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.units));
+                    trElem.appendChild(tdElem);
+
+                    // Instructors
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.instructor));
+                    trElem.appendChild(tdElem);
+
+                    // Days
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.days));
+                    trElem.appendChild(tdElem);
+
+                    // Times
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.times));
+                    trElem.appendChild(tdElem);
+
+                    // Dates
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.dates));
+                    trElem.appendChild(tdElem);
+
+                    // Location
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.location));
+                    trElem.appendChild(tdElem);
+
+                    // Grade
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.grade));
+                    trElem.appendChild(tdElem);
+
+                    // Confirmation Of Participation
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.confOfParticipation));
+                    trElem.appendChild(tdElem);
+
+                    // ASR
+                    tdElem = document.createElement('td');
+                    if (cs.asr) {
+                        const aAsrElem = document.createElement('a');
+                        aAsrElem.href = '#';
+                        aAsrElem.addEventListener('click', () => {
+                            document.getElementById('ugIndicatorsLink').click();
+                            return false;
+                        });
+                        aAsrElem.appendChild(document.createTextNode('!'));
+                        tdElem.appendChild(aAsrElem);
+                    } else {
+                        tdElem.appendChild(document.createTextNode('--'));
+                    }
+                    trElem.appendChild(tdElem);
+                }
+
+                /* Add units and GPA info */
+                const summaryItems = [];
+                if (searchTerm == null || searchTerm == 'ALL') {
+                    const mostRecentTermWrapper = classesData[Object.keys(classesData).sort().reverse()[0]];
+                    summaryItems.push(`Total Earned Units: ${mostRecentTermWrapper.cumEarnedUnits}`);
+                    summaryItems.push(`Cumulative GPA: ${mostRecentTermWrapper.cumGpa}`);
+                } else {
+                    const selectedTermWrapper = classesData[searchTerm];
+                    summaryItems.push(`Total Earned Units: ${selectedTermWrapper.termEarnedUnits}`);
+                    summaryItems.push(`Term GPA: ${selectedTermWrapper.termGpa}`);
+                    summaryItems.push(`Cumulative GPA: ${selectedTermWrapper.cumGpa}`);
+                }
+                // and add HTML on page
+                if (summaryItems.length > 0) {
+                    const summaryRow = document.createElement('div');
+                    tableDivWrap.appendChild(summaryRow);
+                    summaryRow.style.fontWeight = 'bold';
+                    summaryRow.style.textAlign = 'right';
+                    summaryRow.appendChild(document.createTextNode(summaryItems.join('\u00A0\u00A0\u00A0')));
+                }
+
+                /**
+                 * Clear existing and add to DOM
+                 */
+                document.getElementById('ps_enrolled_classes').innerHTML = '';
+                document.getElementById('ps_enrolled_classes').appendChild(tableDivWrap);
+            } else {
+                document.getElementById('ps_enrolled_classes').innerHTML =
+                    'No enrolled classes found for {!theContact.Preferred_First_Name__c}.';
+            }
+            document.getElementById('ps_enrolled_classes').style.display = 'initial';
+
+            /**
+             *  Dropped/Withdrawn classes
+             */
+            const filteredDroppedClasses = Object.keys(classesData)
+                .reduce((prev, cur) => {
+                    return prev.concat(classesData[cur].droppedClasses);
+                }, [])
+                .filter((v) => searchTerm == null || searchTerm == 'ALL' || searchTerm === v.termCode)
+                .filter((v) => searchSession == null || searchSession == 'ALL' || searchSession === v.session)
+                .sort((a, b) => {
+                    if (droppedClassSortField == null) return 0;
+
+                    let aValue = a[droppedClassSortField];
+                    let bValue = b[droppedClassSortField];
+
+                    // -- should come after Z, and ~ > Z in ASCII
+                    if (aValue === '--') aValue = '~';
+                    if (bValue === '--') bValue = '~';
+
+                    if (aValue < bValue) {
+                        return -1 * droppedClassSortDirection;
+                    } else {
+                        return 1 * droppedClassSortDirection;
+                    }
+                });
+
+            if (filteredDroppedClasses.length > 0) {
+                /**
+                 *  <div class="table-responsive">
+                 *      <table class="table table-striped table-bordered">
+                 *          <thead>
+                 *              <tr>
+                 *                  <th scope="col" onclick=[sortDroppedClasses] data-field="term">Term</th>
+                 *                  ...
+                 *              </tr>
+                 *          </thead>
+                 *          <tbody>
+                 *              <tr>
+                 *                  <td></td>
+                 *                  ...
+                 *              </tr>
+                 *              ...
+                 *          </tbody>
+                 *      </table>
+                 *  </div>
+                 */
+                const tableDivWrap = document.createElement('div');
+                tableDivWrap.classList.add('table-responsive');
+                const tableElem = document.createElement('table');
+                tableDivWrap.appendChild(tableElem);
+                tableElem.classList.add('table');
+                tableElem.classList.add('table-striped');
+                tableElem.classList.add('table-bordered');
+                tableElem.classList.add('table-respect-newline');
+                const theadElem = document.createElement('thead');
+                tableElem.appendChild(theadElem);
+                let trElem, tdElem, thElem, textElem;
+                trElem = document.createElement('tr');
+                theadElem.appendChild(trElem);
+                trElem.style.cursor = 'pointer';
+
+                /**
+                 * Add all the headers for the table
+                 */
+                const headers = [
+                    {label: 'Term', fieldName: 'termCode'},
+                    {label: 'Session', fieldName: 'session'},
+                    {label: 'Class', fieldName: 'classNumber'},
+                    {label: 'Course', fieldName: 'catalogNumber'},
+                    {label: 'Title', fieldName: 'classTitle'},
+                    {label: 'Topic', fieldName: 'topic'},
+                    {label: 'Units', fieldName: 'units'},
+                    {label: 'Status', fieldName: 'status'},
+                    {
+                        label: 'Conf. Of Participation',
+                        fieldName: 'confOfParticipation',
+                        tooltip:
+                            'Yes means:\n-Student participated in this class in Canvas\n-Student completed the Confirmation of Participation (COP) survey\n-Student is an international student and exempt from the process\n\nNo means:\n-Student has not met any of those conditions\n\n-- means:\n-The class was taken before ASU tracked COP in this way',
+                    },
+                    {label: 'ASR', fieldName: 'asr'},
+                ];
+                for (const hd of headers) {
+                    // <th>
+                    thElem = document.createElement('th');
+                    thElem.scope = 'col';
+                    thElem.dataset.field = hd.fieldName;
+                    // listener to allow sorting
+                    thElem.addEventListener('click', (evnt) => {
+                        if (droppedClassSortField === evnt.target.dataset['field']) {
+                            droppedClassSortDirection = -1 * droppedClassSortDirection;
+                        } else {
+                            droppedClassSortField = evnt.target.dataset['field'];
+                            droppedClassSortDirection = 1;
+                        }
+                        regenerateClassList();
+                    });
+
+                    // add label
+                    thElem.appendChild(document.createTextNode(hd.label));
+
+                    // add tooltip
+                    if (hd.tooltip != null) {
+                        let tooltipElem = document.createElement('a');
+                        tooltipElem.classList.add('fa');
+                        tooltipElem.classList.add('fa-question-circle');
+                        tooltipElem.title = hd.tooltip;
+                        tooltipElem.dataset.placement = 'right';
+                        thElem.appendChild(tooltipElem);
+                    }
+
+                    // </th>
+                    trElem.appendChild(thElem);
+                }
+
+                const tbodyElem = document.createElement('tbody');
+                tableElem.appendChild(tbodyElem);
+
+                /**
+                 * Add each class to the table
+                 */
+                for (const cs of filteredDroppedClasses) {
+                    trElem = document.createElement('tr');
+                    tbodyElem.appendChild(trElem);
+
+                    // Term Name
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.termName));
+                    tdElem.style.fontWeight = 'bold';
+                    trElem.appendChild(tdElem);
+
+                    // Session
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.session));
+                    trElem.appendChild(tdElem);
+
+                    // Class
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.classNumber));
+                    trElem.appendChild(tdElem);
+
+                    // Course
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.catalogNumber));
+                    trElem.appendChild(tdElem);
+
+                    // Title
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.classTitle));
+                    trElem.appendChild(tdElem);
+
+                    // Topic
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.topic));
+                    trElem.appendChild(tdElem);
+
+                    // Units
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.units));
+                    trElem.appendChild(tdElem);
+
+                    // Status
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.status));
+                    trElem.appendChild(tdElem);
+
+                    // Confirmation Of Participation
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.confOfParticipation));
+                    trElem.appendChild(tdElem);
+
+                    // ASR
+                    tdElem = document.createElement('td');
+                    if (cs.asr) {
+                        const aAsrElem = document.createElement('a');
+                        aAsrElem.href = '#';
+                        aAsrElem.addEventListener('click', () => {
+                            document.getElementById('ugIndicatorsLink').click();
+                            return false;
+                        });
+                        aAsrElem.appendChild(document.createTextNode('!'));
+                        tdElem.appendChild(aAsrElem);
+                    } else {
+                        tdElem.appendChild(document.createTextNode('--'));
+                    }
+                    trElem.appendChild(tdElem);
+                }
+
+                /**
+                 * Clear existing and add to DOM
+                 */
+                document.getElementById('ps_dropped_withdrawn_classes').innerHTML = '';
+                document.getElementById('ps_dropped_withdrawn_classes').appendChild(tableDivWrap);
+            } else {
+                document.getElementById('ps_dropped_withdrawn_classes').innerHTML =
+                    'No dropped or withdrawn classes found for {!theContact.Preferred_First_Name__c}.';
+            }
+            document.getElementById('ps_dropped_withdrawn_classes').style.display = 'initial';
+        }
+
+        // Method to get Transfer Work
+        function getCreditByExamData() {
+            // Show loading icon
+            setAsLoadingIcon(document.getElementById('psCreditByExamErrors'));
+
+            // And run remove action to get comments
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getCreditByExam}',
+                '{!theContact.EMPLID__c}',
+                (result, event) => {
+                    if (event.status) {
+                        document.getElementById('psCreditByExamErrors').innerHTML = '';
+                        examCreditsData = result;
+                        regenerateCreditByExam();
+                    } else if (event.type === 'exception') {
+                        document.getElementById('psCreditByExamErrors').innerHTML =
+                            event.message + '<br/>\n<pre>' + event.where + '</pre>';
+                    } else {
+                        document.getElementById('psCreditByExamErrors').innerHTML = event.message;
+                    }
+                },
+                {escape: false, buffer: false}
+            );
+        }
+
+        // Build the class tables based on global state variables - while applying ordering / filtering
+        function regenerateCreditByExam() {
+            /**
+             *  Transfer work
+             */
+            const transferWorkList = examCreditsData.sort((a, b) => {
+                if (examCreditsSortField == null) return 0;
+
+                let aValue = a[examCreditsSortField];
+                let bValue = b[examCreditsSortField];
+
+                // -- should come after Z, and ~ > Z in ASCII
+                if (aValue === '--') aValue = '~';
+                if (bValue === '--') bValue = '~';
+
+                if (aValue < bValue) {
+                    return -1 * examCreditsSortDirection;
+                } else {
+                    return 1 * examCreditsSortDirection;
                 }
             });
-        }
 
-        //Method for clicking to sort Dropped Classes
-        var ascDirDropped = true;
-        var currSortDropped = 'Term';
+            if (transferWorkList.length > 0) {
+                /**
+                 *  <div class="table-responsive">
+                 *      <table class="table table-striped table-bordered">
+                 *          <thead>
+                 *              <tr>
+                 *                  <th scope="col">Term</th>
+                 *                  ...
+                 *              </tr>
+                 *          </thead>
+                 *          <tbody>
+                 *              <tr>
+                 *                  <td></td>
+                 *                  ...
+                 *              </tr>
+                 *              ...
+                 *          </tbody>
+                 *      </table>
+                 *  </div>
+                 */
+                const tableDivWrap = document.createElement('div');
+                tableDivWrap.classList.add('table-responsive');
+                const tableElem = document.createElement('table');
+                tableDivWrap.appendChild(tableElem);
+                tableElem.classList.add('table');
+                tableElem.classList.add('table-striped');
+                tableElem.classList.add('table-bordered');
+                const theadElem = document.createElement('thead');
+                tableElem.appendChild(theadElem);
+                let trElem, tdElem, thElem, textElem;
+                trElem = document.createElement('tr');
+                theadElem.appendChild(trElem);
+                trElem.style.cursor = 'pointer';
 
-        function sortDroppedOnClick(name) {
-            if (name == currSortDropped) {
-                ascDirDropped = !ascDirDropped;
-            } else {
-                ascDirDropped = true;
-                currSortDropped = name;
-            }
-            sortDroppedClassList(name, ascDirDropped);
-        }
-
-        //Method for clicking to sort enrolled classes
-        var ascDirEnrolled = true;
-        var currSortEnrolled = 'Term';
-
-        function sortEnrolledOnClick(name) {
-            if (name == currSortEnrolled) {
-                ascDirEnrolled = !ascDirEnrolled;
-            } else {
-                ascDirEnrolled = true;
-                currSortEnrolled = name;
-            }
-            sortEnrolledClassList(name, ascDirEnrolled);
-        }
-
-        function filterClasses() {
-            var termSelect = document.getElementById('ps_classes_term_select');
-            var sessionSelect = document.getElementById('ps_classes_session_select');
-            var searchTerm =
-                termSelect.options[termSelect.selectedIndex] === undefined
-                    ? ''
-                    : termSelect.options[termSelect.selectedIndex].text;
-            var searchSession =
-                sessionSelect.options[sessionSelect.selectedIndex] === undefined
-                    ? ''
-                    : sessionSelect.options[sessionSelect.selectedIndex].text;
-            var classTable = document.getElementById('enrolled_classes_table');
-            var summaryHtml = '';
-            var earnedUnits = 0;
-            var cumGpa = '';
-            var curGpa = '';
-            for (var r = 1; r < classTable?.rows?.length; r++) {
-                var termCell = classTable?.rows?.[r]?.cells[0].innerHTML;
-                var sessionCell = classTable?.rows?.[r]?.cells[1].innerHTML;
-                var displayStyle = 'none';
-                if (
-                    (termCell?.indexOf(searchTerm) >= 0 || searchTerm == 'All') &&
-                    (sessionCell?.indexOf(searchSession) >= 0 || searchSession == 'All')
-                ) {
-                    displayStyle = 'table-row';
-                    if (curGpa == '' && searchTerm != 'All' && classTable.rows[r].cells[15] != null)
-                        curGpa = 'Term GPA: ' + classTable.rows[r].cells[15].innerHTML + '&nbsp;&nbsp;&nbsp';
-                    if (cumGpa == '' && classTable.rows[r].cells[16] != null) {
-                        cumGpa = 'Cumulative GPA: ' + classTable.rows[r].cells[16].innerHTML;
-                    }
-                    if (
-                        classTable.rows[r].cells[14] != null &&
-                        classTable.rows[r].cells[14].innerHTML == 'YY' &&
-                        classTable.rows[r].cells[17] != null &&
-                        classTable.rows[r].cells[17].innerHTML != '{!currentTerm}'
-                    ) {
-                        earnedUnits += Number(classTable.rows[r].cells[6].innerHTML);
-                    }
-                } else {
-                    displayStyle = 'none';
-                }
-                classTable.rows[r].style.display = displayStyle;
-            }
-
-            summaryHtml = 'Total Earned Units: ' + earnedUnits + '&nbsp;&nbsp;&nbsp' + curGpa + cumGpa;
-            var summaryDiv = document.getElementById('ps_enrolled_classes_summary');
-            if (summaryDiv) summaryDiv.innerHTML = summaryHtml;
-            var headerSpan = document.getElementById('enrolled_classes_header');
-            if (headerSpan) headerSpan.innerHTML = '&nbsp;' + searchTerm + ' Enrolled Classes';
-
-            classTable = document.getElementById('dropped_classes_table');
-            for (var r = 1; r < classTable?.rows?.length; r++) {
-                var termCell = classTable?.rows?.[r]?.cells[0].innerHTML;
-                var sessionCell = classTable?.rows?.[r]?.cells[1].innerHTML;
-                var displayStyle = 'none';
-                if (
-                    (termCell?.indexOf(searchTerm) >= 0 || searchTerm == 'All') &&
-                    (sessionCell?.indexOf(searchSession) >= 0 || searchSession == 'All')
-                ) {
-                    displayStyle = 'table-row';
-                } else {
-                    displayStyle = 'none';
-                }
-                classTable.rows[r].style.display = displayStyle;
-            }
-            headerSpan = document.getElementById('dropped_classes_header');
-            if (headerSpan) headerSpan.innerHTML = '&nbsp;' + searchTerm + ' Dropped/Withdrawn Classes';
-        }
-
-        //Method to Sort Class List
-        function sortEnrolledClassList(paramToSort, direction) {
-            var enrolledWrapperJson = JSON.stringify(enrolledWrapper);
-            Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.sortClasses}',
-                paramToSort,
-                enrolledWrapperJson,
-                direction,
-                function (result, event) {
-                    document.getElementById('ps_enrolled_classes').style.display = 'initial';
-
-                    var html =
-                        '' +
-                        "<div class='table-responsive'>" +
-                        "<table id='enrolled_classes_table' class='table table-striped table-bordered'> " +
-                        '<thead>' +
-                        '<tr style="cursor:pointer">' +
-                        '<th onclick="sortEnrolledOnClick(\'Term\')">Term</th>' +
-                        '<th onclick="sortEnrolledOnClick(\'Session\')">Session</th>' +
-                        '<th onclick="sortEnrolledOnClick(\'Class\')">Class</th>' +
-                        '<th onclick="sortEnrolledOnClick(\'Course\')">Course</th>' +
-                        '<th onclick="sortEnrolledOnClick(\'Title\')">Title</th>' +
-                        '<th onclick="sortEnrolledOnClick(\'Topic\')">Topic</th>' +
-                        '<th onclick="sortEnrolledOnClick(\'Units\')">Units</th>' +
-                        '<th onclick="sortEnrolledOnClick(\'Instructor\')">Instructor(s)</th>' +
-                        '<th onclick="sortEnrolledOnClick(\'Days\')">Days</th>' +
-                        '<th onclick="sortEnrolledOnClick(\'Times\')">Times</th>' +
-                        '<th onclick="sortEnrolledOnClick(\'Dates\')">Dates</th>' +
-                        '<th onclick="sortEnrolledOnClick(\'Location\')">Location</th>' +
-                        '<th onclick="sortEnrolledOnClick(\'Grade\')">Grade</th>' +
-                        '<th scope="col">Conf. Of Participation ' +
-                        '<a class="fa fa-question-circle" title="Yes means:&#10;-Student participated in this class in Canvas&#10;-Student completed the Confirmation of Participation (COP) survey&#10;-Student is an international student and exempt from the process&#10;&#10;No means:&#10;-Student has not met any of those conditions&#10;&#10;-- means:&#10;-The class was taken before ASU tracked COP in this way" data-placement="right"></a>' +
-                        '</th>' +
-                        '<th scope="col">ASR</th>' +
-                        '</tr>' +
-                        '</thead>' +
-                        '<tbody>';
-
-                    for (var i = 0; i < result.length; i++) {
-                        var asrValue = '--';
-
-                        html +=
-                            '' +
-                            '<tr>' +
-                            '<td><b>' +
-                            result[i].classInfo.TERM_DESCR30__c +
-                            '</b></td>' +
-                            '<td>' +
-                            result[i].classInfo.SESSION_CODE__c +
-                            '</td>' +
-                            '<td>' +
-                            Math.floor(result[i].classInfo.CLASS_NBR__c) +
-                            '</td>' +
-                            '<td>' +
-                            result[i].classInfo.SUBJECT__c +
-                            ' ' +
-                            result[i].classInfo.CATALOG_NBR__c +
-                            '</td>' +
-                            '<td>' +
-                            result[i].classInfo.CLASS_DESCR__c +
-                            '</td>' +
-                            '<td>' +
-                            result[i].classInfo.SSR_CLSTOPIC_DESCR__c +
-                            '</td>' +
-                            '<td>' +
-                            result[i].classInfo.UNT_TAKEN__c +
-                            '</td>' +
-                            '<td>' +
-                            result[i].classInfo.FT_FULL_NAME__c +
-                            '</td>' +
-                            '<td>' +
-                            result[i].classInfo.SCH_HTML_DAY1__c +
-                            '</td>' +
-                            '<td>' +
-                            result[i].classInfo.SCH_DAILY_TIME__c +
-                            '</td>' +
-                            '<td>' +
-                            result[i].classInfo.ASU_SCH_DATES__c +
-                            '</td>' +
-                            '<td>' +
-                            result[i].classInfo.SSR_MTG_LOC_LONG__c +
-                            '</td>' +
-                            '<td>' +
-                            result[i].classInfo.CRSE_GRADE_OFF__c +
-                            '</td>' +
-                            '<td>' +
-                            result[i].classInfo.CONFIRMATION_OF_PARTICIPATION__c +
-                            '</td>' +
-                            "<td style='display:none'>" +
-                            result[i].classInfo.EARN_CREDIT__c +
-                            '' +
-                            result[i].classInfo.VALID_ATTEMPT__c +
-                            '</td>' +
-                            "<td style='display:none'>" +
-                            result[i].classInfo.CUR_GPA__c +
-                            '</td>' +
-                            "<td style='display:none'>" +
-                            result[i].classInfo.CUM_GPA__c +
-                            '</td>' +
-                            "<td style='display:none'>" +
-                            result[i].classInfo.STRM__c +
-                            '</td>';
-                        if (
-                            asrResponseTable?.indexOf(
-                                result[i].classInfo.STRM__c +
-                                    '|' +
-                                    result[i].classInfo.SESSION_CODE__c +
-                                    '|' +
-                                    result[i].classInfo.CLASS_NBR__c
-                            ) > -1
-                        ) {
-                            // ASR link opens Undergraduate Indicators tab when clicked
-                            html +=
-                                '<td data-header="ASR">' +
-                                '<a href="#" onclick="document.getElementById(\x27ugIndicatorsLink\x27).click(); return false;">!</a>' +
-                                '</td>';
+                /**
+                 * Add all the headers for the table
+                 */
+                const headers = [
+                    {label: 'Title', fieldName: 'title'},
+                    {label: 'Course Title', fieldName: 'courseTitle'},
+                    {label: 'Score', fieldName: 'score'},
+                    {label: 'Units Transferred', fieldName: 'unitsTransferred'},
+                ];
+                for (const hd of headers) {
+                    // <th>
+                    thElem = document.createElement('th');
+                    thElem.scope = 'col';
+                    thElem.dataset.field = hd.fieldName;
+                    // listener to allow sorting
+                    thElem.addEventListener('click', (evnt) => {
+                        if (examCreditsSortField === evnt.target.dataset['field']) {
+                            examCreditsSortDirection = -1 * examCreditsSortDirection;
                         } else {
-                            html += '<td data-header="ASR">--</td>';
+                            examCreditsSortField = evnt.target.dataset['field'];
+                            examCreditsSortDirection = 1;
                         }
+                        regenerateCreditByExam();
+                    });
 
-                        html += '</tr>';
-                    }
+                    // add label
+                    thElem.appendChild(document.createTextNode(hd.label));
 
-                    html += '</tbody></table></div>';
+                    // </th>
+                    trElem.appendChild(thElem);
+                }
 
-                    html += "<div style='float:right; font-weight:bold;' id='ps_enrolled_classes_summary'/><br/>";
-                    html += '<div>* in Location column in the table above means: No Scheduled Meetings/Locations</div>';
+                const tbodyElem = document.createElement('tbody');
+                tableElem.appendChild(tbodyElem);
 
-                    document.getElementById('ps_enrolled_classes').innerHTML = html;
-                    filterClasses();
-                    cleanUndefinedFields('ps_enrolled_classes');
-                },
-                {buffer: false, escape: true, timeout: 120000}
-            );
-        }
+                /**
+                 * Add each class to the table
+                 */
+                for (const cs of transferWorkList) {
+                    trElem = document.createElement('tr');
+                    tbodyElem.appendChild(trElem);
 
-        //Method to Sort Dropped Class List
-        function sortDroppedClassList(paramToSort, direction) {
-            var droppedWrapperJson = JSON.stringify(droppedWrapper);
-            Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.sortClasses}',
-                paramToSort,
-                droppedWrapperJson,
-                direction,
-                function (result, event) {
-                    if (event.status && result?.length > 0) {
-                        document.getElementById('ps_dropped_withdrawn_classes').style.display = 'initial';
+                    // Title
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.title));
+                    trElem.appendChild(tdElem);
 
-                        var html =
-                            '' +
-                            "<div class='table-responsive'>" +
-                            "<table id='dropped_classes_table' class='table table-striped table-bordered'> " +
-                            '<thead>' +
-                            '<tr style="cursor:pointer">' +
-                            '<th onclick="sortDroppedOnClick(\'Term\')">Term</th>' +
-                            '<th onclick="sortDroppedOnClick(\'Session\')">Session</th>' +
-                            '<th onclick="sortDroppedOnClick(\'Class\')">Class</th>' +
-                            '<th onclick="sortDroppedOnClick(\'Course\')">Course</th>' +
-                            '<th onclick="sortDroppedOnClick(\'Title\')">Title</th>' +
-                            '<th onclick="sortDroppedOnClick(\'Topic\')">Topic</th>' +
-                            '<th onclick="sortDroppedOnClick(\'Units\')">Units</th>' +
-                            '<th onclick="sortDroppedOnClick(\'Status\')">Status</th>' +
-                            '<th scope="col">Conf. Of Participation ' +
-                            '<a class="fa fa-question-circle" title="Yes means:&#10;-Student participated in this class in Canvas&#10;-Student completed the Confirmation of Participation (COP) survey&#10;-Student is an international student and exempt from the process&#10;&#10;No means:&#10;-Student has not met any of those conditions&#10;&#10;-- means:&#10;-The class was taken before ASU tracked COP in this way" data-placement="right"></a>' +
-                            '</th>' +
-                            '<th scope="col">ASR</th>' +
-                            '</tr>' +
-                            '</thead>' +
-                            '<tbody>';
+                    // Course Title
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.courseTitle));
+                    trElem.appendChild(tdElem);
 
-                        for (var i = 0; i < result.length; i++) {
-                            html +=
-                                '' +
-                                '<tr>' +
-                                '<td><b>' +
-                                result[i].classInfo.TERM_DESCR30__c +
-                                '</b></td>' +
-                                '<td>' +
-                                result[i].classInfo.SESSION_CODE__c +
-                                '</td>' +
-                                '<td>' +
-                                Math.floor(result[i].classInfo.CLASS_NBR__c) +
-                                '</td>' +
-                                '<td>' +
-                                result[i].classInfo.SUBJECT__c +
-                                ' ' +
-                                result[i].classInfo.CATALOG_NBR__c +
-                                '</td>' +
-                                '<td>' +
-                                result[i].classInfo.CLASS_DESCR__c +
-                                '</td>' +
-                                '<td>' +
-                                result[i].classInfo.SSR_CLSTOPIC_DESCR__c +
-                                '</td>' +
-                                '<td>' +
-                                result[i].classInfo.UNT_TAKEN__c +
-                                '</td>' +
-                                '<td>' +
-                                result[i].classInfo.ENRL_STATUS_REASON__c +
-                                '</td>' +
-                                '<td>' +
-                                result[i].classInfo.CONFIRMATION_OF_PARTICIPATION__c +
-                                '</td>';
-                            if (
-                                asrResponseTable?.indexOf(
-                                    result[i].classInfo.STRM__c +
-                                        '|' +
-                                        result[i].classInfo.SESSION_CODE__c +
-                                        '|' +
-                                        result[i].classInfo.CLASS_NBR__c
-                                ) > -1
-                            ) {
-                                html +=
-                                    '<td data-header="ASR">' +
-                                    '<a href="#" onclick="document.getElementById(\x27ugIndicatorsLink\x27).click(); return false;">!</a>' +
-                                    '</td>';
-                            } else {
-                                html += '<td data-header="ASR">--</td>';
-                            }
+                    // Score
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.score));
+                    trElem.appendChild(tdElem);
 
-                            html += '</tr>';
-                        }
+                    // Units Transferred
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.unitsTransferred));
+                    trElem.appendChild(tdElem);
+                }
 
-                        html += '</tbody></table></div>';
-
-                        document.getElementById('ps_dropped_withdrawn_classes').innerHTML = html;
-                        cleanUndefinedFields('ps_dropped_withdrawn_classes');
-                    } else {
-                        document.getElementById('psDroppedWithdrawnClassesErrors').innerHTML =
-                            'No dropped or withdrawn classes found for {!theContact.Preferred_First_Name__c}.';
-                    }
-                    filterClasses();
-                },
-                {buffer: false, escape: true, timeout: 120000}
-            );
-        }
-
-        // Method to get Credit by Exam
-        function getCreditByExamData() {
-            document.getElementById('psCreditByExamErrors').innerHTML =
-                "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-
-            var creditByExamQuery =
-                'SELECT ACAD_CAREER__c, COURSE_TITLE__c, DisplayUrl, EMPLID__c, ' +
-                'ExternalId, Id, SCORE__c, STRM__c, TITLE__c, UNT_TRNSFR__c  ' +
-                'FROM PS_ASU_SP_TRNSFR_V__x ' +
-                "WHERE EMPLID__c = '{!theContact.EMPLID__c}'";
-            var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
-            conn.query(
-                creditByExamQuery,
-                function (err, response) {
-                    if (err) {
-                        document.getElementById('psCreditByExamErrors').innerHTML = err;
-                    } else {
-                        document.getElementById('psCreditByExamErrors').innerHTML = '';
-
-                        if (!response.totalSize == 0) {
-                            var result = response.records;
-                            document.getElementById('ps_credit_by_exam_work').style.display = 'initial';
-                            examWrapper = result;
-                            var html =
-                                '' +
-                                "<div class='table-responsive'>" +
-                                "<table class='table table-striped table-bordered'> " +
-                                '<thead>' +
-                                '<tr style="cursor:pointer">' +
-                                '<th onclick="sortExamOnClick(\'Title\')">Title</th>' +
-                                '<th onclick="sortExamOnClick(\'Course Title\')">Course</th>' +
-                                '<th onclick="sortExamOnClick(\'Score\')">Score</th>' +
-                                '<th onclick="sortExamOnClick(\'Transfer\')">Units Transferred</th>' +
-                                '</tr>' +
-                                '</thead>' +
-                                '<tbody>';
-
-                            for (var i = 0; i < result.length; i++) {
-                                html +=
-                                    '' +
-                                    '<tr>' +
-                                    '<td>' +
-                                    result[i].TITLE__c +
-                                    '</td>' +
-                                    '<td>' +
-                                    result[i].COURSE_TITLE__c +
-                                    '</td>' +
-                                    '<td>' +
-                                    result[i].SCORE__c +
-                                    '</td>' +
-                                    '<td>' +
-                                    result[i].UNT_TRNSFR__c +
-                                    '</td>' +
-                                    '</tr>';
-                            }
-
-                            html += '</tbody></table></div>';
-
-                            document.getElementById('ps_credit_by_exam_work').innerHTML = html;
-                            cleanUndefinedFields('ps_credit_by_exam_work');
-                        } else {
-                            document.getElementById('psCreditByExamErrors').innerHTML =
-                                'No credit by exam found for {!theContact.Preferred_First_Name__c}.';
-                        }
-                    }
-                },
-                {buffer: false, escape: true, timeout: 120000}
-            );
-        }
-
-        //Method to Sort Exam List
-        function sortExamList(paramToSort, direction) {
-            Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.sortExams}',
-                paramToSort,
-                examWrapper,
-                direction,
-                function (result, event) {
-                    if (event.status && result?.length > 0) {
-                        document.getElementById('ps_credit_by_exam_work').style.display = 'initial';
-
-                        var html =
-                            '' +
-                            "<div class='table-responsive'>" +
-                            "<table class='table table-striped table-bordered'> " +
-                            '<thead>' +
-                            '<tr style="cursor:pointer">' +
-                            '<th onclick="sortExamOnClick(\'Title\')">Title</th>' +
-                            '<th onclick="sortExamOnClick(\'Course Title\')">Course</th>' +
-                            '<th onclick="sortExamOnClick(\'Score\')">Score</th>' +
-                            '<th onclick="sortExamOnClick(\'Transfer\')">Units Transferred</th>' +
-                            '</tr>' +
-                            '</thead>' +
-                            '<tbody>';
-
-                        for (var i = 0; i < result.length; i++) {
-                            html +=
-                                '' +
-                                '<tr>' +
-                                '<td>' +
-                                result[i].examInfo.TITLE__c +
-                                '</td>' +
-                                '<td>' +
-                                result[i].examInfo.COURSE_TITLE__c +
-                                '</td>' +
-                                '<td>' +
-                                result[i].examInfo.SCORE__c +
-                                '</td>' +
-                                '<td>' +
-                                result[i].examInfo.UNT_TRNSFR__c +
-                                '</td>' +
-                                '</tr>';
-                        }
-
-                        html += '</tbody></table></div>';
-
-                        document.getElementById('ps_credit_by_exam_work').innerHTML = html;
-                        cleanUndefinedFields('ps_credit_by_exam_work');
-                    } else {
-                        document.getElementById('psCreditByExamErrors').innerHTML =
-                            'No credit by exam found for {!theContact.Preferred_First_Name__c}.';
-                    }
-                },
-                {buffer: false, escape: true, timeout: 120000}
-            );
-        }
-
-        //Method for clicking to sort Transfer Exams
-        var ascDirExam = true;
-        var currSortExam = 'Title';
-
-        function sortExamOnClick(name) {
-            if (name == currSortExam) {
-                ascDirExam = !ascDirExam;
+                /**
+                 * Clear existing and add to DOM
+                 */
+                document.getElementById('ps_credit_by_exam_work').innerHTML = '';
+                document.getElementById('ps_credit_by_exam_work').appendChild(tableDivWrap);
             } else {
-                ascDirExam = true;
-                currSortExam = name;
+                document.getElementById('ps_credit_by_exam_work').innerHTML =
+                    'No credit by exam found for {!theContact.Preferred_First_Name__c}.';
             }
-            sortExamList(name, ascDirExam);
+            document.getElementById('ps_credit_by_exam_work').style.display = 'initial';
         }
 
         // Method to get Transfer Work
@@ -5138,7 +5103,7 @@
                         buildAwardTable();
                     } else {
                         document.getElementById('selectListForAwards').innerHTML =
-                                'No financial aid or scholarship awards information found for {!theContact.Preferred_First_Name__c}.';
+                            'No financial aid or scholarship awards information found for {!theContact.Preferred_First_Name__c}.';
                         return;
                     }
                 },
@@ -5254,7 +5219,7 @@
                         buildChargeHistoryTable();
                     } else {
                         document.getElementById('selectListForChargeHistory').innerHTML =
-                                'No charge history found for {!theContact.Preferred_First_Name__c}.';
+                            'No charge history found for {!theContact.Preferred_First_Name__c}.';
                         return;
                     }
                 },
@@ -5336,7 +5301,7 @@
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
                     var html = '';
-                    if (event.status && result?.length > 0) {
+                    if (event.status && result.balances) {
                         var formatter = new Intl.NumberFormat('en-US', {
                             style: 'currency',
                             currency: 'USD',
@@ -5400,7 +5365,7 @@
                 '{!$RemoteAction.StudentProfileController.getFinancialAidRefunds}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
-                    if (event.status && result?.length > 0) {
+                    if (event.status && result.refunds) {
                         var html =
                             '' +
                             "<div style='font-weight:bold;'> Posted Refunds </div>" +
@@ -5460,7 +5425,7 @@
                 '{!$RemoteAction.StudentProfileController.getDepositStatus}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
-                    if (event.status && result?.length > 0) {
+                    if (event.status && result.deposits) {
                         var html =
                             '' +
                             "<div class='table-responsive'>" +
@@ -5512,7 +5477,7 @@
                 '{!$RemoteAction.StudentProfileController.getRenewableAid}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
-                    if (event.status && result?.emplid != null) {
+                    if (event.status && result?.aid_years.length > 0) {
                         var html =
                             '' +
                             "<div class='table-responsive'>" +
@@ -5580,7 +5545,7 @@
                 '{!$RemoteAction.StudentProfileController.getBookPayments}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
-                    if (event.status && result?.emplid != null) {
+                    if (event.status && result?.aid_years.length > 0) {
                         var formatter = new Intl.NumberFormat('en-US', {
                             style: 'currency',
                             currency: 'USD',
@@ -5644,7 +5609,7 @@
                 '{!$RemoteAction.StudentProfileController.getTuitionResidencyStatus}',
                 '{!theContact.EMPLID__c}',
                 function (result, event) {
-                    if (event.status && result?.length > 0 && result.tuition_residency?.length > 0) {
+                    if (event.status && result.tuition_residency?.length > 0) {
                         var html;
 
                         if (
@@ -5705,7 +5670,7 @@
                         buildSAPTable();
                     } else {
                         document.getElementById('selectListForSAP').innerHTML =
-                                'No satisfactory academic progress found for {!theContact.Preferred_First_Name__c}.';
+                            'No satisfactory academic progress found for {!theContact.Preferred_First_Name__c}.';
                         return;
                     }
                 },
@@ -5818,112 +5783,8 @@
             getGuestAccess();
         }
 
-        // Method to load the advisor comments.
-        function getPSAdvisorNotes() {
-            if (!advisorNotesLoaded) {
-                document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
-                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-
-                var advisorNoteQuery =
-                    'SELECT ACAD_CAREER__c, COMMENTS__c, CREATDTTM__c, CREATEOPRID__c, DisplayUrl, ' +
-                    'EMPLID__c, ExternalId, Id, NAME__c, STRM__c,  Academic_Plan__c, Academic_Plan__r.Name, Academic_Program__r.Name, Student_Career_Number__c ' +
-                    'FROM PS_ASU_SP_ADNOTE_V__x ' +
-                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
-                    'ORDER BY CREATDTTM__c DESC';
-                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
-                conn.query(advisorNoteQuery, function (err, response) {
-                    if (err) {
-                        document.getElementById('psAdvisingNotesResponseErrors').innerHTML = err;
-                    } else {
-                        if (!response.totalSize == 0) {
-                            var noteResponse = response.records;
-                            noteResponse.forEach(function (record) {
-                                delete record.attributes;
-                            });
-                            noteResponse = JSON.stringify(noteResponse);
-                            Visualforce.remoting.Manager.invokeAction(
-                                '{!$RemoteAction.StudentProfileController.getPSAdvisorNotes}',
-                                '{!theContact.EMPLID__c}',
-                                noteResponse,
-                                function (result, event) {
-                                    if (event.status) {
-                                        document.getElementById('psAdvisingNotesResponseErrors').innerHTML = '';
-
-                                        if (result?.length > 0) {
-                                            document.getElementById('psAdvisingNotesResponseErrors').style.display =
-                                                'none';
-                                            var html = '<table class="table table-striped table-bordered">';
-
-                                            for (var i = 0; i < result.length; i++) {
-                                                var dateStamp = new Date(result[i].note.CREATDTTM__c);
-                                                var commentDate = new Date(
-                                                    dateStamp.toLocaleString('en-US', {timeZone: 'Etc/GMT'})
-                                                );
-                                                commentDate =
-                                                    commentDate.getMonth() +
-                                                    1 +
-                                                    '/' +
-                                                    commentDate.getDate() +
-                                                    '/' +
-                                                    commentDate.getFullYear();
-                                                html +=
-                                                    '<tr>' +
-                                                    '<td>' +
-                                                    (result[i].advUserId == undefined
-                                                        ? ''
-                                                        : "<a href='/_ui/core/userprofile/UserProfilePage?u=" +
-                                                          result[i].advUserId +
-                                                          "&tab=sfdc.ProfilePlatformFeed' target='_blank'>") +
-                                                    result[i].note.NAME__c +
-                                                    (result[i].advUserId == undefined ? '' : '</a>') +
-                                                    '</td> <td>' +
-                                                    commentDate +
-                                                    '</td>' +
-                                                    '</td> <td>' +
-                                                    result[i].note.Academic_Plan__r.Name +
-                                                    '</td>' +
-                                                    '</td> <td>' +
-                                                    result[i].note.Academic_Program__r.Name +
-                                                    '</td>' +
-                                                    '</tr>' +
-                                                    '<tr>' +
-                                                    '<td colspan="4">' +
-                                                    result[i].note.COMMENTS__c.replace(/(?:\r\n|\r|\n)/g, '<br />') +
-                                                    '</td>' +
-                                                    '</tr>';
-                                            }
-                                            html += '</table>';
-                                            document.getElementById('ps_advising_notes_section').innerHTML = html;
-                                            cleanUndefinedFields('ps_advising_notes_section');
-                                            advisorNotesLoaded = true;
-                                        } else {
-                                            document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
-                                                'No advising notes found for {!theContact.Preferred_First_Name__c}.';
-                                            advisorNotesLoaded = true;
-                                        }
-                                    } else if (event.type === 'exception') {
-                                        document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
-                                            event.message + '<br/>\n<pre>' + event.where + '</pre>';
-                                    } else {
-                                        document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
-                                            event.message;
-                                    }
-                                },
-                                {buffer: false, escape: true, timeout: 120000}
-                            );
-                        } else {
-                            document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
-                                'No advising notes found for {!theContact.Preferred_First_Name__c}.';
-                            advisorNotesLoaded = true;
-                        }
-                    }
-                });
-            }
-        }
-
+        // Refresh button, reloads advisor notes and comments
         function refreshComments() {
-            commentsLoaded = false;
-            advisorNotesLoaded = false;
             document.getElementById('ps_advising_notes_section').innerHTML = '';
             document.getElementById('ps_comments_section').innerHTML = '';
             document.getElementById('psAdvisingNotesResponseErrors').style.display = 'block';
@@ -5933,168 +5794,324 @@
         }
 
         // Method to load the advisor comments.
-        function getComments() {
-            if (!commentsLoaded) {
-                document.getElementById('psCommentsResponseErrors').innerHTML =
-                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-                var commentQuery =
-                    'SELECT ADMIN_FUNCTION__c, ADMIN_ROLENAME__c, COMMENT_DTTM__c, COMNT_ID__c, ' +
-                    'COMMENTS__c, DisplayUrl, EMPLID__c, ExternalId, Id, NAME__c ' +
-                    'FROM PS_ASU_SP_COMMNT_V__x ' +
-                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' AND CMNT_Category__c  != 'GRPOS' AND CMNT_Category__c != 'GRGCPS'" +
-                    'ORDER BY COMMENT_DTTM__c DESC';
-                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
-                conn.query(commentQuery, function (err, response) {
-                    if (err) {
-                        document.getElementById('psCommentsResponseErrors').innerHTML = err;
-                    } else {
-                        var commentResponse = response.records;
-                        commentResponse.forEach(function (record) {
-                            delete record.attributes;
-                        });
-                        commentResponse = JSON.stringify(commentResponse);
-                        Visualforce.remoting.Manager.invokeAction(
-                            '{!$RemoteAction.StudentProfileController.getComments}',
-                            '{!theContact.EMPLID__c}',
-                            commentResponse,
-                            function (result, event) {
-                                if (event.status) {
-                                    document.getElementById('psCommentsResponseErrors').innerHTML = '';
+        function getPSAdvisorNotes() {
+            // Start loading icon
+            setAsLoadingIcon(document.getElementById('psAdvisingNotesResponseErrors'));
 
-                                    if (result?.length > 0) {
-                                        document.getElementById('psCommentsResponseErrors').style.display = 'none';
-                                        var html = '';
+            // Call remote action
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getAdvisingNotes}',
+                '{!theContact.EMPLID__c}',
+                (result, event) => {
+                    if (event.status) {
+                        document.getElementById('psAdvisingNotesResponseErrors').innerHTML = '';
 
-                                        for (var i = 0; i < result.length; i++) {
-                                            var utcSeconds = result[i].comment.COMMENT_DTTM__c;
-                                            var commentDate = new Date(utcSeconds);
-                                            commentDate =
-                                                commentDate.getMonth() +
-                                                1 +
-                                                '/' +
-                                                commentDate.getDate() +
-                                                '/' +
-                                                commentDate.getFullYear();
+                        if (result.length > 0) {
+                            /**
+                             * <div class="table-responsive">
+                             *  <table class="table table-striped table-bordered">
+                             *      <tbody>
+                             *          <tr>
+                             *              <td> {creatdByUser} </td>
+                             *              <td> {date} </td>
+                             *              <td> {planName} </td>
+                             *              <td> {programName} </td>
+                             *          </tr>
+                             *          <tr>
+                             *              <td colspan="4"> {comment} </td>
+                             *          </tr>
+                             *          ...
+                             *      </tbody>
+                             *  </table>
+                             * </div>
+                             */
 
-                                            html +=
-                                                '' +
-                                                "<div class='comments-panel'>" +
-                                                "<div class='comments-header'>" +
-                                                '<h4>' +
-                                                (result[i].commenterUserId == undefined
-                                                    ? ''
-                                                    : "<a href='/_ui/core/userprofile/UserProfilePage?u=" +
-                                                      result[i].commenterUserId +
-                                                      "&tab=sfdc.ProfilePlatformFeed' target='_blank'>") +
-                                                result[i].comment.NAME__c +
-                                                (result[i].commenterUserId == undefined ? '' : '</a>') +
-                                                '</h4>' +
-                                                "<span class='comments-header-date'>" +
-                                                '&nbsp;&nbsp;-&nbsp;&nbsp;' +
-                                                commentDate +
-                                                '</span>' +
-                                                '</div>' +
-                                                "<div class='comments-main-comment'" +
-                                                "id='ps_comments_main'>" +
-                                                result[i].comment.COMMENTS__c +
-                                                '</div>' +
-                                                '</div>' +
-                                                "<hr class='comments-hr'/>";
-                                        }
+                            document.getElementById('psAdvisingNotesResponseErrors').style.display = 'none';
 
-                                        document.getElementById('ps_comments_section').innerHTML = html;
-                                        cleanUndefinedFields('ps_comments_section');
-                                        commentsLoaded = true;
-                                    } else {
-                                        document.getElementById('psCommentsResponseErrors').innerHTML =
-                                            'No comments found for {!theContact.Preferred_First_Name__c}.';
-                                        commentsLoaded = true;
-                                    }
-                                } else if (event.type === 'exception') {
-                                    document.getElementById('psCommentsResponseErrors').innerHTML =
-                                        event.message + '<br/>\n<pre>' + event.where + '</pre>';
+                            const tableDivWrap = document.createElement('div');
+                            tableDivWrap.classList.add('table-responsive');
+                            const tableElem = document.createElement('table');
+                            tableDivWrap.appendChild(tableElem);
+                            tableElem.classList.add('table');
+                            tableElem.classList.add('table-striped');
+                            tableElem.classList.add('table-bordered');
+                            tableElem.classList.add('table-respect-newline');
+                            const tbodyElem = document.createElement('tbody');
+                            tableElem.appendChild(tbodyElem);
+
+                            // Sort by newest comment first
+                            const advisorNoteList = result ?? [];
+
+                            // Add each advisor note
+                            for (const advNote of advisorNoteList) {
+                                let trElem, tdElem, thElem, textElem;
+
+                                trElem = document.createElement('tr');
+                                tbodyElem.appendChild(trElem);
+
+                                // Add user link
+                                tdElem = document.createElement('td');
+                                trElem.appendChild(tdElem);
+                                if (advNote.authorUserId != null) {
+                                    const authorAElem = document.createElement('a');
+                                    tdElem.appendChild(authorAElem);
+                                    authorAElem.href = `/_ui/core/userprofile/UserProfilePage?u=${advNote.authorUserId}&tab=sfdc.ProfilePlatformFeed`;
+                                    authorAElem.target = '_blank';
+                                    authorAElem.appendChild(document.createTextNode(advNote.authorName));
                                 } else {
-                                    document.getElementById('psCommentsResponseErrors').innerHTML = event.message;
+                                    tdElem.appendChild(document.createTextNode(advNote.authorName));
                                 }
-                            },
-                            {buffer: false, escape: true, timeout: 120000}
-                        );
+
+                                // Date
+                                tdElem = document.createElement('td');
+                                trElem.appendChild(tdElem);
+                                let commentDate = new Date(advNote.commentDt);
+                                let commentDateStr =
+                                    commentDate.getMonth() +
+                                    1 +
+                                    '/' +
+                                    commentDate.getDate() +
+                                    '/' +
+                                    commentDate.getFullYear();
+                                tdElem.appendChild(document.createTextNode(commentDateStr));
+
+                                // Plan
+                                tdElem = document.createElement('td');
+                                trElem.appendChild(tdElem);
+                                tdElem.appendChild(document.createTextNode(advNote.planName));
+
+                                // Program
+                                tdElem = document.createElement('td');
+                                trElem.appendChild(tdElem);
+                                tdElem.appendChild(document.createTextNode(advNote.programName));
+
+                                // Main comment content
+                                trElem = document.createElement('tr');
+                                tbodyElem.appendChild(trElem);
+                                tdElem = document.createElement('td');
+                                trElem.appendChild(tdElem);
+                                tdElem.colSpan = 4;
+                                tdElem.appendChild(document.createTextNode(advNote.comment));
+                            }
+
+                            document.getElementById('ps_advising_notes_section').innerHTML = '';
+                            document.getElementById('ps_advising_notes_section').appendChild(tableDivWrap);
+                        } else {
+                            document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
+                                'No advising notes found for {!theContact.Preferred_First_Name__c}.';
+                        }
+                    } else if (event.type === 'exception') {
+                        document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
+                            event.message + '<br/>\n<pre>' + event.where + '</pre>';
+                    } else {
+                        document.getElementById('psAdvisingNotesResponseErrors').innerHTML = event.message;
                     }
-                });
-            }
+                },
+                {escape: false, buffer: false}
+            );
         }
 
         // Method to load the advisor comments.
-        function getGuestAccess() {
-            if (!guestAccessLoaded) {
-                document.getElementById('psGuestAccessResponseErrors').innerHTML =
-                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-                var guestQuery =
-                    'SELECT AUTHOR__c, COMMENT_DT__c, COMMENTS__c, DisplayUrl, EMPLID__c, ' +
-                    'ExternalId, Id ' +
-                    'FROM PS_ASU_SP_GUEST_V__x ' +
-                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
-                    'ORDER BY COMMENT_DT__c DESC';
-                var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
-                conn.query(
-                    guestQuery,
-                    function (err, response) {
-                        if (err) {
-                            document.getElementById('psGuestAccessResponseErrors').innerHTML = err;
-                        } else {
-                            document.getElementById('psGuestAccessResponseErrors').innerHTML = '';
+        function getComments() {
+            // Show loading icon
+            setAsLoadingIcon(document.getElementById('psCommentsResponseErrors'));
 
-                            if (!response.totalSize == 0) {
-                                result = response.records;
-                                document.getElementById('psGuestAccessResponseErrors').style.display = 'none';
-                                var html = '';
+            // And run remove action to get comments
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getComments}',
+                '{!theContact.EMPLID__c}',
+                (result, event) => {
+                    if (event.status) {
+                        document.getElementById('psCommentsResponseErrors').innerHTML = '';
+                        commentData = result;
+                        regenerateCommentTable();
+                    } else if (event.type === 'exception') {
+                        document.getElementById('psCommentsResponseErrors').innerHTML =
+                            event.message + '<br/>\n<pre>' + event.where + '</pre>';
+                    } else {
+                        document.getElementById('psCommentsResponseErrors').innerHTML = event.message;
+                    }
+                },
+                {escape: false, buffer: false}
+            );
+        }
 
-                                for (var i = 0; i < result.length; i++) {
-                                    var utcSeconds = result[i].COMMENT_DT__c;
-                                    var commentDate = new Date(utcSeconds);
-                                    commentDate =
-                                        commentDate.getMonth() +
-                                        1 +
-                                        '/' +
-                                        commentDate.getDate() +
-                                        '/' +
-                                        commentDate.getFullYear();
-                                    if (result[i].AUTHOR__c == null) {
-                                        result[i].AUTHOR__c = '--';
-                                    }
-                                    html +=
-                                        '' +
-                                        "<div class='comments-panel'>" +
-                                        "<div class='comments-header'>" +
-                                        '<h4>' +
-                                        result[i].AUTHOR__c +
-                                        '</h4>' +
-                                        "<span class='comments-header-date'>" +
-                                        '&nbsp;&nbsp;-&nbsp;&nbsp;' +
-                                        commentDate +
-                                        '</span>' +
-                                        '</div>' +
-                                        "<div class='comments-main-comment'" +
-                                        "id='ps_comments_main'>" +
-                                        result[i].COMMENTS__c +
-                                        '</div>' +
-                                        '</div>' +
-                                        "<hr class='comments-hr'/>";
-                                }
+        function regenerateCommentTable() {
+            /**
+             *  Comments table
+             */
+            const commentsList = commentData ?? [];
 
-                                document.getElementById('ps_guest_access_section').innerHTML = html;
-                                cleanUndefinedFields('ps_guest_access_section');
-                                guestAccessLoaded = true;
-                            } else {
-                                document.getElementById('psGuestAccessResponseErrors').innerHTML =
-                                    'No guest access data found for {!theContact.Preferred_First_Name__c}.';
-                                guestAccessLoaded = true;
-                            }
-                        }
-                    },
-                    {buffer: false, escape: true, timeout: 120000}
-                );
+            if (commentsList.length > 0) {
+                /**
+                 *  <div>
+                 *      <div class="comments-panel">
+                 *          <div class="comments-header">
+                 *              <h4>
+                 *                  <a> USER'S NAME </a>
+                 *              </h4>
+                 *              <span class="comments-header-date">
+                 *                  COMMENT DATE
+                 *              </span>
+                 *          </div>
+                 *          <div class="comments-main-comment">
+                 *              COMMENTS
+                 *          </div>
+                 *      </div>
+                 *      <hr class='comments-hr'/>
+                 *      ...
+                 *  </div>
+                 */
+                const divWrap = document.createElement('div');
+                divWrap.style.whiteSpace = 'pre-wrap';
+
+                /**
+                 * Add each class to the table
+                 */
+                for (const cmt of commentsList) {
+                    const commentsPanel = document.createElement('div');
+                    divWrap.appendChild(commentsPanel);
+                    commentsPanel.classList.add('comments-panel');
+
+                    // Header
+                    const commentsHeader = document.createElement('div');
+                    commentsPanel.appendChild(commentsHeader);
+                    commentsHeader.classList.add('comments-header');
+
+                    // User's name (a link if we have their user id)
+                    const nameH4 = document.createElement('h4');
+                    commentsHeader.appendChild(nameH4);
+                    if (cmt.authorUserId != null) {
+                        const authorAElem = document.createElement('a');
+                        nameH4.appendChild(authorAElem);
+                        authorAElem.href = `/_ui/core/userprofile/UserProfilePage?u=${cmt.authorUserId}&tab=sfdc.ProfilePlatformFeed`;
+                        authorAElem.target = '_blank';
+                        authorAElem.appendChild(document.createTextNode(cmt.authorName));
+                    } else {
+                        nameH4.appendChild(document.createTextNode(cmt.authorName));
+                    }
+
+                    // Date time
+                    const dateSpanElem = document.createElement('span');
+                    commentsHeader.appendChild(dateSpanElem);
+                    dateSpanElem.classList.add('comments-header-date');
+                    let commentDate = new Date(cmt.commentDt);
+                    let commentDateStr = `${
+                        commentDate.getMonth() + 1
+                    }/${commentDate.getDate()}/${commentDate.getFullYear()}`;
+                    dateSpanElem.appendChild(document.createTextNode(`\u00A0\u00A0-\u00A0\u00A0${commentDateStr}`));
+
+                    // Main comments
+                    const commentMain = document.createElement('div');
+                    commentsPanel.appendChild(commentMain);
+                    commentMain.classList.add('comments-main-comment');
+                    commentMain.appendChild(document.createTextNode(cmt.comment));
+
+                    // Horizontal line for formatting
+                    const horzLine = document.createElement('hr');
+                    divWrap.appendChild(horzLine);
+                    horzLine.classList.add('comments-hr');
+                }
+
+                /**
+                 * Clear existing and add to DOM
+                 */
+                document.getElementById('ps_comments_section').innerHTML = '';
+                document.getElementById('ps_comments_section').appendChild(divWrap);
+            } else {
+                document.getElementById('ps_comments_section').innerHTML =
+                    'No comments found for {!theContact.Preferred_First_Name__c}.';
             }
+        }
+
+        // Method to load the guest access list.
+        function getGuestAccess() {
+            // Start loading icon
+            setAsLoadingIcon(document.getElementById('psGuestAccessResponseErrors'));
+
+            // Call remote action
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.StudentProfileController.getGuestAccess}',
+                '{!theContact.EMPLID__c}',
+                (result, event) => {
+                    if (event.status) {
+                        document.getElementById('psGuestAccessResponseErrors').innerHTML = '';
+                        const guestAccessList = result ?? [];
+
+                        if (guestAccessList.length > 0) {
+                            document.getElementById('psGuestAccessResponseErrors').style.display = 'none';
+
+                            const guestAccessListElem = document.createElement('div');
+
+                            // Add each guest access
+                            for (const commentWrapper of guestAccessList) {
+                                /**
+                                 * <div class="comments-panel">
+                                 *  <div class="comments-header">
+                                 *      <h4>AUTHOR</h4>
+                                 *      <span class="comments-header-date">
+                                 *
+                                 *      </span>
+                                 *  </div>
+                                 * </div>
+                                 */
+                                const commentsPanelDiv = document.createElement('div');
+                                guestAccessListElem.appendChild(commentsPanelDiv);
+                                commentsPanelDiv.classList.add('comments-panel');
+
+                                const commentsHeaderDiv = document.createElement('div');
+                                commentsPanelDiv.appendChild(commentsHeaderDiv);
+                                commentsHeaderDiv.classList.add('comments-header');
+
+                                // Add author
+                                const commentsHeaderAuthor = document.createElement('h4');
+                                commentsHeaderDiv.appendChild(commentsHeaderAuthor);
+                                commentsHeaderAuthor.appendChild(document.createTextNode(commentWrapper.author));
+
+                                // Spacer hyphen
+                                commentsHeaderDiv.appendChild(document.createTextNode('\u00A0\u00A0-\u00A0\u00A0'));
+
+                                // Add date
+                                const commentsHeaderDate = document.createElement('span');
+                                commentsHeaderDiv.appendChild(commentsHeaderDate);
+                                commentsHeaderDate.classList.add('comments-header-date');
+                                let commentDate = new Date(commentWrapper.commentTimestamp);
+                                let commentDateStr =
+                                    commentDate.getMonth() +
+                                    1 +
+                                    '/' +
+                                    commentDate.getDate() +
+                                    '/' +
+                                    commentDate.getFullYear();
+                                commentsHeaderDate.appendChild(document.createTextNode(commentDateStr));
+
+                                // Main comment content
+                                const commentMainDiv = document.createElement('div');
+                                commentsPanelDiv.appendChild(commentMainDiv);
+                                commentMainDiv.classList.add('comments-main-comment');
+                                commentMainDiv.appendChild(document.createTextNode(commentWrapper.comment));
+
+                                // horizontal line
+                                const guestAccessHr = document.createElement('hr');
+                                guestAccessListElem.appendChild(guestAccessHr);
+                                guestAccessHr.classList.add('comments-hr');
+                            }
+
+                            document.getElementById('ps_guest_access_section').innerHTML = '';
+                            document.getElementById('ps_guest_access_section').appendChild(guestAccessListElem);
+                        } else {
+                            document.getElementById('psGuestAccessResponseErrors').innerHTML =
+                                'No guest access data found for {!theContact.Preferred_First_Name__c}.';
+                        }
+                    } else if (event.type === 'exception') {
+                        document.getElementById('psGuestAccessResponseErrors').innerHTML =
+                            event.message + '<br/>\n<pre>' + event.where + '</pre>';
+                    } else {
+                        document.getElementById('psGuestAccessResponseErrors').innerHTML = event.message;
+                    }
+                },
+                {escape: false, buffer: false}
+            );
         }
 
         /**
@@ -6102,6 +6119,7 @@
          */
 
         function loadUGIndicatorTab() {
+            // regenerateAsrInfoTable(); // this is loaded by the classes tab logic (since it is all class data)
             getGeneralIndicators();
             getTranscripts();
             if ('{!theContact.Average_MyASU_Cohort__c}' == '') {
@@ -6113,115 +6131,163 @@
             }
         }
 
+        // Method to generate and insert ASR table (on the UGRAD Indicator tab) based on class data
+        // called after the class data is loaded
+        function regenerateAsrInfoTable() {
+            /**
+             *  Only classes (both dropped and enrolled) that have an ASR associated with them
+             */
+            const classesWithAsrs = Object.keys(classesData)
+                .reduce((prev, cur) => {
+                    return prev.concat(classesData[cur].enrolledClasses).concat(classesData[cur].droppedClasses);
+                }, [])
+                .filter((v) => v.asr);
+
+            if (classesWithAsrs.length > 0) {
+                /**
+                 *
+                 *  <table class="table table-striped table-bordered">
+                 *      <thead>
+                 *          <tr>
+                 *              <th scope="col">Class</th>
+                 *              ...
+                 *          </tr>
+                 *      </thead>
+                 *      <tbody>
+                 *          <tr>
+                 *              <td></td>
+                 *              ...
+                 *          </tr>
+                 *          ...
+                 *      </tbody>
+                 *  </table>
+                 */
+                const tableElem = document.createElement('table');
+                tableElem.classList.add('table');
+                tableElem.classList.add('table-striped');
+                tableElem.classList.add('table-bordered');
+                tableElem.classList.add('table-respect-newline');
+                const theadElem = document.createElement('thead');
+                tableElem.appendChild(theadElem);
+                let trElem, tdElem, thElem, textElem;
+                trElem = document.createElement('tr');
+                theadElem.appendChild(trElem);
+                trElem.style.cursor = 'pointer';
+
+                /**
+                 * Add all the headers for the table
+                 */
+                const headers = [
+                    {label: 'Class', fieldName: 'classNumber'},
+                    {label: 'Course', fieldName: 'catalogNumber'},
+                    {label: 'Title', fieldName: 'classTitle'},
+                    {label: 'Session', fieldName: 'session'},
+                    {label: 'ASR Rpt No', fieldName: 'asrRptNo'},
+                    {label: 'ASR Grade', fieldName: 'asrGrade'},
+                    {label: 'Enrolled', fieldName: 'enrolled'},
+                    {label: 'Reason', fieldName: 'asrReason'},
+                    {label: 'Action', fieldName: 'asrAction'},
+                    {label: 'Comment', fieldName: 'asrComment'},
+                ];
+                for (const hd of headers) {
+                    // <th>
+                    thElem = document.createElement('th');
+                    thElem.scope = 'col';
+
+                    // add label
+                    thElem.appendChild(document.createTextNode(hd.label));
+
+                    // </th>
+                    trElem.appendChild(thElem);
+                }
+
+                const tbodyElem = document.createElement('tbody');
+                tbodyElem.style.fontWeight = 'normal';
+                tableElem.appendChild(tbodyElem);
+
+                /**
+                 * Add each ASR to the table
+                 */
+                for (const cs of classesWithAsrs) {
+                    for (const asr of cs.asrList ?? []) {
+                        trElem = document.createElement('tr');
+                        tbodyElem.appendChild(trElem);
+
+                        // Class Number
+                        tdElem = document.createElement('td');
+                        tdElem.appendChild(document.createTextNode(cs.classNumber));
+                        trElem.appendChild(tdElem);
+
+                        // Course
+                        tdElem = document.createElement('td');
+                        tdElem.appendChild(document.createTextNode(cs.catalogNumber));
+                        trElem.appendChild(tdElem);
+
+                        // Title
+                        tdElem = document.createElement('td');
+                        tdElem.appendChild(document.createTextNode(cs.classTitle));
+                        trElem.appendChild(tdElem);
+
+                        // Session
+                        tdElem = document.createElement('td');
+                        tdElem.appendChild(document.createTextNode(cs.session));
+                        trElem.appendChild(tdElem);
+
+                        // ASR Rpt No
+                        tdElem = document.createElement('td');
+                        tdElem.appendChild(document.createTextNode(asr.asrRptNo));
+                        trElem.appendChild(tdElem);
+
+                        // ASR Grade
+                        tdElem = document.createElement('td');
+                        tdElem.appendChild(document.createTextNode(asr.asrGrade));
+                        trElem.appendChild(tdElem);
+
+                        // Enrolled
+                        tdElem = document.createElement('td');
+                        if (cs.enrolled) {
+                            tdElem.appendChild(document.createTextNode('Y'));
+                        } else {
+                            tdElem.appendChild(document.createTextNode('N'));
+                        }
+                        trElem.appendChild(tdElem);
+
+                        // Reason
+                        tdElem = document.createElement('td');
+                        tdElem.appendChild(document.createTextNode(asr.asrReason));
+                        trElem.appendChild(tdElem);
+
+                        // Action
+                        tdElem = document.createElement('td');
+                        tdElem.appendChild(document.createTextNode(asr.asrAction));
+                        trElem.appendChild(tdElem);
+
+                        // Comment
+                        tdElem = document.createElement('td');
+                        tdElem.appendChild(document.createTextNode(asr.asrComment));
+                        trElem.appendChild(tdElem);
+                    }
+                }
+
+                /**
+                 * Clear existing and add to DOM
+                 */
+                document.getElementById('sr_asr').innerHTML = "<span style='color:red'>" + classesWithAsrs.length;
+                document.getElementById('sr_asr_info_tr').style.display = 'table-row';
+                document.getElementById('sr_asr_info_table_wrapper').innerHTML = '';
+                document.getElementById('sr_asr_info_table_wrapper').appendChild(tableElem);
+            } else {
+                document.getElementById('sr_asr').innerHTML = "<span style='color:black'>" + '--';
+                document.getElementById('sr_asr_info_tr').style.display = 'none';
+                document.getElementById('sr_asr_info_table_wrapper').innerHTML = '';
+            }
+        }
+
         // Method to load the Undergraduate Indicators tab
         function getGeneralIndicators() {
             if (!indicatorTabLoaded) {
                 var errorHtml = '';
                 var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
-
-                var asrInformationQuery =
-                    'SELECT ACAD_CAREER__c, ASU_GRADE_INST_LST__c, ASU_GRADE_RSN_LIST__c, ' +
-                    'CLASS_NBR__c, COMMENT1__c, COURSE_SQC__c, COURSE_TITLE__c, CRSE_GRADE_INPUT__c, ' +
-                    'EMPLID__c, ENROLLED__c, INSTITUTION__c, SEQNUM__c, SESSION_CODE__c ' +
-                    'FROM PS_ASU_SR_ASR_INDV__x ' +
-                    "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
-                    "AND STRM__c = '{!currentTerm}'";
-                conn.query(
-                    asrInformationQuery,
-                    function (err, response) {
-                        if (err) {
-                            errorHtml += err;
-                            document.getElementById('sr_asr_errors').className = '';
-                            document.getElementById('sr_asr_errors').innerHTML =
-                                'An error has occured trying to load the data for this object.';
-                        } else {
-                            result = response.records.filter((element) => {
-                                return (
-                                    element.CRSE_GRADE_INPUT__c != null ||
-                                    element.COMMENT1__c != null ||
-                                    element.ASU_GRADE_RSN_LIST__c != null ||
-                                    element.ASU_GRADE_INST_LST__c != null
-                                );
-                            });
-                            if (result?.length > 0) {
-                                var html =
-                                    '' +
-                                    '<thead>' +
-                                    '<th>Class</th>' +
-                                    '<th>Course</th>' +
-                                    '<th>Title</th>' +
-                                    '<th>Session</th>' +
-                                    '<th>ASR Rpt No</th>' +
-                                    '<th>ASR Grade</th>' +
-                                    '<th>Enrolled</th>' +
-                                    '<th>Reason</th>' +
-                                    '<th>Action</th>' +
-                                    '<th>Comment</th>' +
-                                    '</thead>' +
-                                    '</table>' +
-                                    "<tbody style='font-weight:normal;'>";
-
-                                for (var i = 0; i < result.length; i++) {
-                                    if (result[i].CRSE_GRADE_INPUT__c === null) result[i].CRSE_GRADE_INPUT__c = '--';
-                                    if (result[i].COMMENT1__c === null) result[i].COMMENT1__c = '--';
-                                    if (result[i].ASU_GRADE_RSN_LIST__c === null)
-                                        result[i].ASU_GRADE_RSN_LIST__c = '--';
-                                    if (result[i].ASU_GRADE_INST_LST__c === null)
-                                        result[i].ASU_GRADE_INST_LST__c = '--';
-
-                                    html +=
-                                        '<tr>' +
-                                        '<td>' +
-                                        Math.floor(result[i].CLASS_NBR__c) +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].COURSE_SQC__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].COURSE_TITLE__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].SESSION_CODE__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        Math.floor(result[i].SEQNUM__c) +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].CRSE_GRADE_INPUT__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].ENROLLED__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].ASU_GRADE_RSN_LIST__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].ASU_GRADE_INST_LST__c +
-                                        '</td>' +
-                                        '<td>' +
-                                        result[i].COMMENT1__c +
-                                        '</td>' +
-                                        '</tr>';
-                                }
-
-                                html += '</tbody>';
-
-                                document.getElementById('sr_asr_errors').innerHTML = '';
-                                document.getElementById('sr_asr').innerHTML =
-                                    "<span style='color:red'>" + result.length;
-                                document.getElementById('sr_asr_info_table').innerHTML = html;
-                                document.getElementById('sr_asr_info_tr').style.display = 'table-row';
-                                cleanUndefinedFields('sr_asr_info_tr');
-                            } else {
-                                document.getElementById('sr_asr_errors').innerHTML = '';
-                                document.getElementById('sr_asr').innerHTML = "<span style='color:black'>" + '--';
-                                document.getElementById('sr_asr_info_table').style.display = 'none';
-                                document.getElementById('sr_asr_info_tr').style.display = 'none';
-                            }
-                        }
-                    },
-                    {buffer: false, escape: true, timeout: 120000}
-                );
 
                 var enrollmentHoldsQuery =
                     'SELECT SI_Instructions__c, SI_Reason__c, SI_Code__c, SI_Start_Term__c, SI_Start_Term__r.Name ' +
@@ -6300,10 +6366,6 @@
                     {buffer: false, escape: true, timeout: 120000}
                 );
 
-                var currentTermValue = '{!currentTerm}';
-                if (currentTermValue.slice(-1) != '1') {
-                    document.getElementById('futureEnrolledHours').style.display = 'none';
-                }
                 cleanUndefinedFields('UGgeneralIndicators');
             }
         }
@@ -6434,295 +6496,214 @@
          */
 
         function loadCareAndConcernTab() {
-            getAcademicIntegrityData();
+            // regenerateAcademicIntegrityTable(); // this is loaded by the classes tab logic (since it is all class data)
             getEmergencyContacts();
             getJudicialData();
         }
 
-        function getAcademicIntegrityData() {
-            if (academicIntegrityData) return;
-            document.getElementById('academic-integrity-errors').innerHTML =
-                "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+        // Method to generate and insert academic integrity class table (on the Care and concern tab) based on class data
+        // called after the class data is loaded
+        function regenerateAcademicIntegrityTable() {
+            /**
+             *  Classes with Academic Integrity Issues
+             */
+            const filteredAcadIntClasses = Object.keys(classesData)
+                .reduce((prev, cur) => {
+                    return prev.concat(classesData[cur].enrolledClasses).concat(classesData[cur].droppedClasses);
+                }, [])
+                .filter((v) => v.hasAcademicIntegrity)
+                .sort((a, b) => {
+                    if (acadIntClassSortField == null) return 0;
 
-            var academicIntegrityQuery =
-                'SELECT ACAD_CAREER__c, ASU_SCH_DATES__c, AUDIT_GRADE_BASIS__c, CATALOG_NBR__c, ' +
-                'CLASS_DESCR__c, CLASS_NBR__c, CONFIRMATION_OF_PARTICIPATION__c, CRSE_ID__c, CRSE_GRADE_INPUT__c, ' +
-                'CRSE_GRADE_OFF__c, CUM_GPA__c, CUR_GPA__c, DisplayUrl, EARN_CREDIT__c, EMPLID__c, ENRL_STATUS_REASON__c, ' +
-                'ExternalId, FT_FULL_NAME__c, Id, SCH_DAILY_TIME__c, SCH_HTML_DAY1__c, SESSION_CODE__c, ' +
-                'SSR_CLSTOPIC_DESCR__c, SSR_MTG_LOC_LONG__c, STDNT_ENRL_STATUS__c, STRM__c,  ' +
-                'SUBJECT__c, TERM_DESCR30__c, UNT_TAKEN__c, VALID_ATTEMPT__c ' +
-                'FROM PS_ASU_SP_CLASS_V__x  ' +
-                "WHERE EMPLID__c = '{!theContact.EMPLID__c}' " +
-                "AND AUDIT_GRADE_BASIS__c != 'Y' " +
-                "AND CRSE_GRADE_INPUT__c LIKE '%X%' " +
-                'ORDER BY STRM__c DESC, CLASS_NBR__c ASC';
-            var asrQuery =
-                'SELECT CLASS_NBR__c, SESSION_CODE__c, STRM__c ' +
-                'FROM PS_ASU_SP_ASR_CLSV__x ' +
-                "WHERE EMPLID__c = '{!theContact.EMPLID__c}'";
-            var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
-            conn.query(academicIntegrityQuery, function (err, response) {
-                if (err) {
-                    document.getElementById('academic-integrity-errors').innerHTML = err;
-                } else {
-                    conn.query(asrQuery, function (errorAsr, responseAsr) {
-                        if (errorAsr) {
-                            document.getElementById('academic-integrity-errors').innerHTML = errorAsr;
-                        } else {
-                            let academicIntegrityResponse = response.records;
-                            academicIntegrityResponse.forEach(function (record) {
-                                delete record.attributes;
-                            });
-                            academicIntegrityResponse = JSON.stringify(academicIntegrityResponse);
+                    let aValue = a[acadIntClassSortField];
+                    let bValue = b[acadIntClassSortField];
 
-                            let asrResponse = responseAsr.records;
-                            asrResponse.forEach(function (record) {
-                                delete record.attributes;
-                            });
-                            asrResponse = JSON.stringify(asrResponse);
+                    // -- should come after Z, and ~ > Z in ASCII
+                    if (aValue === '--') aValue = '~';
+                    if (bValue === '--') bValue = '~';
 
-                            Visualforce.remoting.Manager.invokeAction(
-                                '{!$RemoteAction.StudentProfileController.getAcademicIntegrityData}',
-                                academicIntegrityResponse,
-                                asrResponse,
-                                function (result, event) {
-                                    if (event.status) {
-                                        document.getElementById('academic-integrity-errors').innerHTML = '';
-                                        academicIntegrityData = result.academicIntegrityData;
-
-                                        if (academicIntegrityData?.length > 0) {
-                                            document.getElementById('academic-integrity-container').style.display =
-                                                'initial';
-                                            var html =
-                                                '' +
-                                                "<div class='table-responsive'>" +
-                                                "<table id='academic_integrity_data_table' class='table table-striped table-bordered'> " +
-                                                '<thead>' +
-                                                '<tr style="cursor:pointer">' +
-                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Term\')">Term</th>' +
-                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Class\')">Class</th>' +
-                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Course\')">Course</th>' +
-                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Title\')">Title</th>' +
-                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Units\')">Units</th>' +
-                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Instructor\')">Instructor(s)</th>' +
-                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Days\')">Days</th>' +
-                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Times\')">Times</th>' +
-                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Dates\')">Dates</th>' +
-                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Location\')">Location</th>' +
-                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Transcript Grade\')">Transcript Grade</th>' +
-                                                '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Academic Integrity Grade\')">Academic Integrity Grade</th>' +
-                                                '<th scope="col">ASR</th>' +
-                                                '</tr>' +
-                                                '</thead>' +
-                                                '<tbody>';
-
-                                            for (var i = 0; i < academicIntegrityData.length; i++) {
-                                                var asrValue = '--';
-                                                html +=
-                                                    '' +
-                                                    '<tr>' +
-                                                    '<td data-header="Term">' +
-                                                    academicIntegrityData[i].TERM_DESCR30__c +
-                                                    '</td>' +
-                                                    '<td data-header="Class">' +
-                                                    Math.floor(academicIntegrityData[i].CLASS_NBR__c) +
-                                                    '</td>' +
-                                                    '<td data-header="Course">' +
-                                                    academicIntegrityData[i].SUBJECT__c +
-                                                    ' ' +
-                                                    academicIntegrityData[i].CATALOG_NBR__c +
-                                                    '</td>' +
-                                                    '<td data-header="Title">' +
-                                                    academicIntegrityData[i].CLASS_DESCR__c +
-                                                    '</td>' +
-                                                    '<td data-header="Units">' +
-                                                    academicIntegrityData[i].UNT_TAKEN__c +
-                                                    '</td>' +
-                                                    '<td data-header="Instructor(s)">' +
-                                                    academicIntegrityData[i].FT_FULL_NAME__c +
-                                                    '</td>' +
-                                                    '<td data-header="Days">' +
-                                                    academicIntegrityData[i].SCH_HTML_DAY1__c +
-                                                    '</td>' +
-                                                    '<td data-header="Times">' +
-                                                    academicIntegrityData[i].SCH_DAILY_TIME__c +
-                                                    '</td>' +
-                                                    '<td data-header="Dates">' +
-                                                    academicIntegrityData[i].ASU_SCH_DATES__c +
-                                                    '</td>' +
-                                                    '<td data-header="Location">' +
-                                                    academicIntegrityData[i].SSR_MTG_LOC_LONG__c +
-                                                    '</td>' +
-                                                    '<td data-header="Transcript Grade">' +
-                                                    academicIntegrityData[i].CRSE_GRADE_OFF__c +
-                                                    '</td>' +
-                                                    '<td data-header="Academic Integrity Grade">' +
-                                                    academicIntegrityData[i].CRSE_GRADE_INPUT__c +
-                                                    '</td>';
-                                                if (
-                                                    result.asrClasses?.indexOf(
-                                                        academicIntegrityData[i].STRM__c +
-                                                            '|' +
-                                                            academicIntegrityData[i].SESSION_CODE__c +
-                                                            '|' +
-                                                            academicIntegrityData[i].CLASS_NBR__c
-                                                    ) > -1
-                                                ) {
-                                                    if (String(academicIntegrityData[i].STRM__c) === '{!currentTerm}') {
-                                                        // ASR link opens Undergraduate Indicators tab when clicked, but only if current term
-                                                        html +=
-                                                            '<td data-header="ASR">' +
-                                                            '<a href="#" onclick="document.getElementById(\x27ugIndicatorsLink\x27).click(); return false;">Y</a>' +
-                                                            '</td>';
-                                                    } else {
-                                                        html += '<td data-header="ASR">Y</td>';
-                                                    }
-                                                } else {
-                                                    html += '<td data-header="ASR">--</td>';
-                                                }
-                                                html += '</tr>';
-                                            }
-                                            html += '</tbody></table></div>';
-
-                                            document.getElementById('academic-integrity-container').innerHTML = html;
-                                            cleanUndefinedFields('academic-integrity-container');
-                                            asrResponseTable = result.asrClasses;
-                                        } else {
-                                            document.getElementById('academic-integrity-errors').innerHTML =
-                                                'No academic integrity data found for {!theContact.Preferred_First_Name__c}.';
-                                        }
-                                    } else if (event.type === 'exception') {
-                                        document.getElementById('academic-integrity-errors').innerHTML =
-                                            event.message + '<br/>\n<pre>' + event.where + '</pre>';
-                                    } else {
-                                        document.getElementById('academic-integrity-errors').innerHTML = event.message;
-                                    }
-                                },
-                                {buffer: false, escape: true, timeout: 120000}
-                            );
-                        }
-                    });
-                }
-            });
-        }
-
-        var ascDirAcademicIntegrityData = true;
-        var currSortAcademicIntegrityData = 'Term';
-
-        function sortAcademicIntegrityDataOnClick(name) {
-            if (name == currSortAcademicIntegrityData) {
-                ascDirAcademicIntegrityData = !ascDirAcademicIntegrityData;
-            } else {
-                ascDirAcademicIntegrityData = true;
-                currSortAcademicIntegrityData = name;
-            }
-            sortAcademicIntegrityDataList(name, ascDirAcademicIntegrityData);
-        }
-
-        function sortAcademicIntegrityDataList(paramToSort, direction) {
-            var academicIntegrityWrapperJson = JSON.stringify(academicIntegrityWrapper);
-            Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.StudentProfileController.sortAcademicIntegrityData}',
-                paramToSort,
-                academicIntegrityWrapperJson,
-                direction,
-                function (result, event) {
-                    if (event.status) {
-                        document.getElementById('academic-integrity-container').style.display = 'initial';
-
-                        var html =
-                            '' +
-                            "<div class='table-responsive'>" +
-                            "<table id='academic_integrity_data_table' class='table table-striped table-bordered'> " +
-                            '<thead>' +
-                            '<tr style="cursor:pointer">' +
-                            '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Term\')">Term</th>' +
-                            '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Class\')">Class</th>' +
-                            '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Course\')">Course</th>' +
-                            '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Title\')">Title</th>' +
-                            '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Units\')">Units</th>' +
-                            '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Instructor\')">Instructor(s)</th>' +
-                            '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Days\')">Days</th>' +
-                            '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Times\')">Times</th>' +
-                            '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Dates\')">Dates</th>' +
-                            '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Location\')">Location</th>' +
-                            '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Transcript Grade\')">Transcript Grade</th>' +
-                            '<th scope="col" onclick="sortAcademicIntegrityDataOnClick(\'Academic Integrity Grade\')">Academic Integrity Grade</th>' +
-                            '<th scope="col">ASR</th>' +
-                            '</tr>' +
-                            '</thead>' +
-                            '<tbody>';
-
-                        for (var i = 0; i < result.length; i++) {
-                            var asrValue = '--';
-                            html +=
-                                '' +
-                                '<tr>' +
-                                '<td data-header="Term">' +
-                                result[i].academicIntegrityDataItem.TERM_DESCR30__c +
-                                '</td>' +
-                                '<td data-header="Class">' +
-                                Math.floor(result[i].academicIntegrityDataItem.CLASS_NBR__c) +
-                                '</td>' +
-                                '<td data-header="Course">' +
-                                result[i].academicIntegrityDataItem.SUBJECT__c +
-                                ' ' +
-                                result[i].academicIntegrityDataItem.CATALOG_NBR__c +
-                                '</td>' +
-                                '<td data-header="Title">' +
-                                result[i].academicIntegrityDataItem.CLASS_DESCR__c +
-                                '</td>' +
-                                '<td data-header="Units">' +
-                                result[i].academicIntegrityDataItem.UNT_TAKEN__c +
-                                '</td>' +
-                                '<td data-header="Instructor(s)">' +
-                                result[i].academicIntegrityDataItem.FT_FULL_NAME__c +
-                                '</td>' +
-                                '<td data-header="Days">' +
-                                result[i].academicIntegrityDataItem.SCH_HTML_DAY1__c +
-                                '</td>' +
-                                '<td data-header="Times">' +
-                                result[i].academicIntegrityDataItem.SCH_DAILY_TIME__c +
-                                '</td>' +
-                                '<td data-header="Dates">' +
-                                result[i].academicIntegrityDataItem.ASU_SCH_DATES__c +
-                                '</td>' +
-                                '<td data-header="Location">' +
-                                result[i].academicIntegrityDataItem.SSR_MTG_LOC_LONG__c +
-                                '</td>' +
-                                '<td data-header="Transcript Grade">' +
-                                result[i].academicIntegrityDataItem.CRSE_GRADE_OFF__c +
-                                '</td>' +
-                                '<td data-header="Academic Integrity Grade">' +
-                                result[i].academicIntegrityDataItem.CRSE_GRADE_INPUT__c +
-                                '</td>';
-                            if (
-                                asrResponseTable?.indexOf(
-                                    result[i].academicIntegrityDataItem.STRM__c +
-                                        '|' +
-                                        result[i].academicIntegrityDataItem.SESSION_CODE__c +
-                                        '|' +
-                                        result[i].academicIntegrityDataItem.CLASS_NBR__c
-                                ) > -1
-                            ) {
-                                // ASR link opens Undergraduate Indicators tab when clicked
-                                html +=
-                                    '<td data-header="ASR">' +
-                                    '<a href="#" onclick="document.getElementById(\x27ugIndicatorsLink\x27).click(); return false;">Y</a>' +
-                                    '</td>';
-                            } else {
-                                html += '<td data-header="ASR">--</td>';
-                            }
-                            html += '</tr>';
-                        }
-                        html += '</tbody></table></div>';
-
-                        document.getElementById('academic-integrity-container').innerHTML = html;
-                        cleanUndefinedFields('academic-integrity-container');
+                    if (aValue < bValue) {
+                        return -1 * acadIntClassSortDirection;
+                    } else {
+                        return 1 * acadIntClassSortDirection;
                     }
-                },
-                {buffer: false, escape: true, timeout: 120000}
-            );
+                });
+
+            if (filteredAcadIntClasses.length > 0) {
+                /**
+                 *  <div class="table-responsive">
+                 *      <table id="academic_integrity_data_table" class="table table-striped table-bordered">
+                 *          <thead>
+                 *              <tr style="cursor:pointer">
+                 *                  <th scope="col" onclick=[sortAsrClasses] data-field="term">Term</th>
+                 *                  ...
+                 *              </tr>
+                 *          </thead>
+                 *          <tbody>
+                 *              <tr>
+                 *                  <td></td>
+                 *                  ...
+                 *              </tr>
+                 *              ...
+                 *          </tbody>
+                 *      </table>
+                 *  </div>
+                 */
+                const tableDivWrap = document.createElement('div');
+                tableDivWrap.classList.add('table-responsive');
+                const tableElem = document.createElement('table');
+                tableDivWrap.appendChild(tableElem);
+                tableElem.id = 'academic_integrity_data_table';
+                tableElem.classList.add('table');
+                tableElem.classList.add('table-striped');
+                tableElem.classList.add('table-bordered');
+                tableElem.classList.add('table-respect-newline');
+                const theadElem = document.createElement('thead');
+                tableElem.appendChild(theadElem);
+                let trElem, tdElem, thElem, textElem;
+                trElem = document.createElement('tr');
+                theadElem.appendChild(trElem);
+                trElem.style.cursor = 'pointer';
+
+                /**
+                 * Add all the headers for the table
+                 */
+                const headers = [
+                    {label: 'Term', fieldName: 'termCode'},
+                    {label: 'Class', fieldName: 'classNumber'},
+                    {label: 'Course', fieldName: 'catalogNumber'},
+                    {label: 'Title', fieldName: 'classTitle'},
+                    {label: 'Units', fieldName: 'units'},
+                    {label: 'Instructor(s)', fieldName: 'instructor'},
+                    {label: 'Days', fieldName: 'days'},
+                    {label: 'Times', fieldName: 'times'},
+                    {label: 'Dates', fieldName: 'dates'},
+                    {label: 'Location', fieldName: 'location'},
+                    {label: 'Transcript Grade', fieldName: 'grade'},
+                    {label: 'Academic Integrity Grade', fieldName: 'academicIntegrityGrade'},
+                    {label: 'ASR', fieldName: 'asr'},
+                ];
+                for (const hd of headers) {
+                    // <th>
+                    thElem = document.createElement('th');
+                    thElem.scope = 'col';
+                    thElem.dataset.field = hd.fieldName;
+                    // listener to allow sorting
+                    thElem.addEventListener('click', (evnt) => {
+                        if (acadIntClassSortField === evnt.target.dataset['field']) {
+                            acadIntClassSortDirection = -1 * acadIntClassSortDirection;
+                        } else {
+                            acadIntClassSortField = evnt.target.dataset['field'];
+                            acadIntClassSortDirection = 1;
+                        }
+                        regenerateClassList();
+                    });
+
+                    // add label
+                    thElem.appendChild(document.createTextNode(hd.label));
+
+                    // </th>
+                    trElem.appendChild(thElem);
+                }
+
+                const tbodyElem = document.createElement('tbody');
+                tableElem.appendChild(tbodyElem);
+
+                /**
+                 * Add each class to the table
+                 */
+                for (const cs of filteredAcadIntClasses) {
+                    trElem = document.createElement('tr');
+                    tbodyElem.appendChild(trElem);
+
+                    // Term Name
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.termName));
+                    tdElem.style.fontWeight = 'bold';
+                    trElem.appendChild(tdElem);
+
+                    // Class
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.classNumber));
+                    trElem.appendChild(tdElem);
+
+                    // Course
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.catalogNumber));
+                    trElem.appendChild(tdElem);
+
+                    // Title
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.classTitle));
+                    trElem.appendChild(tdElem);
+
+                    // Units
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.units));
+                    trElem.appendChild(tdElem);
+
+                    // Instructors
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.instructor));
+                    trElem.appendChild(tdElem);
+
+                    // Days
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.days));
+                    trElem.appendChild(tdElem);
+
+                    // Times
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.times));
+                    trElem.appendChild(tdElem);
+
+                    // Dates
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.dates));
+                    trElem.appendChild(tdElem);
+
+                    // Location
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.location));
+                    trElem.appendChild(tdElem);
+
+                    // Transcript Grade
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.grade));
+                    trElem.appendChild(tdElem);
+
+                    // Academic Integrity Grade
+                    tdElem = document.createElement('td');
+                    tdElem.appendChild(document.createTextNode(cs.academicIntegrityGrade));
+                    trElem.appendChild(tdElem);
+
+                    // ASR
+                    tdElem = document.createElement('td');
+                    if (cs.asr) {
+                        const aAsrElem = document.createElement('a');
+                        aAsrElem.href = '#';
+                        aAsrElem.addEventListener('click', () => {
+                            document.getElementById('ugIndicatorsLink').click();
+                            return false;
+                        });
+                        aAsrElem.appendChild(document.createTextNode('Y'));
+                        tdElem.appendChild(aAsrElem);
+                    } else {
+                        tdElem.appendChild(document.createTextNode('--'));
+                    }
+                    trElem.appendChild(tdElem);
+                }
+
+                /**
+                 * Clear existing and add to DOM
+                 */
+                document.getElementById('academic-integrity-container').innerHTML = '';
+                document.getElementById('academic-integrity-container').appendChild(tableDivWrap);
+            } else {
+                document.getElementById('academic-integrity-container').innerHTML =
+                    'No academic integrity data found for {!theContact.Preferred_First_Name__c}.';
+            }
+            document.getElementById('academic-integrity-container').style.display = 'initial';
         }
 
         function getEmergencyContacts() {

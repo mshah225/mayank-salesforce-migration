@@ -19,16 +19,8 @@
                                     aria-expanded="true" aria-haspopup="listbox" role="combobox">
                                     <template if:true={selectedTag}>
                                         <div data-key="pilldiv"
-                                            class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left-right"
+                                            class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right"
                                             role="none">
-                                            <span
-                                                class="slds-icon_container slds-icon-standard-account slds-combobox__input-entity-icon"
-                                                title="object">
-                                                <div class="slds-icon slds-icon_small" aria-hidden="true">
-                                                    <lightning-icon icon-name={iconName} size="small"></lightning-icon>
-                                                </div>
-                                                <span class="slds-assistive-text">Record</span>
-                                            </span>
                                             <input type="text"
                                                 class="slds-input slds-combobox__input slds-combobox__input-value widthClass"
                                                 id="Tag-Id" aria-controls="TagList" role="textbox"
@@ -67,23 +59,12 @@
                                                 class="slds-show slds-dropdown slds-dropdown_length-with-icon-5 slds-dropdown_fluid"
                                                 role="listbox">
                                                 <ul class="slds-listbox slds-listbox_vertical" role="presentation">
-                                                    <template if:true={message}>
-
-                                                    </template>
                                                     <template for:each={tagFinalList} for:item="record">
                                                         <li id={record.id} key={record.id} onclick={onTagSelection}
                                                             role="presentation" class="slds-listbox__item">
                                                             <div data-key={record.id} data-name={record.name}
                                                                 class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
                                                                 role="option">
-                                                                <span
-                                                                    class="slds-media__figure slds-listbox__option-icon">
-                                                                    <span class="slds-icon_container">
-                                                                        <lightning-icon icon-name={iconName}
-                                                                            size="small">
-                                                                        </lightning-icon>
-                                                                    </span>
-                                                                </span>
                                                                 <span class="slds-media__body">
                                                                     <span data-key={record.id} data-name={record.name}
                                                                         class="slds-listbox__option-text slds-listbox__option-text_entity">{record.name}
@@ -106,13 +87,14 @@
 
         <div slot="footer" class="leftAllign">
             <template for:each={contactTagList} for:item="eachTag">
+                <span key={eachTag.label}>
                 <!-- Button -->
-                <button style={eachTag.color} key={eachTag} data-title={eachTag.title} data-color={eachTag.color}
-                    data-label={eachTag.label} data-image={eachTag.image} class="test tooltip popup x-icon"
+                <button style={eachTag.color}  data-title={eachTag.title} data-color={eachTag.color}
+                    data-label={eachTag.label} data-image={eachTag.image} data-hasimage={eachTag.hasImage} class="test tooltip popup x-icon"
                     value={eachTag.label} onclick={ModalPopOver} ondblclick={ModalPopUpClose}>
 
                     <!-- Button Image -->
-                    <img src={eachTag.image} class="customIcon" width="20" height="20" style="margin:0px 10px 0px 0px">
+                    <img src={eachTag.image} class="customIcon" width="20" height="20" style="margin:0px 10px 0px 0px" lwc:if={eachTag.hasImage}>
                     {eachTag.label}&nbsp;
 
                     <template if:true={eachTag.benefitLevel}>
@@ -130,7 +112,7 @@
                             <lightning-icon icon-name="utility:clear" size="xx-small" variant="error"
                                 alternative-text="Clear" title="Delete Tag" class="cancelPosition" onclick={openModal}
                                 data-title={eachTag.title} data-color={eachTag.color} data-label={eachTag.label}
-                                data-image={eachTag.image}></lightning-icon>
+                                data-image={eachTag.image} data-hasimage={eachTag.hasImage}></lightning-icon>
 
                             <template lwc:if={isModalOpen}>
                                 <!-- Modal/Popup Box LWC starts here -->
@@ -165,6 +147,7 @@
                         </template>
                     </div>
                 </button>
+                </span>
             </template>
         </div>
         <div slot="footer" class="slds-align_absolute-center">
@@ -172,19 +155,11 @@
                 <section aria-describedby="dialog-body-id-115" aria-labelledby="dialog-heading-id-120"
                     class="slds-popover  slds-popover_medium" role="dialog" data-toggle="popover"
                     style={currentSelectedTag.color}>
-                    <button
-                        class="slds-button slds-button_icon slds-button_icon-small slds-float_right slds-popover__close"
-                        title="Close dialog">
-                        <svg class="slds-button__icon" aria-hidden="true">
-                            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
-                        </svg>
-                        <span class="slds-assistive-text">Close dialog</span>
-                    </button>
                     <div class="slds-popover__body">
                         <div class="slds-media">
                             <div class="slds-media__body">
                                 <header class="slds-popover__header">
-                                    <h2 class="slds-text-heading_small"><span><img src={currentSelectedTag.image}
+                                    <h2 class="slds-text-heading_small"><span lwc:if={currentSelectedTag.hasImage}><img src={currentSelectedTag.image}
                                                 class="customIcon" width="20" height="20"
                                                 style="margin:0px 10px 0px 0px"> </span>{currentSelectedTag.label}</h2>
                                 </header>

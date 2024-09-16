@@ -110,6 +110,8 @@ public class RecordIdHelper {
     }
 
     /*
+     * @deprecated - Use ProfileHelper.getProfileId instead
+     *
      * Returns the desired profile ID.
      *
      * @param String The name of the desired profile.

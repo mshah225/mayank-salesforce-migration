@@ -25,4 +25,19 @@ export default class LightningAwaitLoadBlock extends LightningElement {
         return this._notFoundMessage;
     }
     _notFoundMessage = null;
+
+    @api set iconSize(v) {
+        if (['xx-small', 'x-small', 'small', 'medium', 'large'].includes(String(v).toLowerCase())) {
+            this._iconSize = v;
+        } else {
+            throw TypeError(
+                'Icon size invalid. It should be one of (xx-small, x-small, small, medium, large) but was instead ' +
+                    String(v)
+            );
+        }
+    }
+    get iconSize() {
+        return this._iconSize;
+    }
+    _iconSize = 'small';
 }

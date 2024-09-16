@@ -10,14 +10,25 @@ export function throwBackARenderCycle(fn) {
 /**
  * Convert returned picklist map into array of options for comboboxes
  * @param {Map} optionsMap
+ * @param {Object} config Optional param that can set various optional configs
+ *                  {
+ *                      alphabetize: {Boolean} true if should sort labels in alphabetical order - default is false
+ *                  }
  * @returns label-value array
  */
-export function buildPicklistOptionsArray(optionsMap) {
+export function buildPicklistOptionsArray(optionsMap, config) {
     let optionsList = [];
+
+    if (config == null) config = {};
 
     Object.keys(optionsMap).forEach(function (key) {
         optionsList.push({label: key, value: optionsMap[key]});
     });
+
+    // Sort by alphabetical ordering labels
+    if (config?.alphabetize === true) {
+        optionsList.sort((a, b) => a.label.toLocaleLowerCase().localeCompare(b.label.toLocaleLowerCase()));
+    }
 
     return optionsList;
 }
@@ -30,6 +41,8 @@ export function buildPicklistOptionsArray(optionsMap) {
  *          More than one layer of Proxies makes JSON.stringify unusably slow
  */
 export function cloneObj(obj) {
+    if (obj === null) return null;
+    if (obj === undefined) return undefined;
     return JSON.parse(JSON.stringify(obj));
 }
 

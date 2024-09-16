@@ -87,14 +87,4 @@ public class OrderedMapStringToString {
         }
         return labelValList;
     }
-
-    public class LabelValue {
-        public String label;
-        public String value;
-
-        public LabelValue(String lab, String val) {
-            label = lab;
-            value = val;
-        }
-    }
 }

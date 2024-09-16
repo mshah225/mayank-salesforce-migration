@@ -39,7 +39,7 @@ public without sharing class AdvisorCaseTransferService {
         OrderedMapStringToString labelValueMap = new OrderedMapStringToString();
         // Get all the options for this user (i.e. their PODs, subordinate PODs, and suborindates)
         OrderedMapStringToString userTransferOptionsForUser = getTransferToOptionsByUser(userId, grad);
-        List<OrderedMapStringToString.LabelValue> userOptions = userTransferOptionsForUser.getOrderedList();
+        List<LabelValue> userOptions = userTransferOptionsForUser.getOrderedList();
 
         // First option is the user themself
         labelValueMap.put(userOptions[0].label, userOptions[0].value);

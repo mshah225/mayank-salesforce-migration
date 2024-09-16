@@ -13,17 +13,17 @@
                                 <td>
                                     <template lwc:if={row.href}>
                                         <a href={row.href} onclick={openUserLink} data-userid={row.c__UserId}>
-                                            {row.NAME__c}
+                                            {row.c__UserName}
                                         </a>
                                     </template>
-                                    <template lwc:else> {row.NAME__c} </template>
+                                    <template lwc:else> {row.c__UserName} </template>
                                 </td>
                                 <td>{row.c__Date}</td>
                                 <td>{row.c__PlanName}</td>
                                 <td>{row.c__ProgramName}</td>
                             </tr>
                             <tr key={row.id2}>
-                                <td colspan="4" class="comment">{row.COMMENTS__c}</td>
+                                <td colspan="4" class="comment">{row.c__Comment}</td>
                             </tr>
                         </template>
                     </tbody>

@@ -71,8 +71,11 @@ public class CampaignMemberDispatcher implements TriggerDispatcherInterface {
         cms.updateCampaignMembers(campaignMembersToUpdate);
         cms.clearDataAfter();
 
-        AutoSubscriberService autoSubService = new AutoSubscriberService(newList, 'CampaignMember');
-        autoSubService.processCampaignMemberRecords();
+        SubscriberAutoSubscriptionService autoSubscriptionService = new SubscriberAutoSubscriptionService(
+            newList,
+            'CampaignMember'
+        );
+        autoSubscriptionService.processCampaignMemberRecords();
     }
 
     public void afterUpdate() {

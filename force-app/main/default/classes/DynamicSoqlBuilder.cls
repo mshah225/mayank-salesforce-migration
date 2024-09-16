@@ -50,10 +50,16 @@ public inherited sharing class DynamicSoqlBuilder {
     public DynamicSoqlBuilder(String objectType) {
         this.objectType = objectType;
     }
+    public DynamicSoqlBuilder(Schema.DescribeSObjectResult objectType) {
+        this.objectType = objectType.getName();
+    }
 
     public DynamicSoqlBuilder returnField(String fieldName) {
         fields.add(new DynamicSoqlBuilderField.SimpleField(fieldName));
         return this;
+    }
+    public DynamicSoqlBuilder returnField(Schema.DescribeFieldResult field) {
+        return returnField(field.getName());
     }
     public DynamicSoqlBuilder returnField(DynamicSoqlBuilder subquery) {
         subquery.pluralize(true);
@@ -72,184 +78,352 @@ public inherited sharing class DynamicSoqlBuilder {
         restrictions.add(new DynamicSoqlBuilderRestriction.EqualRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictEqual(Schema.DescribeFieldResult field, String value) {
+        return restrictEqual(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictEqual(String field, Boolean value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.EqualRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictEqual(Schema.DescribeFieldResult field, Boolean value) {
+        return restrictEqual(field.getName(), value);
     }
     public DynamicSoqlBuilder restrictEqual(String field, Decimal value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.EqualRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictEqual(Schema.DescribeFieldResult field, Decimal value) {
+        return restrictEqual(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictEqual(String field, Datetime value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.EqualRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictEqual(Schema.DescribeFieldResult field, Datetime value) {
+        return restrictEqual(field.getName(), value);
     }
     public DynamicSoqlBuilder restrictEqual(String field, Date value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.EqualRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictEqual(Schema.DescribeFieldResult field, Date value) {
+        return restrictEqual(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictEqual(String field, DynamicSoqlBuilderRestriction.Bind value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.EqualRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictEqual(
+        Schema.DescribeFieldResult field,
+        DynamicSoqlBuilderRestriction.Bind value
+    ) {
+        return restrictEqual(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictEqual(String field, DynamicSoqlBuilderRestriction.Keyword value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.EqualRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictEqual(
+        Schema.DescribeFieldResult field,
+        DynamicSoqlBuilderRestriction.Keyword value
+    ) {
+        return restrictEqual(field.getName(), value);
     }
 
     public DynamicSoqlBuilder restrictNotEqual(String field, String value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.NotEqualRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictNotEqual(Schema.DescribeFieldResult field, String value) {
+        return restrictNotEqual(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictNotEqual(String field, Boolean value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.NotEqualRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictNotEqual(Schema.DescribeFieldResult field, Boolean value) {
+        return restrictNotEqual(field.getName(), value);
     }
     public DynamicSoqlBuilder restrictNotEqual(String field, Decimal value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.NotEqualRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictNotEqual(Schema.DescribeFieldResult field, Decimal value) {
+        return restrictNotEqual(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictNotEqual(String field, Datetime value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.NotEqualRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictNotEqual(Schema.DescribeFieldResult field, Datetime value) {
+        return restrictNotEqual(field.getName(), value);
     }
     public DynamicSoqlBuilder restrictNotEqual(String field, Date value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.NotEqualRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictNotEqual(Schema.DescribeFieldResult field, Date value) {
+        return restrictNotEqual(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictNotEqual(String field, DynamicSoqlBuilderRestriction.Bind value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.NotEqualRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictNotEqual(
+        Schema.DescribeFieldResult field,
+        DynamicSoqlBuilderRestriction.Bind value
+    ) {
+        return restrictNotEqual(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictNotEqual(String field, DynamicSoqlBuilderRestriction.Keyword value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.NotEqualRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictNotEqual(
+        Schema.DescribeFieldResult field,
+        DynamicSoqlBuilderRestriction.Keyword value
+    ) {
+        return restrictNotEqual(field.getName(), value);
     }
 
     public DynamicSoqlBuilder restrictLessThanOrEqual(String field, String value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.LessThanOrEqualRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictLessThanOrEqual(Schema.DescribeFieldResult field, String value) {
+        return restrictLessThanOrEqual(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictLessThanOrEqual(String field, Decimal value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.LessThanOrEqualRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictLessThanOrEqual(Schema.DescribeFieldResult field, Decimal value) {
+        return restrictLessThanOrEqual(field.getName(), value);
     }
     public DynamicSoqlBuilder restrictLessThanOrEqual(String field, Datetime value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.LessThanOrEqualRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictLessThanOrEqual(Schema.DescribeFieldResult field, Datetime value) {
+        return restrictLessThanOrEqual(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictLessThanOrEqual(String field, Date value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.LessThanOrEqualRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictLessThanOrEqual(Schema.DescribeFieldResult field, Date value) {
+        return restrictLessThanOrEqual(field.getName(), value);
     }
     public DynamicSoqlBuilder restrictLessThanOrEqual(String field, DynamicSoqlBuilderRestriction.Bind value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.LessThanOrEqualRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictLessThanOrEqual(
+        Schema.DescribeFieldResult field,
+        DynamicSoqlBuilderRestriction.Bind value
+    ) {
+        return restrictLessThanOrEqual(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictLessThanOrEqual(String field, DynamicSoqlBuilderRestriction.Keyword value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.LessThanOrEqualRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictLessThanOrEqual(
+        Schema.DescribeFieldResult field,
+        DynamicSoqlBuilderRestriction.Keyword value
+    ) {
+        return restrictLessThanOrEqual(field.getName(), value);
     }
 
     public DynamicSoqlBuilder restrictGreaterThanOrEqual(String field, String value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.GreaterThanOrEqualRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictGreaterThanOrEqual(Schema.DescribeFieldResult field, String value) {
+        return restrictGreaterThanOrEqual(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictGreaterThanOrEqual(String field, Decimal value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.GreaterThanOrEqualRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictGreaterThanOrEqual(Schema.DescribeFieldResult field, Decimal value) {
+        return restrictGreaterThanOrEqual(field.getName(), value);
     }
     public DynamicSoqlBuilder restrictGreaterThanOrEqual(String field, Datetime value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.GreaterThanOrEqualRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictGreaterThanOrEqual(Schema.DescribeFieldResult field, Datetime value) {
+        return restrictGreaterThanOrEqual(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictGreaterThanOrEqual(String field, Date value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.GreaterThanOrEqualRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictGreaterThanOrEqual(Schema.DescribeFieldResult field, Date value) {
+        return restrictGreaterThanOrEqual(field.getName(), value);
     }
     public DynamicSoqlBuilder restrictGreaterThanOrEqual(String field, DynamicSoqlBuilderRestriction.Bind value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.GreaterThanOrEqualRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictGreaterThanOrEqual(
+        Schema.DescribeFieldResult field,
+        DynamicSoqlBuilderRestriction.Bind value
+    ) {
+        return restrictGreaterThanOrEqual(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictGreaterThanOrEqual(String field, DynamicSoqlBuilderRestriction.Keyword value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.GreaterThanOrEqualRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictGreaterThanOrEqual(
+        Schema.DescribeFieldResult field,
+        DynamicSoqlBuilderRestriction.Keyword value
+    ) {
+        return restrictGreaterThanOrEqual(field.getName(), value);
     }
 
     public DynamicSoqlBuilder restrictLessThan(String field, String value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.LessThanRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictLessThan(Schema.DescribeFieldResult field, String value) {
+        return restrictLessThan(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictLessThan(String field, Decimal value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.LessThanRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictLessThan(Schema.DescribeFieldResult field, Decimal value) {
+        return restrictLessThan(field.getName(), value);
     }
     public DynamicSoqlBuilder restrictLessThan(String field, Datetime value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.LessThanRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictLessThan(Schema.DescribeFieldResult field, Datetime value) {
+        return restrictLessThan(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictLessThan(String field, Date value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.LessThanRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictLessThan(Schema.DescribeFieldResult field, Date value) {
+        return restrictLessThan(field.getName(), value);
     }
     public DynamicSoqlBuilder restrictLessThan(String field, DynamicSoqlBuilderRestriction.Bind value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.LessThanRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictLessThan(
+        Schema.DescribeFieldResult field,
+        DynamicSoqlBuilderRestriction.Bind value
+    ) {
+        return restrictLessThan(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictLessThan(String field, DynamicSoqlBuilderRestriction.Keyword value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.LessThanRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictLessThan(
+        Schema.DescribeFieldResult field,
+        DynamicSoqlBuilderRestriction.Keyword value
+    ) {
+        return restrictLessThan(field.getName(), value);
     }
 
     public DynamicSoqlBuilder restrictGreaterThan(String field, String value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.GreaterThanRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictGreaterThan(Schema.DescribeFieldResult field, String value) {
+        return restrictGreaterThan(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictGreaterThan(String field, Decimal value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.GreaterThanRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictGreaterThan(Schema.DescribeFieldResult field, Decimal value) {
+        return restrictGreaterThan(field.getName(), value);
     }
     public DynamicSoqlBuilder restrictGreaterThan(String field, Datetime value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.GreaterThanRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictGreaterThan(Schema.DescribeFieldResult field, Datetime value) {
+        return restrictGreaterThan(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictGreaterThan(String field, Date value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.GreaterThanRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictGreaterThan(Schema.DescribeFieldResult field, Date value) {
+        return restrictGreaterThan(field.getName(), value);
     }
     public DynamicSoqlBuilder restrictGreaterThan(String field, DynamicSoqlBuilderRestriction.Bind value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.GreaterThanRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictGreaterThan(
+        Schema.DescribeFieldResult field,
+        DynamicSoqlBuilderRestriction.Bind value
+    ) {
+        return restrictGreaterThan(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictGreaterThan(String field, DynamicSoqlBuilderRestriction.Keyword value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.GreaterThanRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictGreaterThan(
+        Schema.DescribeFieldResult field,
+        DynamicSoqlBuilderRestriction.Keyword value
+    ) {
+        return restrictGreaterThan(field.getName(), value);
     }
 
     public DynamicSoqlBuilder restrictLike(String field, String value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.LikeRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictLike(Schema.DescribeFieldResult field, String value) {
+        return restrictLike(field.getName(), value);
+    }
 
     public DynamicSoqlBuilder restrictIn(String field, List<String> value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.InRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictIn(Schema.DescribeFieldResult field, List<String> value) {
+        return restrictIn(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictIn(String field, List<Decimal> value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.InRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictIn(Schema.DescribeFieldResult field, List<Decimal> value) {
+        return restrictIn(field.getName(), value);
     }
     public DynamicSoqlBuilder restrictIn(String field, List<Datetime> value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.InRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictIn(Schema.DescribeFieldResult field, List<Datetime> value) {
+        return restrictIn(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictIn(String field, List<Date> value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.InRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictIn(Schema.DescribeFieldResult field, List<Date> value) {
+        return restrictIn(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictIn(String field, DynamicSoqlBuilderRestriction.Bind value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.InRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictIn(Schema.DescribeFieldResult field, DynamicSoqlBuilderRestriction.Bind value) {
+        return restrictIn(field.getName(), value);
     }
     public DynamicSoqlBuilder restrictIn(String field, DynamicSoqlBuilder subquery) {
         Map<String, Object> subqueryBindMap = subquery.getBinds();
@@ -261,26 +435,47 @@ public inherited sharing class DynamicSoqlBuilder {
         );
         return this;
     }
+    public DynamicSoqlBuilder restrictIn(Schema.DescribeFieldResult field, DynamicSoqlBuilder value) {
+        return restrictIn(field.getName(), value);
+    }
 
     public DynamicSoqlBuilder restrictNotIn(String field, List<String> value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.NotInRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictNotIn(Schema.DescribeFieldResult field, List<String> value) {
+        return restrictNotIn(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictNotIn(String field, List<Decimal> value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.NotInRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictNotIn(Schema.DescribeFieldResult field, List<Decimal> value) {
+        return restrictNotIn(field.getName(), value);
     }
     public DynamicSoqlBuilder restrictNotIn(String field, List<Datetime> value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.NotInRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictNotIn(Schema.DescribeFieldResult field, List<Datetime> value) {
+        return restrictNotIn(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictNotIn(String field, List<Date> value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.NotInRestriction(field, value));
         return this;
     }
+    public DynamicSoqlBuilder restrictNotIn(Schema.DescribeFieldResult field, List<Date> value) {
+        return restrictNotIn(field.getName(), value);
+    }
     public DynamicSoqlBuilder restrictNotIn(String field, DynamicSoqlBuilderRestriction.Bind value) {
         restrictions.add(new DynamicSoqlBuilderRestriction.NotInRestriction(field, value));
         return this;
+    }
+    public DynamicSoqlBuilder restrictNotIn(
+        Schema.DescribeFieldResult field,
+        DynamicSoqlBuilderRestriction.Bind value
+    ) {
+        return restrictNotIn(field.getName(), value);
     }
     public DynamicSoqlBuilder restrictNotIn(String field, DynamicSoqlBuilder subquery) {
         Map<String, Object> subqueryBindMap = subquery.getBinds();
@@ -294,6 +489,9 @@ public inherited sharing class DynamicSoqlBuilder {
             )
         );
         return this;
+    }
+    public DynamicSoqlBuilder restrictNotIn(Schema.DescribeFieldResult field, DynamicSoqlBuilder value) {
+        return restrictNotIn(field.getName(), value);
     }
 
     public DynamicSoqlBuilder restrict(DynamicSoqlBuilderRestriction restriction) {

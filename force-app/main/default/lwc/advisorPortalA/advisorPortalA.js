@@ -12,7 +12,7 @@ import getCaseSubClassificationPicklistValues from '@salesforce/apex/AdvisorPort
 import getAcademicProgramPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicProgramPicklistValues';
 import getSchoolDepartmentPicklistVaues from '@salesforce/apex/AdvisorPortalFilterSectionController.getSchoolDepartmentPicklistVaues';
 import getAcademicPlanPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getAcademicPlanPicklistValues';
-import {buildPicklistOptionsArray, falseWireRun} from 'c/helperFunctions';
+import {buildPicklistOptionsArray, falseWireRun, cloneObj, extractErrorMessages} from 'c/helperFunctions';
 import LightningCaseTransferModal from 'c/lightningCaseTransferModal';
 import AdvisorPortalModalMassEmail from 'c/advisorPortalModalMassEmail';
 import AdvisorPortalModalMassClose from 'c/advisorPortalModalMassClose';
@@ -35,8 +35,8 @@ export default class AdvisorPortalA extends LightningElement {
     caseStatusPicklistValues = [];
     campusPicklistValues = [];
     caseSubjectPicklistValues = [];
-    caseCategoryPicklistValues = [];
-    caseSubCategoryPicklistValues = [];
+    caseCategoryPicklistValues = undefined;
+    caseSubCategoryPicklistValues = undefined;
     academicProgramOptions = [];
     schoolDepartmentOptions = [];
     academicPlanOptions = [];
@@ -82,29 +82,40 @@ export default class AdvisorPortalA extends LightningElement {
     // Retrieve default filter
     @wire(getDefaultFilter, {})
     gotDefaultFilter(result) {
-        if (falseWireRun(result)) return; // Sometimes the wire is run with null data and error - this should be considered a fake run and nothing should happen
+        const {data, error} = result;
 
-        let {data, error} = result;
-        if (data != null) {
-            this.currentFilter = JSON.parse(data);
-        } else if (error != null) {
-            this.currentFilter = {};
-            // eslint-disable-next-line no-console
-            console.error('gotDefaultFilter', error);
+        let defaultFilter;
+
+        if (data !== undefined) {
+            defaultFilter = cloneObj(data);
         }
 
-        if (this.currentFilter != null) {
-            // default filter settings if none exists
-            if (this.currentFilter.caseTypeState == null) this.currentFilter.caseTypeState = 'ProactiveCasesState';
-            if (this.currentFilter.career == null) this.currentFilter.career = 'UGRD';
+        if (error !== undefined) {
+            // eslint-disable-next-line no-console
+            console.error('gotDefaultFilter', error);
 
+            const eMsg = extractErrorMessages(error);
+            this.showToast(
+                'Error',
+                'Unexpected error while loading default filter - You should open a bug ticket with the Salesforce team. Error message: \n' +
+                    eMsg[0],
+                'error',
+                60000
+            );
+        }
+
+        if (defaultFilter != null) {
             this.loadMore(); // for any picklist options that depend on filter being set
+            this.currentFilter = cloneObj(defaultFilter);
+
             Promise.all([
                 this.getViewAsOptions(), // once the default filter is loaded - we can get the view as options
                 this.refreshCampusValues(), // depends on career
                 this.refreshSchoolDepartmentPicklistVaues(), // depends on acad program
                 this.refreshAcademicPlanPicklistValues(), // depends on acad program, school, and degree level
+                this.refreshSelectedUsers(), // actually reload cases and searhc and all that...
             ]).then(() => {
+                this.currentFilter = cloneObj(defaultFilter); // re-select default filter values (since might have been invalid while reloading options and been kicked out)
                 this.loadLess();
             });
         }
@@ -206,6 +217,7 @@ export default class AdvisorPortalA extends LightningElement {
                     this.loadingCampusValues = false;
                 }),
                 this.getViewAsOptions(),
+                this.refreshSelectedUsers(),
             ]);
         } else if (changedField === 'degreeLevel') {
             this.loadingAcadPlan = true;
@@ -243,7 +255,7 @@ export default class AdvisorPortalA extends LightningElement {
     refreshResidencyPicklistValues() {
         return getPicklistValues({objectName: 'Student_Program_Plan__c', fieldName: 'Residency__c'})
             .then((val) => {
-                this.residencyPicklistValues = buildPicklistOptionsArray(val);
+                this.residencyPicklistValues = buildPicklistOptionsArray(val, {alphabetize: true});
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -253,7 +265,7 @@ export default class AdvisorPortalA extends LightningElement {
     refreshCaseStatusSettings() {
         return getCaseStatusSettings()
             .then((val) => {
-                this.caseStatusPicklistValues = buildPicklistOptionsArray(val);
+                this.caseStatusPicklistValues = val;
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -264,7 +276,7 @@ export default class AdvisorPortalA extends LightningElement {
         const filterJSON = JSON.stringify(this.currentFilter);
         return getCampusValues({filterJSON})
             .then((val) => {
-                this.campusPicklistValues = buildPicklistOptionsArray(val);
+                this.campusPicklistValues = val;
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -275,7 +287,7 @@ export default class AdvisorPortalA extends LightningElement {
         const filterJSON = JSON.stringify(this.currentFilter);
         return getCaseSubjectPicklistValues({filterJSON, viewAsOptions: this.selectedUsers})
             .then((val) => {
-                this.caseSubjectPicklistValues = buildPicklistOptionsArray(val);
+                this.caseSubjectPicklistValues = val;
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -286,7 +298,7 @@ export default class AdvisorPortalA extends LightningElement {
         const filterJSON = JSON.stringify(this.currentFilter);
         return getCaseClassificationPicklistValues({filterJSON, viewAsOptions: this.selectedUsers})
             .then((val) => {
-                this.caseCategoryPicklistValues = buildPicklistOptionsArray(val);
+                this.caseCategoryPicklistValues = val;
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -297,7 +309,7 @@ export default class AdvisorPortalA extends LightningElement {
         const filterJSON = JSON.stringify(this.currentFilter);
         return getCaseSubClassificationPicklistValues({filterJSON, viewAsOptions: this.selectedUsers})
             .then((val) => {
-                this.caseSubCategoryPicklistValues = buildPicklistOptionsArray(val);
+                this.caseSubCategoryPicklistValues = val;
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -307,7 +319,7 @@ export default class AdvisorPortalA extends LightningElement {
     refreshAcademicProgramPicklistValues() {
         return getAcademicProgramPicklistValues()
             .then((val) => {
-                this.academicProgramOptions = buildPicklistOptionsArray(val);
+                this.academicProgramOptions = val;
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -318,7 +330,7 @@ export default class AdvisorPortalA extends LightningElement {
         const filterJSON = JSON.stringify(this.currentFilter);
         return getSchoolDepartmentPicklistVaues({filterJSON})
             .then((val) => {
-                this.schoolDepartmentOptions = buildPicklistOptionsArray(val);
+                this.schoolDepartmentOptions = val;
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -329,7 +341,7 @@ export default class AdvisorPortalA extends LightningElement {
         const filterJSON = JSON.stringify(this.currentFilter);
         return getAcademicPlanPicklistValues({filterJSON})
             .then((val) => {
-                this.academicPlanOptions = buildPicklistOptionsArray(val);
+                this.academicPlanOptions = val;
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
@@ -342,17 +354,24 @@ export default class AdvisorPortalA extends LightningElement {
         this.loadMore();
         getFilteredCases({viewAsOptions: this.selectedUsers, filterJSON: JSON.stringify(this.currentFilter)})
             .then((val) => {
-                this.allResults = JSON.parse(val);
+                this.allResults = cloneObj(val);
             })
             .catch((err) => {
                 // eslint-disable-next-line no-console
                 console.error(err);
-                this.showToast(
-                    'Error',
-                    'Unexpected error while retrieving cases - more details can be found in the JS console.  You should open a bug ticket with the Salesforce team.',
-                    'error',
-                    5000
-                );
+
+                let errorStr = 'ERROR';
+                try {
+                    errorStr =
+                        'Unexpected error while retrieving cases. ' +
+                        extractErrorMessages(err)[0] +
+                        '. More details can be found in the JS console.  You should open a bug ticket with the Salesforce team.';
+                } catch (e) {
+                    errorStr +=
+                        'Unexpected error while retrieving cases. We could not extract a human readable error message. More details can be found in the JS console.  You should open a bug ticket with the Salesforce team.';
+                }
+
+                this.showToast('Error', errorStr, 'error', 5000);
             })
             .finally(() => {
                 this.loadLess();
@@ -362,12 +381,15 @@ export default class AdvisorPortalA extends LightningElement {
     // The selected users has changed (now re-search stuff)
     changeSelectedUsers(e) {
         this.selectedUsers = [...e.detail];
+        this.refreshSelectedUsers();
+    }
 
+    refreshSelectedUsers() {
         this.loadingCaseStatus = true;
         this.loadingCaseCategory = true;
         this.loadingCaseSubCategory = true;
         this.loadMore();
-        Promise.all([
+        return Promise.all([
             this.refreshCaseSubjectPicklistValues().then(() => {
                 this.loadingCaseStatus = false;
             }),
@@ -560,6 +582,13 @@ export default class AdvisorPortalA extends LightningElement {
             duration = e?.duration ?? duration;
         }
 
+        this.showToast(title, message, type, duration);
+    }
+    handleLightningToast(e) {
+        const title = e.toastAttributes.title;
+        const message = e.toastAttributes.message;
+        const type = e.toastAttributes.type;
+        const duration = e.toastAttributes.duration || 5000;
         this.showToast(title, message, type, duration);
     }
     showToast(title, message, type, duration) {

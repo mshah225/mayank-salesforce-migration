@@ -87,11 +87,35 @@ global class StudentSearchController {
             studentSearchMessages = new List<String>();
             studentSearchRestrictedMessages = new List<String>();
 
-            List<Student_Profile_Message__mdt> messages = [
-                SELECT Message_to_Display__c, DeveloperName
-                FROM Student_Profile_Message__mdt
-                WHERE Is_Active__c = TRUE AND Student_Profile_Tab__c = 'Student Search'
-            ];
+            List<Student_Profile_Message__mdt> messages;
+
+            // Override to allow testing failure state
+            if (Test.isRunningTest() && errorDuringSetStudentSearchMessages)
+                throw new IllegalArgumentException('Unexpected Error');
+
+            // Override to allow test metadata values
+            if (Test.isRunningTest() && fakeStudentSearchMessages) {
+                messages = new List<Student_Profile_Message__mdt>{
+                    new Student_Profile_Message__mdt(
+                        Message_to_Display__c = 'Hello World 1',
+                        DeveloperName = 'Student_Search'
+                    ),
+                    new Student_Profile_Message__mdt(
+                        Message_to_Display__c = 'Hello World 2',
+                        DeveloperName = 'Student_Search_Access'
+                    ),
+                    new Student_Profile_Message__mdt(
+                        Message_to_Display__c = 'Hello World 3',
+                        DeveloperName = 'Student_Search_Other'
+                    )
+                };
+            } else {
+                messages = [
+                    SELECT Message_to_Display__c, DeveloperName
+                    FROM Student_Profile_Message__mdt
+                    WHERE Is_Active__c = TRUE AND Student_Profile_Tab__c = 'Student Search'
+                ];
+            }
 
             for (Student_Profile_Message__mdt message : messages) {
                 if (message.DeveloperName == 'Student_Search') {
@@ -119,4 +143,38 @@ global class StudentSearchController {
             ErrorLogger.log(e, vars, false);
         }
     }
+
+    @RemoteAction
+    global static Boolean hasClasses(String emplId) {
+        try {
+            // Call DPL to get term/class map
+            Map<String, List<DataPotluck.DPLEnrollment>> enrollmentInfo = StudentProfileCallout.getEnrollmentInfo(
+                emplId
+            );
+
+            // Check if at least one term has at least one class
+            Boolean hasAtLeastOneClass = false;
+
+            for (String termCode : enrollmentInfo.keySet()) {
+                List<DataPotluck.DPLEnrollment> classEnrollments = enrollmentInfo.get(termCode);
+                if (classEnrollments.size() > 0) {
+                    hasAtLeastOneClass = true;
+                    break;
+                }
+            }
+
+            return hasAtLeastOneClass;
+        } catch (Exception ex) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertStringToJSON('emplId', emplId));
+            ErrorLogger.log(ex, vars, false);
+            throw ex;
+        }
+    }
+
+    // Flags to control test behavior (for higher coverage)
+    @TestVisible
+    private Boolean fakeStudentSearchMessages = false;
+    @TestVisible
+    private Boolean errorDuringSetStudentSearchMessages = false;
 }

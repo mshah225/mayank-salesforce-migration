@@ -310,6 +310,12 @@
             border: none;
         }
 
+        .table-respect-newline tbody tr td,
+        .table-respect-newline tbody tr th,
+        .table-respect-newline thead tr th  {
+                white-space: pre-wrap;
+            }
+
         .asu-detail-table {
             border: solid 1px lightgrey;
             border-top: solid 3px #666;

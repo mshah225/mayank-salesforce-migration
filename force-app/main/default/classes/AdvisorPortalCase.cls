@@ -5,13 +5,18 @@
  * A wrapper class used on the Advisor Portal for Cases.
  */
 public class AdvisorPortalCase {
+    @AuraEnabled
     public Case portalCase;
 
+    @AuraEnabled
     public Boolean isSelected;
 
+    @AuraEnabled
     public String formattedFollowupDate;
+    @AuraEnabled
     public String formattedCreatedDate;
 
+    @AuraEnabled
     public Boolean hasFollowupDate = false;
 
     public AdvisorPortalCase(Case theCase) {

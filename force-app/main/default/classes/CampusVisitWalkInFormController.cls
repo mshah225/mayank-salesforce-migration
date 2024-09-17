@@ -22,7 +22,10 @@ public with sharing class CampusVisitWalkInFormController {
 
         String soslSearch = buildContactSosl(conToSearch);
         if (matchedDetailsWithContacts.size() == 0 && (conToSearch.FirstName != null || conToSearch.LastName != null)) {
-            matchedDetailsWithContacts = Search.query(soslSearch);
+            List<List<sObject>> soslResults = Search.query(soslSearch);
+            if (soslResults.size() > 0) {
+                matchedDetailsWithContacts = soslResults[0];
+            }
         }
 
         if (matchedDetailsWithContacts.size() > 0) {

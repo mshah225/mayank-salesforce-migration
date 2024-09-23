@@ -1,13 +1,16 @@
 <template>
     <lightning-card title="Campus Visit Check-In">
         <div slot="actions">
-            <lightning-button style="margin-right: 10px;" label="Re-Open Campaign Page" onclick={navigateToCampaignPage}></lightning-button>
             <lightning-button style="margin-right: 10px;" label="Mark Late Selected Campaign Members" onclick={updateSelectedCampaignMembers}></lightning-button>
             <lightning-button style="margin-right: 10px;" label="Walk-In Form" onclick={createCampaignMember}></lightning-button>
             <lightning-button style="margin-right: 10px;" label="Split into Tour Groups" onclick={splitIntoTourGroups}></lightning-button>
             <lightning-button label="Refresh Data" onclick={refreshTable}></lightning-button>
         </div>
         <div class="slds-card__body_inner">
+
+            <div class="slds-grid slds-gutters slds-p-bottom_x-small slds-p-left_x-small slds-m-left_x-small">
+                <p>Campaign  >>>  </p><a onclick={navigateToCampaignPage}> {campaignName} </a>
+            </div>
 
             <div class="slds-grid slds-gutters slds-p-bottom_x-small slds-p-left_x-small slds-m-left_x-small">
                 <lightning-input type="search" label="Search for a first or last name" onchange={handleSearch}></lightning-input>

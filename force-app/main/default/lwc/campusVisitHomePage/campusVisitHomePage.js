@@ -1,5 +1,6 @@
 import {LightningElement, wire, api} from 'lwc';
 import {EnclosingTabId, setTabLabel, setTabIcon} from 'lightning/platformWorkspaceApi';
+import {getRecord, getFieldValue} from 'lightning/uiRecordApi';
 
 import getCampaignMembers from '@salesforce/apex/CampusVisitHomePageController.getCampaignMembers';
 import getAllCampaignMembers from '@salesforce/apex/CampusVisitHomePageController.getAllCampaignMembers';
@@ -10,6 +11,7 @@ import WalkInFormModal from 'c/campusVisitWalkInForm';
 import TourSplitModal from 'c/campusVisitTourGroupSplit';
 
 import reportId from '@salesforce/label/c.Tour_Split_Report_Id';
+import NAME from '@salesforce/schema/Campaign.Name';
 
 import {NavigationMixin} from 'lightning/navigation';
 import {refreshApex} from '@salesforce/apex';
@@ -39,6 +41,7 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
     @wire(EnclosingTabId) enclosingTabId;
 
     cols = COLMS;
+    campaignName;
     contacts;
     wiredContacts;
     wiredAllCampaignMembers;
@@ -79,6 +82,20 @@ export default class CampusVisitHomePage extends NavigationMixin(LightningElemen
             this.memberStatusOptions = this.countStatusGroups(result?.data);
         }
     }
+
+    @wire(getRecord, { recordId:'$propertyValue', fields: [NAME]})
+    loadCampaignName({error, data}){
+        console.log('loadFields, recordId: ', this.propertyValue);
+        if(error){
+            console.log('error', JSON.parse(JSON.stringify(error)));
+        }else if(data){
+            console.log('data', JSON.parse(JSON.stringify(data)));
+            const paramField1 = getFieldValue(data, NAME);
+            console.log('paramField1', paramField1);
+            this.campaignName = paramField1;
+        }
+    }
+
 
     mapContacts(row) {
         var mailingState;

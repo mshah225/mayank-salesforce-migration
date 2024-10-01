@@ -408,7 +408,10 @@ public class CaseService {
                     newCase.Opportunity__c = firstOpp.Id;
                 }
 
-                if (!UserInfo.getFirstName().equals('API') || UserInfo.getLastName().equals('ASU EMAIL SERVICE')) {
+                if (
+                    !CustomPermissionHelper.currentUserHasCustomPermission('APIUser') ||
+                    UserInfo.getLastName().equals('ASU EMAIL SERVICE')
+                ) {
                     // If in a non API user context or are running as the email service
                     // then we should perform assignment by looking at fields on the case
                     assignmentDet = new CaseAssignmentDeterminer(firstOpp, newCase);

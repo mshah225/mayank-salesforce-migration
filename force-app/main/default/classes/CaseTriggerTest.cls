@@ -57,6 +57,17 @@ public with sharing class CaseTriggerTest {
         );
         insert new List<User>{ APIUser, TMUser, ECUser };
 
+        // Assign APIUser to API user custom perm permission set
+        // Setup object, wrap in System.runAs
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'API_User_Custom_Perm_API_User' LIMIT 1];
+            PermissionSetAssignment apiUserPsa = new PermissionSetAssignment(
+                AssigneeId = APIUser.Id,
+                PermissionSetId = ps.Id
+            );
+            insert apiUserPsa;
+        }
+
         // Test contact
         Contact testContact = new Contact(
             FirstName = 'TestContact',

@@ -337,10 +337,7 @@ public class ScheduledStalledSMSDetectorBatch implements Database.Batchable<SObj
                 } else {
                     value = sms.get(field) == null ? '' : '' + sms.get(field);
                 }
-
-                if (value.contains('"') || value.contains(',') || value.contains('\n')) {
-                    value = '"' + value.replace('"', '""') + '"';
-                }
+                value = value.escapeCsv();
 
                 columns.add(value);
             }

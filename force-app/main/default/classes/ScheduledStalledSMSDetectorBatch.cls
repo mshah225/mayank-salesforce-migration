@@ -136,9 +136,13 @@ public class ScheduledStalledSMSDetectorBatch implements Database.Batchable<SObj
                         Schema.SObjectType.smagicinteract__smsMagic__c.fields.smagicinteract__Status__c.getName()
                     );
                     rule.queryFields.add(
-                        Schema.SObjectType.smagicinteract__smsMagic__c.fields.smagicinteract__statusMessage__c.getName()
+                        Schema.SObjectType.smagicinteract__smsMagic__c.fields.smagicinteract__Delivery_Error_Message__c.getName()
+                    );
+                    rule.queryFields.add(
+                        Schema.SObjectType.smagicinteract__smsMagic__c.fields.smagicinteract__CreatedOn__c.getName()
                     );
 
+                    csvFile.clear();
                     csvFile.add(rule.describeSMSHeader());
 
                     List<smagicinteract__smsMagic__c> allSms = rule.getQuery().query();

@@ -69,14 +69,18 @@ public with sharing class ScheduledStalledSMSDetectorTest {
 
         allSMS[5].smagicinteract__Conversation__c = globalFreshmanConvo.Id;
         allSMS[5].smagicinteract__Status__c = 'ERROR';
+        allSMS[5].smagicinteract__Delivery_Error_Message__c = 'Invalidmobilenumbererror';
         Test.setCreatedDate(allSMS[5].Id, System.now().addDays(-12));
 
         allSMS[6].smagicinteract__Conversation__c = globalFreshmanConvo.Id;
         allSMS[6].smagicinteract__Status__c = 'ERROR';
+        allSMS[6]
+            .smagicinteract__Delivery_Error_Message__c = 'Message cannot be sent because the customer has opted out';
         Test.setCreatedDate(allSMS[6].Id, System.now().addDays(-12));
 
         allSMS[7].smagicinteract__Conversation__c = globalFreshmanConvo.Id;
         allSMS[7].smagicinteract__Status__c = 'ERROR';
+        allSMS[7].smagicinteract__Delivery_Error_Message__c = 'Invalidmobilenumbererror';
         Test.setCreatedDate(allSMS[7].Id, System.now().addDays(-12));
 
         update allSMS;
@@ -333,7 +337,12 @@ public with sharing class ScheduledStalledSMSDetectorTest {
 
         // Expected results for each rule
         List<smagicinteract__smsMagic__c> expectedSmsLs = [
-            SELECT Id, smagicinteract__PhoneNumber__c, smagicinteract__Status__c, smagicinteract__statusMessage__c
+            SELECT
+                Id,
+                smagicinteract__PhoneNumber__c,
+                smagicinteract__Status__c,
+                smagicinteract__Delivery_Error_Message__c,
+                smagicinteract__CreatedOn__c
             FROM smagicinteract__smsMagic__c
             WHERE
                 smagicinteract__Direction__c = 'OUT'
@@ -381,7 +390,8 @@ public with sharing class ScheduledStalledSMSDetectorTest {
         Assert.areEqual('Id', headerRow[0]);
         Assert.areEqual('smagicinteract__PhoneNumber__c', headerRow[1]);
         Assert.areEqual('smagicinteract__Status__c', headerRow[2]);
-        Assert.areEqual('smagicinteract__statusMessage__c', headerRow[3]);
+        Assert.areEqual('smagicinteract__Delivery_Error_Message__c', headerRow[3]);
+        Assert.areEqual('smagicinteract__CreatedOn__c', headerRow[4]);
         // Contains a row for each expected SMS
         for (smagicinteract__smsMagic__c expectedSms : expectedSmsLs) {
             List<String> matchedRow = null;
@@ -397,7 +407,8 @@ public with sharing class ScheduledStalledSMSDetectorTest {
             Assert.areEqual(expectedSms.Id, matchedRow[0]);
             Assert.areEqual(expectedSms.smagicinteract__PhoneNumber__c, matchedRow[1]);
             Assert.areEqual(expectedSms.smagicinteract__Status__c, matchedRow[2]);
-            Assert.areEqual(expectedSms.smagicinteract__statusMessage__c, matchedRow[3]);
+            Assert.areEqual(expectedSms.smagicinteract__Delivery_Error_Message__c, matchedRow[3]);
+            Assert.areEqual(expectedSms.smagicinteract__CreatedOn__c.format('M/d/YYYY h:mm:ss a'), matchedRow[4]);
         }
     }
 }

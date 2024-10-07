@@ -124,6 +124,24 @@ public with sharing class SuccessStudentTriggerTest {
 
     @isTest
     private static void studentTransferTest() {
+        User testNonApiUser = new User(
+            FirstName = 'Not an API',
+            LastName = 'Test User',
+            CompanyName = 'Test Company',
+            MobilePhone = '123-456-7890',
+            Username = 'test.nonAPI.user@test.test',
+            Email = 'test.nonAPI.user@test.test',
+            Alias = 'testNApi',
+            CommunityNickname = 'testNApi',
+            TimeZoneSidKey = 'America/New_York',
+            LocaleSidKey = 'en_US',
+            EmailEncodingKey = 'UTF-8',
+            ProfileId = RecordIdHelper.getProfileId('System Administrator'),
+            LanguageLocaleKey = 'en_US',
+            IsActive = true
+        );
+        insert testNonApiUser;
+
         List<Success_Student__c> successStudents = [SELECT Id, Success_Resource__c, OwnerId FROM Success_Student__c];
         Id transferToResourceId = [
             SELECT Id
@@ -138,7 +156,9 @@ public with sharing class SuccessStudentTriggerTest {
         }
 
         test.startTest();
-        update successStudents;
+        System.runAs(testNonApiUser) {
+            update successStudents;
+        }
         test.stopTest();
 
         // Generate one case for each updated coaching success student

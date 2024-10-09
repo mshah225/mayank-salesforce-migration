@@ -13,34 +13,48 @@ public with sharing class FullCaseCommentsController {
 
         if (ApexPages.currentPage().getParameters().get('id').startsWith('003')) {
             this.theContact = (Contact) stdController.getRecord();
-
-            Map<Id, Case> coachCaseMap = new Map<Id, Case>(
-                [
-                    SELECT Id
-                    FROM Case
-                    WHERE
-                        ContactId = :theContact.Id
-                        AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach')
-                ]
-            );
-
-            if (coachCaseMap.size() > 0) {
-                comments = [
-                    SELECT CommentBody, CreatedDate, ParentId
-                    FROM CaseComment
-                    WHERE ParentId IN :coachCaseMap.keySet()
-                    ORDER BY CreatedDate DESC
-                ];
-            }
+            this.comments = getComments(theContact.Id);
         } else {
             this.theCase = (Case) stdController.getRecord();
+            this.comments = getComments(theCase.Id);
+        }
+    }
 
+    public static List<CaseComment> getComments(String recordId) {
+        List<CaseComment> comments;
+        if (recordId == null)
+            return new List<CaseComment>();
+
+        if (recordId.startsWith(ObjectService.getKeyPrefix(Contact.getSObjectType()))) {
             comments = [
-                SELECT CommentBody, CreatedDate, ParentId
+                SELECT CommentBody, CreatedDate, ParentId, Parent.Subject, Parent.CaseNumber
                 FROM CaseComment
-                WHERE ParentId = :theCase.Id
+                WHERE
+                    ParentId IN (
+                        SELECT Id
+                        FROM Case
+                        WHERE
+                            ContactId = :recordId
+                            AND RecordTypeId = :RecordIdHelper.getRecordTypeId('Case', 'ASU_Coach_Outreach')
+                    )
                 ORDER BY CreatedDate DESC
             ];
+        } else if (recordId.startsWith(ObjectService.getKeyPrefix(Case.getSObjectType()))) {
+            comments = [
+                SELECT CommentBody, CreatedDate, ParentId, Parent.Subject, Parent.CaseNumber
+                FROM CaseComment
+                WHERE ParentId = :recordId
+                ORDER BY CreatedDate DESC
+            ];
+        } else {
+            throw new FullCaseCommentsControllerIdException(
+                'Can only get comments for contacts or cases - this id=' + recordId + ' is neither'
+            );
         }
+
+        return comments;
+    }
+
+    public class FullCaseCommentsControllerIdException extends Exception {
     }
 }

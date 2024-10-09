@@ -1,8 +1,15 @@
 <apex:component id="fullCaseCommentsHistory">
     <apex:attribute name="caseComments" type="CaseComment[]" description="The Case Comments List" />
 
+    <style type="text/css">
+        .caseCommentsHistoryTable {
+            border-spacing: 15px;
+            border-collapse: separate;
+        }
+    </style>
+
     <apex:outputPanel rendered="{!caseComments.size > 0}">
-        <apex:dataTable value="{!caseComments}" var="c" cellSpacing="15">
+        <apex:dataTable value="{!caseComments}" var="c" styleClass="caseCommentsHistoryTable">
             <apex:column
                 headerValue="Created Date"
                 value="{!c.CreatedDate}"
@@ -30,12 +37,14 @@
 
         function openCaseSubTab(theCaseId, caseNumber) {
             if (isLightningExperienceOrSalesforce1()) {
-                var message = '/lightning/r/Case/' + theCaseId + '/view';
+                var message = `/lightning/r/Case/${theCaseId}/view`;
                 parent.postMessage(message, '*');
-            } else {
+            } else if (sforce.console.isInConsole()) {
                 sforce.console.getEnclosingPrimaryTabId(function (result) {
-                    sforce.console.openSubtab(result.id, '/' + theCaseId, true, caseNumber, null);
+                    sforce.console.openSubtab(result.id, `/${theCaseId}`, true, caseNumber, null);
                 });
+            } else {
+                window.open(`/lightning/r/Case/${theCaseId}/view`, '_blank');
             }
         }
     </script>

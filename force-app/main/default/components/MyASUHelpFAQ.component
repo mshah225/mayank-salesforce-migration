@@ -18,8 +18,7 @@
                             <p class="lead d-inline-block text-white">Ask us anything.</p>
                             <div>
                                 <div class="d-flex justify-content-center" style="height: 2rem">
-                                    <apex:inputText
-                                        id="articleTextBoxId"
+                                    <apex:inputText id="articleTextBoxId"
                                         value="{!textToSearch}"
                                         styleClass="w-75 h-100 pl-1 border-0"
                                         html-placeholder="Type your question here"
@@ -29,8 +28,7 @@
                                         title="Please enter a minimum of 2 characters"
                                         maxlength="99"
                                     />
-                                    <apex:commandLink
-                                        styleClass="btn btn-light btn-sm rounded-0"
+                                    <apex:commandLink styleClass="btn btn-light btn-sm rounded-0"
                                         reRender="myasu-help-region-faq-search-results"
                                     >
                                         <i class="fa fa-lg fa-search" aria-hidden="true">
@@ -47,14 +45,12 @@
                 <apex:actionRegion id="alius-format912">
                     <apex:pageBlock id="myasu-help-region-faq-search-results-block" mode="maindetail">
                         <!-- START viewAllArticles.page + category search from My ASU -->
-                        <apex:outputPanel
-                            rendered="{!(!isTextSearchQuery) && (isCategorySearchQuery) && (EmbedLocation == 'viewAllArticles')}"
+                        <apex:outputPanel rendered="{!(!isTextSearchQuery) && (isCategorySearchQuery) && (EmbedLocation == 'viewAllArticles')}"
                         >
                             <div class="d-none" aria-hidden="true">{!refreshPagination}</div>
                             <h3 class="lead">Showing all results for '{!articleCategoryLabel}'</h3>
                             <ul class="pt-1 pb-1 revert-blockquote-to-ul">
-                                <knowledge:articleList
-                                    articleVar="article"
+                                <knowledge:articleList articleVar="article"
                                     sortBy="mostViewed"
                                     categories="{!articleCategory}"
                                     language="{!articleLanguage}"
@@ -62,8 +58,7 @@
                                     pageSize="{!IF(articleCategoryLabel != '', pageSize, 0)}"
                                 >
                                     <li>
-                                        <apex:outputLink
-                                            styleClass="c-text-black underline d-inline-block mt-1 mb-1"
+                                        <apex:outputLink styleClass="c-text-black underline d-inline-block mt-1 mb-1"
                                             value="/authkb?id={!article.Id}"
                                         >
                                             {!article.Title}
@@ -86,8 +81,7 @@
                                 }
                             </script>
                             <div class="d-flex" style="{!IF(resultCount > 0, '', 'display:none !important')}">
-                                <apex:commandLink
-                                    action="{!previous}"
+                                <apex:commandLink action="{!previous}"
                                     styleClass="btn btn-light btn-sm d-inline-block rounded-0"
                                     style="{!IF(onFirstPage == false,'color:#484848','color:#BFBFBF')}"
                                     reRender="myasu-help-region-faq-search-results-block"
@@ -100,8 +94,7 @@
                                 >
                                     {!currentPage} of {!lastPage}
                                 </div>
-                                <apex:commandLink
-                                    action="{!next}"
+                                <apex:commandLink action="{!next}"
                                     styleClass="btn btn-light btn-sm d-inline-block rounded-0"
                                     style="{!IF(onLastPage == false,'color:#484848','color:#BFBFBF')}"
                                     reRender="myasu-help-region-faq-search-results-block"
@@ -120,22 +113,19 @@
                         <!-- END viewAllArticles.page + category search from My ASU -->
 
                         <!-- START viewAllArticles.page + user text search -->
-                        <apex:outputPanel
-                            rendered="{!(isTextSearchQuery) && (!isCategorySearchQuery) && (EmbedLocation == 'viewAllArticles')}"
+                        <apex:outputPanel rendered="{!(isTextSearchQuery) && (!isCategorySearchQuery) && (EmbedLocation == 'viewAllArticles')}"
                         >
                             <div class="d-none" aria-hidden="true">{!refreshPagination}</div>
                             <h3 class="lead">Showing all results for '{!textToSearch}'</h3>
                             <ul class="pt-1 pb-1 revert-blockquote-to-ul">
-                                <knowledge:articleList
-                                    articleVar="article"
+                                <knowledge:articleList articleVar="article"
                                     sortBy="mostViewed"
                                     keyword="{!textToSearch}"
                                     pageNumber="{!currentPage}"
                                     pageSize="{!IF(textToSearch != '', pageSize, 0)}"
                                 >
                                     <li>
-                                        <apex:outputLink
-                                            styleClass="c-text-black underline d-inline-block mt-1 mb-1"
+                                        <apex:outputLink styleClass="c-text-black underline d-inline-block mt-1 mb-1"
                                             value="/authkb?id={!article.Id}"
                                         >
                                             {!article.Title}
@@ -158,8 +148,7 @@
                                 }
                             </script>
                             <div class="d-flex" style="{!IF(resultCount > 0, '', 'display:none !important')}">
-                                <apex:commandLink
-                                    action="{!previous}"
+                                <apex:commandLink action="{!previous}"
                                     styleClass="btn btn-light btn-sm d-inline-block rounded-0"
                                     style="{!IF(onFirstPage == false,'color:#484848','color:#BFBFBF')}"
                                     reRender="myasu-help-region-faq-search-results-block"
@@ -172,8 +161,7 @@
                                 >
                                     {!currentPage} of {!lastPage}
                                 </div>
-                                <apex:commandLink
-                                    action="{!next}"
+                                <apex:commandLink action="{!next}"
                                     styleClass="btn btn-light btn-sm d-inline-block rounded-0"
                                     style="{!IF(onLastPage == false,'color:#484848','color:#BFBFBF')}"
                                     reRender="myasu-help-region-faq-search-results-block"
@@ -192,28 +180,24 @@
                         <!-- END viewAllArticles.page + user text search -->
 
                         <!-- START studentSC.page + user text search -->
-                        <apex:outputPanel
-                            rendered="{!(isTextSearchQuery) && (!isCategorySearchQuery) && (EmbedLocation != 'viewAllArticles')}"
+                        <apex:outputPanel rendered="{!(isTextSearchQuery) && (!isCategorySearchQuery) && (EmbedLocation != 'viewAllArticles')}"
                         >
                             <h3 class="lead">Showing top results for '{!textToSearch}'</h3>
                             <ul>
-                                <knowledge:articleList
-                                    articleVar="article"
+                                <knowledge:articleList articleVar="article"
                                     sortBy="mostViewed"
                                     keyword="{!textToSearch}"
                                     pageSize="{!IF(textToSearch != '', pageSize, 0)}"
                                 >
                                     <li>
-                                        <apex:outputLink
-                                            styleClass="c-text-black underline d-inline-block mt-1 mb-1"
+                                        <apex:outputLink styleClass="c-text-black underline d-inline-block mt-1 mb-1"
                                             value="/authkb?id={!article.id}"
                                         >
                                             {!article.title}
                                         </apex:outputLink>
                                     </li>
                                 </knowledge:articleList>
-                                <apex:commandLink
-                                    styleClass="c-text-maroon underline d-inline-block mt-1 mb-1"
+                                <apex:commandLink styleClass="c-text-maroon underline d-inline-block mt-1 mb-1"
                                     value="View all results"
                                     action="{!viewAllResults}"
                                 />
@@ -233,82 +217,66 @@
                         <!-- END studentSC.page + user text search -->
 
                         <!-- START studentSC.page homepage -->
-                        <apex:outputPanel
-                            rendered="{!(!isTextSearchQuery) && (!isCategorySearchQuery) && (!isSearchingWithFunctionalGroup)}"
+                        <apex:outputPanel rendered="{!(!isTextSearchQuery) && (!isCategorySearchQuery) && (!isSearchingWithFunctionalGroup)}"
                         >
                             <h3 class="lead mb-4 mt-0">Browse common questions</h3>
                             <div>
                                 <h4 class="c-p9rem font-weight-bold mb-2">Finances</h4>
                                 <ul>
-                                    <apex:repeat
-                                        value="{!topThreeFinancialArticles}"
+                                    <apex:repeat value="{!topThreeFinancialArticles}"
                                         var="article"
                                         id="myasu-help-region-common-questions-finances"
                                     >
                                         <li>
-                                            <apex:outputLink
-                                                styleClass="mb-1 d-inline-block c-text-black underline"
+                                            <apex:outputLink styleClass="mb-1 d-inline-block c-text-black underline"
                                                 value="/authkb?id={!article.KnowledgeArticleId}"
-                                                >{!article.Title}</apex:outputLink
-                                            >
+                                                >{!article.Title}</apex:outputLink>
                                         </li>
                                     </apex:repeat>
                                     <li>
-                                        <apex:outputLink
-                                            styleClass="mb-2 d-inline-block c-text-maroon underline"
+                                        <apex:outputLink styleClass="mb-2 d-inline-block c-text-maroon underline"
                                             value="{!viewAllFinancialArticlesLink}"
-                                            >View all finance questions</apex:outputLink
-                                        >
+                                            >View all finance questions</apex:outputLink>
                                     </li>
                                 </ul>
                             </div>
                             <div>
                                 <h4 class="c-p9rem font-weight-bold mb-2">Technology</h4>
                                 <ul>
-                                    <apex:repeat
-                                        value="{!topThreeTechnicalArticles}"
+                                    <apex:repeat value="{!topThreeTechnicalArticles}"
                                         var="article"
                                         id="myasu-help-region-common-questions-technical"
                                     >
                                         <li>
-                                            <apex:outputLink
-                                                styleClass="mb-1 d-inline-block c-text-black underline"
+                                            <apex:outputLink styleClass="mb-1 d-inline-block c-text-black underline"
                                                 value="/authkb?id={!article.KnowledgeArticleId}"
-                                                >{!article.Title}</apex:outputLink
-                                            >
+                                                >{!article.Title}</apex:outputLink>
                                         </li>
                                     </apex:repeat>
                                     <li>
-                                        <apex:outputLink
-                                            styleClass="mb-2 d-inline-block c-text-maroon underline"
+                                        <apex:outputLink styleClass="mb-2 d-inline-block c-text-maroon underline"
                                             value="{!viewAllTechnicalArticlesLink}"
-                                            >View all technology questions</apex:outputLink
-                                        >
+                                            >View all technology questions</apex:outputLink>
                                     </li>
                                 </ul>
                             </div>
                             <div>
                                 <h4 class="c-p9rem font-weight-bold mb-2">Housing</h4>
                                 <ul>
-                                    <apex:repeat
-                                        value="{!topThreeHousingArticles}"
+                                    <apex:repeat value="{!topThreeHousingArticles}"
                                         var="article"
                                         id="myasu-help-region-common-questions-housing"
                                     >
                                         <li>
-                                            <apex:outputLink
-                                                styleClass="mb-1 d-inline-block c-text-black underline"
+                                            <apex:outputLink styleClass="mb-1 d-inline-block c-text-black underline"
                                                 value="/authkb?id={!article.KnowledgeArticleId}"
-                                                >{!article.Title}</apex:outputLink
-                                            >
+                                                >{!article.Title}</apex:outputLink>
                                         </li>
                                     </apex:repeat>
                                     <li>
-                                        <apex:outputLink
-                                            styleClass="mb-2 d-inline-block c-text-maroon underline"
+                                        <apex:outputLink styleClass="mb-2 d-inline-block c-text-maroon underline"
                                             value="{!viewAllHousingArticlesLink}"
-                                            >View all housing questions</apex:outputLink
-                                        >
+                                            >View all housing questions</apex:outputLink>
                                     </li>
                                 </ul>
                             </div>
@@ -324,21 +292,17 @@
                                     <div style="max-height: 400px; overflow-y: scroll">
                                         <apex:repeat value="{!allFinancialArticles}" var="article">
                                             <li>
-                                                <apex:outputLink
-                                                    styleClass="c-text-black underline d-inline-block mt-1 mb-1"
+                                                <apex:outputLink styleClass="c-text-black underline d-inline-block mt-1 mb-1"
                                                     value="/authkb?id={!article.KnowledgeArticleId}"
-                                                    >{!article.Title}</apex:outputLink
-                                                >
+                                                    >{!article.Title}</apex:outputLink>
                                             </li>
                                         </apex:repeat>
                                     </div>
                                     <li>
                                         <hr style="margin-top: 1.5em; margin-bottom: 0" />
-                                        <apex:outputLink
-                                            styleClass="c-text-maroon underline d-inline-block mt-3 mb-1"
+                                        <apex:outputLink styleClass="c-text-maroon underline d-inline-block mt-3 mb-1"
                                             value="/"
-                                            >View all common questions</apex:outputLink
-                                        >
+                                            >View all common questions</apex:outputLink>
                                     </li>
                                 </ul>
                             </apex:outputPanel>
@@ -348,21 +312,17 @@
                                     <div style="max-height: 400px; overflow-y: scroll">
                                         <apex:repeat value="{!allTechnicalArticles}" var="article">
                                             <li>
-                                                <apex:outputLink
-                                                    styleClass="c-text-black underline d-inline-block mt-1 mb-1"
+                                                <apex:outputLink styleClass="c-text-black underline d-inline-block mt-1 mb-1"
                                                     value="/authkb?id={!article.KnowledgeArticleId}"
-                                                    >{!article.Title}</apex:outputLink
-                                                >
+                                                    >{!article.Title}</apex:outputLink>
                                             </li>
                                         </apex:repeat>
                                     </div>
                                     <li>
                                         <hr style="margin-top: 1.5em; margin-bottom: 0" />
-                                        <apex:outputLink
-                                            styleClass="c-text-maroon underline d-inline-block mt-3 mb-1"
+                                        <apex:outputLink styleClass="c-text-maroon underline d-inline-block mt-3 mb-1"
                                             value="/"
-                                            >View all common questions</apex:outputLink
-                                        >
+                                            >View all common questions</apex:outputLink>
                                     </li>
                                 </ul>
                             </apex:outputPanel>
@@ -372,21 +332,17 @@
                                     <div style="max-height: 400px; overflow-y: scroll">
                                         <apex:repeat value="{!allHousingArticles}" var="article">
                                             <li>
-                                                <apex:outputLink
-                                                    styleClass="c-text-black underline d-inline-block mt-1 mb-1"
+                                                <apex:outputLink styleClass="c-text-black underline d-inline-block mt-1 mb-1"
                                                     value="/authkb?id={!article.KnowledgeArticleId}"
-                                                    >{!article.Title}</apex:outputLink
-                                                >
+                                                    >{!article.Title}</apex:outputLink>
                                             </li>
                                         </apex:repeat>
                                     </div>
                                     <li>
                                         <hr style="margin-top: 1.5em; margin-bottom: 0" />
-                                        <apex:outputLink
-                                            styleClass="c-text-maroon underline d-inline-block mt-3 mb-1"
+                                        <apex:outputLink styleClass="c-text-maroon underline d-inline-block mt-3 mb-1"
                                             value="/"
-                                            >View all common questions</apex:outputLink
-                                        >
+                                            >View all common questions</apex:outputLink>
                                     </li>
                                 </ul>
                             </apex:outputPanel>

@@ -264,10 +264,15 @@ export default class CaseQuickClose extends LightningElement {
         const currentSubject = getFieldValue(this.record, SUBJECT_FIELD);
         const currentDescription = getFieldValue(this.record, DESCRIPTION_FIELD);
 
-        if (!currentSubject.startsWith('SPAM:')) {
+        // Handle legacy
+        if (!currentDescription) {
+            currentDescription = 'null';
+        }
+
+        if (currentSubject && !currentSubject.startsWith('SPAM:')) {
             fields[SUBJECT_FIELD.fieldApiName] = 'SPAM: ' + currentSubject;
         }
-        if (!currentDescription.startsWith('SPAM:')) {
+        if (currentDescription && !currentDescription.startsWith('SPAM:')) {
             fields[DESCRIPTION_FIELD.fieldApiName] = 'SPAM: ' + currentDescription;
         }
 

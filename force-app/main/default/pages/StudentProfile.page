@@ -3023,6 +3023,45 @@
                                 <div class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
+                                        &nbsp;On Leave/Enrollment Exception Programs and Plans
+                                    </h4>
+                                </div>
+
+                                <div class="LOAGradTable" rendered="{!IF(LOAGraduatePrograms.size > 0, true, false)}">
+                                    <table class="gradTable">
+                                        <tr>
+                                            <th class="gradTH" style="border-left: 1px solid #ddd; width: 25%">
+                                                Program
+                                            </th>
+                                            <th class="gradTH" style="width: 12%">Plan</th>
+                                            <th class="gradTH" style="width: 21%">Degree Level</th>
+                                            <th class="gradTH" style="width: 14%">Degree</th>
+                                            <th class="gradTH" style="width: 14%">Campus</th>
+                                        </tr>
+                                        <apex:repeat value="{!LOAGraduatePrograms}" var="gradProgram">
+                                            <tr class="gradTR grad-row-toggle">
+                                                <td class="gradTD">
+                                                    {!gradProgram.gradProgramPlan.Program_Description__c}
+                                                </td>
+                                                <td class="gradTD">
+                                                    {!gradProgram.gradProgramPlan.Plan_Description__c}
+                                                </td>
+                                                <td class="gradTD">{!gradProgram.gradProgramPlan.Degree_Level__c}</td>
+                                                <td class="gradTD">{!gradProgram.gradProgramPlan.Degree__c}</td>
+                                                <td class="gradTD">{!gradProgram.gradProgramPlan.Campus__r.Name}</td>
+                                            </tr>
+                                        </apex:repeat>
+                                    </table>
+                                </div>
+
+                                <apex:outputText
+                                    rendered="{!IF(LOAGraduatePrograms.size > 0, false, true)}"
+                                    value="No Leave of Absence graduate programs/plans found."
+                                />
+                                
+                                <div class="page-header-smaller">
+                                    <h4>
+                                        <i class="fa fa-caret-down"></i>
                                         &nbsp;Completed Programs and Plans
                                     </h4>
                                 </div>

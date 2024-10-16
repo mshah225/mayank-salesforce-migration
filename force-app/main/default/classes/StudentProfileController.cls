@@ -51,6 +51,7 @@ global with sharing class StudentProfileController {
     public List<Student_Group__c> sGroupList { get; set; }
     public List<GraduateProgramPlanWrapper> activeGraduatePrograms { get; set; }
     public List<GraduateProgramPlanWrapper> completedGraduatePrograms { get; set; }
+    public List<GraduateProgramPlanWrapper> LOAGraduatePrograms { get; set; }  
     public List<Student_Program_Plan__c> ugProgramPlans { get; set; }
     public List<Student_Program_Plan__c> activeGradProgramPlans { get; set; }
     public List<Student_Program_Plan__c> completedGradProgramPlans { get; set; }
@@ -233,6 +234,7 @@ global with sharing class StudentProfileController {
         ugProgramPlans = new List<Student_Program_Plan__c>();
         activeGraduatePrograms = new List<GraduateProgramPlanWrapper>();
         completedGraduatePrograms = new List<GraduateProgramPlanWrapper>();
+        LOAGraduatePrograms = new List<GraduateProgramPlanWrapper>();
     }
 
     /**
@@ -636,6 +638,10 @@ global with sharing class StudentProfileController {
                     GraduateProgramPlanWrapper pgrm = new GraduateProgramPlanWrapper();
                     pgrm.gradProgramPlan = programPlan;
                     activeGraduatePrograms.add(pgrm);
+                } else if (programPlan.Status__c == 'Leave of Absence') {
+                    GraduateProgramPlanWrapper pgrm = new GraduateProgramPlanWrapper();
+                    pgrm.gradProgramPlan = programPlan;
+                    LOAGraduatePrograms.add(pgrm);  
                 } else {
                     GraduateProgramPlanWrapper pgrm = new GraduateProgramPlanWrapper();
                     pgrm.gradProgramPlan = programPlan;

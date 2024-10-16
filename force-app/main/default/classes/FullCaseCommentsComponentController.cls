@@ -5,4 +5,5 @@
  * @deprecated If you find this - you can delete this.
  */
 public with sharing class FullCaseCommentsComponentController {
+    public List<CaseComment> comments { get; set; }
 }

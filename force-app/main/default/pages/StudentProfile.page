@@ -1616,6 +1616,21 @@
                                 <div class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
+                                        &nbsp;EdPlus Success Coach Comments
+                                    </h4>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div id="success_coach_comments_section">
+                                            <c:fullCaseCommentsHistory caseComments="{!caseComments}" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="page-header-smaller">
+                                    <h4>
+                                        <i class="fa fa-caret-down"></i>
                                         &nbsp;Guest Access
                                     </h4>
                                 </div>

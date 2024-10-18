@@ -1,5 +1,6 @@
 <!-- Student Search Visualforce Page -->
-<apex:page id="StudentSearch"
+<apex:page
+    id="StudentSearch"
     controller="StudentSearchController"
     cache="false"
     showHeader="false"
@@ -23,8 +24,7 @@
             crossorigin="anonymous"
         />
         <link href="https://fonts.googleapis.com/css?family=Roboto:normal,medium" rel="stylesheet" type="text/css" />
-        <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"
-        />
+        <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" />
         <c:StudentProfileStyles />
         <style>
             .alert {
@@ -122,6 +122,100 @@
                 opacity: 1;
                 background-color: #8c1d40;
             }
+
+            .student-search-instructions-container {
+                border-radius: 3rem;
+                background-color: #fafafa;
+                padding: 2rem;
+                margin-top: 2.5rem;
+            }
+
+            .student-search-instructions-container code,
+            .student-search-instructions-welcome code {
+                font-weight: bold;
+            }
+            .student-search-instructions-preamble,
+            .student-search-instructions-preamble-options,
+            .student-search-instructions-wildcards-title,
+            .student-search-instructions-wildcards,
+            .student-search-instructions-wildcards-warning {
+                font-weight: 500;
+            }
+
+            .font-awesome-area {
+                line-height: 2.5rem;
+                vertical-align: middle;
+            }
+
+            .asu-maroon {
+                color: #8c1d40;
+            }
+
+            /* Hourglass animation */
+            #student-search-long-loading-hourglass i {
+                opacity: 0;
+                animation: student-search-long-loading-hourglass 2.4s ease-in infinite,
+                    student-search-long-loading-hourglass-spin 2.4s ease-out infinite;
+            }
+            #student-search-long-loading-hourglass > i:nth-child(1) {
+                color: #747474;
+                animation-delay: 0s, 0s;
+            }
+            #student-search-long-loading-hourglass > i:nth-child(2) {
+                color: #747474;
+                animation-delay: 0.6s, 0s;
+            }
+            #student-search-long-loading-hourglass > i:nth-child(3) {
+                color: #484848;
+                animation-delay: 1.2s, 0s;
+            }
+            #student-search-long-loading-hourglass > i:nth-child(4) {
+                color: #747474;
+                animation-delay: 1.8s, 0s;
+            }
+            #student-search-long-loading-hourglass > i:nth-child(4) {
+                animation: student-search-long-loading-hourglass-end 2.4s ease-in infinite,
+                    student-search-long-loading-hourglass-spin 2.4s ease-out infinite;
+            }
+            #student-search-long-loading-hourglass > i:nth-child(5) {
+                color: #8c1d40;
+                -webkit-text-stroke: 0.1rem;
+                opacity: 1;
+                animation: student-search-long-loading-hourglass-spin 2.4s ease-out infinite;
+            }
+            @keyframes student-search-long-loading-hourglass {
+                0% {
+                    opacity: 1;
+                }
+                24% {
+                    opacity: 0.9;
+                }
+                26% {
+                    opacity: 0;
+                }
+            }
+            @keyframes student-search-long-loading-hourglass-end {
+                0% {
+                    opacity: 0;
+                }
+                70% {
+                    opacity: 0;
+                }
+                75% {
+                    opacity: 1;
+                }
+                100% {
+                    opacity: 1;
+                }
+            }
+            @keyframes student-search-long-loading-hourglass-spin {
+                75% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(180deg);
+                }
+            }
         </style>
     </head>
 
@@ -147,24 +241,25 @@
                     <div class="alert">{!message}</div>
                 </apex:repeat>
 
-                <apex:form >
+                <apex:form>
                     <apex:pageBlock mode="maindetail">
                         <div id="student-search-input-title">Search:</div>
                         <div id="student-search-input-field-container">
                             <apex:inputText id="student-search-input-field" styleClass="slds-select" />
-                            <apex:commandButton id="student-search-input-button"
+                            <apex:commandButton
+                                id="student-search-input-button"
                                 onclick="initiateStudentSearch(); return false;"
                                 value="Search"
                             />
                             <i class="fa fa-search"></i>
                             <div id="student-search-input-field-description">
-                                <strong>Search by</strong> EMPLID, ASURITE, Campus ID, or name (full or partial). Use
-                                "last, first" or "first last" format for names.
+                                <strong>Search by</strong> EMPLID, ASURITE, or name (full or partial). See detailed
+                                instructions on the search landing page.
                             </div>
                         </div>
                         <div id="student-search-results" style="display: none">
                             <div id="student-search-current-search-results-text">
-                                Search results for "<span id="student-search-current-search-value"></span>"
+                                Search results for <code><span id="student-search-current-search-value"></span></code>
                             </div>
                             <div id="student-search-current-search-count"></div>
                         </div>
@@ -186,6 +281,7 @@
             queryRecordLimit = '250',
             userSearchInput,
             searchMode,
+            intervalId,
             studentResultsByCampus = [],
             studentResultsBySearchTerm = [],
             studentResultsToDisplay = [],
@@ -229,27 +325,53 @@
          * Displays a message to the user within a designated UI element.
          */
         function showMessage(message = '') {
-            $j('#student-search-message').html(message).show();
+            if (hasResultsToDisplay()) {
+                hideMessage();
+            } else {
+                $j('#student-search-message').html(message).show();
+            }
         }
 
         /**
          * Displays a loading message and optionally includes confirmation buttons for ASURITE or name search.
          * The function uses the showMessage utility to display the message prominently.
          */
-        function showLoadingMessage(message = 'Loading...', userConfirmationNeeded = false) {
+        function showLoadingMessage(
+            message = 'Fetching results... hang tight, it should be quick. Probably.',
+            userConfirmationNeeded = false
+        ) {
             if (userConfirmationNeeded) {
+                clearInterval(intervalId);
+                intervalId = null;
+
                 showMessage(
-                    `<i style='line-height: 2.5rem; vertical-align: middle; color: #8c1d40;' class='fa fa-question-circle fa-2x margin-bottom'></i>
-                    <span style='line-height: 2.5rem; vertical-align: middle;'>${message}</span>
+                    `<i class='asu-maroon font-awesome-area fa fa-question-circle fa-2x fa-fw margin-bottom'></i>
+                    <span class='font-awesome-area'>${message}</span>
                     <button onclick='confirmAsuriteSearch(true);' class='btn btn-primary btn-sm' style='margin-left: 1em;'><i class='fa fa-user'></i>&nbsp;&nbsp;ASURITE</button>
                     <button onclick='confirmAsuriteSearch(false);' class='btn btn-info btn-sm' style='margin-left: .5em;'><i class='fa fa-users'></i>&nbsp;&nbsp;Name</button>`
                 );
             } else {
-                showMessage(
-                    `<i style='line-height: 2.5rem; vertical-align: middle;' class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>
-                    <span style='line-height: 2.5rem; vertical-align: middle;'>${message}</span>`
-                );
+                showMessage(`<i class='asu-maroon font-awesome-area fa fa-circle-o-notch fa-spin fa-2x fa-fw margin-bottom'></i>
+                        <span class='font-awesome-area'>${message}</span>`);
+
+                // Check if the loading takes longer than 5 seconds, then show an additional message
+                if (!intervalId) {
+                    intervalId = setInterval(showLongLoadingMessage, 5000); // 5 second threshold
+                }
             }
+        }
+
+        function showLongLoadingMessage(
+            message = `Results seem to be taking the scenic route. Hang in there; we'll call it quits if it takes too long.`
+        ) {
+            showMessage(`<span id="student-search-long-loading-hourglass" class="font-awesome-area fa-stack">
+                            <i class="fa fa-2x fa-fw margin-bottom fa-stack-1x fa-hourglass-start"></i>
+                            <i class="fa fa-2x fa-fw margin-bottom fa-stack-1x fa-hourglass-half"></i>
+                            <i class="fa fa-2x fa-fw margin-bottom fa-stack-1x fa-hourglass-end"></i>
+                            <i class="fa fa-2x fa-fw margin-bottom fa-stack-1x fa-hourglass-end"></i>
+                            <i class="fa fa-2x fa-fw margin-bottom fa-stack-1x fa-hourglass-o"></i>
+                        </span>
+                        <span class='font-awesome-area'>${message}</span>`);
         }
 
         /**
@@ -257,14 +379,42 @@
          * The function uses the showMessage utility to display the message prominently.
          */
         function showWelcomeMessage() {
-            showMessage("Let's dive in! Enter a search term, then click 'Search' or press ENTER to begin.");
+            showMessage(
+                `<p class="student-search-instructions-welcome">We're ready when you are! Enter your search term and hit <code>Search</code> or press <code>ENTER</code>. Don't worry, it's just between us.</p>
+
+                <div class="student-search-instructions-container">
+                    <p class="student-search-instructions-preamble">For <strong>quickest results</strong>, follow these search methods:</p>
+                    <ul class="student-search-instructions-preamble-options">
+                        <li><strong>EMPLID</strong> or <strong>ASURITE</strong></li>
+                        <li><strong>Full names</strong> ("last, first" or "first last")</li>
+                        <li><strong>Single-word names</strong> (first or last name only)</li>
+                        <li><strong>Wildcard searches</strong> (use sparingly)</li>
+                    </ul>
+
+                    <p class="student-search-instructions-wildcards-title">Using <strong>wildcards</strong>:</p>
+                    <ul class="student-search-instructions-wildcards">
+                        <li>An asterisk (<code>*</code>) matches multiple characters (e.g., <code>John* Smith</code> matches "John Smith," "Johnson Smith," "Johnathan Smith")</li>
+                        <li>Due to the large amount of student data, wildcard searches might take longer and could time out if too complex</li>
+                    </ul>
+                </div>`
+            );
         }
 
         /**
          * Displays an error message in a distinct format to alert users that something went wrong.
          */
-        function showErrorMessage(error = 'An unknown error occurred') {
-            showMessage(`[ERROR]: ${error}`);
+        function showErrorMessage(
+            message = `Oops, something went wrong. Not sure what, so you might want to try again later.`
+        ) {
+            if (message.includes('too long')) {
+                showMessage(
+                    `<i class='asu-maroon font-awesome-area fa fa-coffee fa-2x fa-fw margin-bottom'></i> We didn't receive the expected response... maybe our system grabbed a coffee. Try a more specific search, like EMPLID or ASURITE, to speed things up.`
+                );
+            } else {
+                showMessage(
+                    `<i class='asu-maroon font-awesome-area fa fa-mixcloud fa-2x fa-fw margin-bottom'></i> ${message}`
+                );
+            }
         }
 
         /**
@@ -318,19 +468,26 @@
                 .map((char) => accentsMap[char] || char)
                 .join('');
 
-            // Remove non-allowed characters
+            // Remove non-allowed characters except for asterisks (*) and question marks (?)
             input = input
                 .trim()
                 .slice(0, 75)
-                .replace(/[^a-zA-Z0-9,'\s-.]/g, '');
+                .replace(/[^a-zA-Z0-9,'\s-.*?]/g, '');
+
+            // Collapse consecutive asterisks (*) and question marks (?) to a single one
+            input = input
+                .replace(/\*+/g, '*') // Collapse multiple asterisks
+                .replace(/\?+/g, '?'); // Collapse multiple question marks
+
+            // Keep * and ? in the input for display purposes
 
             // Only set input as lowercase if the entire input is NOT all caps
-            input = input == input.toUpperCase() ? input : input.toLowerCase();
+            input = input === input.toUpperCase() ? input : input.toLowerCase();
 
             // Handle multiple commas: keep the first, replace subsequent commas with spaces
             let parts = input.split(',');
             if (parts.length > 1) {
-                input = parts[0] + ',' + parts.slice(1).join(' ').replace(/\s+/g, ' ');
+                input = `${parts[0]}, ${parts.slice(1).join(' ').replace(/\s+/g, ' ')}`;
             }
 
             // Normalize formatting by collapsing consecutive punctuation and spaces
@@ -346,10 +503,22 @@
         }
 
         /**
+         * Converts wildcards (*) and (?) to their SOQL equivalents (% and _ respectively)
+         */
+        function convertWildcardsForSOQL(input) {
+            return input
+                .replace(/\*/g, '%') // Convert * to % for SOQL LIKE statements
+                .replace(/\?/g, '_'); // Convert ? to _ for SOQL LIKE statements
+        }
+
+        /**
          * Displays the term currently being searched for, enhancing user awareness and interaction.
          */
         function setCurrentSearchTerm() {
             $j('#student-search-current-search-value').text(userSearchInput);
+
+            // Modify userSearchInput for backend (SOQL conversion) after displaying it to the user
+            userSearchInput = convertWildcardsForSOQL(userSearchInput);
         }
 
         /**
@@ -363,8 +532,8 @@
             // If there is a valid ASURITE match but no associated student records, let the user know. Otherwise, carry on.
             matchResultsText =
                 searchMode?.isAsurite && matchCount === 0
-                    ? `<i style='line-height: 2.5rem; vertical-align: middle; color: #8c1d40;' class='fa fa-exclamation-circle fa-2x margin-bottom'></i>
-                        <span style='line-height: 2.5rem; vertical-align: middle; font-weight: bold;'>ASURITE ID confirmed, but it's not linked to any student records. It could be assigned to faculty, staff, or affiliates.</span>`
+                    ? `<i class='asu-maroon font-awesome-area fa fa-exclamation-circle fa-2x fa-fw margin-bottom'></i>
+                        <span class='font-awesome-area' style='font-weight: bold;'>ASURITE ID confirmed, but it's not linked to any student records. It could be assigned to faculty, staff, or affiliates.</span>`
                     : matchResultsText;
 
             $j('#student-search-current-search-count').html(matchResultsText).show();
@@ -416,6 +585,9 @@
          * Resets the data-storing variables to a fresh state.
          */
         function resetSearchData() {
+            clearInterval(intervalId);
+            intervalId = null;
+
             studentResultsBySearchTerm = [];
             studentResultsByCampus = [];
             studentResultsToDisplay = [];
@@ -488,8 +660,6 @@
             hideMessage();
             hideCurrentSearchCount();
             setCurrentSearchTerm();
-
-            showLoadingMessage('Fine-tuning search parameters for you. Just a moment...');
             executeQuery(buildLocationQuery(), handleLocationQueryResults);
         }
 
@@ -507,19 +677,14 @@
          */
         function buildCampusQuery() {
             let sanitizedQueryInput = userSearchInput.replace(/'/g, "\\'"); // Escape all single quotes in the query
-            return (
-                'SELECT Id, Campus__r.Location_Code__c, College_Diploma_Description__c, Contact__c, ' +
-                'Contact__r.ASURite_ID__c, Contact__r.Birthdate, Contact__r.EMPLID__c, Contact__r.Preferred_Full_Name__c, ' +
-                'Contact__r.Preferred_First_Name__c, Contact__r.LastName, Degree_Conferral_Date__c, Plan_Code__c, ' +
-                'Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c ' +
-                'FROM Student_Program_Plan__c ' +
-                "WHERE Campus__r.Location_Code__c = '" +
-                sanitizedQueryInput +
-                "' " +
-                'ORDER BY Contact__r.Preferred_Full_Name__c ' +
-                'LIMIT ' +
-                queryRecordLimit
-            );
+            return `SELECT Id, Campus__r.Location_Code__c, College_Diploma_Description__c, Contact__c,
+                        Contact__r.ASURite_ID__c, Contact__r.Birthdate, Contact__r.EMPLID__c, Contact__r.Preferred_Full_Name__c,
+                        Contact__r.Preferred_First_Name__c, Contact__r.LastName, Degree_Conferral_Date__c, Plan_Code__c,
+                        Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c
+                    FROM Student_Program_Plan__c
+                    WHERE Campus__r.Location_Code__c = '${sanitizedQueryInput}'
+                    ORDER BY Contact__r.Preferred_Full_Name__c
+                    LIMIT ${queryRecordLimit}`;
         }
 
         /**
@@ -528,7 +693,7 @@
          */
         function buildAsuriteMatchQuery() {
             let sanitizedQueryInput = userSearchInput.replace(/'/g, "\\'"); // Escape all single quotes in the query
-            return "SELECT COUNT() FROM Contact WHERE ASURite_ID__c = '" + sanitizedQueryInput + "' LIMIT 1";
+            return `SELECT COUNT() FROM Contact WHERE ASURite_ID__c = '${sanitizedQueryInput}' LIMIT 1`;
         }
 
         /**
@@ -537,73 +702,64 @@
          */
         function buildDynamicContactQuery() {
             let sanitizedQueryInput = userSearchInput.replace(/'/g, "\\'"); // Escape all single quotes in the query
-            let consolidatedQuery =
-                'SELECT Id, ASURite_ID__c, Birthdate, EMPLID__c, Preferred_Full_Name__c, ' +
-                '(SELECT Id, Campus__r.Location_Code__c, College_Diploma_Description__c, Contact__c, Degree_Conferral_Date__c, ' +
-                'Plan_Code__c, Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c FROM Student_Plans__r) ' +
-                'FROM Contact ';
+            let consolidatedQuery = `SELECT Id, ASURite_ID__c, Birthdate, EMPLID__c, Preferred_Full_Name__c, Preferred_First_Name__c, LastName,
+                                        (SELECT Id, Campus__r.Location_Code__c, College_Diploma_Description__c, Contact__c, Degree_Conferral_Date__c,
+                                            Plan_Code__c, Plan_Transcript_Description__c, Primary_Flag__c, Program_Description__c
+                                        FROM Student_Plans__r)
+                                    FROM Contact
+                                    WHERE EMPLID__c != null `;
 
             if (searchMode?.isEmplid) {
-                consolidatedQuery += "WHERE EMPLID__c = '" + sanitizedQueryInput + "' ";
+                consolidatedQuery += `AND (EMPLID__c = '${sanitizedQueryInput}') `;
             } else if (searchMode?.isAsurite) {
-                consolidatedQuery += "WHERE ASURite_ID__c = '" + sanitizedQueryInput + "' ";
-            } else if (searchMode?.isLastFirstWithComma || searchMode?.isFirstLastWithSpace) {
-                consolidatedQuery += getExtractedNameQueryContext(searchMode);
-            } else if (searchMode?.isPartialName) {
-                consolidatedQuery += "WHERE Preferred_Full_Name__c LIKE '%" + sanitizedQueryInput + "%' ";
+                consolidatedQuery += `AND (ASURite_ID__c = '${sanitizedQueryInput}') `;
+            } else if (searchMode?.isWildcardName) {
+                consolidatedQuery += `AND (Preferred_Full_Name__c LIKE '${sanitizedQueryInput}') `;
+            } else if (searchMode?.isFullNameWithComma || searchMode?.isFullNameWithSpace) {
+                consolidatedQuery += `AND (Preferred_Full_Name__c = '${getExtractedFullName(searchMode)}') `;
+            } else if (searchMode?.isSingleWordName) {
+                consolidatedQuery += `AND (Preferred_First_Name__c = '${sanitizedQueryInput}' OR LastName = '${sanitizedQueryInput}') `;
             } else {
                 return null;
             }
 
-            consolidatedQuery += 'AND EMPLID__c != null ';
-
-            if (searchMode?.isLastFirstWithComma || searchMode?.isFirstLastWithSpace || searchMode?.isPartialName)
+            if (!searchMode?.isEmplid && !searchMode?.isAsurite)
                 consolidatedQuery += 'ORDER BY Preferred_Full_Name__c ';
 
-            return (consolidatedQuery += 'LIMIT ' + queryRecordLimit);
+            return (consolidatedQuery += `LIMIT ${queryRecordLimit}`);
         }
 
         /**
          * Determines the appropriate SOQL condition for name-based searches, adapting based on the format of the name input (comma-separated or space-separated).
          */
-        function getExtractedNameQueryContext(searchMode) {
+        function getExtractedFullName(searchMode) {
             let extractedNames;
-            let extractedFirstName;
-            let extractedLastName;
-            let extractedFullName;
+            let extractedFirstName = '';
+            let extractedLastName = '';
 
-            if (searchMode?.isLastFirstWithComma) {
+            if (searchMode?.isFullNameWithComma) {
+                // If the name is comma-separated (e.g., LastName, FirstName)
                 extractedNames = userSearchInput.split(',');
-                extractedLastName = extractedNames[0].trim();
-                extractedFirstName = extractedNames[1].trim();
-            } else if (searchMode?.isFirstLastWithSpace) {
-                extractedNames = userSearchInput.split(' ');
-                for (let i = 0; i < extractedNames.length; i++) {
-                    if (i === 0) {
-                        extractedFirstName = extractedNames[i].trim();
-                    } else if (i === 1) {
-                        extractedLastName = extractedNames[i].trim();
-                    } else {
-                        extractedLastName += ' ' + extractedNames[i].trim();
-                    }
+
+                extractedLastName = extractedNames[0]?.trim() || ''; // The first part is Last Name
+                extractedFirstName = extractedNames[1]?.trim() || ''; // The second part is First Name (if it exists)
+            } else if (searchMode?.isFullNameWithSpace) {
+                // If the name is space-separated
+                extractedNames = userSearchInput.split(' ').filter((name) => name.trim().length > 0); // Filter out any extra spaces
+
+                if (extractedNames.length > 0) {
+                    // The first name is the first part
+                    extractedFirstName = extractedNames[0].trim();
+                }
+
+                if (extractedNames.length > 1) {
+                    // All remaining parts after the first will be treated as the last name
+                    extractedLastName = extractedNames.slice(1).join(' ').trim();
                 }
             }
-            extractedFirstName = extractedFirstName.trim().replace(/'/g, "\\'");
-            extractedLastName = extractedLastName.trim().replace(/'/g, "\\'");
-            extractedFullName = extractedFirstName + ' ' + extractedLastName;
 
-            return (
-                'WHERE ' +
-                "(Preferred_Full_Name__c = '" +
-                extractedFullName +
-                "' OR (" +
-                "Preferred_First_Name__c LIKE '" +
-                extractedFirstName +
-                "%' AND " +
-                "LastName LIKE '" +
-                extractedLastName +
-                "%')) "
-            );
+            // Return the sanitized first and last name with escaped single quotes
+            return `${extractedFirstName.trim().replace(/'/g, "\\'")} ${extractedLastName.trim().replace(/'/g, "\\'")}`;
         }
 
         /**
@@ -619,7 +775,10 @@
          */
         function handleLocationQueryResults(error, response) {
             if (error) {
-                return showErrorMessage(error);
+                showErrorMessage(error?.message);
+                clearInterval(intervalId);
+                intervalId = null;
+                return;
             }
 
             // Extract campus location codes from the query response and check for a match with the user input.
@@ -638,7 +797,10 @@
          */
         function handleCampusStudentResults(error, response) {
             if (error) {
-                return showErrorMessage(error);
+                showErrorMessage(error?.message);
+                clearInterval(intervalId);
+                intervalId = null;
+                return;
             }
 
             showLoadingMessage('Campus data located! Compiling details for you now...');
@@ -652,7 +814,10 @@
          */
         function processStudentRecordsByCampus(records) {
             studentResultsByCampus = records;
+
             showLoadingMessage('Organizing student data for you. Almost there...');
+            clearInterval(intervalId);
+            intervalId = null;
 
             // Consolidate reducing duplicates, selecting the most relevant program, and cleaning up data
             let uniqueAndRelevantStudents = studentResultsByCampus.reduce((accumulator, item) => {
@@ -699,7 +864,12 @@
          * Determines and handles the search mode for non-campus queries, processing results based on ASURITE or other criteria.
          */
         function handleSearchMode(error, response) {
-            if (error) return showErrorMessage(error);
+            if (error) {
+                showErrorMessage(error?.message);
+                clearInterval(intervalId);
+                intervalId = null;
+                return;
+            }
 
             searchMode = determineSearchMode(response.totalSize);
             if (!searchMode?.isAsurite) {
@@ -712,16 +882,22 @@
          * Processes contact search results from dynamic queries and manages the presentation of these results.
          */
         function handleContactResults(error, response) {
-            if (error) return showErrorMessage(error);
+            if (error) {
+                showErrorMessage(error?.message);
+                clearInterval(intervalId);
+                intervalId = null;
+                return;
+            }
 
             processStudentRecordsBySearchTerm(response.records);
-
-            populateEmplIdToHasClassesMp(response.records)
+            populateEmplIdToHasClassesMap(response.records)
                 .then(() => {
                     buildSearchResults();
                 })
                 .catch((err) => {
-                    showErrorMessage(err);
+                    showErrorMessage(err?.message);
+                    clearInterval(intervalId);
+                    intervalId = null;
                 });
         }
 
@@ -732,6 +908,8 @@
             studentResultsBySearchTerm = records;
 
             showLoadingMessage('Refining student details for optimal results. Hang tight...');
+            clearInterval(intervalId);
+            intervalId = null;
 
             // Clean up data by removing unnecessary attributes from main and nested records
             Object.values(studentResultsBySearchTerm).forEach((contact) => {
@@ -808,7 +986,7 @@
         /**
          * Calls the DPL API for each EMPLID in studentResultsBySearchTerm to determine which have classes and which don't
          */
-        function populateEmplIdToHasClassesMp() {
+        function populateEmplIdToHasClassesMap() {
             return new Promise((resolve, reject) => {
                 const allPromises = [];
 
@@ -858,25 +1036,29 @@
          * Determines search mode based on user input and match count, displaying context-appropriate messages and potentially requesting user confirmation for ASURITE matches.
          */
         function determineSearchMode(totalSize) {
-            const isEmplid = /^[0-9]{10}$/gi.test(userSearchInput);
+            const isEmplid = /^\d+$/g.test(userSearchInput);
             const isAsurite = !isEmplid && totalSize === 1;
-            const isLastFirstWithComma = userSearchInput.includes(',');
-            const isFirstLastWithSpace = userSearchInput.includes(' ');
-            const isPartialName = !isEmplid && !isAsurite && !isLastFirstWithComma && !isFirstLastWithSpace;
+            const isWildcardName = !isEmplid && !isAsurite && userSearchInput.includes('%');
+            const isFullNameWithComma = userSearchInput.includes(',') && !isWildcardName;
+            const isFullNameWithSpace = userSearchInput.includes(' ') && !isWildcardName;
+            const isSingleWordName =
+                !isEmplid && !isAsurite && !isWildcardName && !isFullNameWithComma && !isFullNameWithSpace;
 
             if (isAsurite) {
                 showLoadingMessage('ASURITE ID found! Search by ASURITE or switch to name?', true);
             } else if (isEmplid) {
                 showLoadingMessage('Checking EMPLID details. Fetching student data now...');
-            } else if (isLastFirstWithComma) {
+            } else if (isWildcardName) {
+                showLoadingMessage('Surveying wildcard search details. Assessing relevant students...');
+            } else if (isFullNameWithComma) {
                 showLoadingMessage("Tidying up the details for your 'Last, First' search. Almost there...");
-            } else if (isFirstLastWithSpace) {
+            } else if (isFullNameWithSpace) {
                 showLoadingMessage("Exploring 'First Last' names. Sorting them out shortly...");
-            } else if (isPartialName) {
+            } else if (isSingleWordName) {
                 showLoadingMessage('Navigating partial names. Finding matches now...');
             }
 
-            return {isEmplid, isAsurite, isLastFirstWithComma, isFirstLastWithSpace, isPartialName};
+            return {isEmplid, isAsurite, isWildcardName, isFullNameWithComma, isFullNameWithSpace, isSingleWordName};
         }
 
         /**
@@ -891,7 +1073,7 @@
             } else {
                 showLoadingMessage('Switching to name search. Just a moment...');
                 searchMode.isAsurite = false;
-                searchMode.isPartialName = true;
+                searchMode.isSingleWordName = true;
                 executeQuery(buildDynamicContactQuery(), handleContactResults); // Assuming name search is partial name
             }
         }

@@ -31,7 +31,13 @@ public class CampusVisitTourSplitController {
             pod.addMember(cm);
         }
         
-        return recreatedPods.values();
+        List<TourPod> sortedPods = new List<TourPod>();
+        
+        for (Integer i = 1; i <= recreatedPods.keySet().size(); i++) {
+            sortedPods.add(recreatedPods.get(i.toString()));
+        }    
+        
+        return sortedPods;
     }
 
     @AuraEnabled(cacheable=true)

@@ -20,6 +20,8 @@ public class CampusVisitTourSplitController {
     public static List<TourPod> refreshCampaignMemberTable(List<CampaignMember> cmsToUpdate) {
         Map<String, TourPod> recreatedPods = new Map<String, TourPod>();
 
+        Decimal highestPod = 0;
+        
         for (CampaignMember cm : cmsToUpdate) {
             String tourGroupId = '' + cm.Tour_Group_Id__c;
             TourPod pod = recreatedPods.get(tourGroupId);
@@ -28,14 +30,22 @@ public class CampusVisitTourSplitController {
                 recreatedPods.put(tourGroupId, pod);
             }
 
+            if (highestPod < cm.Tour_Group_Id__c) {
+                highestPod = cm.Tour_Group_Id__c;
+            }
+            
             pod.addMember(cm);
         }
         
         List<TourPod> sortedPods = new List<TourPod>();
         
-        for (Integer i = 1; i <= recreatedPods.keySet().size(); i++) {
-            sortedPods.add(recreatedPods.get(i.toString()));
-        }    
+        for (Integer i = 1; i <= highestPod; i++) {
+            if (recreatedPods.get(i.toString()) == null) {
+                sortedPods.add(new TourPod(999, i));
+            } else {
+            	sortedPods.add(recreatedPods.get(i.toString()));
+            }
+        }   
         
         return sortedPods;
     }

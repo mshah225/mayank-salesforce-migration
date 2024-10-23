@@ -1,6 +1,7 @@
 @isTest
 public with sharing class CaseTriggerTest {
     private static final String APIUserAlias = 'testUsrA';
+    private static final String nonAPIUserAlias = 'testUsrN';
     private static final String TMUserAlias = 'testUsrT';
     private static final String ECUserAlias = 'testUsrE';
 
@@ -16,6 +17,22 @@ public with sharing class CaseTriggerTest {
             Email = 'test.API.user@test.test',
             Alias = APIUserAlias,
             CommunityNickname = APIUserAlias,
+            TimeZoneSidKey = 'America/New_York',
+            LocaleSidKey = 'en_US',
+            EmailEncodingKey = 'UTF-8',
+            ProfileId = RecordIdHelper.getProfileId('System Administrator'),
+            LanguageLocaleKey = 'en_US',
+            IsActive = true
+        );
+        User nonAPIUser = new User(
+            FirstName = 'Not an API',
+            LastName = 'Test User',
+            CompanyName = 'Test Company',
+            MobilePhone = '123-456-7890',
+            Username = 'test.nonAPI.user@test.test',
+            Email = 'test.nonAPI.user@test.test',
+            Alias = nonAPIUserAlias,
+            CommunityNickname = nonAPIUserAlias,
             TimeZoneSidKey = 'America/New_York',
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'UTF-8',
@@ -55,7 +72,18 @@ public with sharing class CaseTriggerTest {
             LanguageLocaleKey = 'en_US',
             IsActive = true
         );
-        insert new List<User>{ APIUser, TMUser, ECUser };
+        insert new List<User>{ APIUser, nonAPIUser, TMUser, ECUser };
+
+        // Assign APIUser to API user custom perm permission set
+        // Setup object, wrap in System.runAs
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'API_User_Custom_Perm_API_User' LIMIT 1];
+            PermissionSetAssignment apiUserPsa = new PermissionSetAssignment(
+                AssigneeId = APIUser.Id,
+                PermissionSetId = ps.Id
+            );
+            insert apiUserPsa;
+        }
 
         // Test contact
         Contact testContact = new Contact(
@@ -178,11 +206,12 @@ public with sharing class CaseTriggerTest {
 
     @isTest
     private static void testAdmissionsCaseEnrollmentCoachAssignment() {
-        User TMUser = [SELECT Id FROM User WHERE Alias = :TMUserAlias LIMIT 1];
+        User nonApiUser = [SELECT Id FROM User WHERE Alias = :nonAPIUserAlias LIMIT 1];
+        User ECUser = [SELECT Id FROM User WHERE Alias = :ECUserAlias LIMIT 1];
         Contact con = [SELECT Id, AccountId FROM Contact LIMIT 1];
 
         Opportunity testOpp = [SELECT Id FROM Opportunity LIMIT 1];
-        testOpp.Enrollment_Coach__c = TMUser.Id;
+        testOpp.Enrollment_Coach__c = ECUser.Id;
         update testOpp;
 
         Case newCase = new Case(
@@ -197,12 +226,14 @@ public with sharing class CaseTriggerTest {
 
         Test.startTest();
         LogSuite.activateTestFlowSuite('Test Admissions Case Enrollment Coach Assignment');
-        insert newCase;
+        System.runAs(nonApiUser) {
+            insert newCase;
+        }
         LogSuite.deactivateTestFlowSuite();
         Test.stopTest();
 
         newCase = [SELECT Id, OwnerId FROM Case WHERE Id = :newCase.Id];
-        System.assertEquals(TMUser.Id, newCase.OwnerId, 'Case owner was not assigned to Opportunity Enrollment Coach');
+        System.assertEquals(ECUser.Id, newCase.OwnerId, 'Case owner was not assigned to Opportunity Enrollment Coach');
     }
 
     @isTest

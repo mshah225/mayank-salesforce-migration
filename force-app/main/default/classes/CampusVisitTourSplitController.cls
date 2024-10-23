@@ -58,7 +58,7 @@ public class CampusVisitTourSplitController {
             Comments__c, Barrett_Session__c, Housing_Tour__c, Additional_Tour_Information__c
             FROM CampaignMember
             WHERE Status IN: VALID_MEMBER_STATUSES AND CampaignId =: campaignId
-            ORDER By Academic_Session__c, Number_of_Attendees__c DESC
+            ORDER By Academic_Session__c NULLS LAST, Number_of_Attendees__c DESC
         ];
 
         Map<String, Integer> academicSessionsWithMemberCount = new Map<String, Integer>();

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Suspect_Campaign__c</fullName>
+    <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>[Apex] [Lead Conversion] Source campaign for suspect interactions, only used when converted from Lead.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>[Apex] [Lead Conversion] Source campaign for suspect interactions, only used when converted from Lead.</inlineHelpText>
+    <label>Suspect Campaign</label>
+    <referenceTo>Campaign</referenceTo>
+    <relationshipLabel>Opportunities (Suspect Campaign)</relationshipLabel>
+    <relationshipName>OpportunitySuspectCampaign</relationshipName>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

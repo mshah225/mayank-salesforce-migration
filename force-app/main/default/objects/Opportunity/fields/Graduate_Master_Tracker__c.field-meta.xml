@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Graduate_Master_Tracker__c</fullName>
+    <businessOwnerGroup>Data_Owner_WPC_Graduate_Programs_Office</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>[Apex] - When the Opportunity Interview Status = Complete and the Opportunity Plan Code = BAFULLMBA and Round != NULL and Interview Date &lt;= Today, then create a Master Tracker record. This field is a lookup to the record that gets created.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>[Apex] - When the Opportunity Interview Status = Complete and the Opportunity Plan Code = BAFULLMBA and Round != NULL and Interview Date &lt;= Today, then create a Master Tracker record. This field is a lookup to the record that gets created.</inlineHelpText>
+    <label>Graduate Master Tracker</label>
+    <referenceTo>Graduate_Master_Tracker__c</referenceTo>
+    <relationshipLabel>Opportunities</relationshipLabel>
+    <relationshipName>Opportunities</relationshipName>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

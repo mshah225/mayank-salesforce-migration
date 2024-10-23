@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Role_Administrator_Developer__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>PeopleSoft security role = ASU_FC_SF AD Admin and Develop; PeopleSoft security role listed as "UTO Salesforce Admin &amp; Dev". Field viewable by all core profiles.
+[DW: sfe_user]</description>
+    <externalId>false</externalId>
+    <inlineHelpText>PeopleSoft security role listed as "UTO Salesforce Admin &amp; Dev" (role name: ASU_FC_SF AD Admin and Develop). Only given to Salesforce Administrators.</inlineHelpText>
+    <label>Administrator / Developer</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Checkbox</type>
+</CustomField>

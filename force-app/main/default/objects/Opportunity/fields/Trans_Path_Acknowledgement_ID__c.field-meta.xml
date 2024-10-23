@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Trans_Path_Acknowledgement_ID__c</fullName>
+    <description>Supports the  ‘Transfer Guide’ eAdvisor Compass project.
+Populated with the ID that is held in the GPA/TAG database</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Populated with the ID that is held in the GPA/TAG database</inlineHelpText>
+    <label>TP: Acknowledgement ID</label>
+    <length>50</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

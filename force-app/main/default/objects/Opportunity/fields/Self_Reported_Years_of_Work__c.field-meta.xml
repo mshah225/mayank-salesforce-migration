@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Self_Reported_Years_of_Work__c</fullName>
+    <businessOwnerGroup>Data_Owner_WPC_Graduate_Programs_Office</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>FERPA</complianceGroup>
+    <description>[DBAMP-Snaplogic/ Common File Layout] The number of years the suspect/prospect has self-reported for their work experiences; this number is unconfirmed.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>[DBAMP-Snaplogic/ Common File Layout] The number of years the suspect/prospect has self-reported for their work experiences; this number is unconfirmed.</inlineHelpText>
+    <label>Self-Reported Years of Work</label>
+    <precision>4</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <securityClassification>Internal</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

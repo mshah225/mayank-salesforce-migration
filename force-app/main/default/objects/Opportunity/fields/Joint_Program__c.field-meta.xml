@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Joint_Program__c</fullName>
+    <businessOwnerGroup>Data_Owner_Recruitment</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>FERPA</complianceGroup>
+    <description>[Formula] This field looks at Dual_Plan__c or Dual Program__c to determine if it's checked or not. If either Dual Program or Dual Plan have data in them, this will be checked as TRUE.</description>
+    <externalId>false</externalId>
+    <formula>AND(
+IF(NOT ISBLANK(Dual_Plan__c), TRUE,
+IF(NOT ISBLANK(Dual_Program__c), TRUE, FALSE)))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>This field will be checked if Dual Program or Dual Plan are populated. If both are blank, it will be unchecked.</inlineHelpText>
+    <label>Joint Program</label>
+    <securityClassification>Internal</securityClassification>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

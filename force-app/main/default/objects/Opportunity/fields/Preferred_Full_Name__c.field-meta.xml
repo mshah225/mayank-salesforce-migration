@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Preferred_Full_Name__c</fullName>
+    <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>Contact Preferred Name (Preferred First Name + Last)</description>
+    <externalId>false</externalId>
+    <formula>Contact__r.Preferred_First_Name__c &amp;" " &amp; Contact__r.LastName</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Formula Field - If preferred name exists (Preferred First Name + Last Name), else (First Name + Last Name)</inlineHelpText>
+    <label>Preferred Full Name</label>
+    <required>false</required>
+    <securityClassification>Public</securityClassification>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

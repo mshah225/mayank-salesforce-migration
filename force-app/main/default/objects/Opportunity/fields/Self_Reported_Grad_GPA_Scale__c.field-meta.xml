@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Self_Reported_Grad_GPA_Scale__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>Self-Reported Grad GPA Scale</description>
+    <externalId>false</externalId>
+    <label>Self-Reported Grad GPA Scale</label>
+    <referenceTo>GPA_Scale__c</referenceTo>
+    <relationshipLabel>Opportunities (Self-Reported Grad GPA Scale)</relationshipLabel>
+    <relationshipName>Opportunities2</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

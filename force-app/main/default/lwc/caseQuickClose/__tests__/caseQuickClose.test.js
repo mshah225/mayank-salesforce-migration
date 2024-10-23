@@ -2,7 +2,7 @@
 import {createElement} from 'lwc';
 import CaseQuickClose from 'c/caseQuickClose';
 import {getRecord, updateRecord} from 'lightning/uiRecordApi';
-import {flushPromises} from 'c/helperFunctions';
+import {flushPromises} from 'c/helperTestFunctions';
 
 // Mock realistic data
 const caseRecorCanCloseSpamdMock = require('./data/caseRecordCanCloseSpam.json');

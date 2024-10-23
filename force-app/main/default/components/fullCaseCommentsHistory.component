@@ -29,7 +29,7 @@
 
     <apex:outputPanel rendered="{!caseComments.size == 0}"> No case comments found. </apex:outputPanel>
 
-    <apex:includeScript value="/support/console/38.0/integration.js" />
+    <apex:includeScript value="/support/console/42.0/integration.js" />
     <script type="text/javascript">
         function isLightningExperienceOrSalesforce1() {
             return typeof sforce != 'undefined' && sforce && !!sforce.one;
@@ -37,8 +37,9 @@
 
         function openCaseSubTab(theCaseId, caseNumber) {
             if (isLightningExperienceOrSalesforce1()) {
-                var message = `/lightning/r/Case/${theCaseId}/view`;
-                parent.postMessage(message, '*');
+                sforce.console.getEnclosingPrimaryTabId(function (result) {
+                    sforce.console.openSubtab(result.id, `/lightning/r/Case/${theCaseId}/view`, true, caseNumber, null);
+                });
             } else if (sforce.console.isInConsole()) {
                 sforce.console.getEnclosingPrimaryTabId(function (result) {
                     sforce.console.openSubtab(result.id, `/${theCaseId}`, true, caseNumber, null);

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Academic_Plan_Associated_College__c</fullName>
+    <description>[Salesforce] - Formula field that displays the associated Academic Plan's Program (College) name.  Used in reports.</description>
+    <externalId>false</externalId>
+    <formula>IF( Admitted_Plan__c &lt;&gt; "",  Admitted_Plan__r.eAdvisor_Organization__r.Name ,  Academic_Plan__r.eAdvisor_Organization__r.Name )</formula>
+    <inlineHelpText>This is the college name associated to Plan through the eAdvisor org.</inlineHelpText>
+    <label>Printable College</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

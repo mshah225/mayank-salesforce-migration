@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Admission_Test_Type__c</fullName>
+    <businessOwnerGroup>Data_Owner_WPC_Graduate_Programs_Office</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>[Grad Partial App/Grad App Submission] - Denotes the type of test that the applicant indicated on their application.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>[Grad Partial App/Grad App Submission] - Denotes the type of test that the applicant indicated on their application.</inlineHelpText>
+    <label>Admission Test Type</label>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>GMAT</fullName>
+                <default>false</default>
+                <label>GMAT</label>
+            </value>
+            <value>
+                <fullName>GRE</fullName>
+                <default>false</default>
+                <label>GRE</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

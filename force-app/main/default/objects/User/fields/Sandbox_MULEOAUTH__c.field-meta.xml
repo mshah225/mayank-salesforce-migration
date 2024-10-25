@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sandbox_MULEOAUTH__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Notates user that should be set up in the MuleOAuth Sandbox. Also prevents user from being frozen in conjunction with the UserSandboxUnfreezeBatch batch job.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>In MULEOAUTH, set ET team as admin. Notates user that should be set up in the MuleOAuth Sandbox. Also prevents user from being frozen in conjunction with the UserSandboxUnfreezeBatch batch job.</inlineHelpText>
+    <label>MuleOAuth Sandbox Access</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Checkbox</type>
+</CustomField>

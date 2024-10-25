@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Dual_Program__c</fullName>
+    <businessOwnerGroup>Data_Owner_Recruitment</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>FERPA</complianceGroup>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>[Grad Application integration] At the time a Graduate Application is incomplete/unsubmitted, the field contains the value the applicant chose for a Dual Program. Only partial graduate applicants (Prospects only) may have data in this field.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>[Grad Application integration] At the time a Graduate Application is incomplete/unsubmitted, the field contains the value the applicant chose for a Dual Program. Only partial graduate applicants (Prospects only) may have data in this field.</inlineHelpText>
+    <label>Dual Program</label>
+    <referenceTo>Program__c</referenceTo>
+    <relationshipLabel>Opportunities (Dual Program)</relationshipLabel>
+    <relationshipName>Opportunities</relationshipName>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

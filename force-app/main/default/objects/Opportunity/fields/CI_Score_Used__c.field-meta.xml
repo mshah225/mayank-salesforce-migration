@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CI_Score_Used__c</fullName>
+    <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>FERPA</complianceGroup>
+    <description>*Text Field* This field determines which CI Source was used - the Official CI Score (CI_Score__c) OR the Self Reported CI Score (Self_Reported_CI_Score__c). Displays either 'Self Reported CI Score' OR 'Official CI Score'. If both fields are empty, return no value.*KEEP Calculated CI Score &amp; CI Score Used in SYNC*</description>
+    <externalId>false</externalId>
+    <formula>If(
+(
+(isBlank(CI_Score__c)) &amp;&amp; (isBlank(Self_Reported_CI_Score__c))
+) ||
+((CI_Score__c=0) &amp;&amp; (Self_Reported_CI_Score__c=0)),"",
+If(
+CI_Score__c&gt;0,'Official CI Score','Self Reported CI Score'
+)
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Specifies which calculated index score is represented in 'Current CI Score'</inlineHelpText>
+    <label>CI Score Used</label>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

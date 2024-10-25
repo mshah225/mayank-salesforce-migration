@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Role_Student_360__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>[PeopleSoft] security Role = ASU_SA_SR Salesforce Student 360</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Permission Set = Role: Student 360</inlineHelpText>
+    <label>Student 360</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Checkbox</type>
+</CustomField>

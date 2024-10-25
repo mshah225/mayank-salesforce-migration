@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>WPC_GPO_MBA_Fast_Track</fullName>
+    <columns>Contact__c</columns>
+    <columns>CORE.USERS.FULL_NAME</columns>
+    <columns>OPPORTUNITY.CREATED_DATE</columns>
+    <columns>College_Stage__c</columns>
+    <columns>College_Status__c</columns>
+    <columns>Contact_Local_Time__c</columns>
+    <columns>Contact_Phone__c</columns>
+    <columns>Term__c</columns>
+    <columns>Application_Number__c</columns>
+    <columns>OPPORTUNITY.LEAD_SOURCE</columns>
+    <columns>Lead_Source_Subtype__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CORE.USERS.FULL_NAME</field>
+        <operation>startsWith</operation>
+        <value>API</value>
+    </filters>
+    <filters>
+        <field>Plan_Code__c</field>
+        <operation>equals</operation>
+        <value>BAEVEAMBA</value>
+    </filters>
+    <filters>
+        <field>OPPORTUNITY.RECORDTYPE</field>
+        <operation>equals</operation>
+        <value>Opportunity.Graduate_Prospect</value>
+    </filters>
+    <filters>
+        <field>OPPORTUNITY.CLOSE_DATE</field>
+        <operation>greaterOrEqual</operation>
+        <value>TODAY</value>
+    </filters>
+    <label>WPC GPO - MBA: Fast-Track</label>
+</ListView>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Arrival_Date__c</fullName>
+    <businessOwnerGroup>Data_Owner_WPC_Graduate_Programs_Office</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>[Manual] Self-reported date from student indicating the date they plan to arrive in AZ prior to the start of the program.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>[Manual] Self-reported date from student indicating the date they plan to arrive in AZ prior to the start of the program.</inlineHelpText>
+    <label>Arrival Date</label>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Date</type>
+</CustomField>

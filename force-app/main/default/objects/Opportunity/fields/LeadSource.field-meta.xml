@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LeadSource</fullName>
+    <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>[Common File Layout] [Stova, RFI, Submitted Grad Application Integrations] [Manual] The most recent medium/marketing channel that the prospect came in on (ex: Email, Paid Social, CPC, etc.)
+[DW: sfe_opportunity]</description>
+    <inlineHelpText>[Common File Layout] [Stova, RFI, Submitted Grad Application Integrations] [Manual] The most recent medium/marketing channel that the prospect came in on (ex: Email, Paid Social, CPC, etc.)
+[DW: sfe_opportunity]</inlineHelpText>
+    <securityClassification>Internal</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+</CustomField>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Barrett_Decision_Factors__c</fullName>
+    <businessOwnerGroup>Data_Owner_ESISD</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>[ASU Recruitment Users] - Provide a reason for the qualifier listed</description>
+    <externalId>false</externalId>
+    <inlineHelpText>[ASU Recruitment Users] - Provide a reason for the qualifier listed</inlineHelpText>
+    <label>Barrett Decision Factors</label>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Additional academic workload</fullName>
+                <default>false</default>
+                <label>Additional academic workload</label>
+            </value>
+            <value>
+                <fullName>Additional cost of attendance</fullName>
+                <default>false</default>
+                <label>Additional cost of attendance</label>
+            </value>
+            <value>
+                <fullName>Housing concerns</fullName>
+                <default>false</default>
+                <label>Housing concerns</label>
+            </value>
+            <value>
+                <fullName>No real value of an honors college education, financial or for career</fullName>
+                <default>false</default>
+                <label>No real value of an honors college education, financial or for career</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

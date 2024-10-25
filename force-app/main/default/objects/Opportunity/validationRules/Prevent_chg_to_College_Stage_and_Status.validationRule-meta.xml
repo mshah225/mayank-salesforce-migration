@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Prevent_chg_to_College_Stage_and_Status</fullName>
+    <active>true</active>
+    <description>Block user from updating the College Stage &amp; College Status until Gportal field is marked TRUE and Deposit Deadline Date has a date.</description>
+    <errorConditionFormula>AND( $Profile.Id &lt;&gt; '00ed00000017Iob',
+$User.API_User__c  &lt;&gt; TRUE,
+RecordType.Name = "Graduate Application",
+College__r.Name = "W. P. Carey School of Business",
+ISPICKVAL(College_Stage__c, "Admitted"),
+OR (ISPICKVAL(College_Status__c, "Admit with Deficiencies"),
+  ISPICKVAL(College_Status__c, "Admit")),
+OR (Is_Gportal_Complete__c = FALSE, ISBLANK( WPC_Deposit_Deadline__c ))
+)</errorConditionFormula>
+    <errorMessage>You cannot update the college stage or college status until 'Is Gportal Complete?' = TRUE and a date is populated in the Deposit Deadline Date.</errorMessage>
+</ValidationRule>

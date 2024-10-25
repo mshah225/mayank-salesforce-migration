@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sandbox_DEV__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Notates user that should be set up in the DEV Sandbox. Also prevents user from being frozen in conjunction with the UserSandboxUnfreezeBatch batch job.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>In DEV, set ET team as admin, Recruitment with Leads profile, with specific users as delegated admin. Notates user that should be set up in the DEV Sandbox. Also prevents user from being frozen in conjunction with the UserSandboxUnfreezeBatch batch job.</inlineHelpText>
+    <label>DEV Sandbox Access</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Checkbox</type>
+</CustomField>

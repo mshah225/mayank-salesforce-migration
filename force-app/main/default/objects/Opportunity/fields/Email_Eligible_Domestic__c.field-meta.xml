@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Email_Eligible_Domestic__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF( 
+OR( 
+AND(ISBLANK(Contact__r.Email)), 
+Contact__r.HasOptedOutOfEmail = True, 
+International_Student__c = True, 
+Location__r.Name = "Online", 
+Location__r.Name = "Lake Havasu", 
+Location__r.Name = "Eastern Arizona College", 
+Admitted_Location__r.Name = "Online", 
+Admitted_Location__r.Name = "Lake Havasu", 
+Admitted_Location__r.Name = "Eastern Arizona College", 
+ISPICKVAL(ForecastCategoryName, "Withdrawn/Denied") 
+),False,True)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Email Eligible Domestic</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Do_Not_Call__c</fullName>
+    <description>[Salesforce] - Formula field that copies over the value of the Contact__r.DoNotCall field to display on the opportunity record.</description>
+    <externalId>false</externalId>
+    <formula>Contact__r.DoNotCall</formula>
+    <label>Do Not Call</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sync_to_Master_Tracker_Record__c</fullName>
+    <businessOwnerGroup>Data_Owner_WPC_Graduate_Programs_Office</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <defaultValue>false</defaultValue>
+    <description>[Automation/apex] - This field denotes if changes to the contact or the contact's test scores should be updated on the master tracker record.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>[Automation/apex] - This field denotes if changes to the contact or the contact's test scores should be updated on the master tracker record.</inlineHelpText>
+    <label>Sync to Master Tracker Record</label>
+    <securityClassification>Internal</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>College_Status_Update_From_New</fullName>
+    <active>true</active>
+    <description>Block user from updating the College Stage from "Applied" &amp; College Status from "New" until the WPC Graduate Application is not owned by an API user.</description>
+    <errorConditionFormula>AND( 
+$Profile.Id &lt;&gt; '00ed00000017Iob',
+Owner.FirstName = "API",
+RecordType.Name = "Graduate Application",
+College__r.Name = "W. P. Carey School of Business",
+ISPICKVAL(College_Stage__c, "Applied"),
+ISCHANGED(College_Status__c),
+NOT(ISPICKVAL(College_Status__c, "New"))
+)</errorConditionFormula>
+    <errorMessage>You cannot update the College Stage from "Applied" and the College Status from "New" until the Opportunity Owner is not an API user.</errorMessage>
+</ValidationRule>

@@ -74,6 +74,11 @@ public class CaseService {
         List<Case> openCases = null;
         String caseFields = ObjectService.objectFieldsToString('Case');
 
+        //Stop gap to prevent deployment issues.
+        if (caseFields.indexOf('SML__EngineeringReqNumber__c') >= 0) {
+            caseFields.replace('SML__EngineeringReqNumber__c,', '');
+        }
+
         // Create a set of contactIds from our listOfContacts
         Set<Id> contactIds = new Set<Id>();
 
@@ -139,6 +144,11 @@ public class CaseService {
 
         String caseFields = ObjectService.objectFieldsToString('Case');
 
+        //Stop gap to prevent deployment issues.
+        if (caseFields.indexOf('SML__EngineeringReqNumber__c') >= 0) {
+            caseFields.replace('SML__EngineeringReqNumber__c,', '');
+        }
+
         // Create a set of contactIds from our listOfContacts
         Set<Id> contactIds = new Set<Id>();
 
@@ -193,6 +203,11 @@ public class CaseService {
     public static List<Case> getAllOpenCases(Id contactId) {
         List<Case> openCases = null;
         String caseFields = ObjectService.objectFieldsToString('Case');
+
+        //Stop gap to prevent deployment issues.
+        if (caseFields.indexOf('SML__EngineeringReqNumber__c') >= 0) {
+            caseFields.replace('SML__EngineeringReqNumber__c,', '');
+        }
 
         String selectOpenVisibleCases =
             'SELECT ' +

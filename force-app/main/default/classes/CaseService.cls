@@ -76,7 +76,19 @@ public class CaseService {
 
         //Stop gap to prevent deployment issues.
         if (caseFields.indexOf('SML__EngineeringReqNumber__c') >= 0) {
-            caseFields.replace('SML__EngineeringReqNumber__c,', '');
+            caseFields = caseFields.replace('SML__EngineeringReqNumber__c,', '');
+        }
+
+        if (caseFields.indexOf('SML__PotentialLiability__c') >= 0) {
+            caseFields = caseFields.replace('SML__PotentialLiability__c,', '');
+        }
+
+        if (caseFields.indexOf('SML__Product__c') >= 0) {
+            caseFields = caseFields.replace('SML__Product__c,', '');
+        }
+
+        if (caseFields.indexOf('SML__SLAViolation__c') >= 0) {
+            caseFields = caseFields.replace('SML__SLAViolation__c,', '');
         }
 
         // Create a set of contactIds from our listOfContacts
@@ -146,7 +158,19 @@ public class CaseService {
 
         //Stop gap to prevent deployment issues.
         if (caseFields.indexOf('SML__EngineeringReqNumber__c') >= 0) {
-            caseFields.replace('SML__EngineeringReqNumber__c,', '');
+            caseFields = caseFields.replace('SML__EngineeringReqNumber__c,', '');
+        }
+
+        if (caseFields.indexOf('SML__PotentialLiability__c') >= 0) {
+            caseFields = caseFields.replace('SML__PotentialLiability__c,', '');
+        }
+
+        if (caseFields.indexOf('SML__Product__c') >= 0) {
+            caseFields = caseFields.replace('SML__Product__c,', '');
+        }
+
+        if (caseFields.indexOf('SML__SLAViolation__c') >= 0) {
+            caseFields = caseFields.replace('SML__SLAViolation__c,', '');
         }
 
         // Create a set of contactIds from our listOfContacts
@@ -206,7 +230,19 @@ public class CaseService {
 
         //Stop gap to prevent deployment issues.
         if (caseFields.indexOf('SML__EngineeringReqNumber__c') >= 0) {
-            caseFields.replace('SML__EngineeringReqNumber__c,', '');
+            caseFields = caseFields.replace('SML__EngineeringReqNumber__c,', '');
+        }
+
+        if (caseFields.indexOf('SML__PotentialLiability__c') >= 0) {
+            caseFields = caseFields.replace('SML__PotentialLiability__c,', '');
+        }
+
+        if (caseFields.indexOf('SML__Product__c') >= 0) {
+            caseFields = caseFields.replace('SML__Product__c,', '');
+        }
+
+        if (caseFields.indexOf('SML__SLAViolation__c') >= 0) {
+            caseFields = caseFields.replace('SML__SLAViolation__c,', '');
         }
 
         String selectOpenVisibleCases =

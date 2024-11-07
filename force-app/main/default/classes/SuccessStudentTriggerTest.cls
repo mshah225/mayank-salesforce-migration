@@ -124,6 +124,24 @@ public with sharing class SuccessStudentTriggerTest {
 
     @isTest
     private static void studentTransferTest() {
+        User testNonApiUser = new User(
+            FirstName = 'Not an API',
+            LastName = 'Test User',
+            CompanyName = 'Test Company',
+            MobilePhone = '123-456-7890',
+            Username = 'test.nonAPI.user@test.test',
+            Email = 'test.nonAPI.user@test.test',
+            Alias = 'testNApi',
+            CommunityNickname = 'testNApi',
+            TimeZoneSidKey = 'America/New_York',
+            LocaleSidKey = 'en_US',
+            EmailEncodingKey = 'UTF-8',
+            ProfileId = RecordIdHelper.getProfileId('System Administrator'),
+            LanguageLocaleKey = 'en_US',
+            IsActive = true
+        );
+        insert testNonApiUser;
+
         List<Success_Student__c> successStudents = [SELECT Id, Success_Resource__c, OwnerId FROM Success_Student__c];
         Id transferToResourceId = [
             SELECT Id
@@ -138,11 +156,65 @@ public with sharing class SuccessStudentTriggerTest {
         }
 
         test.startTest();
-        update successStudents;
+        System.runAs(testNonApiUser) {
+            update successStudents;
+        }
         test.stopTest();
 
         // Generate one case for each updated coaching success student
         System.assertEquals(COACHING_STUDENTS_TO_CREATE, [SELECT Id FROM Case].size());
+    }
+
+    @isTest
+    private static void studentTransferTestApiUser() {
+        User testApiUser = new User(
+            FirstName = 'API',
+            LastName = 'Test User',
+            CompanyName = 'Test Company',
+            MobilePhone = '123-456-7890',
+            Username = 'test.API.user@test.test',
+            Email = 'test.API.user@test.test',
+            Alias = 'testApi',
+            CommunityNickname = 'testApi',
+            TimeZoneSidKey = 'America/New_York',
+            LocaleSidKey = 'en_US',
+            EmailEncodingKey = 'UTF-8',
+            ProfileId = RecordIdHelper.getProfileId('System Administrator'),
+            LanguageLocaleKey = 'en_US',
+            IsActive = true
+        );
+        insert testApiUser;
+
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            PermissionSet ps = [SELECT Id FROM PermissionSet WHERE Name = 'API_User_Custom_Perm_API_User' LIMIT 1];
+            PermissionSetAssignment apiUserPsa = new PermissionSetAssignment(
+                AssigneeId = testApiUser.Id,
+                PermissionSetId = ps.Id
+            );
+            insert apiUserPsa;
+        }
+
+        List<Success_Student__c> successStudents = [SELECT Id, Success_Resource__c, OwnerId FROM Success_Student__c];
+        Id transferToResourceId = [
+            SELECT Id
+            FROM Success_Resource__c
+            WHERE Id != :successStudents[0].Success_Resource__c
+            LIMIT 1
+        ]
+        .Id;
+
+        for (Success_Student__c successStudent : successStudents) {
+            successStudent.Success_Resource__c = transferToResourceId;
+        }
+
+        test.startTest();
+        System.runAs(testApiUser) {
+            update successStudents;
+        }
+        test.stopTest();
+
+        // Generate one case for each updated coaching success student
+        System.assertEquals(0, [SELECT Id FROM Case].size());
     }
 
     @isTest

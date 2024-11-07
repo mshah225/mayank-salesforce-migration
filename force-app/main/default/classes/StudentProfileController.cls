@@ -51,11 +51,13 @@ global with sharing class StudentProfileController {
     public List<Student_Group__c> sGroupList { get; set; }
     public List<GraduateProgramPlanWrapper> activeGraduatePrograms { get; set; }
     public List<GraduateProgramPlanWrapper> completedGraduatePrograms { get; set; }
+    public List<GraduateProgramPlanWrapper> LOAGraduatePrograms { get; set; }  
     public List<Student_Program_Plan__c> ugProgramPlans { get; set; }
     public List<Student_Program_Plan__c> activeGradProgramPlans { get; set; }
     public List<Student_Program_Plan__c> completedGradProgramPlans { get; set; }
     public List<Service_Indicator__c> serviceIndicators { get; set; }
     public List<et4ae5__IndividualEmailResult__c> emailsForContact { get; set; }
+    public List<CaseComment> caseComments { get; set; }
     public Student_Program_Plan__c studentProgram { get; set; }
     public List<Student_Program_Plan_Advisor__c> ugStudentProgramAdvisors { get; set; }
     public List<Student_Program_Plan_Advisor__c> gradStudentProgramAdvisors { get; set; }
@@ -233,6 +235,7 @@ global with sharing class StudentProfileController {
         ugProgramPlans = new List<Student_Program_Plan__c>();
         activeGraduatePrograms = new List<GraduateProgramPlanWrapper>();
         completedGraduatePrograms = new List<GraduateProgramPlanWrapper>();
+        LOAGraduatePrograms = new List<GraduateProgramPlanWrapper>();
     }
 
     /**
@@ -257,6 +260,7 @@ global with sharing class StudentProfileController {
             setCIIndex();
             setFinancialAidIndicator();
             setContactEmailRecords();
+            setCaseCommentHistory();
         } else {
             initializeValuesForNullContactId();
             ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.FATAL, Label.EMPLIDMissing));
@@ -636,6 +640,10 @@ global with sharing class StudentProfileController {
                     GraduateProgramPlanWrapper pgrm = new GraduateProgramPlanWrapper();
                     pgrm.gradProgramPlan = programPlan;
                     activeGraduatePrograms.add(pgrm);
+                } else if (programPlan.Status__c == 'Leave of Absence') {
+                    GraduateProgramPlanWrapper pgrm = new GraduateProgramPlanWrapper();
+                    pgrm.gradProgramPlan = programPlan;
+                    LOAGraduatePrograms.add(pgrm);  
                 } else {
                     GraduateProgramPlanWrapper pgrm = new GraduateProgramPlanWrapper();
                     pgrm.gradProgramPlan = programPlan;
@@ -934,10 +942,7 @@ global with sharing class StudentProfileController {
         testUndergradScoreList = [
             SELECT Test_Component_Score__c, Test_Component__c, Test_Date__c, Test_Type__c
             FROM Test_Score__c
-            WHERE
-                Contact__c = :theContact.Id
-                AND Test_Type__c IN :testCodes
-                AND Integration_Source__c = 'PeopleSoft'
+            WHERE Contact__c = :theContact.Id AND Test_Type__c IN :testCodes AND Integration_Source__c = 'PeopleSoft'
             ORDER BY Test_Type__c, Test_Component__c, Test_Date__c DESC
         ];
     }
@@ -960,10 +965,7 @@ global with sharing class StudentProfileController {
         testGradScoreList = [
             SELECT Test_Component_Score__c, Test_Component__c, Test_Date__c, Test_Type__c
             FROM Test_Score__c
-            WHERE
-                Contact__c = :theContact.Id
-                AND Test_Type__c IN :testCodes
-                AND Integration_Source__c = 'PeopleSoft'
+            WHERE Contact__c = :theContact.Id AND Test_Type__c IN :testCodes AND Integration_Source__c = 'PeopleSoft'
             ORDER BY Test_Type__c, Test_Component__c, Test_Date__c DESC
         ];
     }
@@ -1197,6 +1199,10 @@ global with sharing class StudentProfileController {
         if (emailResults != null) {
             emailsForContact = emailResults;
         }
+    }
+
+    private void setCaseCommentHistory() {
+        caseComments = FullCaseCommentsController.getComments(theContact.Id);
     }
 
     /**

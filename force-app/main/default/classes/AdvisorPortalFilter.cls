@@ -478,6 +478,10 @@ public class AdvisorPortalFilter {
             for (String elem : val_arr_str) {
                 if (outlookScoresByLabels.containsKey(elem)) {
                     val_arr_dec.addAll(outlookScoresByLabels.get(elem));
+                } else {
+                    throw new AdvisorPortalFilterValueException(
+                        'Found value "' + elem + '" in outlook score filter - this is an invalid value'
+                    );
                 }
             }
         }
@@ -502,6 +506,10 @@ public class AdvisorPortalFilter {
             for (String elem : val_arr_str) {
                 if (outlookChangeByLabels.containsKey(elem)) {
                     val_arr_dec.add(outlookChangeByLabels.get(elem));
+                } else {
+                    throw new AdvisorPortalFilterValueException(
+                        'Found value "' + elem + '" in outlook change filter - this is an invalid value'
+                    );
                 }
             }
         }
@@ -685,5 +693,7 @@ public class AdvisorPortalFilter {
     }
 
     public class AdvisorPortalFilterUpgradeException extends Exception {
+    }
+    public class AdvisorPortalFilterValueException extends Exception {
     }
 }

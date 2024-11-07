@@ -4,8 +4,7 @@
     <apex:includeScript value="{! URLFOR($Resource.showMyCasesResources, 'showMyCasesResources/showMyCases.js') }" />
     <apex:stylesheet value="{! URLFOR($Resource.showMyCasesResources, 'showMyCasesResources/showMyCases.css') }" />
     <apex:stylesheet value="{! URLFOR($Resource.ASUTable, 'ASUTable.css')}" />
-    <apex:stylesheet
-        value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"
+    <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"
     />
 
     <apex:attribute name="queryString" type="String" description="" assignTo="{!queryAttr}" />
@@ -35,24 +34,19 @@
             <div class="headerFooter">
                 <div class="toolbar">
                     <apex:outputPanel layout="inline" styleClass="button-group">
-                        <apex:outputLink
-                            styleClass="btn btn-default btn-md asu-primary"
+                        <apex:outputLink styleClass="btn btn-default btn-md asu-primary"
                             value="javascript:;"
                             style="margin-right: 10px; margin-top: 5px"
                             onclick="toggleTransferModal(this)"
                             rendered="{! showTransfer}"
-                            >Mass Transfer</apex:outputLink
-                        >
-                        <apex:outputLink
-                            styleClass="btn btn-default btn-md asu-primary"
+                            >Mass Transfer</apex:outputLink>
+                        <apex:outputLink styleClass="btn btn-default btn-md asu-primary"
                             value="javascript:;"
                             style="margin-right: 7px; margin-top: 5px"
                             onclick="toggleEmailModal(this, adjustTextHeight)"
                             rendered="{! showMassEmail}"
-                            >Mass Email</apex:outputLink
-                        >
-                        <apex:commandLink
-                            styleClass="btn btn-default btn-md asu-primary"
+                            >Mass Email</apex:outputLink>
+                        <apex:commandLink styleClass="btn btn-default btn-md asu-primary"
                             style="margin-top: 5px"
                             rendered="{! showRefresh}"
                             reRender="rerenderMe"
@@ -62,14 +56,12 @@
                             <i style="padding-bottom: 3px; padding-top: 4px" class="fa fa-refresh fa-lg"></i>
                         </apex:commandLink>
                     </apex:outputPanel>
-                    <apex:outputPanel
-                        layout="block"
+                    <apex:outputPanel layout="block"
                         styleClass="input-group"
                         style="width: 100%; max-width: 250px; margin-top: 5px"
                         rendered="{! showSearch}"
                     >
-                        <apex:inputText
-                            id="myStudentsInput"
+                        <apex:inputText id="myStudentsInput"
                             value="{!searchString}"
                             html-placeholder="Filter Students"
                             onkeypress="return noenter(event);"
@@ -86,8 +78,7 @@
                             "
                             styleClass="form-control"
                         />
-                        <apex:commandLink
-                            id="searchStudentsBtn"
+                        <apex:commandLink id="searchStudentsBtn"
                             status="ASUAjaxStatus"
                             reRender="rerenderMe"
                             style="color: #555"
@@ -119,8 +110,7 @@
                             });
                         </script>
 
-                        <apex:commandLink
-                            action="{!resetSearch}"
+                        <apex:commandLink action="{!resetSearch}"
                             status="ASUAjaxStatus"
                             reRender="rerenderMe"
                             style="
@@ -137,14 +127,12 @@
                 </div>
                 <div style="height: 1px; width = 100%"></div>
                 <div>
-                    <apex:outputPanel
-                        layout="block"
+                    <apex:outputPanel layout="block"
                         styleClass="pageSizeSection"
                         style="width: 100%"
                         html-align="center"
                     >
-                        <apex:commandLink
-                            action="{!setConPrev}"
+                        <apex:commandLink action="{!setConPrev}"
                             value="<< Prev"
                             rendered="{!setCon.HasPrevious}"
                             style="float: left"
@@ -154,8 +142,7 @@
                         />
                         <apex:outputText value="Page Size " />
                         <apex:selectList label="Page Size" value="{!pageSize}" size="1" styleClass="pageSizeField">
-                            <apex:actionSupport
-                                event="onchange"
+                            <apex:actionSupport event="onchange"
                                 reRender="rerenderMe"
                                 onsubmit="handlePageSizeField(this)"
                                 status="ASUAjaxStatus"
@@ -165,12 +152,10 @@
                             <apex:selectOption itemValue="100" itemLabel="100" />
                         </apex:selectList>
                         <apex:outputText value=" Showing {!(setCon.PageSize * (setCon.PageNumber - 1)) + 1} - " />
-                        <apex:outputText
-                            value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of "
+                        <apex:outputText value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of "
                         />
                         <apex:outputText value="{!setCon.ResultSize} Records" />
-                        <apex:commandLink
-                            action="{!setConNext}"
+                        <apex:commandLink action="{!setConNext}"
                             value="Next >>"
                             rendered="{!setCon.HasNext}"
                             style="float: right"
@@ -184,13 +169,11 @@
         </apex:form>
         <apex:form id="tableForm">
             <apex:dataTable value="{!caseList}" var="c" styleClass="ASUTable">
-                <apex:column
-                    headerClass="ASUColumnHead centerText"
+                <apex:column headerClass="ASUColumnHead centerText"
                     styleClass="ASUColumn centerText"
                     rendered="{! showSelection}"
                 >
-                    <apex:inputCheckbox
-                        value="{!c.selected}"
+                    <apex:inputCheckbox value="{!c.selected}"
                         styleClass="selectBox"
                         onchange="handleSelectAll(this);"
                     />
@@ -216,8 +199,7 @@
                     </apex:facet>
                 </apex:column>
 
-                <apex:column
-                    headerValue="EMPLID"
+                <apex:column headerValue="EMPLID"
                     rendered="{! showEMPLID}"
                     headerClass="ASUColumnHead"
                     styleClass="ASUColumn"
@@ -235,16 +217,13 @@
                         </apex:commandLink>
                     </apex:facet>
 
-                    <apex:outputLink
-                        value="javascript:;"
+                    <apex:outputLink value="javascript:;"
                         onclick="openStudentProfileLightning('{!c.obj.contactId}', '{!c.obj.contact.name}', '{!c.obj.contact.EMPLID__c}')"
                         styleClass="standardLink"
-                        >{!c.obj.contact.EMPLID__c}</apex:outputLink
-                    >
+                        >{!c.obj.contact.EMPLID__c}</apex:outputLink>
                 </apex:column>
 
-                <apex:column
-                    headerValue="Case (Details)"
+                <apex:column headerValue="Case (Details)"
                     rendered="{! showSubject}"
                     headerClass="ASUColumnHead"
                     styleClass="ASUColumn"
@@ -261,16 +240,13 @@
                         </apex:commandLink>
                     </apex:facet>
 
-                    <apex:outputLink
-                        value="javascript:;"
+                    <apex:outputLink value="javascript:;"
                         onclick="openCaseLightning('{!c.obj.Id}', '{!c.obj.CaseNumber}')"
                         styleClass="standardLink"
-                        >{!c.obj.subject}</apex:outputLink
-                    >
+                        >{!c.obj.subject}</apex:outputLink>
                 </apex:column>
 
-                <apex:column
-                    headerValue="Status"
+                <apex:column headerValue="Status"
                     value="{!c.obj.status}"
                     rendered="{! showStatus}"
                     headerClass="ASUColumnHead"
@@ -289,8 +265,7 @@
                     </apex:facet>
                 </apex:column>
 
-                <apex:column
-                    headerValue="Followup Date"
+                <apex:column headerValue="Followup Date"
                     value="{!c.obj.Followup_Date__c}"
                     rendered="{! showFollowupDate}"
                     headerClass="ASUColumnHead"
@@ -309,8 +284,7 @@
                         </apex:commandLink>
                     </apex:facet>
                 </apex:column>
-                <apex:column
-                    headerValue="Time Zone"
+                <apex:column headerValue="Time Zone"
                     value="{!c.obj.Contact.tz__Local_Time_Short__c}"
                     rendered="{! showTimeZone}"
                     headerClass="ASUColumnHead"
@@ -318,27 +292,23 @@
                 >
                     <apex:facet name="header">
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
-                            <apex:param
-                                name="TimeZone"
+                            <apex:param name="TimeZone"
                                 value="Contact.tz__Local_Time_Short__c "
                                 assignTo="{!sortField}"
                             />
                             Time Zone&nbsp;
-                            <apex:outputPanel
-                                rendered="{!sortDir == 'ASC' && sortField == 'Contact.tz__Local_Time_Short__c'}"
+                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Contact.tz__Local_Time_Short__c'}"
                             >
                                 <span style="font-size: 7pt" class="fa fa-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
-                            <apex:outputPanel
-                                rendered="{!sortDir == 'DESC' && sortField == 'Contact.tz__Local_Time_Short__c'}"
+                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Contact.tz__Local_Time_Short__c'}"
                             >
                                 <span style="font-size: 7pt" class="fa fa-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>
                     </apex:facet>
                 </apex:column>
-                <apex:column
-                    headerValue="Term/Session"
+                <apex:column headerValue="Term/Session"
                     value="{!c.termSession}"
                     rendered="{! showTermSession}"
                     headerClass="ASUColumnHead"
@@ -357,41 +327,35 @@
                         </apex:commandLink>
                     </apex:facet>
                 </apex:column>
-                <apex:column
-                    headerValue="Proactive"
+                <apex:column headerValue="Proactive"
                     value="{!caseCounts[c.obj.contactId].proactiveCount}"
                     rendered="{! showProactive}"
                     headerClass="ASUColumnHead"
                     styleClass="ASUColumn"
                 />
-                <apex:column
-                    headerValue="Reactive"
+                <apex:column headerValue="Reactive"
                     value="{!caseCounts[c.obj.contactId].reactiveCount}"
                     rendered="{! showReactive}"
                     headerClass="ASUColumnHead"
                     styleClass="ASUColumn"
                 />
-                <apex:column
-                    headerValue="Persistence Outlook"
+                <apex:column headerValue="Persistence Outlook"
                     headerClass="ASUColumnHead"
                     styleClass="ASUColumn"
                     rendered="{! showCivitas}"
                 >
                     <apex:facet name="header">
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
-                            <apex:param
-                                name="persistenceLevel"
+                            <apex:param name="persistenceLevel"
                                 value="Curr_Cont_Prediction_Level__c"
                                 assignTo="{!sortField}"
                             />
                             Persistence Outlook&nbsp;
-                            <apex:outputPanel
-                                rendered="{!sortDir == 'ASC' && sortField == 'Curr_Cont_Prediction_Level__c'} "
+                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Curr_Cont_Prediction_Level__c'} "
                             >
                                 <span style="font-size: 7pt" class="fa fa-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
-                            <apex:outputPanel
-                                rendered="{!sortDir == 'DESC' && sortField == 'Curr_Cont_Prediction_Level__c'}"
+                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Curr_Cont_Prediction_Level__c'}"
                             >
                                 <span style="font-size: 7pt" class="fa fa-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
@@ -400,8 +364,7 @@
                     <apex:variable var="imageVar" value="{!c.imageName}" />
                     <apex:image url="{!URLFOR($Resource.PersistenceChart, imageVar)}" width="40" height="20" />
                 </apex:column>
-                <apex:column
-                    headerValue="Change"
+                <apex:column headerValue="Change"
                     value="{!c.changeDir}"
                     headerClass="ASUColumnHead"
                     styleClass="ASUColumn"
@@ -409,27 +372,23 @@
                 >
                     <apex:facet name="header">
                         <apex:commandLink status="ASUAjaxStatus" reRender="rerenderMe">
-                            <apex:param
-                                name="change"
+                            <apex:param name="change"
                                 value="Most_Recent_Outlook_Change_Direction__c"
                                 assignTo="{!sortField}"
                             />
                             Change&nbsp;
-                            <apex:outputPanel
-                                rendered="{!sortDir == 'ASC' && sortField == 'Most_Recent_Outlook_Change_Direction__c'}"
+                            <apex:outputPanel rendered="{!sortDir == 'ASC' && sortField == 'Most_Recent_Outlook_Change_Direction__c'}"
                             >
                                 <span style="font-size: 7pt" class="fa fa-chevron-down" aria-hidden="true"></span>
                             </apex:outputPanel>
-                            <apex:outputPanel
-                                rendered="{!sortDir == 'DESC' && sortField == 'Most_Recent_Outlook_Change_Direction__c'}"
+                            <apex:outputPanel rendered="{!sortDir == 'DESC' && sortField == 'Most_Recent_Outlook_Change_Direction__c'}"
                             >
                                 <span style="font-size: 7pt" class="fa fa-chevron-up" aria-hidden="true"></span>
                             </apex:outputPanel>
                         </apex:commandLink>
                     </apex:facet>
                 </apex:column>
-                <apex:column
-                    headerValue="Change Date"
+                <apex:column headerValue="Change Date"
                     value="{!c.obj.Change_Date__c}"
                     headerClass="ASUColumnHead"
                     styleClass="ASUColumn"
@@ -467,8 +426,7 @@
                         </div>
 
                         <div class="modal-footer">
-                            <apex:commandLink
-                                type="button"
+                            <apex:commandLink type="button"
                                 styleClass="btn btn-default btn-md asu-primary"
                                 action="{!transferCases}"
                                 status="ASUAjaxStatus"
@@ -497,8 +455,7 @@
                                     data-dismiss="modal"
                                 >
                                     &times;
-                                    <apex:actionFunction
-                                        reRender="EmailModalContent"
+                                    <apex:actionFunction reRender="EmailModalContent"
                                         name="clearEmailContentBodyouterXButton"
                                         action="{!clearTempEmail}"
                                     >
@@ -508,14 +465,12 @@
                             </div>
 
                             <div class="modal-body">
-                                <apex:outputPanel
-                                    layout="none"
+                                <apex:outputPanel layout="none"
                                     rendered="{!AND(NOT(emailPreviewMode), ISBLANK(emailInsertResults))}"
                                 >
                                     <h5 style="margin-bottom: 0px">Subject:</h5>
                                     <p style="font-size: 0.75em" id="subjectCharLimit">100 Character Limit</p>
-                                    <apex:inputField
-                                        id="subjectField"
+                                    <apex:inputField id="subjectField"
                                         value="{!tempEmail.Subject__c}"
                                         style="width: 100%"
                                     />
@@ -523,8 +478,7 @@
                                     <apex:outputPanel layout="block" id="caseErrorBox" style="display: none">
                                         <p style="color: red">Email Body cannot be empty.</p>
                                     </apex:outputPanel>
-                                    <apex:inputField
-                                        value="{!tempEmail.Additional_Message_Text__c}"
+                                    <apex:inputField value="{!tempEmail.Additional_Message_Text__c}"
                                         styleClass="emailTextBox"
                                         id="caseEmailBody"
                                         style="width: 100%; height: 200px; resize: none"
@@ -534,8 +488,7 @@
                                         <br /> {!$User.FirstName} {!$User.LastName}
                                     </p>
                                 </apex:outputPanel>
-                                <apex:outputPanel
-                                    layout="none"
+                                <apex:outputPanel layout="none"
                                     rendered="{!AND(emailPreviewMode, ISBLANK(emailInsertResults))}"
                                 >
                                     <apex:outputField value="{!tempEmail.Subject__c}" />
@@ -552,15 +505,13 @@
                             </div>
 
                             <div class="modal-footer">
-                                <apex:outputPanel
-                                    layout="none"
+                                <apex:outputPanel layout="none"
                                     rendered="{!AND(NOT(emailPreviewMode), ISBLANK(emailInsertResults))}"
                                 >
                                     <apex:commandLink type="button" id="renderMyTab" reRender="EmailModalContent">
                                         <apex:param assignTo="{!emailPreviewMode}" value="true" name="previewMode" />
                                     </apex:commandLink>
-                                    <apex:commandLink
-                                        type="button"
+                                    <apex:commandLink type="button"
                                         styleClass="btn btn-default btn-md asu-primary"
                                         onclick="checkEmailBodyCase('{!$Component.renderMyTab}', '{!$Component.caseEmailBody}', '{!$Component.caseErrorBox}'); return false;"
                                         value="Preview"
@@ -575,28 +526,24 @@
                                         Cancel
                                         <apex:param assignTo="{!emailPreviewMode}" value="false" name="previewMode" />
                                         <apex:param assignTo="{!emailInsertResults}" value="false" name="previewMode" />
-                                        <apex:actionFunction
-                                            reRender="EmailModalContent"
+                                        <apex:actionFunction reRender="EmailModalContent"
                                             name="clearEmailContentBody"
                                             action="{!clearTempEmail}"
                                         >
                                         </apex:actionFunction>
                                     </button>
                                 </apex:outputPanel>
-                                <apex:outputPanel
-                                    layout="none"
+                                <apex:outputPanel layout="none"
                                     rendered="{!AND(emailPreviewMode, ISBLANK(emailInsertResults))}"
                                 >
-                                    <apex:commandLink
-                                        type="button"
+                                    <apex:commandLink type="button"
                                         action="{!massEmail}"
                                         styleClass="btn btn-default btn-md asu-primary"
                                         status="ASUAjaxStatus"
                                         reRender="EmailModalContent"
                                         value="Confirm and Send {!selectedCases.size} Email(s)"
                                     />
-                                    <apex:commandLink
-                                        type="button"
+                                    <apex:commandLink type="button"
                                         styleClass="btn btn-default btn-md asu-secondary"
                                         reRender="EmailModalContent"
                                         value="Edit"
@@ -605,8 +552,7 @@
                                     </apex:commandLink>
                                 </apex:outputPanel>
                                 <apex:outputPanel layout="none" rendered="{!NOT(ISBLANK(emailInsertResults))}">
-                                    <apex:commandLink
-                                        type="button"
+                                    <apex:commandLink type="button"
                                         action="{!clearSaveResults}"
                                         styleClass="btn btn-default btn-md asu-primary"
                                         reRender="rerenderMe,{!rerenderList}"
@@ -626,8 +572,7 @@
         </apex:form>
         <apex:form id="alius-format921">
             <div class="headerFooter">
-                <apex:commandLink
-                    action="{!setConPrev}"
+                <apex:commandLink action="{!setConPrev}"
                     value="<< Prev"
                     rendered="{!setCon.HasPrevious}"
                     style="float: left"
@@ -637,8 +582,7 @@
                 />
                 <apex:outputText value="Page Size " />
                 <apex:selectList label="Page Size" value="{!pageSize}" size="1" styleClass="pageSizeField">
-                    <apex:actionSupport
-                        event="onchange"
+                    <apex:actionSupport event="onchange"
                         reRender="rerenderMe"
                         onsubmit="handlePageSizeField(this)"
                         status="ASUAjaxStatus"
@@ -648,12 +592,10 @@
                     <apex:selectOption itemValue="100" itemLabel="100" />
                 </apex:selectList>
                 <apex:outputText value=" Showing {!(setCon.PageSize * (setCon.PageNumber - 1)) + 1} - " />
-                <apex:outputText
-                    value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of "
+                <apex:outputText value="{!IF(setCon.HasNext, setCon.PageSize * setCon.PageNumber, setCon.Resultsize)} of "
                 />
                 <apex:outputText value="{!setCon.ResultSize} Records" />
-                <apex:commandLink
-                    action="{!setConNext}"
+                <apex:commandLink action="{!setConNext}"
                     value="Next >>"
                     rendered="{!setCon.HasNext}"
                     style="float: right"

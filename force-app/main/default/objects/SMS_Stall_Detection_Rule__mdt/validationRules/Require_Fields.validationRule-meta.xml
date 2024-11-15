@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Require_Fields</fullName>
-    <active>true</active>
-    <description>Must enter some fields</description>
-    <errorConditionFormula>ISBLANK(Report_Fields__c)</errorConditionFormula>
-    <errorDisplayField>Report_Fields__c</errorDisplayField>
-    <errorMessage>Fields must have at least one field (e.g. Id) entered.</errorMessage>
-</ValidationRule>

@@ -23,9 +23,7 @@
             crossorigin="anonymous"
         />
         <link href="https://fonts.googleapis.com/css?family=Roboto:normal,medium" rel="stylesheet" type="text/css" />
-        <apex:stylesheet
-            value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"
-        />
+        <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet" />
         <c:StudentProfileStyles />
         <style>
             .gradTable {
@@ -307,6 +305,11 @@
                 width: 75%;
                 border: solid 2px #c7c7c7;
                 padding: 0.75em;
+            }
+
+            .fa-circle-o-notch,
+            .fa-plug {
+                color: #191919;
             }
         </style>
     </head>
@@ -713,7 +716,7 @@
                             <div class="hide">
                                 <apex:form>
                                     <div id="serviceIndicatorTable">
-                                        <i class="fa fa-spinner fa-pulse"></i>
+                                        <i class="fa fa-circle-o-notch fa-pulse"></i>
                                     </div>
                                 </apex:form>
                             </div>
@@ -1062,7 +1065,7 @@
                                                         <th>Residency</th>
                                                         <td>
                                                             <div id="residencyStatus">
-                                                                <i class="fa fa-spinner fa-pulse"></i>
+                                                                <i class="fa fa-circle-o-notch fa-pulse"></i>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -1194,7 +1197,7 @@
                                                         {!currentTermName} Term Enrolled Hours
                                                     </th>
                                                     <td class="hoursCount" style="font-weight: bold">
-                                                        <i class="fa fa-spinner fa-pulse"></i>
+                                                        <i class="fa fa-circle-o-notch fa-pulse"></i>
                                                     </td>
                                                 </tr>
                                                 <tr id="nextTermEnrolledHours" class="grad-row-toggle">
@@ -1205,7 +1208,7 @@
                                                         {!nextTermName} Term Enrolled Hours
                                                     </th>
                                                     <td class="hoursCount" style="font-weight: bold">
-                                                        <i class="fa fa-spinner fa-pulse"></i>
+                                                        <i class="fa fa-circle-o-notch fa-pulse"></i>
                                                     </td>
                                                 </tr>
                                                 <tr id="futureEnrolledHours" class="grad-row-toggle">
@@ -1216,7 +1219,7 @@
                                                         {!futureTermName} Term Enrolled Hours
                                                     </th>
                                                     <td class="hoursCount" style="font-weight: bold">
-                                                        <i class="fa fa-spinner fa-pulse"></i>
+                                                        <i class="fa fa-circle-o-notch fa-pulse"></i>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -1337,7 +1340,7 @@
 
                                 <div style="overflow: auto; max-height: 400px">
                                     <div id="accountBalanceTable">
-                                        <i class="fa fa-spinner fa-pulse"></i>
+                                        <i class="fa fa-circle-o-notch fa-pulse"></i>
                                     </div>
                                 </div>
 
@@ -1350,7 +1353,7 @@
 
                                 <div style="overflow: auto; max-height: 400px">
                                     <div id="depositTable">
-                                        <i class="fa fa-spinner fa-pulse"></i>
+                                        <i class="fa fa-circle-o-notch fa-pulse"></i>
                                     </div>
                                 </div>
 
@@ -1363,7 +1366,7 @@
 
                                 <div style="overflow: auto; max-height: 400px">
                                     <div id="refundTable">
-                                        <i class="fa fa-spinner fa-pulse"></i>
+                                        <i class="fa fa-circle-o-notch fa-pulse"></i>
                                     </div>
                                 </div>
 
@@ -1377,7 +1380,7 @@
                                 <div style="overflow: auto; max-height: 400px">
                                     <apex:form>
                                         <div id="selectListForChargeHistory">
-                                            <i class="fa fa-spinner fa-pulse"></i>
+                                            <i class="fa fa-circle-o-notch fa-pulse"></i>
                                         </div>
                                         <div id="chargeHistoryTable"></div>
                                     </apex:form>
@@ -1395,7 +1398,7 @@
                                     <div id="sapList">
                                         <apex:form>
                                             <div style="margin-bottom: 15px" id="selectListForSAP">
-                                                <i class="fa fa-spinner fa-pulse"></i>
+                                                <i class="fa fa-circle-o-notch fa-pulse"></i>
                                             </div>
                                             <div id="sapTable"></div>
                                         </apex:form>
@@ -1414,7 +1417,7 @@
                                     <div id="award_list">
                                         <apex:form>
                                             <div style="margin-bottom: 15px" id="selectListForAwards">
-                                                <i class="fa fa-spinner fa-pulse"></i>
+                                                <i class="fa fa-circle-o-notch fa-pulse"></i>
                                             </div>
                                             <div id="awardTable"></div>
                                         </apex:form>
@@ -1433,7 +1436,7 @@
                                     <div id="renewable_aid_list">
                                         <apex:form>
                                             <div id="renewableAidTable">
-                                                <i class="fa fa-spinner fa-pulse"></i>
+                                                <i class="fa fa-circle-o-notch fa-pulse"></i>
                                             </div>
                                         </apex:form>
                                     </div>
@@ -1451,7 +1454,7 @@
                                     <div id="book_payment_list">
                                         <apex:form>
                                             <div id="bookPaymentTable">
-                                                <i class="fa fa-spinner fa-pulse"></i>
+                                                <i class="fa fa-circle-o-notch fa-pulse"></i>
                                             </div>
                                         </apex:form>
                                     </div>
@@ -1473,7 +1476,7 @@
                                                 Salesforce Contact Record
                                             </div>
                                             <div id="financialAidChecklistTable">
-                                                <i class="fa fa-spinner fa-pulse"></i>
+                                                <i class="fa fa-circle-o-notch fa-pulse"></i>
                                             </div>
                                         </apex:form>
                                     </div>
@@ -1541,7 +1544,7 @@
                                     <div id="edit_message_list">
                                         <apex:form>
                                             <div id="selectListForEditMessages">
-                                                <i class="fa fa-spinner fa-pulse"></i>
+                                                <i class="fa fa-circle-o-notch fa-pulse"></i>
                                             </div>
                                             <div id="editMessageTable"></div>
                                         </apex:form>
@@ -1607,6 +1610,21 @@
                                         <div id="ps_comments_section"></div>
 
                                         <div id="psCommentsResponseErrors"></div>
+                                    </div>
+                                </div>
+
+                                <div class="page-header-smaller">
+                                    <h4>
+                                        <i class="fa fa-caret-down"></i>
+                                        &nbsp;EdPlus Success Coach Comments
+                                    </h4>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div id="success_coach_comments_section">
+                                            <c:fullCaseCommentsHistory caseComments="{!caseComments}" />
+                                        </div>
                                     </div>
                                 </div>
 
@@ -2357,7 +2375,9 @@
                                                                 <div id="ps_financial_aid_checklist_unresolved">
                                                                     <apex:form>
                                                                         <div id="unresolvedChecklistTable">
-                                                                            <i class="fa fa-spinner fa-pulse"></i>
+                                                                            <i
+                                                                                class="fa fa-circle-o-notch fa-pulse"
+                                                                            ></i>
                                                                         </div>
                                                                     </apex:form>
                                                                 </div>
@@ -3077,6 +3097,45 @@
                                 <div class="page-header-smaller">
                                     <h4>
                                         <i class="fa fa-caret-down"></i>
+                                        &nbsp;On Leave/Enrollment Exception Programs and Plans
+                                    </h4>
+                                </div>
+
+                                <div class="LOAGradTable" rendered="{!IF(LOAGraduatePrograms.size > 0, true, false)}">
+                                    <table class="gradTable">
+                                        <tr>
+                                            <th class="gradTH" style="border-left: 1px solid #ddd; width: 25%">
+                                                Program
+                                            </th>
+                                            <th class="gradTH" style="width: 12%">Plan</th>
+                                            <th class="gradTH" style="width: 21%">Degree Level</th>
+                                            <th class="gradTH" style="width: 14%">Degree</th>
+                                            <th class="gradTH" style="width: 14%">Campus</th>
+                                        </tr>
+                                        <apex:repeat value="{!LOAGraduatePrograms}" var="gradProgram">
+                                            <tr class="gradTR grad-row-toggle">
+                                                <td class="gradTD">
+                                                    {!gradProgram.gradProgramPlan.Program_Description__c}
+                                                </td>
+                                                <td class="gradTD">
+                                                    {!gradProgram.gradProgramPlan.Plan_Description__c}
+                                                </td>
+                                                <td class="gradTD">{!gradProgram.gradProgramPlan.Degree_Level__c}</td>
+                                                <td class="gradTD">{!gradProgram.gradProgramPlan.Degree__c}</td>
+                                                <td class="gradTD">{!gradProgram.gradProgramPlan.Campus__r.Name}</td>
+                                            </tr>
+                                        </apex:repeat>
+                                    </table>
+                                </div>
+
+                                <apex:outputText
+                                    rendered="{!IF(LOAGraduatePrograms.size > 0, false, true)}"
+                                    value="No Leave of Absence graduate programs/plans found."
+                                />
+                                
+                                <div class="page-header-smaller">
+                                    <h4>
+                                        <i class="fa fa-caret-down"></i>
                                         &nbsp;Completed Programs and Plans
                                     </h4>
                                 </div>
@@ -3772,7 +3831,7 @@
         function setAsLoadingIcon(node) {
             const iconNode = document.createElement('i');
             iconNode.classList.add('fa');
-            iconNode.classList.add('fa-spinner');
+            iconNode.classList.add('fa-circle-o-notch');
             iconNode.classList.add('fa-pulse');
             iconNode.classList.add('fa-2x');
             iconNode.classList.add('fa-fw');
@@ -4674,7 +4733,7 @@
         // Method to get Transfer Work
         function getTransferWork() {
             document.getElementById('psTransferWorkErrors').innerHTML =
-                "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+                "<i class='fa fa-circle-o-notch fa-pulse fa-2x fa-fw margin-bottom'></i>";
             var transferQuery =
                 'SELECT ASU_Course__c, Course_Taken__c, Date_Posted__c, Grade__c, Grade_Points_per_Unit__c, Term__r.PeopleSoft_Code__c, Units_Taken__c, Units_Transferred__c, Name ' +
                 'FROM Transfer_Credit__c ' +
@@ -6375,9 +6434,9 @@
             if (!transcriptsLoaded) {
                 var conn = new jsforce.Connection({accessToken: '{!$API.Session_Id}'});
                 document.getElementById('psTranscriptErrors').innerHTML =
-                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+                    "<i class='fa fa-circle-o-notch fa-pulse fa-2x fa-fw margin-bottom'></i>";
                 document.getElementById('grpsTranscriptErrors').innerHTML =
-                    "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+                    "<i class='fa fa-circle-o-notch fa-pulse fa-2x fa-fw margin-bottom'></i>";
 
                 var transcriptQuery =
                     'SELECT Address1__c, Address2__c, Address3__c, ' +
@@ -6710,7 +6769,7 @@
             if (emergencyContactsData) return;
 
             document.getElementById('emergency-contacts-errors').innerHTML =
-                "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+                "<i class='fa fa-circle-o-notch fa-pulse fa-2x fa-fw margin-bottom'></i>";
 
             var emergencyContactsQuery =
                 'SELECT Id, Full_Name__c, Primary_Contact__c, Relationship__c, ' +
@@ -7016,9 +7075,9 @@
             if (judicialData) return;
 
             document.getElementById('judicial-data-recent-care-errors').innerHTML =
-                "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+                "<i class='fa fa-circle-o-notch fa-pulse fa-2x fa-fw margin-bottom'></i>";
             document.getElementById('judicial-data-recent-conduct-errors').innerHTML =
-                "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
+                "<i class='fa fa-circle-o-notch fa-pulse fa-2x fa-fw margin-bottom'></i>";
 
             Visualforce.remoting.Manager.invokeAction(
                 '{!$RemoteAction.StudentProfileController.getJudicialData}',
@@ -7250,7 +7309,7 @@
 
                             if (recentCareIncidents?.length === 0 && redactedCareIncidents?.length === 0) {
                                 document.getElementById('judicial-data-recent-care-errors').innerHTML =
-                                    'No care data found for {!theContact.Preferred_First_Name__c}.';
+                                    'No care data found for {!theContact.Preferred_First_Name__c}, as the system retrieved no matching records.';
                                 document.getElementById('judicial-data-redacted-care-errors').innerHTML = '';
                             }
 
@@ -7467,25 +7526,24 @@
 
                             if (recentConductIncidents?.length === 0 && redactedConductIncidents?.length === 0) {
                                 document.getElementById('judicial-data-recent-conduct-errors').innerHTML =
-                                    'No conduct data found for {!theContact.Preferred_First_Name__c}.';
+                                    'No conduct data found for {!theContact.Preferred_First_Name__c}, as the system retrieved no matching records.';
                                 document.getElementById('judicial-data-redacted-conduct-errors').innerHTML = '';
                             }
                         } else {
                             document.getElementById('judicial-data-recent-care-errors').innerHTML =
-                                'No care data found for {!theContact.Preferred_First_Name__c}.';
+                                'No care data found for {!theContact.Preferred_First_Name__c}, as the system retrieved no matching records.';
                             document.getElementById('judicial-data-redacted-care-errors').innerHTML = '';
                             document.getElementById('judicial-data-recent-conduct-errors').innerHTML =
-                                'No conduct data found for {!theContact.Preferred_First_Name__c}.';
+                                'No conduct data found for {!theContact.Preferred_First_Name__c}, as the system retrieved no matching records.';
                             document.getElementById('judicial-data-redacted-conduct-errors').innerHTML = '';
                         }
-                    } else if (event.type === 'exception') {
-                        document.getElementById('judicial-data-recent-care-errors').innerHTML =
-                            event.message + '<br/>\n<pre>' + event.where + '</pre>';
-                        document.getElementById('judicial-data-recent-conduct-errors').innerHTML =
-                            event.message + '<br/>\n<pre>' + event.where + '</pre>';
                     } else {
-                        document.getElementById('judicial-data-recent-care-errors').innerHTML = event.message;
-                        document.getElementById('judicial-data-recent-conduct-errors').innerHTML = event.message;
+                        document.getElementById(
+                            'judicial-data-recent-care-errors'
+                        ).innerHTML = `<i class="fa fa-plug" aria-hidden="true"></i> <strong><i>We're having trouble retrieving the requested information from the external source. Please try again shortly.</i></strong>`;
+                        document.getElementById(
+                            'judicial-data-recent-conduct-errors'
+                        ).innerHTML = `<i class="fa fa-plug" aria-hidden="true"></i> <strong><i>We're having trouble retrieving the requested information from the external source. Please try again shortly.</i></strong>`;
                     }
                 },
                 {buffer: false, escape: true, timeout: 120000}

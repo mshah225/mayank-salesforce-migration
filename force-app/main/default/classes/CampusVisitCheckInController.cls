@@ -35,6 +35,10 @@ public with sharing class CampusVisitCheckInController {
     @AuraEnabled(cacheable=true)
     public static List<EventWrapper> getOtherEvents(String personId, String currentCampaignMemberId, Date eventDate) {
 
+        if (personId == null || eventDate == null) {
+            return new List<EventWrapper>();
+        }
+        
         List<CampaignMember> campaignMembersForDifferentEvents = [
             SELECT Id, Campaign.Name, Status, Campaign.Event_Start_Time__c
             FROM CampaignMember

@@ -2,6 +2,7 @@ import {LightningElement, api, wire} from 'lwc';
 import LightningModal from 'lightning/modal';
 import updateCampaignMembers from '@salesforce/apex/CampusVisitTourSplitController.updateCampaignMembers';
 import getCampaignMemberSessions from '@salesforce/apex/CampusVisitTourSplitController.getCampaignMemberAcademicSessions';
+import refreshCampaignMemberTable from '@salesforce/apex/CampusVisitTourSplitController.refreshCampaignMemberTable';
 import splitGroupsByAcademicSession from '@salesforce/apex/CampusVisitTourSplitController.splitGroupsByAcademicSession';
 
 
@@ -106,6 +107,8 @@ export default class CampusVisitTourGroupSplit extends LightningModal {
 
     updateTourGroupNumber(e) {
         this.changedGroups.set(e.detail.draftValues[0].Id, e.detail.draftValues[0].Tour_Group_Id__c);
+
+
     }
 
     handleSave() {
@@ -128,6 +131,34 @@ export default class CampusVisitTourGroupSplit extends LightningModal {
         updateCampaignMembers({cmsToUpdate: campaignMembers})
             .then((result) => {
                 this.close(true);
+            })
+            .catch((error) => {
+                this.error = error;
+            }); 
+    }
+
+    handleRefresh() {
+
+        var campaignMembers = [];
+        for (let i = 0; i < this.tourGroups.length; i++) {
+            for (let j = 0; j < this.tourGroups[i].membersForTour.length; j++) {
+
+                var cm = JSON.parse(JSON.stringify(this.tourGroups[i].membersForTour[j]));
+
+                var foundInMap = this.changedGroups.get(cm.Id);
+
+                if (foundInMap) {
+                    cm.Tour_Group_Id__c = foundInMap;
+                }
+
+                campaignMembers.push(cm)
+            }
+        }
+
+        refreshCampaignMemberTable({cmsToUpdate: campaignMembers})
+            .then((result) => {
+                console.log(result);
+                this.tourGroups = result;
             })
             .catch((error) => {
                 this.error = error;

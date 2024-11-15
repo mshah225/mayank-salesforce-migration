@@ -110,16 +110,16 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
         {label: 'Graduate', value: 'Graduate'},
     ];
     outlookScoreOptions = [
-        {label: 'Very Low', value: 'Very Low'},
-        {label: 'Low', value: 'Low'},
-        {label: 'Moderate', value: 'Moderate'},
-        {label: 'High', value: 'High'},
-        {label: 'Very High', value: 'Very High'},
+        {label: 'Very Low', value: 'very low'},
+        {label: 'Low', value: 'low'},
+        {label: 'Moderate', value: 'moderate'},
+        {label: 'High', value: 'high'},
+        {label: 'Very High', value: 'very high'},
     ];
     outlookChangeOptions = [
-        {label: 'Up', value: 'Up'},
-        {label: 'No change', value: 'No Change'},
-        {label: 'Down', value: 'Down'},
+        {label: 'Up', value: 'up'},
+        {label: 'No change', value: 'no change'},
+        {label: 'Down', value: 'down'},
     ];
     degreeLevelOptions = [
         {label: 'Certificate', value: 'certificate'},

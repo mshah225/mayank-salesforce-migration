@@ -1,6 +1,5 @@
 <!-- Student Search Visualforce Page -->
-<apex:page
-    id="StudentSearch"
+<apex:page id="StudentSearch"
     controller="StudentSearchController"
     cache="false"
     showHeader="false"
@@ -241,13 +240,12 @@
                     <div class="alert">{!message}</div>
                 </apex:repeat>
 
-                <apex:form>
+                <apex:form >
                     <apex:pageBlock mode="maindetail">
                         <div id="student-search-input-title">Search:</div>
                         <div id="student-search-input-field-container">
                             <apex:inputText id="student-search-input-field" styleClass="slds-select" />
-                            <apex:commandButton
-                                id="student-search-input-button"
+                            <apex:commandButton id="student-search-input-button"
                                 onclick="initiateStudentSearch(); return false;"
                                 value="Search"
                             />

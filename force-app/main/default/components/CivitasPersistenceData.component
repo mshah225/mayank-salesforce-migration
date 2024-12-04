@@ -108,12 +108,6 @@
         google.charts.load('current', { packages: ['corechart', 'line'] });
         google.charts.setOnLoadCallback(drawChart);
 
-        jQuery(document).ready(function () {
-            document.getElementById("chart_div").innerHTML =
-                "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-            jQuery('[data-toggle="tooltip"]').tooltip()
-        });
-
         var getUrlParameter = function getUrlParameter(sParam) {
             var sPageURL = decodeURIComponent(window.location.search.substring(1)),
                 sURLVariables = sPageURL.split('&'),
@@ -394,7 +388,9 @@
         </div>
         <div style="float: left">
             <div class="right" style="float: left; z-index: -1; margin-top: -20px">
-                <div id="chart_div" style="height: 200px; width: 400px"></div>
+                <div id="chart_div" style="height: 200px; width: 400px">
+                    <i class="fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom"></i>
+                </div>
             </div>
             <div
                 id="persistenceLegend"

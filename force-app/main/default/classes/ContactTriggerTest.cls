@@ -4,9 +4,6 @@ public with sharing class ContactTriggerTest {
 
     @TestSetup
     static void setup() {
-        Account bucketAcct = new Account();
-        bucketAcct.name = 'Arizona State University';
-        insert bucketAcct;
     }
 
     @isTest

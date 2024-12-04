@@ -343,8 +343,8 @@ public class ContactService {
     }
 
     /**
-     * The first half of the account sync process.  Handles setting the Bizcard_Account__c lookup when needed
-     * and creating a new account if needed.  Should be run in the before trigger since it'll set the AccountId
+     * The first half of the account sync process. This creates the account records and saves their IDs on
+     * the associated contact record. Should be run in the before trigger since it'll set the AccountId
      * lookup on the Contact
      *
      * @param contacts The new list of contacts
@@ -352,19 +352,10 @@ public class ContactService {
     public static void beforeTriggerSyncAccounts(List<Contact> contacts) {
         Map<Contact, Account> contactToNewAccountMap = new Map<Contact, Account>(); // Map of new accounts
 
-        // Get the Id for the old bucket Account to check against
-        Id bucketAccountId = null;
-        List<Account> bucketAccountList = [SELECT Id FROM Account WHERE Name = 'Arizona State University' LIMIT 1];
-        if (!bucketAccountList.isEmpty())
-            bucketAccountId = bucketAccountList[0].Id;
-
-        /** Preparation complete - now let's do the sync */
-
-        for (Contact con : contacts) {
-            // Make a new account if needed
-            if (con.AccountId == null || con.AccountId == bucketAccountId)
+        // Make a new account if needed
+        for (Contact con : contacts)
+            if (con.AccountId == null)
                 contactToNewAccountMap.put(con, createAccount(con)); // Create an Account for the Contact
-        }
 
         // Insert new contacts
         if (!contactToNewAccountMap.isEmpty())
@@ -377,9 +368,8 @@ public class ContactService {
     }
 
     /**
-     * The second half of the account sync process.  Handles setting the Bizcard_Account__c lookup when needed
-     * and creating a new account if needed. Should be run in the after trigger since the Contacts need to have
-     * their Ids set so that we can update the Accounts' Contact__c lookups
+     * The second half of the account sync process.  Handles setting fields on the account, sets name,
+     * owner, record type, and Contact__c lookup
      *
      * @param contacts The new list of contacts
      */

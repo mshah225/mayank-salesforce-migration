@@ -18,9 +18,13 @@ public class AccountDispatcher implements TriggerDispatcherInterface {
 
     public void beforeInsert() {
         AccountService.assignTerritory(newList, oldMap);
+        if (FeatureFlagService.isEnabled('Account Trigger', 'Organization or Person'))
+            AccountService.setAccountOrPerson(newList);
     }
     public void beforeUpdate() {
         AccountService.assignTerritory(newList, oldMap);
+        if (FeatureFlagService.isEnabled('Account Trigger', 'Organization or Person'))
+            AccountService.setAccountOrPerson(newList);
     }
     public void beforeDelete() {
     }

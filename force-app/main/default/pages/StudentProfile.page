@@ -2333,7 +2333,7 @@
                                         <a
                                             class="fa fa-question-circle"
                                             data-html="true"
-                                            title='<span>Persistence Outlook Level represents the calculated likelihood of students like this one persisting or graduating in the following fall or spring term based on similarities to {!theContact.Preferred_First_Name__c}’s performance to date, current enrollment pattern, academic readiness, demographic data and learning management system engagement relative to peers (if applicable). <a href="#" onclick="openNewSubtab("/articles/FAQ/What-is-a-Persistence-Outlook/p","Details");return false">Visit knowledge article.</a>.</span>'
+                                            title='<span>Persistence Outlook Level represents the calculated likelihood of students like this one persisting or graduating in the following fall or spring term based on similarities to {!HTMLENCODE(theContact.Preferred_First_Name__c)}’s performance to date, current enrollment pattern, academic readiness, demographic data and learning management system engagement relative to peers (if applicable). <a href="#" onclick="openNewSubtab("/articles/FAQ/What-is-a-Persistence-Outlook/p","Details");return false">Visit knowledge article.</a>.</span>'
                                             data-placement="right"
                                             data-trigger="manual"
                                         ></a>
@@ -3518,7 +3518,7 @@
         function setTabTitle() {
             //Set the current tab's title
             if (sforce.console.isInConsole() || window.location.href.includes('FrameOrigin')) {
-                sforce.console.setTabTitle("{!theContact.Preferred_First_Name__c}'s Student Profile");
+                sforce.console.setTabTitle("{!JSENCODE(theContact.Preferred_First_Name__c)}'s Student Profile");
                 inConsole = true;
             }
         }
@@ -4371,7 +4371,7 @@
                 document.getElementById('ps_enrolled_classes').appendChild(tableDivWrap);
             } else {
                 document.getElementById('ps_enrolled_classes').innerHTML =
-                    'No enrolled classes found for {!theContact.Preferred_First_Name__c}.';
+                    'No enrolled classes found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
             }
             document.getElementById('ps_enrolled_classes').style.display = 'initial';
 
@@ -4569,7 +4569,7 @@
                 document.getElementById('ps_dropped_withdrawn_classes').appendChild(tableDivWrap);
             } else {
                 document.getElementById('ps_dropped_withdrawn_classes').innerHTML =
-                    'No dropped or withdrawn classes found for {!theContact.Preferred_First_Name__c}.';
+                    'No dropped or withdrawn classes found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
             }
             document.getElementById('ps_dropped_withdrawn_classes').style.display = 'initial';
         }
@@ -4725,7 +4725,7 @@
                 document.getElementById('ps_credit_by_exam_work').appendChild(tableDivWrap);
             } else {
                 document.getElementById('ps_credit_by_exam_work').innerHTML =
-                    'No credit by exam found for {!theContact.Preferred_First_Name__c}.';
+                    'No credit by exam found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
             }
             document.getElementById('ps_credit_by_exam_work').style.display = 'initial';
         }
@@ -4820,7 +4820,7 @@
                             cleanUndefinedFields('ps_transfer_work');
                         } else {
                             document.getElementById('psTransferWorkErrors').innerHTML =
-                                'No transfer work found for {!theContact.Preferred_First_Name__c}.';
+                                'No transfer work found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
                         }
                     }
                 },
@@ -4899,7 +4899,7 @@
                             '&nbsp;Service Indicators (' + result.length + ')';
                     } else {
                         document.getElementById('serviceIndicatorTable').innerHTML =
-                            'No service indicators found for {!theContact.Preferred_First_Name__c}.';
+                            'No service indicators found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
                         document.getElementById('serviceIndicatorHeader').innerHTML = '&nbsp;Service Indicators (0)';
                     }
                 },
@@ -4973,7 +4973,7 @@
                         loadUnresolvedFinancialAidChecklist(result);
                     } else {
                         document.getElementById('financialAidChecklistTable').innerHTML =
-                            'No financial aid checklist items found for {!theContact.Preferred_First_Name__c}.';
+                            'No financial aid checklist items found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
                         document.getElementById('finAidUnresolvedItemSection').style.display = 'none';
                     }
                 },
@@ -5053,7 +5053,7 @@
 
                         if (keySet.length == null || keySet.length == 0) {
                             document.getElementById('selectListForEditMessages').innerHTML =
-                                'No financial aid user edit message found for {!theContact.Preferred_First_Name__c}.';
+                                'No financial aid user edit message found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
                             return;
                         }
 
@@ -5074,7 +5074,7 @@
                     } else {
                         if (keySet.length == null || keySet.length == 0) {
                             document.getElementById('selectListForEditMessages').innerHTML =
-                                'No financial aid user edit message found for {!theContact.Preferred_First_Name__c}.';
+                                'No financial aid user edit message found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
                             return;
                         }
                     }
@@ -5143,7 +5143,7 @@
 
                         if (keySet.length == null || keySet.length == 0) {
                             document.getElementById('selectListForAwards').innerHTML =
-                                'No financial aid or scholarship awards information found for {!theContact.Preferred_First_Name__c}.';
+                                'No financial aid or scholarship awards information found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
                             return;
                         }
 
@@ -5162,7 +5162,7 @@
                         buildAwardTable();
                     } else {
                         document.getElementById('selectListForAwards').innerHTML =
-                            'No financial aid or scholarship awards information found for {!theContact.Preferred_First_Name__c}.';
+                            'No financial aid or scholarship awards information found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
                         return;
                     }
                 },
@@ -5259,7 +5259,7 @@
 
                         if (keySet.length == null || keySet.length == 0) {
                             document.getElementById('selectListForChargeHistory').innerHTML =
-                                'No charge history found for {!theContact.Preferred_First_Name__c}.';
+                                'No charge history found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
                             return;
                         }
 
@@ -5278,7 +5278,7 @@
                         buildChargeHistoryTable();
                     } else {
                         document.getElementById('selectListForChargeHistory').innerHTML =
-                            'No charge history found for {!theContact.Preferred_First_Name__c}.';
+                            'No charge history found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
                         return;
                     }
                 },
@@ -5472,7 +5472,7 @@
                         document.getElementById('refundTable').innerHTML = html;
                     } else {
                         document.getElementById('refundTable').innerHTML =
-                            'No refunds found for {!theContact.Preferred_First_Name__c}.';
+                            'No refunds found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
                     }
                 },
                 {buffer: false, escape: true, timeout: 120000}
@@ -5523,7 +5523,7 @@
                         document.getElementById('depositTable').innerHTML = html;
                     } else {
                         document.getElementById('depositTable').innerHTML =
-                            'No deposit status found for {!theContact.Preferred_First_Name__c}.';
+                            'No deposit status found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
                     }
                 },
                 {buffer: false, escape: true, timeout: 120000}
@@ -5710,7 +5710,7 @@
 
                         if (keySet.length == null || keySet.length == 0) {
                             document.getElementById('selectListForSAP').innerHTML =
-                                'No satisfactory academic progress found for {!theContact.Preferred_First_Name__c}.';
+                                'No satisfactory academic progress found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
                             return;
                         }
 
@@ -5729,7 +5729,7 @@
                         buildSAPTable();
                     } else {
                         document.getElementById('selectListForSAP').innerHTML =
-                            'No satisfactory academic progress found for {!theContact.Preferred_First_Name__c}.';
+                            'No satisfactory academic progress found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
                         return;
                     }
                 },
@@ -5957,7 +5957,7 @@
                             document.getElementById('ps_advising_notes_section').appendChild(tableDivWrap);
                         } else {
                             document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
-                                'No advising notes found for {!theContact.Preferred_First_Name__c}.';
+                                'No advising notes found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
                         }
                     } else if (event.type === 'exception') {
                         document.getElementById('psAdvisingNotesResponseErrors').innerHTML =
@@ -6079,7 +6079,7 @@
                 document.getElementById('ps_comments_section').appendChild(divWrap);
             } else {
                 document.getElementById('ps_comments_section').innerHTML =
-                    'No comments found for {!theContact.Preferred_First_Name__c}.';
+                    'No comments found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
             }
         }
 
@@ -6160,7 +6160,7 @@
                             document.getElementById('ps_guest_access_section').appendChild(guestAccessListElem);
                         } else {
                             document.getElementById('psGuestAccessResponseErrors').innerHTML =
-                                'No guest access data found for {!theContact.Preferred_First_Name__c}.';
+                                'No guest access data found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
                         }
                     } else if (event.type === 'exception') {
                         document.getElementById('psGuestAccessResponseErrors').innerHTML =
@@ -6536,10 +6536,10 @@
                                 transcriptsLoaded = true;
                             } else {
                                 document.getElementById('ps_transcript').innerHTML =
-                                    'No transcripts found for {!theContact.Preferred_First_Name__c}.';
+                                    'No transcripts found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
                                 document.getElementById('ps_transcript').style.display = 'initial';
                                 document.getElementById('gr_psTranscript').innerHTML =
-                                    'No transcripts found for {!theContact.Preferred_First_Name__c}.';
+                                    'No transcripts found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
                                 document.getElementById('gr_psTranscript').style.display = 'initial';
                                 transcriptsLoaded = true;
                             }
@@ -6760,7 +6760,7 @@
                 document.getElementById('academic-integrity-container').appendChild(tableDivWrap);
             } else {
                 document.getElementById('academic-integrity-container').innerHTML =
-                    'No academic integrity data found for {!theContact.Preferred_First_Name__c}.';
+                    'No academic integrity data found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
             }
             document.getElementById('academic-integrity-container').style.display = 'initial';
         }
@@ -6981,7 +6981,7 @@
                         }
                     } else {
                         document.getElementById('emergency-contacts-errors').innerHTML =
-                            'No emergency contact details found for {!theContact.Preferred_First_Name__c}.';
+                            'No emergency contact details found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}.';
                     }
                 }
             });
@@ -7309,7 +7309,7 @@
 
                             if (recentCareIncidents?.length === 0 && redactedCareIncidents?.length === 0) {
                                 document.getElementById('judicial-data-recent-care-errors').innerHTML =
-                                    'No care data found for {!theContact.Preferred_First_Name__c}, as the system retrieved no matching records.';
+                                    'No care data found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}, as the system retrieved no matching records.';
                                 document.getElementById('judicial-data-redacted-care-errors').innerHTML = '';
                             }
 
@@ -7526,15 +7526,15 @@
 
                             if (recentConductIncidents?.length === 0 && redactedConductIncidents?.length === 0) {
                                 document.getElementById('judicial-data-recent-conduct-errors').innerHTML =
-                                    'No conduct data found for {!theContact.Preferred_First_Name__c}, as the system retrieved no matching records.';
+                                    'No conduct data found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}, as the system retrieved no matching records.';
                                 document.getElementById('judicial-data-redacted-conduct-errors').innerHTML = '';
                             }
                         } else {
                             document.getElementById('judicial-data-recent-care-errors').innerHTML =
-                                'No care data found for {!theContact.Preferred_First_Name__c}, as the system retrieved no matching records.';
+                                'No care data found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}, as the system retrieved no matching records.';
                             document.getElementById('judicial-data-redacted-care-errors').innerHTML = '';
                             document.getElementById('judicial-data-recent-conduct-errors').innerHTML =
-                                'No conduct data found for {!theContact.Preferred_First_Name__c}, as the system retrieved no matching records.';
+                                'No conduct data found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}, as the system retrieved no matching records.';
                             document.getElementById('judicial-data-redacted-conduct-errors').innerHTML = '';
                         }
                     } else {

@@ -8,16 +8,11 @@ global class TopFiveArticleController {
 
     @HttpGet
     global static List<ArticleInfo> getTopFiveArticles() {
-        string urlPrefix = '';
-        string urlBase = '';
-        string sandboxInstance = [SELECT InstanceName FROM Organization LIMIT 1].InstanceName;
-        string sandboxName = UserInfo.getUserName().substringAfterLast('.');
-        if (isSandbox()) {
-            urlBase = sandboxName + '-asu';
-            urlPrefix = 'http://' + urlBase + '.' + sandboxInstance + '.force.com/kb/articles/FAQ/';
-        } else {
-            urlPrefix = 'https://asu.secure.force.com/kb/articles/FAQ/';
-        }
+        Id knowledgeBaseSiteId = [SELECT Id FROM Site WHERE Name = 'kb']?.Id;
+        String urlPrefix = knowledgeBaseSiteId != null
+            ? [SELECT SecureUrl FROM SiteDetail WHERE DurableId = :knowledgeBaseSiteId]?.SecureUrl + '/articles/FAQ/'
+            : '';
+
         List<KnowledgeArticleViewStat> articleViewStatList = [
             SELECT Id, ParentId
             FROM KnowledgeArticleViewStat
@@ -178,9 +173,5 @@ global class TopFiveArticleController {
         url += dcGroup.replace('__c', '') + '%3A' + dataCategory.replace('__c', '');
 
         return url;
-    }
-
-    global static Boolean isSandbox() {
-        return [SELECT Id, IsSandbox FROM Organization].IsSandbox;
     }
 }

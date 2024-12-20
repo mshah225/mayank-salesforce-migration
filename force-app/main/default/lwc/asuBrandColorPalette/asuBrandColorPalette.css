@@ -1,0 +1,100 @@
+/*
+====================================================================
+ASU-Themed CSS for LWC Components with Accessible Brand Colors
+====================================================================
+*/
+
+:host {
+    /* Unset Global SLDS Styles */
+    --slds-g-color-neutral-base-100: unset;
+    --slds-g-color-neutral-base-95: unset;
+    --slds-g-color-neutral-base-90: unset;
+    --slds-g-color-neutral-base-80: unset;
+    --slds-g-color-neutral-base-70: unset;
+    --slds-g-color-neutral-base-65: unset;
+    --slds-g-color-neutral-base-60: unset;
+    --slds-g-color-neutral-base-50: unset;
+    --slds-g-color-neutral-base-40: unset;
+    --slds-g-color-neutral-base-30: unset;
+    --slds-g-color-neutral-base-20: unset;
+    --slds-g-color-neutral-base-15: unset;
+    --slds-g-color-neutral-base-10: unset;
+
+    /* ASU Primary Colors */
+    --asu-maroon: #8c1d40;
+    --asu-gold: #ffc627;
+    --asu-black: var(--asu-gray-1);
+    --asu-white: #ffffff;
+
+    /* ASU Secondary Colors */
+    --asu-green: #78be20;
+    --asu-blue: #00a3e0;
+    --asu-orange: #ff7f32;
+    --asu-gray: #747474;
+    --asu-copper: #af674b;
+    --asu-turquoise: #4ab7c4;
+    --asu-pink: #e74973;
+
+    /* ASU Grayscale */
+    --asu-gray-1: #191919;
+    --asu-gray-2: #484848;
+    --asu-gray-3: var(--asu-gray);
+    --asu-gray-4: #bfbfbf;
+    --asu-gray-5: #d0d0d0;
+    --asu-gray-6: #e8e8e8;
+    --asu-gray-7: #fafafa;
+
+    /* ASU System Colors */
+    --asu-error: #cc2f2f;
+    --asu-error-text: #b72a2a;
+    --asu-error-text-light: #ff7b7d;
+    --asu-error-background-light: #f7dddd;
+
+    --asu-info-text: #126877;
+    --asu-info-text-light: #00b0f3;
+    --asu-info-background-light: #d6f0fa;
+
+    --asu-warning-text: #bd4800;
+    --asu-warning-text-light: #ff8034;
+    --asu-warning-background-light: #ffeade;
+
+    --asu-success-text: #446d12;
+    --asu-success-background-light: #e9f5db;
+
+    /* Accessible Brand Styling Tokens */
+    --slds-brandAccessible: var(--asu-blue); /* Replaces #0176d3 with ASU Blue */
+    --slds-brandAccessibleActive: #014486; /* Darker blue for active state */
+    --slds-brandBackgroundDark: var(--slds-brandAccessibleActive);
+    --slds-brandBackgroundDarkTransparent: rgba(1, 68, 134, 0);
+    --slds-brandBackgroundPrimary: #eef4ff;
+    --slds-brandBackgroundPrimaryTransparent: rgba(176, 196, 223, 0);
+    --slds-brandContrast: var(--asu-black); /* Ensures high contrast */
+    --slds-brandContrastActive: var(--asu-gray-1);
+    --slds-brandDark: var(--slds-brandAccessible);
+    --slds-brandDarkActive: var(--asu-gray-2); /* Darkened for better contrast */
+    --slds-brandDisabled: var(--asu-gray-4);
+    --slds-brandHeader: var(--asu-white);
+    --slds-brandHeaderContrast: var(--asu-gray-2); /* Better contrast than light gray */
+    --slds-brandHeaderContrastActive: var(--asu-gray-3);
+    --slds-brandHeaderContrastCool: var(--slds-brandAccessibleActive);
+    --slds-brandHeaderContrastCoolActive: var(--slds-brandAccessibleActive);
+    --slds-brandHeaderContrastInverse: var(--asu-white);
+    --slds-brandHeaderContrastInverseActive: var(--asu-gray-6);
+    --slds-brandHeaderContrastWarm: var(--asu-maroon); /* Warm color alternative */
+    --slds-brandHeaderContrastWarmActive: var(--asu-maroon);
+    --slds-brandHeaderContrastWeak: var(--asu-gray-4);
+    --slds-brandHeaderContrastWeakActive: var(--asu-gray-5);
+    --slds-brandHeaderContrastWeakDisabled: rgba(166, 166, 166, 0.25);
+    --slds-brandHeaderIcon: var(--asu-gray-3); /* Accessible color for icons */
+    --slds-brandHeaderIconActive: var(--asu-gray-2);
+    --slds-brandHeaderIconDisabled: rgba(145, 145, 145, 0.25);
+    --slds-brandLight: var(--asu-gray-7);
+    --slds-brandLightActive: var(--asu-gray-6);
+    --slds-brandPrimary: var(--asu-gold); /* Replaces #1b96ff with ASU Gold */
+    --slds-brandPrimaryActive: var(--asu-maroon); /* Use ASU Maroon for active state */
+    --slds-brandPrimaryTransparent: rgba(255, 198, 39, 0.1);
+    --slds-brandPrimaryTransparent10: rgba(255, 198, 39, 0.1);
+    --slds-brandPrimaryTransparent40: rgba(255, 198, 39, 0.4);
+    --slds-brandTextLink: var(--asu-blue); /* Text link in ASU Blue */
+    --slds-brandTextLinkActive: var(--slds-brandAccessibleActive);
+}

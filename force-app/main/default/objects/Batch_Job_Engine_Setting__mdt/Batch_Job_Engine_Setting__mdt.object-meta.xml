@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Label and record names must match the batch class name exactly.</description>
+    <label>Batch Job Engine Setting</label>
+    <pluralLabel>Batch Job Engine Settings</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

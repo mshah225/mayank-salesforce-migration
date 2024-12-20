@@ -1,0 +1,163 @@
+<template>
+    <div class="main-container">
+        <lightning-card title="Batch Job Engine" variant="Narrow" icon-name="utility:array" class="slds-card">
+            <c-lightning-design-toast></c-lightning-design-toast>
+
+            <!-- Wrap the form elements in lightning-layout and lightning-layout-item -->
+            <div class="first-row-container">
+                <lightning-layout vertical-align="center">
+                    <!-- Batch Class Selection -->
+                    <lightning-layout-item
+                        size="12"
+                        small-device-size="6"
+                        medium-device-size="4"
+                        large-device-size="6"
+                        padding="around-small"
+                    >
+                        <lightning-combobox
+                            label="Select Batch Class"
+                            variant="label-inline"
+                            options={batchClassOptions}
+                            value={selectedBatchClass}
+                            onchange={handleBatchClassChange}
+                            placeholder="Batch at your own risk..."
+                            disabled={executedBatch}
+                        ></lightning-combobox>
+                    </lightning-layout-item>
+
+                    <!-- Batch Size Input -->
+                    <lightning-layout-item
+                        size="12"
+                        small-device-size="6"
+                        medium-device-size="4"
+                        large-device-size="3"
+                        padding="around-small"
+                    >
+                        <lightning-slider
+                            label={sliderLabel}
+                            variant="label-inline"
+                            value={batchSize}
+                            min={minBatchSize}
+                            max={maxBatchSize}
+                            onchange={handleBatchSizeChange}
+                            disabled={executedBatch}
+                        ></lightning-slider>
+                    </lightning-layout-item>
+
+                    <!-- Execute Batch Button -->
+                    <lightning-layout-item
+                        size="12"
+                        small-device-size="6"
+                        medium-device-size="4"
+                        large-device-size="3"
+                        padding="around-small"
+                    >
+                        <lightning-button
+                            label={progressLabel}
+                            variant="destructive"
+                            onclick={handleOpenModal}
+                            disabled={disableExecuteButton}
+                            class="slds-p-top_large"
+                        ></lightning-button>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+
+            <div class="second-row-container">
+                <lightning-layout if:true={batchJobId}>
+                    <!-- Generated Batch ID -->
+                    <lightning-layout-item
+                        size="12"
+                        small-device-size="6"
+                        medium-device-size="4"
+                        large-device-size="6"
+                        padding="around-small"
+                    >
+                        <lightning-input
+                            label="Generated Batch ID"
+                            value={batchJobId}
+                            disabled
+                            variant="label-inline"
+                            class="slds-p-bottom_medium"
+                        ></lightning-input>
+                    </lightning-layout-item>
+
+                    <!-- Progress Bar and Status -->
+                    <lightning-layout-item
+                        size="12"
+                        small-device-size="6"
+                        medium-device-size="4"
+                        large-device-size="2"
+                        padding="around-small"
+                    >
+                        <lightning-button
+                            label="Get Batch Status"
+                            variant="destructive-text"
+                            disabled={executedBatch}
+                            onclick={getBatchStatus}
+                        ></lightning-button>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+
+            <div class="third-row-container">
+                <lightning-layout if:true={batchJobId}>
+                    <lightning-layout-item
+                        size="12"
+                        small-device-size="12"
+                        medium-device-size="12"
+                        large-device-size="12"
+                        padding="around-small"
+                    >
+                        <div class="slds-p-top_large progress-label" style="text-align: center">
+                            Progress:
+                            &nbsp;<strong>{batchPercentageExecuted}</strong>&nbsp;(<strong>{executedBatch}</strong>&nbsp;of&nbsp;<strong>{totalBatch}</strong>&nbsp;
+                            batches complete)
+                        </div>
+                        <div class="slds-p-top_large">
+                            <lightning-progress-bar
+                                value={progress}
+                                size="large"
+                                class="progress-bar"
+                            ></lightning-progress-bar>
+                        </div>
+                        <template if:true={isBatchCompleted}>
+                            <div class="slds-p-top_large progress-label" style="text-align: center">
+                                Errors: <strong>{numberOfErrors}</strong>
+                            </div></template
+                        >
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+        </lightning-card>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <template if:true={isModalOpen}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <lightning-modal-header label="Confirm Batch Job"></lightning-modal-header>
+                <lightning-modal-body class="modal-body">
+                    <h3>This process may take some time and/or be costly to platform resources.</h3>
+                    <br />
+                    <p>Are you sure you want to start <strong>{selectedBatchClass}</strong>?</p>
+                </lightning-modal-body>
+                <lightning-modal-footer class="modal-footer">
+                    <lightning-button-group>
+                        <lightning-button
+                            variant="destructive-text"
+                            label="Cancel"
+                            onclick={handleCloseModal}
+                        ></lightning-button>
+                        <lightning-button
+                            variant="destructive"
+                            label="Start"
+                            onclick={handleExecuteBatch}
+                        ></lightning-button
+                    ></lightning-button-group>
+                </lightning-modal-footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

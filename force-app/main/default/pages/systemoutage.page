@@ -1,5 +1,4 @@
 <apex:page sidebar="false" showHeader="false" standardStylesheets="false">
-
     <head>
         <!-- SYSTEM OUTAGE NOTIFICATION FOR PROD -->
 
@@ -24,9 +23,10 @@
 
     <body>
         <div class="alert alert-danger" role="alert">
-            <strong>Salesforce access will not be available during this time.</strong> For Help Desk users who need access during
-            this time, log in to our UAT sandbox environment with the password that was sent to your email. Login to UAT:
-            <a href="https://asu--uat.cs9.my.salesforce.com/" target="_blank">Link</a>
+            <strong>Salesforce access will not be available during this time.</strong> For Help Desk users who need
+            access during this time, log in to our UAT sandbox environment with the password that was sent to your
+            email. Login to UAT:
+            <a href="https://asu--uat.sandbox.my.salesforce.com/" target="_blank">Link</a>
         </div>
         <br />
         <br />

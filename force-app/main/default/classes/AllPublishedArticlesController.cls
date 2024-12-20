@@ -1,6 +1,18 @@
 public with sharing class AllPublishedArticlesController {
     public List<KnowledgeArticleWrapper> completeListOfArticles { get; set; }
-
+    public static String knowledgeBasePrefix {
+        get {
+            if (knowledgeBasePrefix == null) {
+                Id knowledgeBaseSiteId = [SELECT Id FROM Site WHERE Name = 'kb']?.Id;
+                knowledgeBasePrefix = knowledgeBaseSiteId != null
+                    ? [SELECT SecureUrl FROM SiteDetail WHERE DurableId = :knowledgeBaseSiteId]?.SecureUrl +
+                      '/articles/'
+                    : '/';
+            }
+            return knowledgeBasePrefix;
+        }
+        set;
+    }
     public AllPublishedArticlesController() {
         completeListOfArticles = new List<KnowledgeArticleWrapper>();
         for (KnowledgeArticleVersion kav : [
@@ -13,7 +25,6 @@ public with sharing class AllPublishedArticlesController {
     }
 
     public class KnowledgeArticleWrapper {
-        private String knowledgeBasePrefix = 'https://asu.secure.force.com/kb/articles/';
         public String articleName { get; set; }
         public String url { get; set; }
 

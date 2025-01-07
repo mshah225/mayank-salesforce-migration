@@ -373,52 +373,29 @@ public class ContactService {
      *
      * @param contacts The new list of contacts
      */
-    public static void afterTriggerSyncAccounts(List<Contact> contacts) {
-        // Ids for all the Contact's accounts.  At this point AccountId  must lookup to the 1-to-1 contact's account
-        Set<Id> accountIds = new Set<Id>();
-        Map<Id, Id> contactIdToAccountIdMap = new Map<Id, Id>();
-        for (Contact con : contacts) {
-            accountIds.add(con.AccountId);
-            contactIdToAccountIdMap.put(con.Id, con.AccountId);
-        }
-
-        // Get all the accounts for these contacts
-        List<Account> accountList = [
-            SELECT Id, Name, OwnerId, RecordTypeId, Contact__c
-            FROM Account
-            WHERE Id IN :accountIds
-        ];
-
-        // Map contact id to its associated account
-        Map<Id, Account> accountMap = new Map<Id, Account>();
-        for (Account acc : accountList)
-            accountMap.put(acc.Id, acc);
-
-        // And now modify each account if it has fallen out of sync
+    public static void afterTriggerSyncAccounts(List<Contact> contacts, Map<Id, Contact> oldContactsMap) {
         List<Account> accountsToUpdate = new List<Account>();
-        for (Contact con : contacts) {
-            // If this contact has an account
-            if (contactIdToAccountIdMap.containsKey(con.Id)) {
-                Id accountId = contactIdToAccountIdMap.get(con.Id);
-                // and we got the Account's details
-                if (accountMap.containsKey(accountId)) {
-                    Account acc = accountMap.get(accountId);
-                    // Check if the Account disagrees with the Contact - if so bring Account into alignment
-                    if (
-                        acc != null &&
-                        (acc.Name != con.FirstName + ' ' + con.LastName ||
-                        acc.OwnerId != con.OwnerId ||
-                        acc.RecordTypeId != getAccountRecordTypeForContactRecordType(con.RecordTypeID) ||
-                        acc.Contact__c != con.Id)
-                    ) {
-                        acc.Name = con.FirstName + ' ' + con.LastName;
-                        acc.OwnerId = con.OwnerId;
-                        acc.RecordTypeId = getAccountRecordTypeForContactRecordType(con.RecordTypeID);
-                        acc.Contact__c = con.Id;
 
-                        accountsToUpdate.add(acc);
+        // If any synced field changes, we will need to update the corresponding fields on the Account record
+        for (Contact con : contacts) {
+            Contact oldCon = (Contact) RecordHelper.getOldRecord(con.Id);
+            if (
+                RecordHelper.hasNewOrChangedFields(
+                    con,
+                    oldCon,
+                    new List<Schema.SObjectField>{
+                        Contact.FirstName,
+                        Contact.LastName,
+                        Contact.OwnerId,
+                        Contact.RecordTypeId
                     }
-                }
+                )
+            ) {
+                Account accountForCon = createAccount(con);
+                accountForCon.Id = con.AccountId; // update existing account
+                accountForCon.Contact__c = con.Id; // always make sure contact id is set
+
+                accountsToUpdate.add(accountForCon);
             }
         }
 

@@ -30,11 +30,11 @@ public without sharing class ContactDispatcher implements TriggerDispatcherInter
     public void beforeDelete() {
     }
     public void afterInsert() {
-        ContactService.afterTriggerSyncAccounts(newList);
+        ContactService.afterTriggerSyncAccounts(newList, oldMap);
         ContactService.setHashIds(newList);
     }
     public void afterUpdate() {
-        ContactService.afterTriggerSyncAccounts(newList);
+        ContactService.afterTriggerSyncAccounts(newList, oldMap);
         ContactService.assignTerritory(newList, oldMap);
     }
     public void afterDelete() {

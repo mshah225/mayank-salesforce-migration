@@ -219,9 +219,9 @@ public class OpportunityService {
             }
         }
 
-        for (Plan__c plan : [SELECT Id, Program__c FROM Plan__c WHERE Id IN :planIds]) {
-            programColleges.put(plan.Id, plan.Program__c);
-        }
+        if (!planIds.isEmpty())
+            for (Plan__c plan : [SELECT Id, Program__c FROM Plan__c WHERE Id IN :planIds])
+                programColleges.put(plan.Id, plan.Program__c);
 
         for (Opportunity newOpportunity : newOpportunities) {
             if (newOpportunity.Admitted_Plan__c != null) {
@@ -239,32 +239,31 @@ public class OpportunityService {
         List<Id> planIds = new List<Id>();
         Map<Id, Id> programColleges = new Map<Id, Id>();
 
-        for (Opportunity updatedOpportunity : updatedOpportunities) {
-            Opportunity previousOpportunity = previousOpportunitiesMap.get(updatedOpportunity.Id);
-            if (updatedOpportunity.Academic_Plan__c != previousOpportunity.Academic_Plan__c) {
-                planIds.add(updatedOpportunity.Academic_Plan__c);
-            }
-            if (updatedOpportunity.Admitted_Plan__c != previousOpportunity.Admitted_Plan__c) {
-                planIds.add(updatedOpportunity.Admitted_Plan__c);
-            }
+        for (Opportunity opp : updatedOpportunities) {
+            Opportunity prevOpp = previousOpportunitiesMap.get(opp.Id);
+
+            if (RecordHelper.hasNewOrChangedField(opp, prevOpp, Opportunity.Academic_Plan__c))
+                planIds.add(opp.Academic_Plan__c);
+            if (RecordHelper.hasNewOrChangedField(opp, prevOpp, Opportunity.Admitted_Plan__c))
+                planIds.add(opp.Admitted_Plan__c);
         }
 
-        for (Plan__c plan : [SELECT Id, Program__c FROM Plan__c WHERE Id IN :planIds]) {
-            programColleges.put(plan.Id, plan.Program__c);
-        }
+        if (!planIds.isEmpty())
+            for (Plan__c plan : [SELECT Id, Program__c FROM Plan__c WHERE Id IN :planIds])
+                programColleges.put(plan.Id, plan.Program__c);
 
-        for (Opportunity updatedOpportunity : updatedOpportunities) {
-            Opportunity previousOpportunity = previousOpportunitiesMap.get(updatedOpportunity.Id);
+        for (Opportunity opp : updatedOpportunities) {
+            Opportunity prevOpp = previousOpportunitiesMap.get(opp.Id);
             if (
-                updatedOpportunity.Admitted_Plan__c != null &&
-                updatedOpportunity.Admitted_Plan__c != previousOpportunity.Admitted_Plan__c
+                opp.Admitted_Plan__c != null &&
+                RecordHelper.hasNewOrChangedField(opp, prevOpp, Opportunity.Admitted_Plan__c)
             ) {
-                updatedOpportunity.College__c = programColleges.get(updatedOpportunity.Admitted_Plan__c);
+                opp.College__c = programColleges.get(opp.Admitted_Plan__c);
             } else if (
-                updatedOpportunity.Academic_Plan__c != null &&
-                updatedOpportunity.Academic_Plan__c != previousOpportunity.Academic_Plan__c
+                opp.Academic_Plan__c != null &&
+                RecordHelper.hasNewOrChangedField(opp, prevOpp, Opportunity.Admitted_Plan__c)
             ) {
-                updatedOpportunity.College__c = programColleges.get(updatedOpportunity.Academic_Plan__c);
+                opp.College__c = programColleges.get(opp.Academic_Plan__c);
             }
         }
     }

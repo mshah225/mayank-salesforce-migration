@@ -195,12 +195,16 @@ public class OpportunityService {
         }
 
         for (Opportunity newOpportunity : newOpportunities) {
-            newOpportunity.Opportunity_Assignment_Number_Rand__c = generateOpportunityAssignmentNumber();
             if (newOpportunity.Contact__c == null) {
                 Account oppsAccount = accountMap.get(newOpportunity.AccountId);
                 newOpportunity.Contact__c = oppsAccount.Contact__c;
             }
         }
+    }
+
+    public static void setAssignmentNumbers(List<Opportunity> newOpportunities) {
+        for (Opportunity opp : newOpportunities)
+            opp.Opportunity_Assignment_Number_Rand__c = generateOpportunityAssignmentNumber();
     }
 
     public static void insertCollegePlan(List<Opportunity> newOpportunities) {
@@ -852,26 +856,30 @@ public class OpportunityService {
     }
 
     public static void updateOpportunityTypeForGrads(List<Opportunity> newOpps) {
-
         List<Id> planIdsFromOpp = new List<Id>();
-
 
         for (Opportunity opp : newOpps) {
             planIdsFromOpp.add(opp.Academic_Plan__c);
         }
 
-        Map<Id, RecordType> recordTypeIdsForGradOpps = new Map<Id, RecordType>([
-            SELECT Id 
-            FROM RecordType
-            WHERE (DeveloperName = 'Graduate_Application' OR DeveloperName = 'Graduate_Prospect') 
-            AND sObjectType = 'Opportunity'
-        ]);
+        Map<Id, RecordType> recordTypeIdsForGradOpps = new Map<Id, RecordType>(
+            [
+                SELECT Id
+                FROM RecordType
+                WHERE
+                    (DeveloperName = 'Graduate_Application'
+                    OR DeveloperName = 'Graduate_Prospect')
+                    AND sObjectType = 'Opportunity'
+            ]
+        );
 
-        Map<Id, Plan__c> plansForOpp = new Map<Id, Plan__c>([
-            SELECT Degree_Level__c 
-            FROM Plan__c
-            WHERE Id IN: planIdsFromOpp
-        ]);
+        Map<Id, Plan__c> plansForOpp = new Map<Id, Plan__c>(
+            [
+                SELECT Degree_Level__c
+                FROM Plan__c
+                WHERE Id IN :planIdsFromOpp
+            ]
+        );
 
         for (Opportunity opp : newOpps) {
             if (recordTypeIdsForGradOpps.get(opp.RecordTypeId) != null) {
@@ -893,33 +901,36 @@ public class OpportunityService {
             }
         }
     }
-    
+
     public static void checkAndCreateMasterTracker(List<Opportunity> newOpps) {
         for (Opportunity newOpp : newOpps) {
-
             if (meetsMasterTrackerConditions(newOpp)) {
                 Graduate_Master_Tracker__c masterTracker = MasterTrackerService.createMasterTrackerRecord(newOpp);
 
                 newOpp.Sync_to_Master_Tracker_Record__c = true;
                 newOpp.Graduate_Master_Tracker__c = masterTracker.Id;
             }
-            
         }
     }
 
     private static Boolean meetsMasterTrackerConditions(Opportunity opp) {
-        return opp.Interview_Status__c == 'Complete' && opp.Plan__c == 'FTMBA' && 
-        opp.Round__c != null && opp.Interview_Date__c < Date.today() &&
-        opp.Graduate_Master_Tracker__c == null;
+        return opp.Interview_Status__c == 'Complete' &&
+            opp.Plan__c == 'FTMBA' &&
+            opp.Round__c != null &&
+            opp.Interview_Date__c < Date.today() &&
+            opp.Graduate_Master_Tracker__c == null;
     }
 
     public static void disableSyncingForMasterTracker(Map<Id, Opportunity> newOpps, Map<Id, Opportunity> oldOpps) {
-
         for (Id newOppId : newOpps.keyset()) {
             Opportunity newOpp = newOpps.get(newOppId);
             Opportunity oldOpp = oldOpps.get(newOppId);
-            if (newOpp.File_Review_Status__c == 'Final Review Complete' && oldOpp.File_Review_Status__c != 'Final Review Complete'
-            && newOpp.Interview_Status__c == 'Complete' && oldOpp.Interview_Status__c != 'Complete') {
+            if (
+                newOpp.File_Review_Status__c == 'Final Review Complete' &&
+                oldOpp.File_Review_Status__c != 'Final Review Complete' &&
+                newOpp.Interview_Status__c == 'Complete' &&
+                oldOpp.Interview_Status__c != 'Complete'
+            ) {
                 newOpp.Sync_to_Master_Tracker_Record__c = false;
             }
         }

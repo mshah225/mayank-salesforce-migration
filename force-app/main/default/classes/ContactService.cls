@@ -396,7 +396,8 @@ public class ContactService {
                         Contact.FirstName,
                         Contact.LastName,
                         Contact.OwnerId,
-                        Contact.RecordTypeId
+                        Contact.RecordTypeId,
+                        Contact.AccountId
                     }
                 )
             ) {

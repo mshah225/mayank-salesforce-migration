@@ -306,16 +306,25 @@ public class ContactService {
         Set<Id> contactIdsToUpdateRelatedUsers = new Set<Id>();
         Map<Id, User> contactIdToUserMap = new Map<Id, User>();
 
-        // Get a set of contact ids to search user
+        // For External Mastered records, if name changes we need to propagate that
+        // change to the User record
         for (Contact newCon : contacts) {
-            Contact oldCon = oldContactsMap.get(newCon.Id);
+            Contact oldCon = (Contact) RecordHelper.getOldRecord(newCon.Id);
             if (
-                newCon.RecordTypeId == extMasteredContactRecTypeId &&
-                (newCon.FirstName != oldCon.FirstName ||
-                newCon.LastName != oldCon.LastName)
-            )
+                con.RecordTypeId == extMasteredContactRecTypeId &&
+                RecordHelper.hasNewOrChangedFields(
+                    newCon,
+                    oldCon,
+                    new List<Schema.SObjectField>{ Contact.FirstName, Contact.LastName }
+                )
+            ) {
                 contactIdsToUpdateRelatedUsers.add(newCon.Id);
+            }
         }
+
+        // No changes to synced fields
+        if (contactIdsToUpdateRelatedUsers.isEmpty())
+            return;
 
         // Map each contact id to its associated user
         List<User> usersToUpdate = [

@@ -859,33 +859,32 @@ public class OpportunityService {
     }
 
     public static void updateOpportunityTypeForGrads(List<Opportunity> newOpps) {
-        List<Id> planIdsFromOpp = new List<Id>();
+        List<Id> planIdsFromGradOpps = new List<Id>();
 
-        for (Opportunity opp : newOpps) {
-            planIdsFromOpp.add(opp.Academic_Plan__c);
-        }
+        Set<String> gradOppRecordTypeIds = new Set<String>{
+            RecordIdHelper.getRecordTypeId('Opportunity', 'Graduate_Application'),
+            RecordIdHelper.getRecordTypeId('Opportunity', 'Graduate_Prospect')
+        };
 
-        Map<Id, RecordType> recordTypeIdsForGradOpps = new Map<Id, RecordType>(
-            [
-                SELECT Id
-                FROM RecordType
-                WHERE
-                    (DeveloperName = 'Graduate_Application'
-                    OR DeveloperName = 'Graduate_Prospect')
-                    AND sObjectType = 'Opportunity'
-            ]
-        );
+        // Get all the plans for the GRAD Opps
+        for (Opportunity opp : newOpps)
+            if (gradOppRecordTypeIds.contains(opp.RecordTypeId) && String.isNotBlank(opp.Academic_Plan__c))
+                planIdsFromGradOpps.add(opp.Academic_Plan__c);
+
+        // No GRAD Opps to check
+        if (planIdsFromGradOpps.isEmpty())
+            return;
 
         Map<Id, Plan__c> plansForOpp = new Map<Id, Plan__c>(
             [
                 SELECT Degree_Level__c
                 FROM Plan__c
-                WHERE Id IN :planIdsFromOpp
+                WHERE Id IN :planIdsFromGradOpps
             ]
         );
 
         for (Opportunity opp : newOpps) {
-            if (recordTypeIdsForGradOpps.get(opp.RecordTypeId) != null) {
+            if (gradOppRecordTypeIds.contains(opp.RecordTypeId)) {
                 Plan__c planForOpp = plansForOpp.get(opp.Academic_Plan__c);
 
                 if (planForOpp == null) {

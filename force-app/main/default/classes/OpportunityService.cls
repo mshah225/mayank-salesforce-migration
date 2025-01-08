@@ -261,7 +261,7 @@ public class OpportunityService {
                 opp.College__c = programColleges.get(opp.Admitted_Plan__c);
             } else if (
                 opp.Academic_Plan__c != null &&
-                RecordHelper.hasNewOrChangedField(opp, prevOpp, Opportunity.Admitted_Plan__c)
+                RecordHelper.hasNewOrChangedField(opp, prevOpp, Opportunity.Academic_Plan__c)
             ) {
                 opp.College__c = programColleges.get(opp.Academic_Plan__c);
             }
@@ -272,7 +272,7 @@ public class OpportunityService {
         if (assignTerritoryDone) {
             return;
         }
-        
+
         Set<Id> contactIdSet = new Set<Id>();
         List<Contact> contactList = new List<Contact>();
         Set<Id> locationSet = new Set<Id>();

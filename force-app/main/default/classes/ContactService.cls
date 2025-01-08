@@ -311,7 +311,7 @@ public class ContactService {
         for (Contact newCon : contacts) {
             Contact oldCon = (Contact) RecordHelper.getOldRecord(newCon.Id);
             if (
-                con.RecordTypeId == extMasteredContactRecTypeId &&
+                newCon.RecordTypeId == extMasteredContactRecTypeId &&
                 RecordHelper.hasNewOrChangedFields(
                     newCon,
                     oldCon,

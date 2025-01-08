@@ -269,10 +269,6 @@ public class OpportunityService {
     }
 
     public static void assignTerritory(List<Opportunity> newOpportunities, Map<Id, Opportunity> oldOpportunitiesMap) {
-        if (assignTerritoryDone) {
-            return;
-        }
-
         Set<Id> contactIdSet = new Set<Id>();
         List<Contact> contactList = new List<Contact>();
         Set<Id> locationSet = new Set<Id>();

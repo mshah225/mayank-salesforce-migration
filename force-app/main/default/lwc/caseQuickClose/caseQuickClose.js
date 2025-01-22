@@ -232,3 +232,61 @@ export default class CaseQuickClose extends LightningElement {
         this.errorMessage = extractErrorMessages(error)[0];
     }
 }
+
+export class CaseQuickCloseTest extends CaseQuickClose {
+    @api get recordId() {
+        return super.recordId;
+    }
+    set recordId(v) {
+        super.recordId = v;
+    }
+
+    @api get formVisible() {
+        return super.formVisible;
+    }
+    set formVisible(v) {
+        super.formVisible = v;
+    }
+
+    @api get buttonVisible() {
+        return super.buttonVisible;
+    }
+    set buttonVisible(v) {
+        super.buttonVisible = v;
+    }
+
+    @api get spamButtonVisible() {
+        return super.spamButtonVisible;
+    }
+    set spamButtonVisible(v) {
+        super.spamButtonVisible = v;
+    }
+
+    @api get loading() {
+        return super.loading;
+    }
+    set loading(v) {
+        super.loading = v;
+    }
+
+    @api get formReady() {
+        return super.formReady;
+    }
+    set formReady(v) {
+        super.formReady = v;
+    }
+
+    @api get hasError() {
+        return super.hasError;
+    }
+    set hasError(v) {
+        super.hasError = v;
+    }
+
+    @api get errorMessage() {
+        return super.errorMessage;
+    }
+    set errorMessage(v) {
+        super.errorMessage = v;
+    }
+}

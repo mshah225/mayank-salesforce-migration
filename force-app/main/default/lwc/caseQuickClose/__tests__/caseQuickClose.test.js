@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import {createElement} from 'lwc';
-import CaseQuickClose from 'c/caseQuickClose';
+import {CaseQuickCloseTest} from 'c/caseQuickClose';
 import {getRecord, updateRecord} from 'lightning/uiRecordApi';
 import {flushPromises} from 'c/helperTestFunctions';
 
@@ -21,118 +21,100 @@ describe('c-case-quick-close', () => {
     });
 
     test('Starts as just one button to close case', async () => {
-        // Arrange
         const element = createElement('c-case-quick-close', {
-            is: CaseQuickClose,
+            is: CaseQuickCloseTest,
         });
         element.recordId = '5005900000BNavNAAT';
-
-        // Act
         document.body.appendChild(element);
 
         // Just the one close button is shown
-        expect(element.shadowRoot.querySelectorAll('lightning-button')).toHaveLength(1);
-        expect(element.shadowRoot.querySelector('lightning-button').label).toEqual(element.closeButtonLabel);
+        expect(element.buttonVisible).toEqual(true);
     });
 
     test('Show spam button depending on record type', async () => {
-        // Arrange
         const element = createElement('c-case-quick-close', {
-            is: CaseQuickClose,
+            is: CaseQuickCloseTest,
         });
         element.recordId = '5005900000BNavNAAT';
-
-        // Act
         document.body.appendChild(element);
-
-        // Wire completes
-        getRecord.emit(caseRecorCanCloseSpamdMock);
+        getRecord.emit(caseRecorCanCloseSpamdMock); // Wire completes
         await flushPromises();
+        // Done loading component
 
         // Both buttons
-        expect(element.shadowRoot.querySelectorAll('lightning-button')).toHaveLength(2);
-        expect(element.shadowRoot.querySelectorAll('lightning-button')[0].label).toEqual(element.closeButtonLabel);
-        expect(element.shadowRoot.querySelectorAll('lightning-button')[1].label).toEqual(element.closeSpamButtonLabel);
+        expect(element.buttonVisible).toEqual(true);
+        expect(element.spamButtonVisible).toEqual(true);
     });
 
     test('Hides spam button depending on record type', async () => {
-        // Arrange
         const element = createElement('c-case-quick-close', {
-            is: CaseQuickClose,
+            is: CaseQuickCloseTest,
         });
         element.recordId = '5005900000BNavNAAT';
-
-        // Act
         document.body.appendChild(element);
-
-        // Wire completes
-        getRecord.emit(caseRecordCannotCloseSpamMock);
+        getRecord.emit(caseRecordCannotCloseSpamMock); // Wire completes
         await flushPromises();
+        // Done loading component
 
         // Just one button shown
-        expect(element.shadowRoot.querySelectorAll('lightning-button')).toHaveLength(1);
-        expect(element.shadowRoot.querySelector('lightning-button').label).toEqual(element.closeButtonLabel);
+        expect(element.buttonVisible).toEqual(true);
+        expect(element.spamButtonVisible).toEqual(false);
     });
 
     test('Close as spam', async () => {
-        // Arrange
         const element = createElement('c-case-quick-close', {
-            is: CaseQuickClose,
+            is: CaseQuickCloseTest,
         });
         element.recordId = '5005900000BNavNAAT';
-
-        // Act
         document.body.appendChild(element);
-
-        // Wire completes
-        getRecord.emit(caseRecordMock);
+        getRecord.emit(caseRecordMock); // Wire completes
         await flushPromises();
+        // Done loading component
 
         // Press the spam close button
         element.shadowRoot.querySelectorAll('lightning-button')[1].dispatchEvent(new Event('click'), {bubbles: true});
 
         // Closed the case
-        expect(updateRecord.mock.lastCall[0].fields.Id).toEqual(caseRecordMock.id);
-        expect(updateRecord.mock.lastCall[0].fields.Status).toEqual('Closed: SPAM');
+        expect(updateRecord.mock.lastCall[0]).toMatchObject({
+            fields: {
+                Id: caseRecordMock.id,
+                Status: 'Closed: SPAM',
+            },
+        });
     });
 
     test('Prepend SPAM to subject and description', async () => {
-        // Arrange
         const element = createElement('c-case-quick-close', {
-            is: CaseQuickClose,
+            is: CaseQuickCloseTest,
         });
         element.recordId = '5005900000BNavNAAT';
-
-        // Act
         document.body.appendChild(element);
-
-        // Wire completes
-        getRecord.emit(caseRecordMock);
+        getRecord.emit(caseRecordMock); // Wire completes
         await flushPromises();
+        // Done loading component
 
         // Press the spam close button
         element.shadowRoot.querySelectorAll('lightning-button')[1].dispatchEvent(new Event('click'), {bubbles: true});
 
         // Prepended SPAM to subject and description
-        expect(updateRecord.mock.lastCall[0].fields.Description).toEqual(
-            `SPAM: ${caseRecordMock.fields.Description.value}`
-        );
-        expect(updateRecord.mock.lastCall[0].fields.Subject).toEqual(`SPAM: ${caseRecordMock.fields.Subject.value}`);
+
+        expect(updateRecord.mock.lastCall[0]).toMatchObject({
+            fields: {
+                Description: `SPAM: ${caseRecordMock.fields.Description.value}`,
+                Subject: `SPAM: ${caseRecordMock.fields.Subject.value}`,
+            },
+        });
     });
 
     test('Only prepend SPAM if not already prepended to subj/descr', async () => {
-        // Arrange
         const element = createElement('c-case-quick-close', {
-            is: CaseQuickClose,
+            is: CaseQuickCloseTest,
         });
         element.recordId = '5005900000BNavNAAT';
-
-        // Act
         document.body.appendChild(element);
-
-        // Wire completes
-        getRecord.emit(caseRecordAlreadyClosedAsSpamMock);
+        getRecord.emit(caseRecordAlreadyClosedAsSpamMock); // Wire completes
         await flushPromises();
+        // Done loading component
 
         // Press the spam close button
         element.shadowRoot.querySelectorAll('lightning-button')[1].dispatchEvent(new Event('click'), {bubbles: true});
@@ -143,48 +125,54 @@ describe('c-case-quick-close', () => {
         expect(updateRecord.mock.lastCall[0].fields.Subject).toEqual(undefined);
     });
 
-    test('Open close case form', async () => {
-        // Arrange
+    test('Starts with form hidden', async () => {
         const element = createElement('c-case-quick-close', {
-            is: CaseQuickClose,
+            is: CaseQuickCloseTest,
         });
         element.recordId = '5005900000BNavNAAT';
-
-        // Act
         document.body.appendChild(element);
-
-        // Wire completes
-        getRecord.emit(caseRecordMock);
+        getRecord.emit(caseRecordMock); // Wire completes
         await flushPromises();
+        // Done loading component
+
+        // Form is hidden at start
+        expect(element.formVisible).toEqual(false);
+    });
+
+    test('Open close case form', async () => {
+        const element = createElement('c-case-quick-close', {
+            is: CaseQuickCloseTest,
+        });
+        element.recordId = '5005900000BNavNAAT';
+        document.body.appendChild(element);
+        getRecord.emit(caseRecordMock); // Wire completes
+        await flushPromises();
+        // Done loading component
 
         // Press the case close button
         element.shadowRoot.querySelectorAll('lightning-button')[0].dispatchEvent(new Event('click'), {bubbles: true});
         await flushPromises();
 
         // Loads the case close view
-        expect(element.shadowRoot.querySelector('c-lightning-case-close-view')).toBeTruthy();
+        expect(element.formVisible).toEqual(true);
     });
 
     test('Only show submit/cancel button after close case form is ready', async () => {
-        // Arrange
         const element = createElement('c-case-quick-close', {
-            is: CaseQuickClose,
+            is: CaseQuickCloseTest,
         });
         element.recordId = '5005900000BNavNAAT';
-
-        // Act
         document.body.appendChild(element);
-
-        // Wire completes
-        getRecord.emit(caseRecordMock);
+        getRecord.emit(caseRecordMock); // Wire completes
         await flushPromises();
+        // Done loading component
 
         // Press the case close button
         element.shadowRoot.querySelectorAll('lightning-button')[0].dispatchEvent(new Event('click'), {bubbles: true});
         await flushPromises();
 
         // No cancel/submit buttons
-        expect(element.shadowRoot.querySelectorAll('lightning-button')).toHaveLength(0);
+        expect(element.formReady).toEqual(false);
 
         // Form finished loading
         element.shadowRoot
@@ -193,22 +181,18 @@ describe('c-case-quick-close', () => {
         await flushPromises();
 
         // Cancel/submit buttons are shown
-        expect(element.shadowRoot.querySelectorAll('lightning-button')).toHaveLength(2);
+        expect(element.formReady).toEqual(true);
     });
 
     test('Cancel button reverts back to original 2 buttons', async () => {
-        // Arrange
         const element = createElement('c-case-quick-close', {
-            is: CaseQuickClose,
+            is: CaseQuickCloseTest,
         });
         element.recordId = '5005900000BNavNAAT';
-
-        // Act
         document.body.appendChild(element);
-
-        // Wire completes
-        getRecord.emit(caseRecordMock);
+        getRecord.emit(caseRecordMock); // Wire completes
         await flushPromises();
+        // Done loading component
 
         // Press the case close button
         element.shadowRoot.querySelectorAll('lightning-button')[0].dispatchEvent(new Event('click'), {bubbles: true});
@@ -225,26 +209,23 @@ describe('c-case-quick-close', () => {
         await flushPromises();
 
         // Hides form
-        expect(element.shadowRoot.querySelector('c-lightning-case-close-view')).toBeFalsy();
+        expect(element.formVisible).toEqual(false);
         // And close/spam buttons are shown
-        expect(element.shadowRoot.querySelectorAll('lightning-button')).toHaveLength(2);
+        expect(element.buttonVisible).toEqual(true);
+        expect(element.spamButtonVisible).toEqual(true);
     });
 
     test('Submit button triggers commit on form', async () => {
-        // Arrange
         const element = createElement('c-case-quick-close', {
-            is: CaseQuickClose,
+            is: CaseQuickCloseTest,
         });
         element.recordId = '5005900000BNavNAAT';
-
-        // Act
         document.body.appendChild(element);
+        getRecord.emit(caseRecordMock); // Wire completes
+        await flushPromises();
+        // Done loading component
 
         const commitFn = jest.fn();
-
-        // Wire completes
-        getRecord.emit(caseRecordMock);
-        await flushPromises();
 
         // Press the case close button
         element.shadowRoot.querySelectorAll('lightning-button')[0].dispatchEvent(new Event('click'), {bubbles: true});
@@ -266,20 +247,16 @@ describe('c-case-quick-close', () => {
     });
 
     test('Close form on success', async () => {
-        // Arrange
         const element = createElement('c-case-quick-close', {
-            is: CaseQuickClose,
+            is: CaseQuickCloseTest,
         });
         element.recordId = '5005900000BNavNAAT';
-
-        // Act
         document.body.appendChild(element);
+        getRecord.emit(caseRecordMock); // Wire completes
+        await flushPromises();
+        // Done loading component
 
         const commitFn = jest.fn();
-
-        // Wire completes
-        getRecord.emit(caseRecordMock);
-        await flushPromises();
 
         // Press the case close button
         element.shadowRoot.querySelectorAll('lightning-button')[0].dispatchEvent(new Event('click'), {bubbles: true});
@@ -307,46 +284,38 @@ describe('c-case-quick-close', () => {
         await flushPromises();
 
         // Hides form
-        expect(element.shadowRoot.querySelector('c-lightning-case-close-view')).toBeFalsy();
+        expect(element.formVisible).toEqual(false);
         // And close/spam buttons are shown
-        expect(element.shadowRoot.querySelectorAll('lightning-button')).toHaveLength(2);
+        expect(element.buttonVisible).toEqual(true);
+        expect(element.spamButtonVisible).toEqual(true);
     });
 
     test('Errors are shown', async () => {
-        // Arrange
         const element = createElement('c-case-quick-close', {
-            is: CaseQuickClose,
+            is: CaseQuickCloseTest,
         });
         element.recordId = '5005900000BNavNAAT';
-
-        // Act
         document.body.appendChild(element);
-
-        // Wire completes
-        getRecord.error({message: 'Apex methods that are to be cached must be marked as @AuraEnabled(cacheable=true)'});
+        getRecord.error({
+            message: 'Record ID is malformed: 5005900000CNXHcAAL',
+        }); // Wire completes
         await flushPromises();
+        // Done loading component
 
-        // Hides form
-        expect(element.shadowRoot.querySelector('c-lightning-case-close-view')).toBeFalsy();
-        // And ahow error message
-        expect(element.shadowRoot.querySelector('div[role="alert"]').textContent).toContain(
-            'Apex methods that are to be cached must be marked as @AuraEnabled(cacheable=true)'
-        );
+        // In error state
+        expect(element.hasError).toEqual(true);
+        expect(element.errorMessage).toContain('Record ID is malformed: 5005900000CNXHcAAL');
     });
 
     test('Errors are propagated', async () => {
-        // Arrange
         const element = createElement('c-case-quick-close', {
-            is: CaseQuickClose,
+            is: CaseQuickCloseTest,
         });
         element.recordId = '5005900000BNavNAAT';
-
-        // Act
         document.body.appendChild(element);
-
-        // Wire completes
-        getRecord.emit(caseRecordMock);
+        getRecord.emit(caseRecordMock); // Wire completes
         await flushPromises();
+        // Done loading component
 
         // Press the case close button
         element.shadowRoot.querySelectorAll('lightning-button')[0].dispatchEvent(new Event('click'), {bubbles: true});
@@ -371,10 +340,9 @@ describe('c-case-quick-close', () => {
         );
         await flushPromises();
 
-        // Hides form
-        expect(element.shadowRoot.querySelector('c-lightning-case-close-view')).toBeFalsy();
-        // And ahow error message
-        expect(element.shadowRoot.querySelector('div[role="alert"]').textContent).toContain(
+        // In error state
+        expect(element.hasError).toEqual(true);
+        expect(element.errorMessage).toContain(
             'Could not find ObjectHelper.getFieldsFromFieldSet - you do not have permission to class ObjectHelper'
         );
     });

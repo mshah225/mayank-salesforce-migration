@@ -344,6 +344,7 @@ export default class LightningCaseCloseView extends LightningElement {
             // Update cases
             updateRecords({records: caseList})
                 .then((v) => {
+                    this.submitting = false;
                     if (!v.success) {
                         this.validationError = v.errorMessage;
                         this.sendStatusEvent('form_error');
@@ -360,10 +361,8 @@ export default class LightningCaseCloseView extends LightningElement {
                     );
                 })
                 .catch((e) => {
-                    this.handleGlobalError(e);
-                })
-                .finally(() => {
                     this.submitting = false;
+                    this.handleGlobalError(e);
                 });
         } else {
             // There are no cases to update

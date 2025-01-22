@@ -3803,6 +3803,7 @@
             if ("{!IF(hasStudent360Access == TRUE, 'true', 'false')}") {
                 loadCareAndConcernTab(); // Section name: CARE AND CONCERN TAB
             }
+            jQuery('[data-toggle="tooltip"]').tooltip(); // Turn tooltip sections into jQuery tooltips
         });
 
         /**

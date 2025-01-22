@@ -9,7 +9,7 @@
             padding: 0;
         }
 
-        #chart_div svg>g>rect {
+        #chart_div svg > g > rect {
             fill: url(#fx) !important;
             fill-opacity: 1 !important;
         }
@@ -100,17 +100,13 @@
     <!-- Google Charts -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <apex:includeScript value="{!URLFOR($Resource.bootstrap_303, '/dist/js/jquery-1.10.2.min.js')}" />
-    <apex:stylesheet value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}" />
+    <apex:stylesheet
+        value="{!URLFOR($Resource.MyASUHeader4_3, 'MyASUHeader4_3/font-awesome-4.3.0/css/font-awesome.css')}"
+    />
 
     <script>
         google.charts.load('current', { packages: ['corechart', 'line'] });
         google.charts.setOnLoadCallback(drawChart);
-
-        jQuery(document).ready(function () {
-            document.getElementById("chart_div").innerHTML =
-                "<i class='fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom'></i>";
-            jQuery('[data-toggle="tooltip"]').tooltip()
-        });
 
         var getUrlParameter = function getUrlParameter(sParam) {
             var sPageURL = decodeURIComponent(window.location.search.substring(1)),
@@ -368,7 +364,11 @@
             </tr>
         </table>
         <div id="errorMessage" style="margin-left: 20px; margin-top: 30px"></div>
-        <div id="leftID" class="left" style="float: left; height: 150px; margin-left: 20px; margin-top: 30px; margin-bottom: 25px">
+        <div
+            id="leftID"
+            class="left"
+            style="float: left; height: 150px; margin-left: 20px; margin-top: 30px; margin-bottom: 25px"
+        >
             <div id="Spinner"></div>
             <img id="meter" style="margin-bottom: 15px" />
             <span id="level"></span>
@@ -376,16 +376,26 @@
             <span id="change"></span>
             <span id="levelChangeDate"></span>
             <div style="margin-top: 15px">
-                <a href="./persistencefeedback?misc={!getInfo}" class="persistenceFeedbackButton & browser" target="_blank" id="FeedbackButton">
+                <a
+                    href="./persistencefeedback?misc={!getInfo}"
+                    class="persistenceFeedbackButton & browser"
+                    target="_blank"
+                    id="FeedbackButton"
+                >
                     <i class="fa fa-comment"></i> Persistence Outlook Feedback
                 </a>
             </div>
         </div>
         <div style="float: left">
             <div class="right" style="float: left; z-index: -1; margin-top: -20px">
-                <div id="chart_div" style="height: 200px; width: 400px"></div>
+                <div id="chart_div" style="height: 200px; width: 400px">
+                    <i class="fa fa-spinner fa-pulse fa-2x fa-fw margin-bottom"></i>
+                </div>
             </div>
-            <div id="persistenceLegend" style="float: left; margin-top: 42px; margin-left: 10px; display: none; margin-top: 25px">
+            <div
+                id="persistenceLegend"
+                style="float: left; margin-top: 42px; margin-left: 10px; display: none; margin-top: 25px"
+            >
                 <apex:image url="{!$Resource.PersistenceLegend}" width="75" height="158" />
             </div>
         </div>

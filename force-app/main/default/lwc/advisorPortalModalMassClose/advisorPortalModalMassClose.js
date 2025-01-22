@@ -63,6 +63,9 @@ export default class AdvisorPortalModalMassClose extends LightningModal {
     set errorMessage(v) {
         this._errorMessage = v;
     }
+    get hasError() {
+        return this._errorMessage != null;
+    }
 
     /**
      * Close the mass close modal

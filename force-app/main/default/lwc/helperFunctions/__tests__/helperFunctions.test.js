@@ -11,6 +11,10 @@ import {
 } from 'c/helperFunctions';
 
 describe('Test Helper Functions', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
     test('Throw Back A Render Cycle', async () => {
         jest.useFakeTimers();
         let x = 0;
@@ -226,10 +230,16 @@ describe('Test Helper Functions', () => {
     test('Error Extract - Dev, missing @AuraEnabled', () => {
         const error = require('./data/apexErrorMissingAuraEnabled.json');
 
+        const consoleDebugSaved = console.debug;
+        console.debug = jest.fn();
+
         const expectedMessage = error.statusText;
         const actualMessage = extractErrorMessages(error)[0];
 
-        expect(actualMessage).toEqual(expectedMessage);
+        expect(actualMessage).toContain(expectedMessage);
+        expect(console.debug).toHaveBeenCalled();
+
+        console.debug = consoleDebugSaved;
     });
 
     test('Error Extract - Dev, missing cacheable=true', () => {

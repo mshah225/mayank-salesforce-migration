@@ -7,6 +7,7 @@ import {
     parseBoolean,
     niceLog,
     getFixedYOffset,
+    extractErrorMessages,
 } from 'c/helperFunctions';
 
 describe('Test Helper Functions', () => {
@@ -220,6 +221,33 @@ describe('Test Helper Functions', () => {
         // Doesn't get called again, since it has already been calculated once
         expect(div.appendChild).toBeCalledTimes(1);
         expect(div.removeChild).toBeCalledTimes(1);
+    });
+
+    test('Error Extract - Dev, missing @AuraEnabled', () => {
+        const error = require('./data/apexErrorMissingAuraEnabled.json');
+
+        const expectedMessage = error.statusText;
+        const actualMessage = extractErrorMessages(error)[0];
+
+        expect(actualMessage).toEqual(expectedMessage);
+    });
+
+    test('Error Extract - Dev, missing cacheable=true', () => {
+        const error = require('./data/apexErrorMissingCacheable.json');
+
+        const expectedMessage = error.body.message;
+        const actualMessage = extractErrorMessages(error)[0];
+
+        expect(actualMessage).toEqual(expectedMessage);
+    });
+
+    test('Error Extract - DmlException, failed validation rule', () => {
+        const error = require('./data/dmlExceptionFailedValidationRule.json');
+
+        const expectedMessage = error.body.fieldErrors.Recommended_Actions__c[0].message;
+        const actualMessage = extractErrorMessages(error)[0];
+
+        expect(actualMessage).toEqual(expectedMessage);
     });
 });
 

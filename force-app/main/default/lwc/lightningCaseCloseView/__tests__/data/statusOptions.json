@@ -1,0 +1,84 @@
+{
+    "controllerValues": {},
+    "defaultValue": {
+        "attributes": {"picklistAtrributesValueType": "CaseStatus", "closed": false},
+        "label": "Outreach Required",
+        "validFor": [],
+        "value": "Outreach Required"
+    },
+    "url": "/services/data/v60.0/ui-api/object-info/Case/picklist-values/012d00000021xGKAAY/Status",
+    "values": [
+        {
+            "attributes": {"picklistAtrributesValueType": "CaseStatus", "closed": true},
+            "label": "Closed: Customer Self-Resolved",
+            "validFor": [],
+            "value": "Closed: Customer Self-Resolved"
+        },
+        {
+            "attributes": {"picklistAtrributesValueType": "CaseStatus", "closed": true},
+            "label": "Conferred with Student by Email",
+            "validFor": [],
+            "value": "Conferred with Student by Email"
+        },
+        {
+            "attributes": {"picklistAtrributesValueType": "CaseStatus", "closed": true},
+            "label": "Conferred with Student by Phone",
+            "validFor": [],
+            "value": "Conferred with Student by Phone"
+        },
+        {
+            "attributes": {"picklistAtrributesValueType": "CaseStatus", "closed": false},
+            "label": "Email Sent",
+            "validFor": [],
+            "value": "Email Sent"
+        },
+        {
+            "attributes": {"picklistAtrributesValueType": "CaseStatus", "closed": true},
+            "label": "In Person Meeting",
+            "validFor": [],
+            "value": "In Person Meeting"
+        },
+        {
+            "attributes": {"picklistAtrributesValueType": "CaseStatus", "closed": false},
+            "label": "In Progress",
+            "validFor": [],
+            "value": "In Progress"
+        },
+        {
+            "attributes": {"picklistAtrributesValueType": "CaseStatus", "closed": false},
+            "label": "Left Message with Third Party",
+            "validFor": [],
+            "value": "Left Message with Third Party"
+        },
+        {
+            "attributes": {"picklistAtrributesValueType": "CaseStatus", "closed": false},
+            "label": "Left voicemail",
+            "validFor": [],
+            "value": "Left voicemail"
+        },
+        {
+            "attributes": {"picklistAtrributesValueType": "CaseStatus", "closed": false},
+            "label": "Outreach Required",
+            "validFor": [],
+            "value": "Outreach Required"
+        },
+        {
+            "attributes": {"picklistAtrributesValueType": "CaseStatus", "closed": false},
+            "label": "Text message sent",
+            "validFor": [],
+            "value": "Text message sent"
+        },
+        {
+            "attributes": {"picklistAtrributesValueType": "CaseStatus", "closed": false},
+            "label": "Unable to Leave Voicemail",
+            "validFor": [],
+            "value": "Unable to Leave Voicemail"
+        },
+        {
+            "attributes": {"picklistAtrributesValueType": "CaseStatus", "closed": false},
+            "label": "Wrong number",
+            "validFor": [],
+            "value": "Wrong number"
+        }
+    ]
+}

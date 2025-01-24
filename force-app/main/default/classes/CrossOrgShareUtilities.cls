@@ -11,7 +11,8 @@ public class CrossOrgShareUtilities {
      */
     public static List<CrosswalkGetWrapper> getCrosswalkRecords(String mdmGuid) {
         CrossOrgShareCallout crosswalkService = new CrossOrgShareCallout();
-        HttpResponse crosswalkResponse = crosswalkService.makeGetCallout('guid=' + mdmGuid);
+        String encodedGuid = EncodingUtil.urlEncode(mdmGuid, 'UTF-8');
+        HttpResponse crosswalkResponse = crosswalkService.makeGetCallout('guid=' + encodedGuid);
         List<CrosswalkGetWrapper> crosswalk = new List<CrosswalkGetWrapper>();
 
         if (crosswalkResponse.getStatusCode() == 200) {

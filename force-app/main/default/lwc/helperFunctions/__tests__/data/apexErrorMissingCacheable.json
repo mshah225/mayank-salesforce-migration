@@ -1,0 +1,8 @@
+{
+    "status": 500,
+    "body": {"message": "Apex methods that are to be cached must be marked as @AuraEnabled(cacheable=true)"},
+    "headers": {},
+    "ok": false,
+    "statusText": "Server Error",
+    "errorType": "fetchResponse"
+}

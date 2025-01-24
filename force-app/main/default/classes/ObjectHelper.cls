@@ -25,12 +25,12 @@ public with sharing class ObjectHelper {
      *
      * @param objectName The API name of the Salesforce object.
      * @param fieldSetName The name of the field set.
-     * @return A JSON string containing the fields in the field set and the object label.
+     * @return A map containing the fields in the field set and the object label.
      */
     @AuraEnabled(cacheable=true)
-    public static String getFieldsFromFieldSet(String objectName, String fieldSetName) {
-        if (!String.isEmpty(fieldSetName)) {
-            Map<String, String> returnMap = new Map<String, String>();
+    public static Map<String, Object> getFieldsFromFieldSet(String objectName, String fieldSetName) {
+        if (!String.isEmpty(objectName) && !String.isEmpty(fieldSetName)) {
+            Map<String, Object> returnMap = new Map<String, Object>();
             SObject objectToCheck = (SObject) (Type.forName('Schema.' + objectName)?.newInstance());
 
             String objectLabel = objectToCheck?.getSObjectType()?.getDescribe()?.getLabel();
@@ -41,10 +41,16 @@ public with sharing class ObjectHelper {
                 .get(fieldSetName)
                 ?.getFields();
 
-            returnMap.put('FIELD_LIST', JSON.serialize(fieldsInFieldSet));
-            returnMap.put('OBJECT_LABEL', objectLabel);
+            List<FieldSetMemberWrapper> fieldSetMemberWrappers = new List<FieldSetMemberWrapper>();
+            for (Schema.FieldSetMember fsm : fieldsInFieldSet)
+                fieldSetMemberWrappers.add(new FieldSetMemberWrapper(fsm));
 
-            return JSON.serialize(returnMap);
+            returnMap.put('OBJECT_LABEL', objectLabel);
+            returnMap.put('OBJECT_NAME', objectName);
+            returnMap.put('FIELD_SET_NAME', fieldSetName);
+            returnMap.put('FIELD_LIST', fieldSetMemberWrappers);
+
+            return returnMap;
         }
         return null;
     }
@@ -275,6 +281,39 @@ public with sharing class ObjectHelper {
             this.name = name;
             this.parentGroup = parentGroup;
             this.objectType = objectType;
+        }
+    }
+
+    /**
+     * Wrapper class for FieldSetMember objects.
+     * Provides Aura-enabled properties to facilitate usage in Lightning components.
+     */
+    public class FieldSetMemberWrapper {
+        @AuraEnabled
+        public Boolean dbRequired;
+
+        @AuraEnabled
+        public String fieldPath;
+
+        @AuraEnabled
+        public String label;
+
+        @AuraEnabled
+        public Boolean required;
+
+        @AuraEnabled
+        public String type;
+
+        @AuraEnabled
+        public String typeApex;
+
+        public FieldSetMemberWrapper(Schema.FieldSetMember fldSetMember) {
+            this.dbRequired = fldSetMember?.getDBRequired();
+            this.fieldPath = fldSetMember?.getFieldPath();
+            this.label = fldSetMember?.getLabel();
+            this.required = fldSetMember?.getRequired();
+            this.type = fldSetMember?.getType()?.name()?.toLowerCase();
+            this.typeApex = fldSetMember?.getType()?.name();
         }
     }
 }

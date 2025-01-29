@@ -195,12 +195,16 @@ public class OpportunityService {
         }
 
         for (Opportunity newOpportunity : newOpportunities) {
-            newOpportunity.Opportunity_Assignment_Number_Rand__c = generateOpportunityAssignmentNumber();
             if (newOpportunity.Contact__c == null) {
                 Account oppsAccount = accountMap.get(newOpportunity.AccountId);
                 newOpportunity.Contact__c = oppsAccount.Contact__c;
             }
         }
+    }
+
+    public static void setAssignmentNumbers(List<Opportunity> newOpportunities) {
+        for (Opportunity opp : newOpportunities)
+            opp.Opportunity_Assignment_Number_Rand__c = generateOpportunityAssignmentNumber();
     }
 
     public static void insertCollegePlan(List<Opportunity> newOpportunities) {
@@ -215,9 +219,9 @@ public class OpportunityService {
             }
         }
 
-        for (Plan__c plan : [SELECT Id, Program__c FROM Plan__c WHERE Id IN :planIds]) {
-            programColleges.put(plan.Id, plan.Program__c);
-        }
+        if (!planIds.isEmpty())
+            for (Plan__c plan : [SELECT Id, Program__c FROM Plan__c WHERE Id IN :planIds])
+                programColleges.put(plan.Id, plan.Program__c);
 
         for (Opportunity newOpportunity : newOpportunities) {
             if (newOpportunity.Admitted_Plan__c != null) {
@@ -235,32 +239,31 @@ public class OpportunityService {
         List<Id> planIds = new List<Id>();
         Map<Id, Id> programColleges = new Map<Id, Id>();
 
-        for (Opportunity updatedOpportunity : updatedOpportunities) {
-            Opportunity previousOpportunity = previousOpportunitiesMap.get(updatedOpportunity.Id);
-            if (updatedOpportunity.Academic_Plan__c != previousOpportunity.Academic_Plan__c) {
-                planIds.add(updatedOpportunity.Academic_Plan__c);
-            }
-            if (updatedOpportunity.Admitted_Plan__c != previousOpportunity.Admitted_Plan__c) {
-                planIds.add(updatedOpportunity.Admitted_Plan__c);
-            }
+        for (Opportunity opp : updatedOpportunities) {
+            Opportunity prevOpp = previousOpportunitiesMap.get(opp.Id);
+
+            if (RecordHelper.hasNewOrChangedField(opp, prevOpp, Opportunity.Academic_Plan__c))
+                planIds.add(opp.Academic_Plan__c);
+            if (RecordHelper.hasNewOrChangedField(opp, prevOpp, Opportunity.Admitted_Plan__c))
+                planIds.add(opp.Admitted_Plan__c);
         }
 
-        for (Plan__c plan : [SELECT Id, Program__c FROM Plan__c WHERE Id IN :planIds]) {
-            programColleges.put(plan.Id, plan.Program__c);
-        }
+        if (!planIds.isEmpty())
+            for (Plan__c plan : [SELECT Id, Program__c FROM Plan__c WHERE Id IN :planIds])
+                programColleges.put(plan.Id, plan.Program__c);
 
-        for (Opportunity updatedOpportunity : updatedOpportunities) {
-            Opportunity previousOpportunity = previousOpportunitiesMap.get(updatedOpportunity.Id);
+        for (Opportunity opp : updatedOpportunities) {
+            Opportunity prevOpp = previousOpportunitiesMap.get(opp.Id);
             if (
-                updatedOpportunity.Admitted_Plan__c != null &&
-                updatedOpportunity.Admitted_Plan__c != previousOpportunity.Admitted_Plan__c
+                opp.Admitted_Plan__c != null &&
+                RecordHelper.hasNewOrChangedField(opp, prevOpp, Opportunity.Admitted_Plan__c)
             ) {
-                updatedOpportunity.College__c = programColleges.get(updatedOpportunity.Admitted_Plan__c);
+                opp.College__c = programColleges.get(opp.Admitted_Plan__c);
             } else if (
-                updatedOpportunity.Academic_Plan__c != null &&
-                updatedOpportunity.Academic_Plan__c != previousOpportunity.Academic_Plan__c
+                opp.Academic_Plan__c != null &&
+                RecordHelper.hasNewOrChangedField(opp, prevOpp, Opportunity.Academic_Plan__c)
             ) {
-                updatedOpportunity.College__c = programColleges.get(updatedOpportunity.Academic_Plan__c);
+                opp.College__c = programColleges.get(opp.Academic_Plan__c);
             }
         }
     }
@@ -852,29 +855,32 @@ public class OpportunityService {
     }
 
     public static void updateOpportunityTypeForGrads(List<Opportunity> newOpps) {
+        List<Id> planIdsFromGradOpps = new List<Id>();
 
-        List<Id> planIdsFromOpp = new List<Id>();
+        Set<String> gradOppRecordTypeIds = new Set<String>{
+            RecordIdHelper.getRecordTypeId('Opportunity', 'Graduate_Application'),
+            RecordIdHelper.getRecordTypeId('Opportunity', 'Graduate_Prospect')
+        };
 
+        // Get all the plans for the GRAD Opps
+        for (Opportunity opp : newOpps)
+            if (gradOppRecordTypeIds.contains(opp.RecordTypeId) && String.isNotBlank(opp.Academic_Plan__c))
+                planIdsFromGradOpps.add(opp.Academic_Plan__c);
+
+        // No GRAD Opps to check
+        if (planIdsFromGradOpps.isEmpty())
+            return;
+
+        Map<Id, Plan__c> plansForOpp = new Map<Id, Plan__c>(
+            [
+                SELECT Degree_Level__c
+                FROM Plan__c
+                WHERE Id IN :planIdsFromGradOpps
+            ]
+        );
 
         for (Opportunity opp : newOpps) {
-            planIdsFromOpp.add(opp.Academic_Plan__c);
-        }
-
-        Map<Id, RecordType> recordTypeIdsForGradOpps = new Map<Id, RecordType>([
-            SELECT Id 
-            FROM RecordType
-            WHERE (DeveloperName = 'Graduate_Application' OR DeveloperName = 'Graduate_Prospect') 
-            AND sObjectType = 'Opportunity'
-        ]);
-
-        Map<Id, Plan__c> plansForOpp = new Map<Id, Plan__c>([
-            SELECT Degree_Level__c 
-            FROM Plan__c
-            WHERE Id IN: planIdsFromOpp
-        ]);
-
-        for (Opportunity opp : newOpps) {
-            if (recordTypeIdsForGradOpps.get(opp.RecordTypeId) != null) {
+            if (gradOppRecordTypeIds.contains(opp.RecordTypeId)) {
                 Plan__c planForOpp = plansForOpp.get(opp.Academic_Plan__c);
 
                 if (planForOpp == null) {
@@ -893,34 +899,34 @@ public class OpportunityService {
             }
         }
     }
-    
+
     public static void checkAndCreateMasterTracker(List<Opportunity> newOpps) {
         for (Opportunity newOpp : newOpps) {
-
             if (meetsMasterTrackerConditions(newOpp)) {
                 Graduate_Master_Tracker__c masterTracker = MasterTrackerService.createMasterTrackerRecord(newOpp);
 
                 newOpp.Sync_to_Master_Tracker_Record__c = true;
                 newOpp.Graduate_Master_Tracker__c = masterTracker.Id;
             }
-            
         }
     }
 
     private static Boolean meetsMasterTrackerConditions(Opportunity opp) {
-
         return opp.Interview_Status__c == 'Complete' && opp.Plan_Code__c == 'BAFULLMBA' && 
         opp.Round__c != null && opp.Interview_Date__c < Date.today() &&
         opp.Graduate_Master_Tracker__c == null;
     }
 
     public static void disableSyncingForMasterTracker(Map<Id, Opportunity> newOpps, Map<Id, Opportunity> oldOpps) {
-
         for (Id newOppId : newOpps.keyset()) {
             Opportunity newOpp = newOpps.get(newOppId);
             Opportunity oldOpp = oldOpps.get(newOppId);
-            if (newOpp.File_Review_Status__c == 'Final Review Complete' && oldOpp.File_Review_Status__c != 'Final Review Complete'
-            && newOpp.Interview_Status__c == 'Complete' && oldOpp.Interview_Status__c != 'Complete') {
+            if (
+                newOpp.File_Review_Status__c == 'Final Review Complete' &&
+                oldOpp.File_Review_Status__c != 'Final Review Complete' &&
+                newOpp.Interview_Status__c == 'Complete' &&
+                oldOpp.Interview_Status__c != 'Complete'
+            ) {
                 newOpp.Sync_to_Master_Tracker_Record__c = false;
             }
         }

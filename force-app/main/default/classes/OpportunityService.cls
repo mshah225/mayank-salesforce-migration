@@ -913,7 +913,7 @@ public class OpportunityService {
 
     private static Boolean meetsMasterTrackerConditions(Opportunity opp) {
         return opp.Interview_Status__c == 'Complete' && opp.Plan_Code__c == 'BAFULLMBA' && 
-        opp.Round__c != null && opp.Interview_Date__c < Date.today() &&
+        opp.Round__c != null && opp.Interview_Date__c <= Date.today() &&
         opp.Graduate_Master_Tracker__c == null;
     }
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ApexTestSuite xmlns="http://soap.sforce.com/2006/04/metadata">
     <testClassName>AdvisorPortalCaseTest</testClassName>
     <testClassName>AdvisorPortalContactTest</testClassName>
@@ -7,7 +7,6 @@
     <testClassName>AdvisorPortalFilterTest</testClassName>
     <testClassName>AdvisorPortalMassEmailControllerTest</testClassName>
     <testClassName>AdvisorPortalMassTransferControllerTest</testClassName>
-    <testClassName>AdvisorPortalMassUpdateControllerTest</testClassName>
     <testClassName>AdvisorPortalTopLevelFilterTest</testClassName>
     <testClassName>DynamicSoqlBuilderTest</testClassName>
 </ApexTestSuite>

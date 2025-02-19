@@ -1,0 +1,45 @@
+<template>
+    <c-lightning-error-or-retry message={errorMessage} has-error={hasError} retry-enabled="false">
+        <c-lightning-await-load-block loading={loading} has-content="true" icon-size="large">
+            <lightning-input label="Delete Records List" type="file" onchange={changeFile}></lightning-input>
+            <lightning-button
+                label="Delete Records"
+                onclick={deleteRecords}
+                disabled={deleteButtonDisabled}
+                variant="brand"
+            ></lightning-button>
+
+            <template lwc:if={loadingReason}>
+                <div class="slds-text-align_center">
+                    <div class="slds-is-relative slds-p-vertical_large">
+                        <lightning-spinner
+                            variant="brand"
+                            size="medium"
+                            class="loadingIcon"
+                            alternative-text={loadingReason}
+                        >
+                        </lightning-spinner>
+                    </div>
+                    <div>{loadingReason}...</div>
+                    <template lwc:if={isDeleting}>
+                        <div>{donePercent}%</div>
+                    </template>
+                </div>
+            </template>
+            <template lwc:else>
+                <div class="error-style-inject"></div>
+                <c-lightning-datatable-pagination
+                    key-field="recordId"
+                    source-data={tableRows}
+                    columns={tableColumns}
+                    display-amount={pageSize}
+                    default-sort-direction="asc"
+                    sort-direction={sortDirection}
+                    sorted-by={sortedBy}
+                    handle-sort={onHandleSort}
+                >
+                </c-lightning-datatable-pagination>
+            </template>
+        </c-lightning-await-load-block>
+    </c-lightning-error-or-retry>
+</template>

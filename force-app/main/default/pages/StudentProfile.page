@@ -2429,8 +2429,12 @@
                                         <div class="col-sm-6">
                                             <table class="table table-striped asu-detail-table">
                                                 <tr>
-                                                    <th>CI Index</th>
-                                                    <td id="sr_ci_index">{!ciIndex}</td>
+                                                    <th>Current CI Score</th>
+                                                    <td id="sr_ci_index">{!ciScore}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>CI Score Used</th>
+                                                    <td id="sr_ci_score_used">{!ciScoreUsed}</td>
                                                 </tr>
                                                 <tr>
                                                     <th>eAdvisor</th>

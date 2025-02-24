@@ -43,6 +43,29 @@ public class RecordIdHelper {
         private set;
     }
 
+    public static Map<String, String> objPrefixToNameMp {
+        get {
+            if (objPrefixToNameMp == null) {
+                objPrefixToNameMp = new Map<String, String>();
+                for (ObjPrefix__c objPrfx : ObjPrefix__c.getAll().values())
+                    objPrefixToNameMp.put(objPrfx.Prefix__c, objPrfx.ObjectName__c);
+            }
+            return objPrefixToNameMp;
+        }
+        private set;
+    }
+    public static Map<String, String> objNameToPrefixMp {
+        get {
+            if (objNameToPrefixMp == null) {
+                objNameToPrefixMp = new Map<String, String>();
+                for (ObjPrefix__c objPrfx : ObjPrefix__c.getAll().values())
+                    objNameToPrefixMp.put(objPrfx.ObjectName__c, objPrfx.Prefix__c);
+            }
+            return objNameToPrefixMp;
+        }
+        private set;
+    }
+
     public static Integer ProfileIdsRecordCount {
         get {
             return ProfileIds.size();
@@ -142,17 +165,11 @@ public class RecordIdHelper {
     public static String findObjectNameFromRecordIdPrefix(String recordId) {
         recordId = recordId.left(3);
         System.debug(objPrefix);
-        for (Integer i = 0; i < objPrefix.size(); i++) {
-            if (recordId.equals(objPrefix[i].Prefix__c)) {
-                return objPrefix[i].ObjectName__c;
-            }
-        }
+        if (objPrefixToNameMp.containsKey(recordId))
+            return objPrefixToNameMp.get(recordId);
         rebuildPrefixCache();
-        for (Integer i = 0; i < objPrefix.size(); i++) {
-            if (recordId.equals(objPrefix[i].Prefix__c)) {
-                return objPrefix[i].ObjectName__c;
-            }
-        }
+        if (objPrefixToNameMp.containsKey(recordId))
+            return objPrefixToNameMp.get(recordId);
         return CANNOT_FIND_PREFIX_OBJECT_MAPPING_RESPONSE;
     }
 
@@ -164,17 +181,11 @@ public class RecordIdHelper {
      * @return Id The Id Prefix of the desired object
      */
     public static String findPrefixFromObjectName(String objectName) {
-        for (Integer i = 0; i < objPrefix.size(); i++) {
-            if (objectName.equals(objPrefix[i].ObjectName__c)) {
-                return objPrefix[i].Prefix__c;
-            }
-        }
+        if (objNameToPrefixMp.containsKey(objectName))
+            return objNameToPrefixMp.get(objectName);
         rebuildPrefixCache();
-        for (Integer i = 0; i < objPrefix.size(); i++) {
-            if (objectName.equals(objPrefix[i].ObjectName__c)) {
-                return objPrefix[i].Prefix__c;
-            }
-        }
+        if (objNameToPrefixMp.containsKey(objectName))
+            return objNameToPrefixMp.get(objectName);
         return CANNOT_FIND_PREFIX_OBJECT_MAPPING_RESPONSE;
     }
 
@@ -339,9 +350,10 @@ public class RecordIdHelper {
      */
     @testVisible
     private static void clearObjPrefixCache() {
-        if (objPrefix.size() > 0) {
-            delete objPrefix;
+        if (ObjPrefix__c.getAll().size() > 0) {
+            delete ObjPrefix__c.getAll().values();
         }
-        objPrefix = null;
+        objPrefixToNameMp = null;
+        objNameToPrefixMp = null;
     }
 }

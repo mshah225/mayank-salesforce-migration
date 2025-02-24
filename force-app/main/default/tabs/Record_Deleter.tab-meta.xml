@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>This tab is available for Administrators with Exception Accounts who need to delete Contacts in bulk.</description>
+    <label>Record Deleter</label>
+    <lwcComponent>recordDeleter</lwcComponent>
+    <motif>Custom11: Star</motif>
+</CustomTab>

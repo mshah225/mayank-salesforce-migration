@@ -15,6 +15,8 @@ module.exports = {
         '^lightning/uiRecordApi$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/uiRecordApi',
         '^lightning/uiGraphQLApi$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/uiGraphQLApi',
         '^lightning/messageService$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/messageService',
+        '^lightning/platformWorkspaceApi$':
+            '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/platformWorkspaceApi',
         '^lightning/actions$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/actions',
         '^lightning/alert$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/alert',
         '^lightning/confirm$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/confirm',

@@ -47,7 +47,7 @@ public class PortalEmailService {
                     else if (groupValidator.validId(pe.Primary_Owner_Id__c))
                         // If no successs student, but is owned by a queue, then use email from that queue's success pod
                         ownedByQueueIds.add(left15(pe.Primary_Owner_Id__c));
-                    else
+                    else if (pe.Case_Most_Recent_Queue__c != null)
                         // If no success student, and not owned by a Group, then use email from the most revent queue's success pod
                         mostRecentQueueNames.add(pe.Case_Most_Recent_Queue__c);
                 }
@@ -77,8 +77,6 @@ public class PortalEmailService {
                 // The queue Id could be the owner OR the most recent queue
                 // Most recent queue is the Name of the queue so we need to query the group object
                 // to get it's ID
-                // I use 2 maps with different keys to simplify referencing the queue from the pe
-                // record
                 if (ownedByQueueIds.size() > 0 || mostRecentQueueNames.size() > 0) {
                     for (Success_Pod__c sp : [
                         SELECT Primary_Email__c, Email_Template__c, OwnerId, Owner_Name__c
@@ -99,33 +97,38 @@ public class PortalEmailService {
 
                 // Mark from address and template for each portal email
                 for (Portal_Email__c pe : advisorEmails) {
-                    Success_Pod__c successPod = null;
                     if (
                         pe.Success_Student__c != null &&
                         successStudentIds.contains(left15(pe.Success_Student__c)) &&
                         valueToSuccessPod.get(left15(pe.Success_Student__c)) != null
                     ) {
                         // If success student available, use success student's success pod
-                        successPod = valueToSuccessPod.get(left15(pe.Success_Student__c));
+                        pe.From_Address__c = valueToSuccessPod.get(left15(pe.Success_Student__c)).Primary_Email__c;
+                        pe.Email_Template_Name__c = valueToSuccessPod.get(left15(pe.Success_Student__c))
+                            .Email_Template__c;
                     } else if (
+                        pe.Primary_Owner_Id__c != null &&
                         groupValidator.validId(pe.Primary_Owner_Id__c) &&
                         ownedByQueueIds.contains(left15(pe.Primary_Owner_Id__c)) &&
                         valueToSuccessPod.get(left15(pe.Primary_Owner_Id__c)) != null
                     ) {
                         // otherwise, if owned by a queue, then use queue's success pod
-                        successPod = valueToSuccessPod.get(left15(pe.Primary_Owner_Id__c));
+                        pe.From_Address__c = valueToSuccessPod.get(left15(pe.Primary_Owner_Id__c)).Primary_Email__c;
+                        pe.Email_Template_Name__c = valueToSuccessPod.get(left15(pe.Primary_Owner_Id__c))
+                            .Email_Template__c;
                     } else if (
+                        pe.Case_Most_Recent_Queue__c != null &&
                         mostRecentQueueNames.contains(pe.Case_Most_Recent_Queue__c) &&
                         valueToSuccessPod.get(pe.Case_Most_Recent_Queue__c) != null
                     ) {
                         // otherwise, if possible, use most recent queue's success pod
-                        successPod = valueToSuccessPod.get(pe.Case_Most_Recent_Queue__c);
-                    }
-
-                    // Set options based on matched success pod
-                    if (successPod != null) {
-                        pe.From_Address__c = successPod.Primary_Email__c;
-                        pe.Email_Template_Name__c = successPod.Email_Template__c;
+                        pe.From_Address__c = valueToSuccessPod.get(pe.Case_Most_Recent_Queue__c).Primary_Email__c;
+                        pe.Email_Template_Name__c = valueToSuccessPod.get(pe.Case_Most_Recent_Queue__c)
+                            .Email_Template__c;
+                    } else {
+                        // finally, default to use the Advisor Ad-hoc template template if no pods matched and it is otherwise unspecified
+                        if (pe.Email_Template_Name__c == null)
+                            pe.Email_Template_Name__c = 'Advisor Ad-hoc template';
                     }
                 }
             }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Contact - Delete Individual Link Details</label>
+    <protected>false</protected>
+    <values>
+        <field>Child_Field_Key__c</field>
+        <value xsi:type="xsd:string">$.et4ae5__Individual_Email_Result__r.et4ae5__Contact__c</value>
+    </values>
+    <values>
+        <field>Child_Object_Type__c</field>
+        <value xsi:type="xsd:string">et4ae5__IndividualLink__c</value>
+    </values>
+    <values>
+        <field>Order__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Parent_Field_Key__c</field>
+        <value xsi:type="xsd:string">$.Id</value>
+    </values>
+    <values>
+        <field>Parent_Object_Type__c</field>
+        <value xsi:type="xsd:string">Contact</value>
+    </values>
+</CustomMetadata>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Parent_Object_Type__c</fullName>
+    <description>The object type this config is for. When an object of this type is mass deleted, this setting will be used to determine which records to delete.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>The object type this config is for. When an object of this type is mass deleted, this setting will be used to determine which records to delete.</inlineHelpText>
+    <label>Parent Object Type</label>
+    <length>255</length>
+    <required>true</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

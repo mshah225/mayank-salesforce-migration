@@ -1,5 +1,37 @@
 public class GovernorLimitPreemptException extends Exception {
     /**
+     * Throws an exception if within N of the SOQL query governor limit
+     */
+    public static void assertCanQueryN(Integer n, String msg) {
+        if (msg == null)
+            msg = 'Already at SOQL query limit, cannot run ' + n + ' queries.';
+
+        if (Limits.getQueries() + n > Limits.getLimitQueries())
+            throw new GovernorLimitPreemptException(msg);
+    }
+
+    /**
+     * Throws an exception if within N of the SOQL row governor limit
+     */
+    public static void assertCanQueryRowsN(Integer n, String msg) {
+        if (msg == null)
+            msg = 'Already at SOQL query row limit, cannot run query that will return ' + n + ' rows.';
+
+        if (Limits.getQueryRows() + n > Limits.getLimitQueryRows())
+            throw new GovernorLimitPreemptException(msg);
+    }
+
+    /**
+     * Throws an exception if within N of the DML governor limit
+     */
+    public static void assertCanDML(Integer n, String msg) {
+        if (msg == null)
+            msg = 'Already at DML query limit, cannot execture ' + n + ' DML statement(s).';
+
+        if (Limits.getDMLStatements() + n > Limits.getLimitDMLStatements())
+            throw new GovernorLimitPreemptException(msg);
+    }
+    /**
      * Throws an exception if using over P% of heap usage governor limit
      */
     public static void assertHasHeapSpaceRemaining(Decimal p, String msg) {

@@ -347,6 +347,27 @@ public class UnifiedProspectPageController {
         return asuCollegesIntList;
     }
 
+    /**
+     * When the case origin is updated or case tab is selected, update the Opportunity's LeadSource
+     */
+    public void updateLeadSourceFromCaseSource() {
+        Map<String, String> caseSourceToLeadSourceMp = new Map<String, String>{
+            'Email' => 'Email',
+            'In Person' => 'Walk-in',
+            'Incoming Call' => 'Phone Call'
+        };
+        if (caseSourceToLeadSourceMp.containsKey(originSelection))
+            opportunity.LeadSource = caseSourceToLeadSourceMp.get(originSelection);
+        else
+            opportunity.LeadSource = null;
+    }
+    /**
+     * When the event tab is selected, update the Opportunity's LeadSource
+     */
+    public void updateLeadSourceAsEvent() {
+        opportunity.LeadSource = 'Event';
+    }
+
     public Boolean save() {
         getCaseC();
         ccPicklist.addCaseClassificationToCase(caseC);

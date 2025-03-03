@@ -624,7 +624,7 @@ private class UnifiedProspectPageControllerTest {
     private static testMethod void testEventList() {
         Campaign tempEvent = [SELECT Id, Name FROM Campaign WHERE Name = 'ASU Test Event'];
 
-        Id[] fixedSearchResults = new List<Id>(1);
+        Id[] fixedSearchResults = new Id[1];
         fixedSearchResults[0] = tempEvent.Id;
         Test.setFixedSearchResults(fixedSearchResults);
 
@@ -665,5 +665,32 @@ private class UnifiedProspectPageControllerTest {
 
         System.assert(asuAcademicIntList.size() == 2);
         System.assert(asuAcademicIntList.get(1).getValue() == testASUAcademic.Id);
+    }
+
+    @isTest
+    private static void testUpdateLeadSourceFromCaseOrigin() {
+        UnifiedProspectPageController uppc = new UnifiedProspectPageController();
+        uppc.setOpportunity(uppc.getOpportunity());
+
+        uppc.originSelection = 'Email';
+        uppc.updateLeadSourceFromCaseSource();
+        Assert.areEqual('Email', uppc.opportunity.LeadSource);
+
+        uppc.originSelection = 'In Person';
+        uppc.updateLeadSourceFromCaseSource();
+        Assert.areEqual('Walk-in', uppc.opportunity.LeadSource);
+
+        uppc.originSelection = 'Incoming Call';
+        uppc.updateLeadSourceFromCaseSource();
+        Assert.areEqual('Phone Call', uppc.opportunity.LeadSource);
+    }
+
+    @isTest
+    private static void testUpdateLeadSourceAsEvent() {
+        UnifiedProspectPageController uppc = new UnifiedProspectPageController();
+        uppc.setOpportunity(uppc.getOpportunity());
+        uppc.updateLeadSourceAsEvent();
+
+        Assert.areEqual('Event', uppc.opportunity.LeadSource);
     }
 }

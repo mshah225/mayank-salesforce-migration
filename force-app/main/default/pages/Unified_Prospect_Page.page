@@ -409,27 +409,43 @@
                         inactiveTabClass="inactiveTab"
                         width="100%"
                     >
-                        <apex:tab label="Case" name="source" id="sourceTab">
+                        <apex:tab
+                            label="Case"
+                            name="source"
+                            id="sourceTab"
+                            ontabenter="updateLeadSourceFromCaseSourceAction();"
+                        >
+                            <apex:actionRegion id="update-lead-source-from-case-action-region">
+                                <apex:actionFunction
+                                    name="updateLeadSourceFromCaseSourceAction"
+                                    action="{!updateLeadSourceFromCaseSource}"
+                                    rerender="lead_source_info"
+                                />
+                            </apex:actionRegion>
                             <apex:outputPanel layout="block" style="overflow: auto; height: 260px">
                                 <table style="width: 100%">
                                     <tr>
                                         <td style="padding-right: 20px; width: 20%">
                                             <apex:outputLabel for="cOrigin"> Origin: </apex:outputLabel>
                                             <br />
-                                            <apex:selectList
-                                                id="originPickList"
-                                                value="{!originSelection}"
-                                                size="1"
-                                                multiselect="false"
-                                            >
-                                                <apex:selectOption itemValue="--Select--" />
-
-                                                <apex:selectOption itemValue="Email" />
-
-                                                <apex:selectOption itemValue="In Person" />
-
-                                                <apex:selectOption itemValue="Incoming Call" />
-                                            </apex:selectList>
+                                            <apex:actionRegion id="update-lead-source-from-case-action-region-2">
+                                                <apex:selectList
+                                                    id="originPickList"
+                                                    value="{!originSelection}"
+                                                    size="1"
+                                                    multiselect="false"
+                                                >
+                                                    <apex:actionSupport
+                                                        event="onchange"
+                                                        action="{!updateLeadSourceFromCaseSource}"
+                                                        rerender="lead_source_info"
+                                                    />
+                                                    <apex:selectOption itemValue="--Select--" />
+                                                    <apex:selectOption itemValue="Email" />
+                                                    <apex:selectOption itemValue="In Person" />
+                                                    <apex:selectOption itemValue="Incoming Call" />
+                                                </apex:selectList>
+                                            </apex:actionRegion>
                                             <br />
                                             <br />
 
@@ -521,7 +537,19 @@
                             </apex:outputPanel>
                         </apex:tab>
 
-                        <apex:tab label="Event" name="event" id="eventTab">
+                        <apex:tab
+                            label="Event"
+                            name="event"
+                            id="eventTab"
+                            ontabenter="updateLeadSourceAsEventAction();"
+                        >
+                            <apex:actionRegion id="update-lead-source-as-event-action-region">
+                                <apex:actionFunction
+                                    name="updateLeadSourceAsEventAction"
+                                    action="{!updateLeadSourceAsEvent}"
+                                    rerender="lead_source_info"
+                                />
+                            </apex:actionRegion>
                             <apex:outputPanel
                                 id="eventSearchPanel"
                                 layout="block"

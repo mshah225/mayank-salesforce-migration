@@ -274,6 +274,20 @@ public class UndergradNewProspectController {
                     opportunity.International_Student__c = true;
                 }
 
+                // Set Prospective Campaign for Opportunity
+                if (elId != null && originSelection == '--Select--') {
+                    // Selected an event
+                    opportunity.Prospect_Campaign__c = elId;
+                } else if (originSelection != '--Select--' && elId == null) {
+                    // Creating a case
+                    New_Prospect_Default__mdt defaultCasePospectCampaign = New_Prospect_Default__mdt.getInstance(
+                        'Case_Prospect_Campaign'
+                    );
+                    if (Test.isRunningTest())
+                        defaultCasePospectCampaign = TEST_DEFAULT_CASE_PROSPECT_CAMPAIGN;
+                    opportunity.Prospect_Campaign__c = defaultCasePospectCampaign?.Value__c;
+                }
+
                 insert opportunity;
                 System.Debug('Inserted Opportunity');
                 System.Debug(opportunity);
@@ -399,4 +413,7 @@ public class UndergradNewProspectController {
             return null;
         }
     }
+
+    @TestVisible
+    private static New_Prospect_Default__mdt TEST_DEFAULT_CASE_PROSPECT_CAMPAIGN = null;
 }

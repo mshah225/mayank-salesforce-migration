@@ -531,6 +531,20 @@ public class UnifiedProspectPageController {
                 opportunity.Academic_Plan__c = planSelected;
             }
 
+            // Set Prospective Campaign for Opportunity
+            if (elId != null && originSelection == '--Select--') {
+                // Selected an event
+                opportunity.Prospect_Campaign__c = elId;
+            } else if (originSelection != '--Select--' && elId == null) {
+                // Creating a case
+                New_Prospect_Default__mdt defaultCasePospectCampaign = New_Prospect_Default__mdt.getInstance(
+                    'Case_Prospect_Campaign'
+                );
+                if (Test.isRunningTest())
+                    defaultCasePospectCampaign = TEST_DEFAULT_CASE_PROSPECT_CAMPAIGN;
+                opportunity.Prospect_Campaign__c = defaultCasePospectCampaign?.Value__c;
+            }
+
             insert opportunity;
 
             newOppId = opportunity.Id;
@@ -659,7 +673,8 @@ public class UnifiedProspectPageController {
             // unexpected error occurs in insertion of any of three sObjects
             Database.rollback(spException);
             ApexPages.addMessages(e);
-            return false;
+            // return false;
+            throw e;
         }
     }
 
@@ -690,4 +705,7 @@ public class UnifiedProspectPageController {
             return null;
         }
     }
+
+    @TestVisible
+    private static New_Prospect_Default__mdt TEST_DEFAULT_CASE_PROSPECT_CAMPAIGN = null;
 }

@@ -506,6 +506,97 @@ private class UnifiedProspectPageControllerTest {
         System.assert(c.Subject == 'Test');
     }
 
+    @isTest
+    private static void testOpportunityWithEventSource() {
+        Campaign eventCampaign = [SELECT Id FROM Campaign WHERE Name = 'ASU Test Event' LIMIT 1];
+        Term__c testTerm = [SELECT Id FROM Term__c WHERE Name = 'Spring 2017' LIMIT 1];
+
+        String expectedCampaign = eventCampaign.Id;
+
+        Test.startTest();
+        setUpController();
+
+        // Select career
+        uppc.career = 'undergraduate';
+        uppc.opportunity.Term__c = testTerm.Id;
+        uppc.opportunity.Type = 'First Time Freshman';
+
+        // Select an event
+        uppc.originSelection = '--Select--';
+        uppc.elId = eventCampaign.Id;
+        uppc.getSelectedEventCamMemStatuses();
+        // This emulates the Sent status picklist on the page. Because Visualforce calls
+        // the getter method automatically, we'll need to call it here manually.
+        uppc.getCamMemEvent();
+        uppc.camMemEvent.Status = 'Sent';
+
+        // Must provide phone or zip
+        uppc.contact.MailingPostalCode = '45656';
+
+        // Submit page
+        PageReference referenceToCheck = uppc.savePage();
+
+        Test.stopTest();
+
+        Opportunity actualOpp = [
+            SELECT Prospect_Campaign__c
+            FROM Opportunity
+            WHERE Id = :uppc.opportunity.Id
+            LIMIT 1
+        ];
+
+        Assert.areEqual(eventCampaign.Id, actualOpp.Prospect_Campaign__c);
+    }
+
+    @isTest
+    private static void testOpportunityWithCaseSource() {
+        Campaign testDefaultCampaign = new Campaign(
+            Name = 'Default case prospect campaign',
+            IsActive = true,
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Campaign', 'Other_Source')
+        );
+        insert testDefaultCampaign;
+        Term__c testTerm = [SELECT Id FROM Term__c WHERE Name = 'Spring 2017' LIMIT 1];
+
+        UnifiedProspectPageController.TEST_DEFAULT_CASE_PROSPECT_CAMPAIGN = new New_Prospect_Default__mdt(
+            Value__c = testDefaultCampaign.Id
+        );
+        String expectedCampaign = testDefaultCampaign.Id;
+
+        Test.startTest();
+        setUpController();
+
+        // Select career
+        uppc.career = 'undergraduate';
+        uppc.opportunity.Term__c = testTerm.Id;
+        uppc.opportunity.Type = 'First Time Freshman';
+
+        // Fill in case form
+        uppc.originSelection = 'Email';
+        uppc.caseC.Subject = 'Test';
+        uppc.caseC.Description = 'Test';
+        uppc.caseC.CC_Functional_Group__c = fgroup.Id;
+        uppc.caseC.Category__c = 'Admissions';
+        uppc.caseC.Sub_Category__c = 'International';
+
+        // Must provide phone or zip
+        uppc.contact.MailingPostalCode = '45656';
+
+        // Submit page
+        PageReference referenceToCheck = uppc.savePage();
+
+        Test.stopTest();
+
+        Opportunity actualOpp = [
+            SELECT Prospect_Campaign__c
+            FROM Opportunity
+            WHERE Id = :uppc.opportunity.Id
+            LIMIT 1
+        ];
+
+        Assert.areEqual(expectedCampaign, actualOpp.Prospect_Campaign__c);
+    }
+
     private static testMethod void testGetContact() {
         Test.startTest();
         uppc = new UnifiedProspectPageController();

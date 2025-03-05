@@ -127,7 +127,7 @@ public class LeadService {
             objContact.LeadSource = strLeadSource;
         }
         if (strLeadSourceSubtype != null) {
-            objContact.Lead_Source_Subtype__c = strLeadSource;
+            objContact.Lead_Source_Subtype__c = strLeadSourceSubtype;
         }
         objContact.LastName = strLastName;
         return objContact;
@@ -145,7 +145,7 @@ public class LeadService {
     ) {
         Map<Id, Lead> leadMap = new Map<Id, Lead>(
             [
-                SELECT id, FirstName, LastName, Phone, Email, MobilePhone, Convert_Contact__c
+                SELECT id, FirstName, LastName, Phone, Email, MobilePhone, Convert_Contact__c, LeadSource, Lead_Source_Subtype__c
                 FROM Lead
                 WHERE Id IN :leadList
             ]

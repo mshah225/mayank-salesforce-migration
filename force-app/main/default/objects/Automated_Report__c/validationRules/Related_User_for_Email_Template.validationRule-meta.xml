@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Related_User_for_Email_Template</fullName>
+    <active>true</active>
+    <description>If an email template value exists, then there must be a related user.</description>
+    <errorConditionFormula>Email_Template_Id__c != null &amp;&amp; Related_User__c == null</errorConditionFormula>
+    <errorMessage>A related user is required when using an email template</errorMessage>
+</ValidationRule>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Grad_Anticipated_Term__c</fullName>
+    <businessOwnerGroup>Data_Owner_AA_Academic_Advising</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>FERPA</complianceGroup>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>(Peoplesoft) ASU_AA_GRD_STRM from PS_ASU_AA_POS Used on the Graduate Student Profile tab.
+Visible on the Graduate Student Profile tab; Access granted via PS security role 'Student Profile'.</description>
+    <externalId>false</externalId>
+    <label>Grad Anticipated Term</label>
+    <referenceTo>Term__c</referenceTo>
+    <relationshipLabel>Student Program Plans (Grad Anticipated Term)</relationshipLabel>
+    <relationshipName>Student_Program_Plans4</relationshipName>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

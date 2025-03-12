@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Action__c</fullName>
+    <description>Data sourced from PS_ACAD_PROG.PROG_ACTION</description>
+    <externalId>false</externalId>
+    <label>Program Action</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Activate</fullName>
+                <default>false</default>
+                <label>Activate</label>
+            </value>
+            <value>
+                <fullName>Completion of Program</fullName>
+                <default>false</default>
+                <label>Completion of Program</label>
+            </value>
+            <value>
+                <fullName>Data Change</fullName>
+                <default>false</default>
+                <label>Data Change</label>
+            </value>
+            <value>
+                <fullName>Discontinuation</fullName>
+                <default>false</default>
+                <label>Discontinuation</label>
+            </value>
+            <value>
+                <fullName>Matriculation</fullName>
+                <default>false</default>
+                <label>Matriculation</label>
+            </value>
+            <value>
+                <fullName>Plan Change</fullName>
+                <default>false</default>
+                <label>Plan Change</label>
+            </value>
+            <value>
+                <fullName>Program Change</fullName>
+                <default>false</default>
+                <label>Program Change</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

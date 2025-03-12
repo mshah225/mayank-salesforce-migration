@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ASUPGA_Status__c</fullName>
+    <businessOwnerGroup>Data_Owner_Graduate_College</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>FERPA</complianceGroup>
+    <description>ASUPGA eligibility is determined by the student's ASUPGA status. This field is updated during the ASUPGA process, either by the student's actions (accept/decline) or automatically by the system if no action is taken (cancelled). The data for this field is sourced from PS_ASU_AA_AA_ELIG in PeopleSoft.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>This field indicates the current status of the student's ASUPGA offer. The possible statuses are:
+
+    Offered: The offer has been made to the student.
+
+    Accepted: The student has accepted the offer.
+
+    Declined: The student has declined the offer.
+
+    Cancelled: The deadline for the offer has passed and the student is no longer eligible for ASUPGA.
+
+    Not Eligible: The student is not eligible for the offer.</inlineHelpText>
+    <label>ASUPGA Status</label>
+    <required>false</required>
+    <securityClassification>Sensitive</securityClassification>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Offered</fullName>
+                <default>false</default>
+                <label>Offered</label>
+            </value>
+            <value>
+                <fullName>Accepted</fullName>
+                <default>false</default>
+                <label>Accepted</label>
+            </value>
+            <value>
+                <fullName>Declined</fullName>
+                <default>false</default>
+                <label>Declined</label>
+            </value>
+            <value>
+                <fullName>Cancelled</fullName>
+                <default>false</default>
+                <label>Cancelled</label>
+            </value>
+            <value>
+                <fullName>Not Eligible</fullName>
+                <default>false</default>
+                <label>Not Eligible</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

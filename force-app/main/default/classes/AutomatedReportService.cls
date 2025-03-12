@@ -12,7 +12,7 @@ public without sharing class AutomatedReportService {
     
     public Blob reportData;
     public  BulkApiManager bulkManager; // Bulk API
-    public  Automated_Report_Processing_Options__c report;
+    public  Automated_Report__c report;
 
     
 
@@ -22,12 +22,13 @@ public without sharing class AutomatedReportService {
     
     public Boolean nextAvailableReport() {
         // Custom setting that holds the job details
-        List<Automated_Report_Processing_Options__c> jobList = new List<Automated_Report_Processing_Options__c>();
+        List<Automated_Report__c> jobList = new List<Automated_Report__c>();
 
         // Get settings for job
         jobList = [
-            SELECT Id, Campaign_ID__c, Distribution_List__c, Print_List__c, Report_ID__c, Campaign_Member_Status__c
-            FROM Automated_Report_Processing_Options__c
+            SELECT Id, RecordType.Name, Campaign_ID__c, Distribution_List__c, Print_List__c, Report_ID__c, Campaign_Member_Status__c, 
+            Notification_Threshold__c, Email_Template_Id__c, Related_User__c
+            FROM Automated_Report__c
             WHERE Run_Required__c = TRUE AND Active__c = TRUE
             LIMIT 1
         ];
@@ -94,6 +95,53 @@ public without sharing class AutomatedReportService {
     }
 
     /**
+     * Compare number of rows to critera
+     */
+    public boolean checkReportResultsExceedThreshold() {        
+        // Get report export
+        Integer numberOfRows = 0;
+
+        reportData = new PageReference('/' + report.Report_ID__c + '?export=1&isdtp=p1').getContent();
+        HttpRequest reportWrapper = new HttpRequest();
+        reportWrapper.setBodyAsBlob(reportData);
+        String reportDataAsString = reportWrapper.getBody(); 
+
+        // Check size
+        if (reportData.size() == 0) {
+            updateRunComplete();
+            return false;
+        }
+
+        CsvIterator fileIterator = new CsvIterator(reportDataAsString, '\n');
+
+        //Notify the admins when there are no records in the report
+        //There will always be at least one row due to the header
+        if (report.Notification_Threshold__c == 0) {
+            while (fileIterator.hasNext() && numberOfRows < 2) {
+                fileIterator.next();
+                numberOfRows++;
+            }
+
+            if (numberOfRows < 2) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        while (fileIterator.hasNext() && numberOfRows < report.Notification_Threshold__c) {
+            fileIterator.next();
+            numberOfRows++;
+        }
+
+        if (numberOfRows >= report.Notification_Threshold__c) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Create csv content for bulk api batch
      */
     public void createBulkContent() {
@@ -125,14 +173,11 @@ public without sharing class AutomatedReportService {
      * Send email upon completion
      */
     public void sendEmail() {
-        // Check if we have a distribution list
-        if (report.Distribution_List__c == '') {
-            return;
-        }
-
         // Get our To address
         List<String> toAddress = new List<String>();
-        toAddress = report.Distribution_List__c.split(',');
+        if (report.Distribution_List__c != null) {
+            toAddress = report.Distribution_List__c.split(',');
+        }
 
         String fileName = report.Print_List__c + '.' + report.Report_ID__c + '.csv';
         String subject = 'Print List Automation - ' + report.Print_List__c;
@@ -145,14 +190,24 @@ public without sharing class AutomatedReportService {
 
         // Create message
         Messaging.SingleEmailMessage message = new Messaging.SingleEmailMessage();
-        message.setFileAttachments(new List<Messaging.EmailFileAttachment>{ attachment });
-        message.setSubject(subject);
-        message.setPlainTextBody('The report is attached.');
-        message.setToAddresses(toAddress);
+        message.setFileAttachments(new List<Messaging.EmailFileAttachment>{ attachment });       
         message.setOrgWideEmailAddressId(FROM_EMAIL_ID);
 
+        if (report.Email_Template_Id__c != null) {
+            message.setTemplateId(report.Email_Template_Id__c);
+            message.setTargetObjectId(report.Related_User__c);
+            message.setSaveAsActivity(false);     
+            if (!toAddress.isEmpty()) {
+                message.setCcAddresses(toAddress);
+            } 
+        } else {
+            message.setToAddresses(toAddress);
+            message.setPlainTextBody('The report is attached.');            
+            message.setSubject(subject);
+        }
+
         try {
-            Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ message });
+            Messaging.SendEmailResult[] emailResult = Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{ message });
         } catch (Exception ex) {
             List<String> vars = new List<String>();
             vars.add(ErrorLogger.convertStringToJSON('Exception: ', ex.getMessage()));

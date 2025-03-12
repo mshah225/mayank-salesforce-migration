@@ -106,7 +106,7 @@ export function niceLog(title, message, type) {
 let fixedYOffset = null; // state variable for finding y offset
 /**
  * Salesforce sometimes does weird stuff which can cause position:fixed;top:0px to not align with the top of the viewport
- * One case where this can happen is with modals launched by a record action.c/advisorPortalA
+ * One case where this can happen is with modals launched by a record action.
  *
  * This function returns the offset so that, when using position:fixed, you know how many pixels to subtract from the desired location
  *

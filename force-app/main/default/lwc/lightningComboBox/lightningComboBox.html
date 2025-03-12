@@ -47,12 +47,12 @@
                         <template for:each={options} for:item="option">
                             <template if:true={option.isLabel}>
                                 <li
-                                    key={option.value}
+                                    key={option.index}
+                                    data-index={option.index}
                                     role="presentation"
                                     class="slds-listbox__item"
                                     data-testid="dropdown-label"
                                 >
-                                    <div class="slds-listbox__option_plain slds-listbox__option-header"></div>
                                     <div
                                         class="slds-listbox__option_plain slds-listbox__option-header"
                                         role="presentation"
@@ -65,14 +65,14 @@
                             </template>
                             <template if:false={option.isLabel}>
                                 <li
-                                    key={option.value}
+                                    key={option.index}
                                     data-id={option.value}
                                     data-index={option.index}
                                     data-hover={option.isHovered}
                                     data-testid="dropdown-option"
                                     onmousemove={hoverElement}
                                     onmousedown={toggleItem}
-                                    class="slds-listbox__item eachItem"
+                                    class="slds-listbox__item"
                                 >
                                     <span class="slds-media__figure slds-listbox__option-icon">
                                         <template if:true={option.isSelected}>

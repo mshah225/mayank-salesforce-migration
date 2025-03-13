@@ -490,12 +490,52 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a
-                                        href="https://cs.oasis.asu.edu/asucsprd/asusignon.html?dest=/EMPLOYEE/PSFT_ASUCSPRD/c/SCC_ADMIN_OVRD.SSS_STUDENT_CENTER.GBL?EMPLID={!theContact.EMPLID__c}"
-                                        target="_blank"
-                                    >
+                                    <a href="#" data-toggle="modal" data-target="#peoplesoft-modal">
                                         Student's PeopleSoft
                                     </a>
+    
+                                    <div
+                                        class="modal fade"
+                                        id="peoplesoft-modal"
+                                        data-backdrop="static"
+                                        data-keyboard="false"
+                                        role="dialog"
+                                    >
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button
+                                                        type="button"
+                                                        class="close"
+                                                        onclick="showModalFields()"
+                                                        data-dismiss="modal"
+                                                    >
+                                                        &times;
+                                                    </button>
+                                                    <h4 class="modal-title" style="font-weight: bold">View Student's PeopleSoft</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div id="create-case-modal-error" style="color: red"></div>
+                                                    <div id="create-case-modal-result"></div>
+                                                    <div class="form-group">
+                                                        <label for="comment">Are you already logged in to PeopleSoft in another browser tab?</label>
+                                                        <br /><br />
+                                                        <button type="button" class="btn btn-default" onclick="psRedirect(true);" data-dismiss="modal">
+                                                            Yes
+                                                        </button>
+                                                        &nbsp;&nbsp;
+                                                        <button type="button" class="btn btn-default" onclick="psRedirect(false);" data-dismiss="modal">
+                                                            No
+                                                        </button>
+                                                        &nbsp;&nbsp;
+                                                        <button type="button" class="btn btn-default" onclick="showModalFields()" data-dismiss="modal">
+                                                            Cancel
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td>
                                     <a href="https://webapp4.asu.edu/gradapprev/" target="_blank"> GAR </a>
@@ -3560,6 +3600,17 @@
         (function ($) {
             fakewaffle.responsiveTabs(['xs', 'sm']);
         })(jQuery);
+
+        function psRedirect(loggedIn) {
+            var endpoint = '';
+            if(loggedIn) {
+                endpoint = 'https://cs.oasis.asu.edu/psp/asucsprd_newwin/EMPLOYEE/CAMP/c/SCC_ADMIN_OVRD.SSS_STUDENT_CENTER.GBL?EMPLID={!theContact.EMPLId__c}';
+            } else { 
+                endpoint = 'https://cs.oasis.asu.edu/asucsprd/asusignon.html?dest=%2FEMPLOYEE%2FPSFT_ASUCSPRD%2Fc%2FSCC_ADMIN_OVRD.SSS_STUDENT_CENTER.GBL%3FEMPLID%3D{!theContact.EMPLId__c}&';
+            }
+            console.log(`PS Redirect: ${endpoint}`);
+            window.open(endpoint, '_blank');
+        }
 
         function createCase() {
             var subject = document.getElementById('create-case-modal-subject').value;

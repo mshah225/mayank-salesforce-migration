@@ -1,4 +1,5 @@
 import {LightningElement, api} from 'lwc';
+import {parseBoolean, getFixedYOffset} from 'c/helperFunctions';
 /**
  * The `c-lightning-button-dropdown` is a custom component designed to act as a button, with a submenu of additional buttons.
  *
@@ -17,11 +18,23 @@ import {LightningElement, api} from 'lwc';
  * </c-lightning-button-dropdown>
  * ```
  *
+ * `dynamicDropdown` is a flag you should set whenever rendering inside of a modal, and when you want the dropdown options to exapnd outside the modal.
+ * This does come with the limitation of odd behavior when scrolling in the modal. This does come with some CPU-cost, as it requires us to update the position
+ * of the dropdown using JS every time the element rerenders
+ *
  * Author: Tommy Nordman
  * Created: 2025-03-17
  */
 export default class LightningButtonDropdown extends LightningElement {
     @api label;
+
+    @api set dynamicDropdown(val) {
+        this._dynamicDropdown = parseBoolean(val);
+    }
+    get dynamicDropdown() {
+        return this._dynamicDropdown;
+    }
+    _dynamicDropdown = false;
 
     dropdownOpen = false;
 
@@ -59,8 +72,44 @@ export default class LightningButtonDropdown extends LightningElement {
         let classList = ['dropdown-menu'];
 
         if (this.dropdownOpen) classList.push('dropdown-open');
+        if (this.dynamicDropdown) classList.push('dynamic-dropdown');
 
         return classList.join(' ');
+    }
+
+    cssRegenInterval = undefined;
+    renderedCallback() {
+        if (this.dynamicDropdown) {
+            // Every rerender, update align CSS
+            this.regenerateDropdownAlignmentCss();
+
+            // If we don't have an interval already, create one to keep CSS alsgnment updated
+            if (this.dropdownOpen && this.cssRegenInterval === undefined) {
+                this.cssRegenInterval = setInterval(() => {
+                    if (this.dropdownOpen) {
+                        this.regenerateDropdownAlignmentCss();
+                    } else {
+                        // if it is now closed - remove the interval to not waste resources
+                        clearInterval(this.cssRegenInterval);
+                        this.cssRegenInterval = undefined;
+                    }
+                }, 300);
+            }
+        }
+    }
+    regenerateDropdownAlignmentCss() {
+        let css = this.template.host.style;
+
+        const dropdownButton = this.template.querySelector('.dropdown-button');
+
+        const cTop = dropdownButton.getBoundingClientRect().top;
+        const cHeight = dropdownButton.getBoundingClientRect().height;
+
+        const zeroedYOffset = getFixedYOffset(dropdownButton);
+
+        let comboboxContainerOffsetTop = cTop + cHeight - zeroedYOffset + 'px';
+
+        css.setProperty('--dynamicDropdownOffsetTop', comboboxContainerOffsetTop);
     }
 }
 

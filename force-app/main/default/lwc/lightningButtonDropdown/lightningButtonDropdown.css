@@ -1,6 +1,8 @@
 :host {
     display: inline-block;
     position: relative;
+
+    --dynamicDropdownOffsetTop: 0px;
 }
 
 :host .primary-buttons {
@@ -121,4 +123,12 @@
 :host .dropdown-menu button:hover,
 :host .dropdown-menu button.hover {
     background-color: #f1f1f1;
+}
+
+/* For fixed-location dropdown that expands outside of modals */
+.dynamic-dropdown {
+    position: fixed !important;
+    top: var(--dynamicDropdownOffsetTop) !important;
+    z-index: 9102 !important;
+    transform: translateX(0px) !important;
 }

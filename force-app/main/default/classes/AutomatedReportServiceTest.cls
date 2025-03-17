@@ -4,7 +4,7 @@ public without sharing class AutomatedReportServiceTest {
     static void getNextAvailableReport() {
         Datetime dt = DateTime.newInstance(Date.today(), Time.newInstance(0, 0, 0, 0));
 
-        Automated_Report_Processing_Options__c newReport = new Automated_Report_Processing_Options__c();
+        Automated_Report__c newReport = new Automated_Report__c();
         newReport.Name = 'Weekly Report';
         newReport.Campaign_ID__c = 'test';
         newReport.Campaign_Member_Status__c = 'test';
@@ -31,7 +31,7 @@ public without sharing class AutomatedReportServiceTest {
     static void emailSent() {
         Datetime dt = DateTime.newInstance(Date.today(), Time.newInstance(0, 0, 0, 0));
         Integer invocations;
-        Automated_Report_Processing_Options__c newReport = new Automated_Report_Processing_Options__c();
+        Automated_Report__c newReport = new Automated_Report__c();
         newReport.Name = 'Weekly Report';
         newReport.Campaign_ID__c = 'test';
         newReport.Campaign_Member_Status__c = 'test';

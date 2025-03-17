@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Primary_Flag__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Data sourced from PS_STDNT_PROFILE_MAJ_CURRENT.ASU_PRIME_REC_FLG</description>
+    <externalId>false</externalId>
+    <label>Primary Flag</label>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

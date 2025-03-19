@@ -1,13 +1,17 @@
 import LightningModal from 'lightning/modal';
 import {api, wire} from 'lwc';
 import {gql, graphql} from 'lightning/uiGraphQLApi';
-import {updateRecord} from 'lightning/uiRecordApi';
+import {createRecord, updateRecord} from 'lightning/uiRecordApi';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import Id from '@salesforce/user/Id';
 import {extractErrorMessages} from 'c/helperFunctions';
 
 import FSUA_ID_FIELD from '@salesforce/schema/Filter_Set_User_Association__c.Id';
 import FSUA_PINNED_FIELD from '@salesforce/schema/Filter_Set_User_Association__c.Pinned__c';
+
+import UFSP_OBJECT from '@salesforce/schema/User_Filter_Set_Preference__c';
+import UFSP_ID_FIELD from '@salesforce/schema/User_Filter_Set_Preference__c.Id';
+import UFSP_SORT_ORDER_FIELD from '@salesforce/schema/User_Filter_Set_Preference__c.Sort_Order__c';
 
 export default class FilterSetsModal extends LightningModal {
     /**
@@ -78,9 +82,10 @@ export default class FilterSetsModal extends LightningModal {
                                 }
                             }
                         }
-                        User_Filter_Set_Preference__c(where: {User__c: {eq: $userId}}) {
+                        User_Filter_Set_Preference__c(where: {OwnerId: {eq: $userId}}) {
                             edges {
                                 node {
+                                    Id
                                     Sort_Order__c {
                                         value
                                     }
@@ -114,6 +119,7 @@ export default class FilterSetsModal extends LightningModal {
     get filterSetPreferences() {
         return (this.wireData?.uiapi?.query?.User_Filter_Set_Preference__c?.edges ?? []).map((userPref) => {
             return {
+                Id: userPref?.node?.Id,
                 Sort_Order__c: userPref?.node?.Sort_Order__c?.value,
             };
         })[0];
@@ -209,10 +215,105 @@ export default class FilterSetsModal extends LightningModal {
     ];
 
     /**
+     * Whenever search text is entered, we need to search the list to only include those that contain this text
+     * @param {CustomEvent} evnt This is a change event
+     */
+    handleSearch(evnt) {
+        this.searchText = evnt.detail.value;
+    }
+    searchText;
+    get isSearching() {
+        return !!this.searchText;
+    }
+
+    /**
+     * Whenever the sort dropdown is changed we need to apply the sort and save it as the new default for this user
+     * @param {CustomEvent} evnt This is a change event
+     */
+    handleSort(evnt) {
+        this._sortOrder = evnt.detail.value;
+
+        let savePromise = null;
+
+        if (this.filterSetPreferences?.Id == null) {
+            const fields = {};
+            fields[UFSP_SORT_ORDER_FIELD.fieldApiName] = this.sortOrder;
+
+            const recordInput = {
+                apiName: UFSP_OBJECT.objectApiName,
+                fields,
+            };
+
+            savePromise = createRecord(recordInput);
+        } else {
+            const fields = {};
+            fields[UFSP_ID_FIELD.fieldApiName] = this.filterSetPreferences?.Id;
+            fields[UFSP_SORT_ORDER_FIELD.fieldApiName] = this.sortOrder;
+
+            const recordInput = {
+                fields,
+            };
+
+            savePromise = updateRecord(recordInput);
+        }
+
+        // If saving throws an error, show that to user. Success is not noteworthy.
+        savePromise.catch((error) => {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error while saving filter order',
+                    message: extractErrorMessages(error)[0],
+                    variant: 'error',
+                })
+            );
+        });
+    }
+    _sortOrder;
+    get sortOrder() {
+        return this._sortOrder || this.filterSetPreferences?.Sort_Order__c || null;
+    }
+    get isSorted() {
+        return !!this.sortOrder;
+    }
+
+    /**
      * Nonpinned filter sets
      */
     get nonpinnedFilterSets() {
-        return this.allFilterSets.filter((filterSet) => !filterSet.Pinned__c);
+        return this.allFilterSets
+            .filter((filterSet) => !filterSet.Pinned__c)
+            .filter((filterSet) => {
+                // Either not in search mode (in which don't do any additional filtering)
+                // Or in search mode and need to filter using filter name and owner name
+                return (
+                    !this.isSearching ||
+                    filterSet.Name.toLowerCase().includes(this.searchText.toLowerCase()) ||
+                    filterSet.Owner__r.Name.toLowerCase().includes(this.searchText.toLowerCase())
+                );
+            })
+            .sort((a, b) => {
+                // If sort has been applied, sort options
+                if (this.isSorted) {
+                    if (this.sortOrder === 'Filter Name Asc') {
+                        return a.Name.localeCompare(b.Name);
+                    } else if (this.sortOrder === 'Filter Name Desc') {
+                        return -1 * a.Name.localeCompare(b.Name);
+                    } else if (this.sortOrder === 'Created Date Asc') {
+                        return new Date(a.CreatedDate).getTime() - new Date(b.CreatedDate).getTime();
+                    } else if (this.sortOrder === 'Created Date Desc') {
+                        return -1 * (new Date(a.CreatedDate).getTime() - new Date(b.CreatedDate).getTime());
+                    } else if (this.sortOrder === 'Owner Name Asc') {
+                        return a.Owner__r.Name.localeCompare(b.Owner__r.Name);
+                    } else if (this.sortOrder === 'Owner Name Desc') {
+                        return -1 * a.Owner__r.Name.localeCompare(b.Owner__r.Name);
+                    } else if (this.sortOrder === 'Private First') {
+                        return a.Is_Shared__c === b.Is_Shared__c ? 0 : !a.Is_Shared__c ? -1 : 1;
+                    } else if (this.sortOrder === 'Shared First') {
+                        return a.Is_Shared__c === b.Is_Shared__c ? 0 : a.Is_Shared__c ? -1 : 1;
+                    }
+                }
+                return 0;
+            });
     }
     get numberNonpinned() {
         return this.nonpinnedFilterSets.length;
@@ -322,6 +423,10 @@ export class FilterSetsModalTest extends FilterSetsModal {
     }
     get sortByOptions() {
         return super.sortByOptions;
+    }
+
+    @api get sortOrder() {
+        return super.sortOrder;
     }
 
     @api get nonpinnedFilterSets() {

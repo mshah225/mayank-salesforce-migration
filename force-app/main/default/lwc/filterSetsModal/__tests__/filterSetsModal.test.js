@@ -4,7 +4,8 @@ import {FilterSetsModalTest} from 'c/filterSetsModal';
 import {graphql} from 'lightning/uiGraphQLApi';
 import {flushPromises} from 'c/helperTestFunctions';
 import Id from '@salesforce/user/Id';
-import {updateRecord} from 'lightning/uiRecordApi';
+import {createRecord, updateRecord} from 'lightning/uiRecordApi';
+import {cloneObj} from 'c/helperFunctions';
 
 const wireResponseMock = require('./data/wireResponse.json');
 const noFilterSetsWireResponseMock = require('./data/noFilterSetsWireResponse.json');
@@ -174,5 +175,157 @@ describe('c-filter-sets-modal', () => {
 
         // Check updateRecord was called for related filter set user association
         expect(toastHandler).toHaveBeenCalled();
+    });
+
+    test('Searching filter using name', async () => {
+        const element = createElement('c-filter-sets-modal', {
+            is: FilterSetsModalTest,
+        });
+        document.body.appendChild(element);
+        graphql.emit(wireResponseMock);
+
+        await flushPromises(); // await render
+
+        element.shadowRoot
+            .querySelector('lightning-input')
+            .dispatchEvent(new CustomEvent('change', {detail: {value: 'senior'}}));
+
+        let filteredFilterSets = expectedUnpinnedFilters.filter(
+            (v) => v.Name.toLowerCase().includes('senior') || v.Owner__r.Name.toLowerCase().includes('senior')
+        );
+
+        expect(element.numberNonpinned).toEqual(filteredFilterSets.length);
+        expect(element.nonpinnedFilterSets).toMatchObject(filteredFilterSets);
+        expect(element.hasNonpinnedFilterSets).toEqual(true);
+    });
+
+    test('Searching filter using owner name', async () => {
+        const element = createElement('c-filter-sets-modal', {
+            is: FilterSetsModalTest,
+        });
+        document.body.appendChild(element);
+        graphql.emit(wireResponseMock);
+
+        await flushPromises(); // await render
+
+        element.shadowRoot
+            .querySelector('lightning-input')
+            .dispatchEvent(new CustomEvent('change', {detail: {value: 'justin'}}));
+
+        let filteredFilterSets = expectedUnpinnedFilters.filter(
+            (v) => v.Name.toLowerCase().includes('justin') || v.Owner__r.Name.toLowerCase().includes('justin')
+        );
+
+        expect(element.numberNonpinned).toEqual(filteredFilterSets.length);
+        expect(element.nonpinnedFilterSets).toMatchObject(filteredFilterSets);
+        expect(element.hasNonpinnedFilterSets).toEqual(true);
+    });
+
+    test('Apply sort - Shared First', async () => {
+        const element = createElement('c-filter-sets-modal', {
+            is: FilterSetsModalTest,
+        });
+        document.body.appendChild(element);
+        graphql.emit(wireResponseMock);
+
+        await flushPromises(); // await render
+
+        // Change sort
+        element.shadowRoot
+            .querySelector('lightning-combobox')
+            .dispatchEvent(new CustomEvent('change', {detail: {value: 'Shared First'}}));
+
+        // Check order
+        let sortedFilterSets = expectedUnpinnedFilters.sort((a, b) => {
+            return a.Is_Shared__c === b.Is_Shared__c ? 0 : a.Is_Shared__c ? -1 : 1;
+        });
+        expect(element.nonpinnedFilterSets).toMatchObject(sortedFilterSets);
+    });
+
+    test('Apply sort - Private First', async () => {
+        const element = createElement('c-filter-sets-modal', {
+            is: FilterSetsModalTest,
+        });
+        document.body.appendChild(element);
+        graphql.emit(wireResponseMock);
+
+        await flushPromises(); // await render
+
+        // Change sort
+        element.shadowRoot
+            .querySelector('lightning-combobox')
+            .dispatchEvent(new CustomEvent('change', {detail: {value: 'Private First'}}));
+
+        // Check order
+        let sortedFilterSets = expectedUnpinnedFilters.sort((a, b) => {
+            return a.Is_Shared__c === b.Is_Shared__c ? 0 : !a.Is_Shared__c ? -1 : 1;
+        });
+        expect(element.nonpinnedFilterSets).toMatchObject(sortedFilterSets);
+    });
+
+    test('Apply saved sort', () => {
+        const element = createElement('c-filter-sets-modal', {
+            is: FilterSetsModalTest,
+        });
+        document.body.appendChild(element);
+        graphql.emit(wireResponseMock);
+
+        // Check order was applied
+        expect(element.sortOrder).toEqual(
+            wireResponseMock.uiapi.query.User_Filter_Set_Preference__c.edges[0].node.Sort_Order__c.value
+        );
+    });
+
+    test('Save sort with no existing preferences record', async () => {
+        const element = createElement('c-filter-sets-modal', {
+            is: FilterSetsModalTest,
+        });
+        document.body.appendChild(element);
+
+        const wireResponseMockWithNoPrefObj = cloneObj(wireResponseMock);
+        wireResponseMockWithNoPrefObj.uiapi.query.User_Filter_Set_Preference__c.edges = [];
+        graphql.emit(wireResponseMockWithNoPrefObj);
+
+        await flushPromises(); // await render
+
+        // Change sort
+        element.shadowRoot
+            .querySelector('lightning-combobox')
+            .dispatchEvent(new CustomEvent('change', {detail: {value: 'Private First'}}));
+
+        await flushPromises(); // await calling createRecord
+
+        // Check createRecord was called
+        expect(createRecord).toHaveBeenCalledWith({
+            apiName: 'User_Filter_Set_Preference__c',
+            fields: {
+                Sort_Order__c: 'Private First',
+            },
+        });
+    });
+
+    test('Save sort with existing preferences record', async () => {
+        const element = createElement('c-filter-sets-modal', {
+            is: FilterSetsModalTest,
+        });
+        document.body.appendChild(element);
+        graphql.emit(wireResponseMock);
+
+        await flushPromises(); // await render
+
+        // Change sort
+        element.shadowRoot
+            .querySelector('lightning-combobox')
+            .dispatchEvent(new CustomEvent('change', {detail: {value: 'Private First'}}));
+
+        await flushPromises(); // await calling createRecord
+
+        // Check createRecord was called
+        expect(updateRecord).toHaveBeenCalledWith({
+            fields: {
+                Id: wireResponseMock.uiapi.query.User_Filter_Set_Preference__c.edges[0].node.Id,
+                Sort_Order__c: 'Private First',
+            },
+        });
     });
 });

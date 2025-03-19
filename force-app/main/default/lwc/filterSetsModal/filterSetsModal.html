@@ -40,6 +40,7 @@
                             label="Search by keywords"
                             placeholder="Search by keywords"
                             type="search"
+                            onchange={handleSearch}
                         ></lightning-input>
                     </div>
                     <div class="slds-col slds-grow-none">
@@ -48,6 +49,8 @@
                             label="Sort by"
                             placeholder="Sort by"
                             options={sortByOptions}
+                            onchange={handleSort}
+                            value={sortOrder}
                         ></lightning-combobox>
                     </div>
                 </div>
@@ -68,7 +71,25 @@
                         </template>
                     </template>
                     <template lwc:else>
-                        <div class="slds-m-bottom_medium bold-text">You do not have any saved filter sets.</div>
+                        <template lwc:if={isSearching}>
+                            <div class="slds-m-bottom_medium">
+                                <span class="bold-text slds-m-bottom_medium">
+                                    No results were found based on your current search criteria. Please try again.
+                                    <br />
+                                    <br />
+                                    Search Suggestions
+                                </span>
+                                <ul class="search-suggestion-list slds-m-left_medium">
+                                    <li>Check your spelling</li>
+                                    <li>Try different words that mean the same thing</li>
+                                    <li>Try more general words</li>
+                                    <li>Clear search</li>
+                                </ul>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="slds-m-bottom_medium bold-text">You do not have any saved filter sets.</div>
+                        </template>
                     </template>
                 </div>
             </c-lightning-await-load-block>

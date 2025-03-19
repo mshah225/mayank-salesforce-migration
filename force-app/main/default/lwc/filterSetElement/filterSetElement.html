@@ -15,14 +15,16 @@
                 <template lwc:else> {filterName} </template>
             </span>
 
-            <lightning-button-icon
-                icon-name="utility:edit"
-                variant="bare"
-                alternative-text="Edit filter set name"
-                class="slds-m-left_x-small slds-m-right_large"
-                title="Edit filter set name"
-                onclick={handleRename}
-            ></lightning-button-icon>
+            <template lwc:if={userOwnsFilterSet}>
+                <lightning-button-icon
+                    icon-name="utility:edit"
+                    variant="bare"
+                    alternative-text="Edit filter set name"
+                    class="slds-m-left_x-small slds-m-right_large"
+                    title="Edit filter set name"
+                    onclick={handleRename}
+                ></lightning-button-icon>
+            </template>
 
             <span class="vert-align">{shareType}</span>
             <span class="vert-align slds-m-horizontal_xx-small">&middot;</span>

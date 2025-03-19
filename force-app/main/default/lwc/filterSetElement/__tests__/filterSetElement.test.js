@@ -206,6 +206,32 @@ describe('c-filter-set-element', () => {
         expect(removeHandler).toHaveBeenCalledTimes(1);
     });
 
+    test('Show rename button if is owner', async () => {
+        const element = createElement('c-filter-set-element', {
+            is: FilterSetElementTest,
+        });
+        element.filterSet = sharedByMeFilterSet;
+        document.body.appendChild(element);
+
+        await flushPromises(); // Await render
+
+        // No rename button
+        expect(element.shadowRoot.querySelector('lightning-button-icon')).toBeTruthy();
+    });
+
+    test('Hide rename button if not owner', async () => {
+        const element = createElement('c-filter-set-element', {
+            is: FilterSetElementTest,
+        });
+        element.filterSet = sharedWithMeFilterSet;
+        document.body.appendChild(element);
+
+        await flushPromises(); // Await render
+
+        // No rename button
+        expect(element.shadowRoot.querySelector('lightning-button-icon')).toBeFalsy();
+    });
+
     test('Rename mode', async () => {
         const element = createElement('c-filter-set-element', {
             is: FilterSetElementTest,

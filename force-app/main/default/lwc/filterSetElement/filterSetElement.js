@@ -13,11 +13,7 @@ export default class FilterSetElement extends LightningElement {
     }
 
     get shareType() {
-        return this.filterSet?.Is_Shared__c
-            ? this.filterSet?.Owner__c === Id
-                ? 'Shared by me'
-                : 'Shared with me'
-            : 'Private';
+        return this.filterSet?.Is_Shared__c ? (this.userOwnsFilterSet ? 'Shared by me' : 'Shared with me') : 'Private';
     }
     get ownerName() {
         return this.filterSet?.Owner__r.Name || '';
@@ -33,6 +29,10 @@ export default class FilterSetElement extends LightningElement {
 
     get pinLabel() {
         return this.isPinned ? 'Unpin' : 'Pin';
+    }
+
+    get userOwnsFilterSet() {
+        return this.filterSet?.Owner__c === Id;
     }
 
     applyFilterSet(evnt) {

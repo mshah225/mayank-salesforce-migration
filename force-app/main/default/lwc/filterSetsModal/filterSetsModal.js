@@ -6,6 +6,9 @@ import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import Id from '@salesforce/user/Id';
 import {extractErrorMessages} from 'c/helperFunctions';
 
+import FILTER_SET_ID_FIELD from '@salesforce/schema/Filter_Set__c.Id';
+import FILTER_SET_NAME_FIELD from '@salesforce/schema/Filter_Set__c.Name';
+
 import FSUA_ID_FIELD from '@salesforce/schema/Filter_Set_User_Association__c.Id';
 import FSUA_PINNED_FIELD from '@salesforce/schema/Filter_Set_User_Association__c.Pinned__c';
 
@@ -264,6 +267,7 @@ export default class FilterSetsModal extends LightningModal {
                     title: 'Error while saving filter order',
                     message: extractErrorMessages(error)[0],
                     variant: 'error',
+                    mode: 'sticky',
                 })
             );
         });
@@ -354,8 +358,8 @@ export default class FilterSetsModal extends LightningModal {
             .then(() => {
                 this.dispatchEvent(
                     new ShowToastEvent({
-                        title: eventDetail.pinned ? 'Filter set pinned' : 'Filter set unpinned',
-                        message: 'Success',
+                        title: 'Success',
+                        message: eventDetail.pinned ? 'Filter set pinned' : 'Filter set unpinned',
                         variant: 'success',
                     })
                 );
@@ -366,6 +370,7 @@ export default class FilterSetsModal extends LightningModal {
                         title: `Error when ${eventDetail.pinned ? 'pinning' : 'unpinning'} filter set`,
                         message: extractErrorMessages(error)[0],
                         variant: 'error',
+                        mode: 'sticky',
                     })
                 );
             });
@@ -375,7 +380,51 @@ export default class FilterSetsModal extends LightningModal {
     handleShareEvent(evnt) {}
     handleViewEvent(evnt) {}
     handleRemoveEvent(evnt) {}
-    handleRenameEvent(evnt) {}
+
+    /**
+     * Each rename event detail contains the filterSetId of which filter set this is for
+     * And its new name
+     *
+     * @typedef {Object} RenameEventDetail
+     * @property {String} filterSetId Filter Set Id
+     * @property {String} value New name for filter set
+     */
+
+    /**
+     * Rename a filter set
+     * @param {CustomEvent} evnt
+     */
+    handleRenameEvent(evnt) {
+        /** @type {RenameEventDetail} */
+        const eventDetail = evnt.detail;
+
+        const fields = {};
+        fields[FILTER_SET_ID_FIELD.fieldApiName] = eventDetail.filterSetId;
+        fields[FILTER_SET_NAME_FIELD.fieldApiName] = eventDetail.value;
+
+        const recordInput = {fields};
+
+        updateRecord(recordInput)
+            .then(() => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Success',
+                        message: 'Filter set renamed',
+                        variant: 'success',
+                    })
+                );
+            })
+            .catch((error) => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error while renaming filter set',
+                        message: extractErrorMessages(error)[0],
+                        variant: 'error',
+                        mode: 'sticky',
+                    })
+                );
+            });
+    }
 
     /**
      * Loading and error state

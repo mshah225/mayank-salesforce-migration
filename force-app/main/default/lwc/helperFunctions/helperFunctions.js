@@ -371,5 +371,9 @@ export function extractErrorMessages(errors) {
             .filter((message) => !!message)
             // Remove leading and trailing spaces for each message
             .map((message) => message.trim())
+            // Convert any \\n into proper \n
+            .map((v) => {
+                return v.replace('\\n', '\n');
+            })
     );
 }

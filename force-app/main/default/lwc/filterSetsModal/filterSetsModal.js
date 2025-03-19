@@ -1,8 +1,9 @@
 import LightningModal from 'lightning/modal';
 import {api, wire} from 'lwc';
 import {gql, graphql} from 'lightning/uiGraphQLApi';
-import {createRecord, updateRecord} from 'lightning/uiRecordApi';
+import {createRecord, updateRecord, deleteRecord} from 'lightning/uiRecordApi';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
+import LightningConfirm from 'lightning/confirm';
 import Id from '@salesforce/user/Id';
 import {extractErrorMessages} from 'c/helperFunctions';
 
@@ -15,6 +16,39 @@ import FSUA_PINNED_FIELD from '@salesforce/schema/Filter_Set_User_Association__c
 import UFSP_OBJECT from '@salesforce/schema/User_Filter_Set_Preference__c';
 import UFSP_ID_FIELD from '@salesforce/schema/User_Filter_Set_Preference__c.Id';
 import UFSP_SORT_ORDER_FIELD from '@salesforce/schema/User_Filter_Set_Preference__c.Sort_Order__c';
+
+/**
+ * @typedef {Object} PinEventDetail Each pin event detail contains the filterSetId of which filter set this is for
+ *      and whether it should be pinned or not
+ * @property {String} filterSetId Filter Set Id
+ * @property {Boolean} pinned Should this be pinned, or unpinned?
+ *
+ * @typedef {Object} RenameEventDetail Each rename event detail contains the filterSetId of which filter set this is for and its new name
+ * @property {String} filterSetId Filter Set Id
+ * @property {String} value New name for filter set
+ *
+ * @typedef {Object} RemoveEventDetail Each remove event contains only the filter set id
+ * @property {String} filterSetId Filter Set Id
+ *
+ * @typedef {Object} FilterSet Each filter set object
+ * @property {String} Id If of the filter set
+ * @property {String} Name Name of the filter set
+ * @property {String} Owner__c Id of the user who owns this filter set
+ * @property {UserRecord} Owner__r User who owns this filter set
+ * @property {String} Value__c The serialized JSON string for this filter set
+ * @property {Boolean} Is_Shared__c Is this filter set shared with anyone?
+ * @property {String} CreatedDate Datetime string
+ * @property {FilterSetUserAssociation[]} Filter_Set_User_Associations__r All filter set associations for this filter set
+ * @property {Boolean} Pinned__c Has the current user pinned this filter set
+ *
+ * @typedef FilterSetUserAssociation Each filter set association mapping filter set to each user who can use it
+ * @property {String} Id Id of the filter set association
+ * @property {String} User__c Id of the user this association is for
+ * @property {UserRecord} User__r User this association is for
+ *
+ * @typedef UserRecord
+ * @property {String} Name Name of the user
+ */
 
 export default class FilterSetsModal extends LightningModal {
     /**
@@ -127,6 +161,7 @@ export default class FilterSetsModal extends LightningModal {
             };
         })[0];
     }
+    /** @type {FilterSet[]} */
     get allFilterSets() {
         return (this.wireData?.uiapi?.query?.Filter_Set__c?.edges ?? []).map((filterSet) => {
             return {
@@ -327,15 +362,6 @@ export default class FilterSetsModal extends LightningModal {
     }
 
     /**
-     * Each pin event detail contains the filterSetId of which filter set this is for
-     * And whether it should be pinned or not
-     *
-     * @typedef {Object} PinEventDetail
-     * @property {String} filterSetId Filter Set Id
-     * @property {Boolean} pinned Should this be pinned, or unpinned?
-     */
-
-    /**
      * Either pin or unpin a filter set
      * @param {CustomEvent} evnt
      */
@@ -379,16 +405,91 @@ export default class FilterSetsModal extends LightningModal {
     handleApplyEvent(evnt) {}
     handleShareEvent(evnt) {}
     handleViewEvent(evnt) {}
-    handleRemoveEvent(evnt) {}
 
     /**
-     * Each rename event detail contains the filterSetId of which filter set this is for
-     * And its new name
-     *
-     * @typedef {Object} RenameEventDetail
-     * @property {String} filterSetId Filter Set Id
-     * @property {String} value New name for filter set
+     * Handle removing a filter set
+     * @param {CustomEvent} evnt
      */
+    handleRemoveEvent(evnt) {
+        /** @type {RemoveEventDetail} */
+        const eventDetail = evnt.detail;
+
+        let filterSet = this.allFilterSets.filter((fs) => fs.Id === eventDetail.filterSetId)[0];
+        if (filterSet.Is_Shared__c) {
+            // Shared filter, deletion depends on if the user owns this filter set or not
+            if (filterSet.Owner__c === Id) {
+                // User owns this filter set, which means we need the complicated share/unshare screen
+            } else {
+                // User does not own this filter set, so we need to unshare it with the current user
+                LightningConfirm.open({
+                    label: 'Remove filter set',
+                    message: `You are removing ${filterSet.Name} from your list`,
+                })
+                    .then((val) => {
+                        if (val === true) {
+                            const filterSetUserAssociation = filterSet.Filter_Set_User_Associations__r.filter(
+                                (fsua) => fsua.User__c === Id
+                            )[0];
+
+                            // Confirmed deletion - actually delete record
+                            return deleteRecord(filterSetUserAssociation.Id).then(() => {
+                                this.dispatchEvent(
+                                    new ShowToastEvent({
+                                        title: 'Success',
+                                        message: 'Filter set has been removed',
+                                        variant: 'success',
+                                    })
+                                );
+                            });
+                        }
+                        // Cancelled deletion
+                        return Promise.resolve();
+                    })
+                    .catch((error) => {
+                        this.dispatchEvent(
+                            new ShowToastEvent({
+                                title: 'Error when removing filter set',
+                                message: extractErrorMessages(error)[0],
+                                variant: 'error',
+                                mode: 'sticky',
+                            })
+                        );
+                    });
+            }
+        } else {
+            // Private filters are simple, we can just delete it
+            LightningConfirm.open({
+                label: 'Remove filter set',
+                message: `You are removing ${filterSet.Name} from the System`,
+            })
+                .then((val) => {
+                    if (val === true) {
+                        // Confirmed deletion - actually delete record
+                        return deleteRecord(filterSet.Id).then(() => {
+                            this.dispatchEvent(
+                                new ShowToastEvent({
+                                    title: 'Success',
+                                    message: 'Filter set has been removed',
+                                    variant: 'success',
+                                })
+                            );
+                        });
+                    }
+                    // Cancelled deletion
+                    return Promise.resolve();
+                })
+                .catch((error) => {
+                    this.dispatchEvent(
+                        new ShowToastEvent({
+                            title: 'Error when removing filter set',
+                            message: extractErrorMessages(error)[0],
+                            variant: 'error',
+                            mode: 'sticky',
+                        })
+                    );
+                });
+        }
+    }
 
     /**
      * Rename a filter set

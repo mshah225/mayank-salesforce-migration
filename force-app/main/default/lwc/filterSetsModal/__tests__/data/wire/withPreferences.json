@@ -1,0 +1,17 @@
+{
+    "uiapi": {
+        "query": {
+            "Filter_Set__c": {"edges": []},
+            "User_Filter_Set_Preference__c": {
+                "edges": [
+                    {
+                        "node": {
+                            "Id": "a4JDk000000ICMRMA4",
+                            "Sort_Order__c": {"value": "Filter Name Asc"}
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

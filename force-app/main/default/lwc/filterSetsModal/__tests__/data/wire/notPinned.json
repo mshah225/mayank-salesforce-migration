@@ -1,0 +1,38 @@
+{
+    "uiapi": {
+        "query": {
+            "Filter_Set__c": {
+                "edges": [
+                    {
+                        "node": {
+                            "Id": "a4HDk0000009si4MAA",
+                            "Name": {"value": "All Freshmen (UGRAD)"},
+                            "Owner__c": {"value": "005000000000000000"},
+                            "Owner__r": {"Name": {"value": "Tommy Nordman"}},
+                            "Value__c": {
+                                "value": "{\"academicLevel\":\"Freshman\",\"campus\":\"\",\"career\":\"UGRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}"
+                            },
+                            "Is_Shared__c": {"value": false},
+                            "CreatedDate": {"value": "2025-03-17T23:55:01.000Z"},
+                            "Filter_Set_User_Associations__r": {
+                                "edges": [
+                                    {
+                                        "node": {
+                                            "Id": "a4IDk000000DmLoMAK",
+                                            "User__c": {"value": "005000000000000000"},
+                                            "User__r": {"Name": {"value": "Tommy Nordman"}},
+                                            "Pinned__c": {"value": false}
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            "User_Filter_Set_Preference__c": {
+                "edges": []
+            }
+        }
+    }
+}

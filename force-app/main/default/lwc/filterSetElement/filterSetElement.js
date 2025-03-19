@@ -87,7 +87,6 @@ export default class FilterSetElement extends LightningElement {
                 new CustomEvent('remove', {
                     detail: {
                         filterSetId: this.filterId,
-                        filterSet: this.filterSet,
                     },
                 })
             );

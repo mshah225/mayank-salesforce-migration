@@ -4,13 +4,22 @@ import {FilterSetsModalTest} from 'c/filterSetsModal';
 import {graphql} from 'lightning/uiGraphQLApi';
 import {flushPromises} from 'c/helperTestFunctions';
 import Id from '@salesforce/user/Id';
-import {createRecord, updateRecord} from 'lightning/uiRecordApi';
-import {cloneObj} from 'c/helperFunctions';
+import LightningConfirm from 'lightning/confirm';
+import {createRecord, updateRecord, deleteRecord} from 'lightning/uiRecordApi';
 
-const wireResponseMock = require('./data/wireResponse.json');
-const noFilterSetsWireResponseMock = require('./data/noFilterSetsWireResponse.json');
-const expectedPinnedFilters = require('./data/expectedPinnedFiltersList.json');
-const expectedUnpinnedFilters = require('./data/expectedUnpinnedFiltersList.json');
+// Has both pinned and unpinned filters
+const wireBasic = require('./data/wire/basic.json');
+const expectedBasic = require('./data/expected/basic.json');
+// Has no filters
+const wireNone = require('./data/wire/none.json');
+// Filter set pinned or not pinned
+const wirePinned = require('./data/wire/pinned.json');
+const wireNotPinned = require('./data/wire/notPinned.json');
+// Private vs Shared filters
+const wirePrivate = require('./data/wire/private.json');
+const wireSharedWithMe = require('./data/wire/sharedWithMe.json');
+// Wire with a sort order preference
+const wireWithPreferences = require('./data/wire/withPreferences.json');
 
 describe('c-filter-sets-modal', () => {
     afterEach(() => {
@@ -41,7 +50,7 @@ describe('c-filter-sets-modal', () => {
         });
         document.body.appendChild(element);
 
-        graphql.emit(noFilterSetsWireResponseMock);
+        graphql.emit(wireNone);
 
         expect(element.nonpinnedFilterSets).toMatchObject([]);
         expect(element.numberNonpinned).toEqual(0);
@@ -57,10 +66,12 @@ describe('c-filter-sets-modal', () => {
         });
         document.body.appendChild(element);
 
-        graphql.emit(wireResponseMock);
+        graphql.emit(wireBasic);
 
-        expect(element.numberNonpinned).toEqual(expectedUnpinnedFilters.length);
-        expect(element.nonpinnedFilterSets).toMatchObject(expectedUnpinnedFilters);
+        const unpinnedFilters = expectedBasic.filter((v) => !v.Pinned__c);
+
+        expect(element.numberNonpinned).toEqual(unpinnedFilters.length);
+        expect(element.nonpinnedFilterSets).toMatchObject(unpinnedFilters);
         expect(element.hasNonpinnedFilterSets).toEqual(true);
     });
 
@@ -70,10 +81,12 @@ describe('c-filter-sets-modal', () => {
         });
         document.body.appendChild(element);
 
-        graphql.emit(wireResponseMock);
+        graphql.emit(wireBasic);
 
-        expect(element.pinnedFilterSets).toMatchObject(expectedPinnedFilters);
-        expect(element.numberPinned).toEqual(expectedPinnedFilters.length);
+        const pinnedFilters = expectedBasic.filter((v) => v.Pinned__c);
+
+        expect(element.numberPinned).toEqual(pinnedFilters.length);
+        expect(element.pinnedFilterSets).toMatchObject(pinnedFilters);
     });
 
     test('Handles pin events', async () => {
@@ -84,7 +97,7 @@ describe('c-filter-sets-modal', () => {
 
         await flushPromises(); // Wait for wire to enqueue
 
-        graphql.emit(wireResponseMock);
+        graphql.emit(wireNotPinned);
 
         await flushPromises(); // Wait for page to render
 
@@ -92,18 +105,17 @@ describe('c-filter-sets-modal', () => {
         element.shadowRoot.querySelector('c-filter-set-element').dispatchEvent(
             new CustomEvent('pin', {
                 detail: {
-                    filterSetId: wireResponseMock.uiapi.query.Filter_Set__c.edges[0].node.Id,
+                    filterSetId: wireNotPinned.uiapi.query.Filter_Set__c.edges[0].node.Id,
                     pinned: true,
                 },
             })
         );
 
         // Check updateRecord was called for related filter set user association
-        expect(updateRecord).toHaveBeenCalled();
         expect(updateRecord).toHaveBeenCalledWith({
             fields: {
-                Id: wireResponseMock.uiapi.query.Filter_Set__c.edges[0].node.Filter_Set_User_Associations__r.edges[0]
-                    .node.Id,
+                Id: wireNotPinned.uiapi.query.Filter_Set__c.edges[0].node.Filter_Set_User_Associations__r.edges[0].node
+                    .Id,
                 Pinned__c: true,
             },
         });
@@ -117,7 +129,7 @@ describe('c-filter-sets-modal', () => {
 
         await flushPromises(); // Wait for wire to enqueue
 
-        graphql.emit(wireResponseMock);
+        graphql.emit(wirePinned);
 
         await flushPromises(); // Wait for page to render
 
@@ -125,18 +137,16 @@ describe('c-filter-sets-modal', () => {
         element.shadowRoot.querySelector('c-filter-set-element').dispatchEvent(
             new CustomEvent('pin', {
                 detail: {
-                    filterSetId: wireResponseMock.uiapi.query.Filter_Set__c.edges[0].node.Id,
+                    filterSetId: wirePinned.uiapi.query.Filter_Set__c.edges[0].node.Id,
                     pinned: false,
                 },
             })
         );
 
         // Check updateRecord was called for related filter set user association
-        expect(updateRecord).toHaveBeenCalled();
         expect(updateRecord).toHaveBeenCalledWith({
             fields: {
-                Id: wireResponseMock.uiapi.query.Filter_Set__c.edges[0].node.Filter_Set_User_Associations__r.edges[0]
-                    .node.Id,
+                Id: wirePinned.uiapi.query.Filter_Set__c.edges[0].node.Filter_Set_User_Associations__r.edges[0].node.Id,
                 Pinned__c: false,
             },
         });
@@ -157,7 +167,7 @@ describe('c-filter-sets-modal', () => {
 
         await flushPromises(); // Wait for wire to enqueue
 
-        graphql.emit(wireResponseMock);
+        graphql.emit(wireNotPinned);
 
         await flushPromises(); // Wait for page to render
 
@@ -165,7 +175,7 @@ describe('c-filter-sets-modal', () => {
         element.shadowRoot.querySelector('c-filter-set-element').dispatchEvent(
             new CustomEvent('pin', {
                 detail: {
-                    filterSetId: wireResponseMock.uiapi.query.Filter_Set__c.edges[0].node.Id,
+                    filterSetId: wireNotPinned.uiapi.query.Filter_Set__c.edges[0].node.Id,
                     pinned: true,
                 },
             })
@@ -185,7 +195,7 @@ describe('c-filter-sets-modal', () => {
 
         await flushPromises(); // Wait for wire to enqueue
 
-        graphql.emit(wireResponseMock);
+        graphql.emit(wirePrivate);
 
         await flushPromises(); // Wait for page to render
 
@@ -193,7 +203,7 @@ describe('c-filter-sets-modal', () => {
         element.shadowRoot.querySelector('c-filter-set-element').dispatchEvent(
             new CustomEvent('rename', {
                 detail: {
-                    filterSetId: wireResponseMock.uiapi.query.Filter_Set__c.edges[0].node.Id,
+                    filterSetId: wirePrivate.uiapi.query.Filter_Set__c.edges[0].node.Id,
                     value: 'New name',
                 },
             })
@@ -202,7 +212,7 @@ describe('c-filter-sets-modal', () => {
         // Check updateRecord was called for related filter set user association
         expect(updateRecord).toHaveBeenCalledWith({
             fields: {
-                Id: wireResponseMock.uiapi.query.Filter_Set__c.edges[0].node.Id,
+                Id: wirePrivate.uiapi.query.Filter_Set__c.edges[0].node.Id,
                 Name: 'New name',
             },
         });
@@ -223,7 +233,7 @@ describe('c-filter-sets-modal', () => {
 
         await flushPromises(); // Wait for wire to enqueue
 
-        graphql.emit(wireResponseMock);
+        graphql.emit(wirePrivate);
 
         await flushPromises(); // Wait for page to render
 
@@ -231,7 +241,7 @@ describe('c-filter-sets-modal', () => {
         element.shadowRoot.querySelector('c-filter-set-element').dispatchEvent(
             new CustomEvent('rename', {
                 detail: {
-                    filterSetId: wireResponseMock.uiapi.query.Filter_Set__c.edges[0].node.Id,
+                    filterSetId: wirePrivate.uiapi.query.Filter_Set__c.edges[0].node.Id,
                     value: 'New name',
                 },
             })
@@ -243,12 +253,214 @@ describe('c-filter-sets-modal', () => {
         expect(toastHandler).toHaveBeenCalled();
     });
 
+    test('Handles remove events - private', async () => {
+        const element = createElement('c-filter-sets-modal', {
+            is: FilterSetsModalTest,
+        });
+        document.body.appendChild(element);
+
+        await flushPromises(); // Wait for wire to enqueue
+
+        graphql.emit(wirePrivate);
+
+        await flushPromises(); // Wait for page to render
+
+        // Raise event
+        element.shadowRoot.querySelector('c-filter-set-element').dispatchEvent(
+            new CustomEvent('remove', {
+                detail: {
+                    filterSetId: wirePrivate.uiapi.query.Filter_Set__c.edges[0].node.Id,
+                },
+            })
+        );
+
+        // Opens confirmation modal
+        expect(LightningConfirm.open).toHaveBeenCalledWith({
+            label: 'Remove filter set',
+            message: `You are removing ${wirePrivate.uiapi.query.Filter_Set__c.edges[0].node.Name.value} from the System`,
+        });
+
+        await flushPromises(); // Wait for confirmation modal to close successfully
+
+        // Check deleteRecord was called for the filter set
+        expect(deleteRecord).toHaveBeenCalledWith(wirePrivate.uiapi.query.Filter_Set__c.edges[0].node.Id);
+    });
+
+    test('Handles cancel remove events - private', async () => {
+        const element = createElement('c-filter-sets-modal', {
+            is: FilterSetsModalTest,
+        });
+        document.body.appendChild(element);
+
+        // Reject confirmation modal
+        LightningConfirm.open.mockImplementationOnce(() => {
+            return Promise.resolve(false);
+        });
+
+        await flushPromises(); // Wait for wire to enqueue
+
+        graphql.emit(wirePrivate);
+
+        await flushPromises(); // Wait for page to render
+
+        // Raise event
+        element.shadowRoot.querySelector('c-filter-set-element').dispatchEvent(
+            new CustomEvent('remove', {
+                detail: {
+                    filterSetId: wirePrivate.uiapi.query.Filter_Set__c.edges[0].node.Id,
+                },
+            })
+        );
+
+        await flushPromises(); // Wait for confirmation modal to be cancelled
+
+        // Check deleteRecord was NOT called
+        expect(deleteRecord).not.toHaveBeenCalled();
+    });
+
+    test('Toast after delete - private', async () => {
+        const element = createElement('c-filter-sets-modal', {
+            is: FilterSetsModalTest,
+        });
+        document.body.appendChild(element);
+
+        const toastHandler = jest.fn((evnt) => {
+            expect(evnt.detail).toMatchObject({
+                variant: 'success',
+            });
+        });
+        element.addEventListener('lightning__showtoast', toastHandler);
+
+        await flushPromises(); // Wait for wire to enqueue
+
+        graphql.emit(wirePrivate);
+
+        await flushPromises(); // Wait for page to render
+
+        // Raise event
+        element.shadowRoot.querySelector('c-filter-set-element').dispatchEvent(
+            new CustomEvent('remove', {
+                detail: {
+                    filterSetId: wirePrivate.uiapi.query.Filter_Set__c.edges[0].node.Id,
+                },
+            })
+        );
+
+        await flushPromises(); // Wait for confirmation modal to close successfully
+        await flushPromises(); // wait for deleteRecord call to complete
+
+        // Check toast was raised for success
+        expect(toastHandler).toHaveBeenCalled();
+    });
+
+    test('Handles remove events - shared, not owner', async () => {
+        const element = createElement('c-filter-sets-modal', {
+            is: FilterSetsModalTest,
+        });
+        document.body.appendChild(element);
+
+        await flushPromises(); // Wait for wire to enqueue
+
+        graphql.emit(wireSharedWithMe);
+
+        await flushPromises(); // Wait for page to render
+
+        // Raise event
+        element.shadowRoot.querySelector('c-filter-set-element').dispatchEvent(
+            new CustomEvent('remove', {
+                detail: {
+                    filterSetId: wireSharedWithMe.uiapi.query.Filter_Set__c.edges[0].node.Id,
+                },
+            })
+        );
+
+        // Opens confirmation modal
+        expect(LightningConfirm.open).toHaveBeenCalledWith({
+            label: 'Remove filter set',
+            message: `You are removing ${wireSharedWithMe.uiapi.query.Filter_Set__c.edges[0].node.Name.value} from your list`,
+        });
+
+        await flushPromises(); // Wait for confirmation modal to close successfully
+
+        // Check deleteRecord was called for the filter set
+        expect(deleteRecord).toHaveBeenCalledWith(
+            wireSharedWithMe.uiapi.query.Filter_Set__c.edges[0].node.Filter_Set_User_Associations__r.edges[0].node.Id
+        );
+    });
+
+    test('Handles cancel remove events - shared, not owner', async () => {
+        const element = createElement('c-filter-sets-modal', {
+            is: FilterSetsModalTest,
+        });
+        document.body.appendChild(element);
+
+        // Reject confirmation modal
+        LightningConfirm.open.mockImplementationOnce(() => {
+            return Promise.resolve(false);
+        });
+
+        await flushPromises(); // Wait for wire to enqueue
+
+        graphql.emit(wireSharedWithMe);
+
+        await flushPromises(); // Wait for page to render
+
+        // Raise event
+        element.shadowRoot.querySelector('c-filter-set-element').dispatchEvent(
+            new CustomEvent('remove', {
+                detail: {
+                    filterSetId: wireSharedWithMe.uiapi.query.Filter_Set__c.edges[0].node.Id,
+                },
+            })
+        );
+
+        await flushPromises(); // Wait for confirmation modal to be cancelled
+
+        // Check deleteRecord was NOT called
+        expect(deleteRecord).not.toHaveBeenCalled();
+    });
+
+    test('Toast after delete - shared, not owner', async () => {
+        const element = createElement('c-filter-sets-modal', {
+            is: FilterSetsModalTest,
+        });
+        document.body.appendChild(element);
+
+        const toastHandler = jest.fn((evnt) => {
+            expect(evnt.detail).toMatchObject({
+                variant: 'success',
+            });
+        });
+        element.addEventListener('lightning__showtoast', toastHandler);
+
+        await flushPromises(); // Wait for wire to enqueue
+
+        graphql.emit(wireSharedWithMe);
+
+        await flushPromises(); // Wait for page to render
+
+        // Raise event
+        element.shadowRoot.querySelector('c-filter-set-element').dispatchEvent(
+            new CustomEvent('remove', {
+                detail: {
+                    filterSetId: wireSharedWithMe.uiapi.query.Filter_Set__c.edges[0].node.Id,
+                },
+            })
+        );
+
+        await flushPromises(); // Wait for confirmation modal to close successfully
+        await flushPromises(); // wait for deleteRecord call to complete
+
+        // Check toast was raised for success
+        expect(toastHandler).toHaveBeenCalled();
+    });
+
     test('Searching filter using name', async () => {
         const element = createElement('c-filter-sets-modal', {
             is: FilterSetsModalTest,
         });
         document.body.appendChild(element);
-        graphql.emit(wireResponseMock);
+        graphql.emit(wireBasic);
 
         await flushPromises(); // await render
 
@@ -256,9 +468,9 @@ describe('c-filter-sets-modal', () => {
             .querySelector('lightning-input')
             .dispatchEvent(new CustomEvent('change', {detail: {value: 'senior'}}));
 
-        let filteredFilterSets = expectedUnpinnedFilters.filter(
-            (v) => v.Name.toLowerCase().includes('senior') || v.Owner__r.Name.toLowerCase().includes('senior')
-        );
+        let filteredFilterSets = expectedBasic
+            .filter((v) => !v.Pinned__c)
+            .filter((v) => v.Name.toLowerCase().includes('senior') || v.Owner__r.Name.toLowerCase().includes('senior'));
 
         expect(element.numberNonpinned).toEqual(filteredFilterSets.length);
         expect(element.nonpinnedFilterSets).toMatchObject(filteredFilterSets);
@@ -270,17 +482,19 @@ describe('c-filter-sets-modal', () => {
             is: FilterSetsModalTest,
         });
         document.body.appendChild(element);
-        graphql.emit(wireResponseMock);
+        graphql.emit(wireBasic);
 
         await flushPromises(); // await render
 
         element.shadowRoot
             .querySelector('lightning-input')
-            .dispatchEvent(new CustomEvent('change', {detail: {value: 'justin'}}));
+            .dispatchEvent(new CustomEvent('change', {detail: {value: 'nordman'}}));
 
-        let filteredFilterSets = expectedUnpinnedFilters.filter(
-            (v) => v.Name.toLowerCase().includes('justin') || v.Owner__r.Name.toLowerCase().includes('justin')
-        );
+        let filteredFilterSets = expectedBasic
+            .filter((v) => !v.Pinned__c)
+            .filter(
+                (v) => v.Name.toLowerCase().includes('nordman') || v.Owner__r.Name.toLowerCase().includes('nordman')
+            );
 
         expect(element.numberNonpinned).toEqual(filteredFilterSets.length);
         expect(element.nonpinnedFilterSets).toMatchObject(filteredFilterSets);
@@ -292,7 +506,7 @@ describe('c-filter-sets-modal', () => {
             is: FilterSetsModalTest,
         });
         document.body.appendChild(element);
-        graphql.emit(wireResponseMock);
+        graphql.emit(wireBasic);
 
         await flushPromises(); // await render
 
@@ -302,9 +516,11 @@ describe('c-filter-sets-modal', () => {
             .dispatchEvent(new CustomEvent('change', {detail: {value: 'Shared First'}}));
 
         // Check order
-        let sortedFilterSets = expectedUnpinnedFilters.sort((a, b) => {
-            return a.Is_Shared__c === b.Is_Shared__c ? 0 : a.Is_Shared__c ? -1 : 1;
-        });
+        let sortedFilterSets = expectedBasic
+            .filter((v) => !v.Pinned__c)
+            .sort((a, b) => {
+                return a.Is_Shared__c === b.Is_Shared__c ? 0 : a.Is_Shared__c ? -1 : 1;
+            });
         expect(element.nonpinnedFilterSets).toMatchObject(sortedFilterSets);
     });
 
@@ -313,7 +529,7 @@ describe('c-filter-sets-modal', () => {
             is: FilterSetsModalTest,
         });
         document.body.appendChild(element);
-        graphql.emit(wireResponseMock);
+        graphql.emit(wireBasic);
 
         await flushPromises(); // await render
 
@@ -323,9 +539,11 @@ describe('c-filter-sets-modal', () => {
             .dispatchEvent(new CustomEvent('change', {detail: {value: 'Private First'}}));
 
         // Check order
-        let sortedFilterSets = expectedUnpinnedFilters.sort((a, b) => {
-            return a.Is_Shared__c === b.Is_Shared__c ? 0 : !a.Is_Shared__c ? -1 : 1;
-        });
+        let sortedFilterSets = expectedBasic
+            .filter((v) => !v.Pinned__c)
+            .sort((a, b) => {
+                return a.Is_Shared__c === b.Is_Shared__c ? 0 : !a.Is_Shared__c ? -1 : 1;
+            });
         expect(element.nonpinnedFilterSets).toMatchObject(sortedFilterSets);
     });
 
@@ -334,11 +552,11 @@ describe('c-filter-sets-modal', () => {
             is: FilterSetsModalTest,
         });
         document.body.appendChild(element);
-        graphql.emit(wireResponseMock);
+        graphql.emit(wireWithPreferences);
 
         // Check order was applied
         expect(element.sortOrder).toEqual(
-            wireResponseMock.uiapi.query.User_Filter_Set_Preference__c.edges[0].node.Sort_Order__c.value
+            wireWithPreferences.uiapi.query.User_Filter_Set_Preference__c.edges[0].node.Sort_Order__c.value
         );
     });
 
@@ -348,9 +566,7 @@ describe('c-filter-sets-modal', () => {
         });
         document.body.appendChild(element);
 
-        const wireResponseMockWithNoPrefObj = cloneObj(wireResponseMock);
-        wireResponseMockWithNoPrefObj.uiapi.query.User_Filter_Set_Preference__c.edges = [];
-        graphql.emit(wireResponseMockWithNoPrefObj);
+        graphql.emit(wireNone);
 
         await flushPromises(); // await render
 
@@ -375,7 +591,7 @@ describe('c-filter-sets-modal', () => {
             is: FilterSetsModalTest,
         });
         document.body.appendChild(element);
-        graphql.emit(wireResponseMock);
+        graphql.emit(wireWithPreferences);
 
         await flushPromises(); // await render
 
@@ -389,7 +605,7 @@ describe('c-filter-sets-modal', () => {
         // Check createRecord was called
         expect(updateRecord).toHaveBeenCalledWith({
             fields: {
-                Id: wireResponseMock.uiapi.query.User_Filter_Set_Preference__c.edges[0].node.Id,
+                Id: wireWithPreferences.uiapi.query.User_Filter_Set_Preference__c.edges[0].node.Id,
                 Sort_Order__c: 'Private First',
             },
         });

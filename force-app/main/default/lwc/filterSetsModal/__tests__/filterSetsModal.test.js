@@ -4,6 +4,7 @@ import {FilterSetsModalTest} from 'c/filterSetsModal';
 import {graphql} from 'lightning/uiGraphQLApi';
 import {flushPromises} from 'c/helperTestFunctions';
 import Id from '@salesforce/user/Id';
+import {updateRecord} from 'lightning/uiRecordApi';
 
 const wireResponseMock = require('./data/wireResponse.json');
 const noFilterSetsWireResponseMock = require('./data/noFilterSetsWireResponse.json');
@@ -72,5 +73,106 @@ describe('c-filter-sets-modal', () => {
 
         expect(element.pinnedFilterSets).toMatchObject(expectedPinnedFilters);
         expect(element.numberPinned).toEqual(expectedPinnedFilters.length);
+    });
+
+    test('Handles pin events', async () => {
+        const element = createElement('c-filter-sets-modal', {
+            is: FilterSetsModalTest,
+        });
+        document.body.appendChild(element);
+
+        await flushPromises(); // Wait for wire to enqueue
+
+        graphql.emit(wireResponseMock);
+
+        await flushPromises(); // Wait for page to render
+
+        // Raise event
+        element.shadowRoot.querySelector('c-filter-set-element').dispatchEvent(
+            new CustomEvent('pin', {
+                detail: {
+                    filterSetId: wireResponseMock.uiapi.query.Filter_Set__c.edges[0].node.Id,
+                    pinned: true,
+                },
+            })
+        );
+
+        // Check updateRecord was called for related filter set user association
+        expect(updateRecord).toHaveBeenCalled();
+        expect(updateRecord).toHaveBeenCalledWith({
+            fields: {
+                Id: wireResponseMock.uiapi.query.Filter_Set__c.edges[0].node.Filter_Set_User_Associations__r.edges[0]
+                    .node.Id,
+                Pinned__c: true,
+            },
+        });
+    });
+
+    test('Handles unpin events', async () => {
+        const element = createElement('c-filter-sets-modal', {
+            is: FilterSetsModalTest,
+        });
+        document.body.appendChild(element);
+
+        await flushPromises(); // Wait for wire to enqueue
+
+        graphql.emit(wireResponseMock);
+
+        await flushPromises(); // Wait for page to render
+
+        // Raise event
+        element.shadowRoot.querySelector('c-filter-set-element').dispatchEvent(
+            new CustomEvent('pin', {
+                detail: {
+                    filterSetId: wireResponseMock.uiapi.query.Filter_Set__c.edges[0].node.Id,
+                    pinned: false,
+                },
+            })
+        );
+
+        // Check updateRecord was called for related filter set user association
+        expect(updateRecord).toHaveBeenCalled();
+        expect(updateRecord).toHaveBeenCalledWith({
+            fields: {
+                Id: wireResponseMock.uiapi.query.Filter_Set__c.edges[0].node.Filter_Set_User_Associations__r.edges[0]
+                    .node.Id,
+                Pinned__c: false,
+            },
+        });
+    });
+
+    test('Toasts after pin', async () => {
+        const element = createElement('c-filter-sets-modal', {
+            is: FilterSetsModalTest,
+        });
+        document.body.appendChild(element);
+
+        const toastHandler = jest.fn((evnt) => {
+            expect(evnt.detail).toMatchObject({
+                variant: 'success',
+            });
+        });
+        element.addEventListener('lightning__showtoast', toastHandler);
+
+        await flushPromises(); // Wait for wire to enqueue
+
+        graphql.emit(wireResponseMock);
+
+        await flushPromises(); // Wait for page to render
+
+        // Raise event
+        element.shadowRoot.querySelector('c-filter-set-element').dispatchEvent(
+            new CustomEvent('pin', {
+                detail: {
+                    filterSetId: wireResponseMock.uiapi.query.Filter_Set__c.edges[0].node.Id,
+                    pinned: true,
+                },
+            })
+        );
+
+        await flushPromises(); // Wait for Apex to return successfully
+
+        // Check updateRecord was called for related filter set user association
+        expect(toastHandler).toHaveBeenCalled();
     });
 });

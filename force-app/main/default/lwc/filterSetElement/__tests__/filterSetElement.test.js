@@ -2,6 +2,7 @@
 import {createElement} from 'lwc';
 import {FilterSetElementTest} from 'c/filterSetElement';
 import {flushPromises} from 'c/helperTestFunctions';
+import {cloneObj} from 'c/helperFunctions';
 
 const privateFilterSet = require('./data/privateFilterSet.json');
 const sharedByMeFilterSet = require('./data/sharedByMeFilterSet.json');
@@ -52,18 +53,71 @@ describe('c-filter-set-element', () => {
         expect(applyHandler).toHaveBeenCalledTimes(1);
     });
 
+    test('Pin label', () => {
+        const element = createElement('c-filter-set-element', {
+            is: FilterSetElementTest,
+        });
+        const unpinnedFilterSet = cloneObj(privateFilterSet);
+        unpinnedFilterSet.Pinned__c = false;
+        element.filterSet = unpinnedFilterSet;
+        document.body.appendChild(element);
+
+        // Proper label
+        expect(element.pinLabel).toEqual('Pin');
+    });
+
     test('Raises proper event when pressing pin', () => {
         const element = createElement('c-filter-set-element', {
             is: FilterSetElementTest,
         });
-        element.filterSet = privateFilterSet;
+        const unpinnedFilterSet = cloneObj(privateFilterSet);
+        unpinnedFilterSet.Pinned__c = false;
+        element.filterSet = unpinnedFilterSet;
         document.body.appendChild(element);
 
         const pinHandler = jest.fn((evnt) => {
-            expect(evnt).toMatchObject({
-                detail: {
-                    filterSetId: privateFilterSet.Id,
-                },
+            expect(evnt.detail).toMatchObject({
+                filterSetId: privateFilterSet.Id,
+                pinned: true,
+            });
+        });
+        element.addEventListener('pin', pinHandler);
+
+        // Press button
+        element.shadowRoot
+            .querySelector('c-lightning-button-dropdown')
+            .dispatchEvent(new CustomEvent('select', {detail: {name: 'pin'}}));
+
+        // Assert
+        expect(pinHandler).toHaveBeenCalledTimes(1);
+    });
+
+    test('Unpin label', () => {
+        const element = createElement('c-filter-set-element', {
+            is: FilterSetElementTest,
+        });
+        const unpinnedFilterSet = cloneObj(privateFilterSet);
+        unpinnedFilterSet.Pinned__c = true;
+        element.filterSet = unpinnedFilterSet;
+        document.body.appendChild(element);
+
+        // Proper label
+        expect(element.pinLabel).toEqual('Unpin');
+    });
+
+    test('Raises proper event when pressing unpin', () => {
+        const element = createElement('c-filter-set-element', {
+            is: FilterSetElementTest,
+        });
+        const pinnedFilterSet = cloneObj(privateFilterSet);
+        pinnedFilterSet.Pinned__c = true;
+        element.filterSet = pinnedFilterSet;
+        document.body.appendChild(element);
+
+        const pinHandler = jest.fn((evnt) => {
+            expect(evnt.detail).toMatchObject({
+                filterSetId: pinnedFilterSet.Id,
+                pinned: false,
             });
         });
         element.addEventListener('pin', pinHandler);

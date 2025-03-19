@@ -1,8 +1,13 @@
 import LightningModal from 'lightning/modal';
 import {api, wire} from 'lwc';
 import {gql, graphql} from 'lightning/uiGraphQLApi';
+import {updateRecord} from 'lightning/uiRecordApi';
+import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import Id from '@salesforce/user/Id';
 import {extractErrorMessages} from 'c/helperFunctions';
+
+import FSUA_ID_FIELD from '@salesforce/schema/Filter_Set_User_Association__c.Id';
+import FSUA_PINNED_FIELD from '@salesforce/schema/Filter_Set_User_Association__c.Pinned__c';
 
 export default class FilterSetsModal extends LightningModal {
     /**
@@ -24,7 +29,7 @@ export default class FilterSetsModal extends LightningModal {
                                             }
                                         }
                                     }
-                                    {RecordType: {Name: {eq: ""}}}
+                                    {RecordType: {DeveloperName: {eq: "Advisor_Portal"}}}
                                 ]
                             }
                         ) {
@@ -55,6 +60,7 @@ export default class FilterSetsModal extends LightningModal {
                                     Filter_Set_User_Associations__r {
                                         edges {
                                             node {
+                                                Id
                                                 User__c {
                                                     value
                                                 }
@@ -124,12 +130,17 @@ export default class FilterSetsModal extends LightningModal {
                 Value__c: filterSet?.node?.Value__c?.value,
                 Is_Shared__c: filterSet?.node?.Is_Shared__c?.value,
                 CreatedDate: filterSet?.node?.CreatedDate?.value,
-                Shared_With__c: (filterSet?.node?.Filter_Set_User_Associations__r?.edges ?? []).map((fsua) => {
-                    return {
-                        Id: fsua?.node?.User__c?.value,
-                        Name: fsua?.node?.User__r?.Name?.value,
-                    };
-                }),
+                Filter_Set_User_Associations__r: (filterSet?.node?.Filter_Set_User_Associations__r?.edges ?? []).map(
+                    (fsua) => {
+                        return {
+                            Id: fsua?.node?.Id,
+                            User__c: fsua?.node?.User__c?.value,
+                            User__r: {
+                                Name: fsua?.node?.User__r?.Name?.value,
+                            },
+                        };
+                    }
+                ),
                 Pinned__c:
                     (filterSet?.node?.Filter_Set_User_Associations__r?.edges ?? []).filter(
                         (fsua) => fsua?.node?.User__c?.value === Id
@@ -209,6 +220,61 @@ export default class FilterSetsModal extends LightningModal {
     get hasNonpinnedFilterSets() {
         return this.nonpinnedFilterSets.length > 0;
     }
+
+    /**
+     * Each pin event detail contains the filterSetId of which filter set this is for
+     * And whether it should be pinned or not
+     *
+     * @typedef {Object} PinEventDetail
+     * @property {String} filterSetId Filter Set Id
+     * @property {Boolean} pinned Should this be pinned, or unpinned?
+     */
+
+    /**
+     * Either pin or unpin a filter set
+     * @param {CustomEvent} evnt
+     */
+    handlePinEvent(evnt) {
+        /** @type {PinEventDetail} */
+        const eventDetail = evnt.detail;
+
+        let filterSet = this.allFilterSets.filter((fs) => fs.Id === eventDetail.filterSetId)[0];
+        let filterSetUserAssociation = filterSet.Filter_Set_User_Associations__r.filter(
+            (fsua) => fsua.User__c === Id
+        )[0];
+
+        const fields = {};
+        fields[FSUA_ID_FIELD.fieldApiName] = filterSetUserAssociation.Id;
+        fields[FSUA_PINNED_FIELD.fieldApiName] = eventDetail.pinned;
+
+        const recordInput = {fields};
+
+        updateRecord(recordInput)
+            .then(() => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: eventDetail.pinned ? 'Filter set pinned' : 'Filter set unpinned',
+                        message: 'Success',
+                        variant: 'success',
+                    })
+                );
+            })
+            .catch((error) => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: `Error when ${eventDetail.pinned ? 'pinning' : 'unpinning'} filter set`,
+                        message: extractErrorMessages(error)[0],
+                        variant: 'error',
+                    })
+                );
+            });
+    }
+
+    handleApplyEvent(evnt) {}
+    handleShareEvent(evnt) {}
+    handleViewEvent(evnt) {}
+    handleRemoveEvent(evnt) {}
+    handleRenameEvent(evnt) {}
 
     /**
      * Loading and error state

@@ -20,7 +20,14 @@
                         <template lwc:if={pinnedDropdownIsOpen}>
                             <template for:each={pinnedFilterSets} for:item="filterSet">
                                 <div key={filterSet.Id} class="slds-m-vertical_xx-small">
-                                    <c-filter-set-element filter-set={filterSet}></c-filter-set-element>
+                                    <c-filter-set-element
+                                        onpin={handlePinEvent}
+                                        onshare={handleShareEvent}
+                                        onview={handleViewEvent}
+                                        onremove={handleRemoveEvent}
+                                        onrename={handleRenameEvent}
+                                        filter-set={filterSet}
+                                    ></c-filter-set-element>
                                 </div>
                             </template>
                         </template>
@@ -49,7 +56,14 @@
                     <template lwc:if={hasNonpinnedFilterSets}>
                         <template for:each={nonpinnedFilterSets} for:item="filterSet">
                             <div key={filterSet.Id} class="slds-m-vertical_xx-small">
-                                <c-filter-set-element filter-set={filterSet}></c-filter-set-element>
+                                <c-filter-set-element
+                                    onpin={handlePinEvent}
+                                    onshare={handleShareEvent}
+                                    onview={handleViewEvent}
+                                    onremove={handleRemoveEvent}
+                                    onrename={handleRenameEvent}
+                                    filter-set={filterSet}
+                                ></c-filter-set-element>
                             </div>
                         </template>
                     </template>

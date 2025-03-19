@@ -27,6 +27,14 @@ export default class FilterSetElement extends LightningElement {
         return this.filterSet?.CreatedDate || 0;
     }
 
+    get isPinned() {
+        return this.filterSet?.Pinned__c ?? false;
+    }
+
+    get pinLabel() {
+        return this.isPinned ? 'Unpin' : 'Pin';
+    }
+
     applyFilterSet(evnt) {
         evnt.stopPropagation();
         evnt.stopImmediatePropagation();
@@ -52,7 +60,7 @@ export default class FilterSetElement extends LightningElement {
                 new CustomEvent('pin', {
                     detail: {
                         filterSetId: this.filterId,
-                        filterSet: this.filterSet,
+                        pinned: !this.isPinned,
                     },
                 })
             );
@@ -164,5 +172,9 @@ export class FilterSetElementTest extends FilterSetElement {
 
     @api get createdDate() {
         return super.createdDate;
+    }
+
+    @api get pinLabel() {
+        return super.pinLabel;
     }
 }

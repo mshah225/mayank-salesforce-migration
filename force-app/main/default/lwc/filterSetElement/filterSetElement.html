@@ -39,10 +39,26 @@
                 onselect={handleSelect}
                 dynamic-dropdown="true"
             >
-                <c-lightning-button-dropdown-item label="Pin" name="pin"></c-lightning-button-dropdown-item>
-                <c-lightning-button-dropdown-item label="Share" name="share"></c-lightning-button-dropdown-item>
-                <c-lightning-button-dropdown-item label="View" name="view"></c-lightning-button-dropdown-item>
-                <c-lightning-button-dropdown-item label="Remove" name="remove"></c-lightning-button-dropdown-item>
+                <c-lightning-button-dropdown-item
+                    label={pinLabel}
+                    icon-name="utility:pin"
+                    name="pin"
+                ></c-lightning-button-dropdown-item>
+                <c-lightning-button-dropdown-item
+                    label="Share"
+                    icon-name="utility:share"
+                    name="share"
+                ></c-lightning-button-dropdown-item>
+                <c-lightning-button-dropdown-item
+                    label="View"
+                    icon-name="utility:preview"
+                    name="view"
+                ></c-lightning-button-dropdown-item>
+                <c-lightning-button-dropdown-item
+                    label="Remove"
+                    icon-name="utility:delete"
+                    name="remove"
+                ></c-lightning-button-dropdown-item>
             </c-lightning-button-dropdown>
         </div>
     </div>

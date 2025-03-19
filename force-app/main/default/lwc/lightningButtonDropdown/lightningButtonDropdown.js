@@ -100,7 +100,7 @@ export default class LightningButtonDropdown extends LightningElement {
     regenerateDropdownAlignmentCss() {
         let css = this.template.host.style;
 
-        const dropdownButton = this.template.querySelector('.dropdown-button');
+        const dropdownButton = this.refs.attachRef;
 
         const cTop = dropdownButton.getBoundingClientRect().top;
         const cHeight = dropdownButton.getBoundingClientRect().height;

@@ -1,0 +1,34 @@
+[
+    {
+        "Id": "a4HDk0000009si8MAA",
+        "Name": "Masters Degrees (GRAD)",
+        "Owner__c": "005000000000000000",
+        "Owner__r": {"Name": "Tommy Nordman"},
+        "Value__c": "{\"academicLevel\":\"\",\"campus\":\"\",\"career\":\"GRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"masters\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}",
+        "Is_Shared__c": false,
+        "CreatedDate": "2025-03-17T23:55:02.000Z",
+        "Shared_With__c": [
+            {
+                "Id": "005000000000000000",
+                "Name": "Tommy Nordman"
+            }
+        ],
+        "Pinned__c": true
+    },
+    {
+        "Id": "a4HDk0000009si9MAA",
+        "Name": "Online Students (GRAD)",
+        "Owner__c": "005000000000000000",
+        "Owner__r": {"Name": "Tommy Nordman"},
+        "Value__c": "{\"academicLevel\":\"\",\"campus\":\"ONLNE\",\"career\":\"GRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}",
+        "Is_Shared__c": false,
+        "CreatedDate": "2025-03-17T23:55:02.000Z",
+        "Shared_With__c": [
+            {
+                "Id": "005000000000000000",
+                "Name": "Tommy Nordman"
+            }
+        ],
+        "Pinned__c": true
+    }
+]

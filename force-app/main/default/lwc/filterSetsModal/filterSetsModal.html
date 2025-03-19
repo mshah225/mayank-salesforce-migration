@@ -1,0 +1,63 @@
+<template>
+    <lightning-modal-header label="Filter Sets"></lightning-modal-header>
+    <lightning-modal-body>
+        <c-lightning-error-or-retry message={errorMessage} has-error={hasError} retry-enabled="false">
+            <c-lightning-await-load-block loading={isLoading} has-content="true">
+                <div class="pinned-filter-sets slds-box slds-theme_shade">
+                    <div class="slds-m-bottom_x-small">
+                        <lightning-icon icon-name="utility:pinned" size="x-small"></lightning-icon>
+                        Pinned ({numberPinned})
+                        <lightning-button-icon
+                            icon-name={pinnedDropdownIcon}
+                            variant="bare"
+                            alternative-text={pinnedDropdownText}
+                            class="slds-m-left_xx-small"
+                            title={pinnedDropdownText}
+                            onclick={togglePinnedSection}
+                        ></lightning-button-icon>
+                    </div>
+                    <div>
+                        <template lwc:if={pinnedDropdownIsOpen}>
+                            <template for:each={pinnedFilterSets} for:item="filterSet">
+                                <div key={filterSet.Id} class="slds-m-vertical_xx-small">
+                                    <c-filter-set-element filter-set={filterSet}></c-filter-set-element>
+                                </div>
+                            </template>
+                        </template>
+                    </div>
+                </div>
+                <div class="search-filter-sets slds-grid slds-gutters_direct-small slds-m-vertical_small">
+                    <div class="slds-col">
+                        <lightning-input
+                            variant="label-hidden"
+                            label="Search by keywords"
+                            placeholder="Search by keywords"
+                            type="search"
+                        ></lightning-input>
+                    </div>
+                    <div class="slds-col slds-grow-none">
+                        <lightning-combobox
+                            variant="label-hidden"
+                            label="Sort by"
+                            placeholder="Sort by"
+                            options={sortByOptions}
+                        ></lightning-combobox>
+                    </div>
+                </div>
+                <div class="filter-sets">
+                    <div class="slds-m-vertical_medium bold-text">{numberNonpinned} saved filters</div>
+                    <template lwc:if={hasNonpinnedFilterSets}>
+                        <template for:each={nonpinnedFilterSets} for:item="filterSet">
+                            <div key={filterSet.Id} class="slds-m-vertical_xx-small">
+                                <c-filter-set-element filter-set={filterSet}></c-filter-set-element>
+                            </div>
+                        </template>
+                    </template>
+                    <template lwc:else>
+                        <div class="slds-m-bottom_medium bold-text">You do not have any saved filter sets.</div>
+                    </template>
+                </div>
+            </c-lightning-await-load-block>
+        </c-lightning-error-or-retry>
+    </lightning-modal-body>
+</template>

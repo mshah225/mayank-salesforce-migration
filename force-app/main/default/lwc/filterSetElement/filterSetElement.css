@@ -1,0 +1,7 @@
+:host .vert-align {
+    vertical-align: middle;
+}
+
+:host .edit-name-input {
+    display: inline-block;
+}

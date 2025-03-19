@@ -1,0 +1,21 @@
+{
+    "Id": "a4HDk0000009si4MAA",
+    "Name": "All Freshmen",
+    "Owner__c": "0050W000007OlNuQAK",
+    "Owner__r": {"Name": "Tommy Nordman"},
+    "Value__c": null,
+    "Is_Shared__c": false,
+    "CreatedDate": "2025-03-17T23:55:01.000Z",
+    "Filter_Set_User_Associations__r": [
+        {
+            "User__c": "0050W000007OlNuQAK",
+            "User__r": {"Name": "Tommy Nordman"},
+            "Pinned__c": false
+        },
+        {
+            "User__c": "005d0000006HRkHAAW",
+            "User__r": {"Name": "Justin Sanchez"},
+            "Pinned__c": false
+        }
+    ]
+}

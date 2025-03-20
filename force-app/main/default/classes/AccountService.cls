@@ -56,4 +56,27 @@ public without sharing class AccountService {
             }
         }
     }
+
+    /**
+     * Check the record type of each Account, and set the Organization or Person picklist accordingly
+     */
+    public static void setAccountOrPerson(List<Account> newList) {
+        String rtIdOrgExtMastered = RecordIdHelper.getRecordTypeId('Account', 'External_Mastered_Org');
+        String rtIdOrgSFMastered = RecordIdHelper.getRecordTypeId('Account', 'SF_Mastered_Org');
+        String rtIdPersonExtMastered = RecordIdHelper.getRecordTypeId('Account', 'External_Mastered_Contact');
+        String rtIdPersonSFMastered = RecordIdHelper.getRecordTypeId('Account', 'SF_Mastered_Contact');
+
+        for (Account newAcc : newList) {
+            if (RecordHelper.hasNewOrChangedField(newAcc, RecordHelper.getOldRecord(newAcc.Id), Account.RecordTypeId)) {
+                if (newAcc.RecordTypeId == rtIdOrgExtMastered || newAcc.RecordTypeId == rtIdOrgSFMastered) {
+                    newAcc.Organization_or_Person__c = 'Organization';
+                } else if (
+                    newAcc.RecordTypeId == rtIdPersonExtMastered ||
+                    newAcc.RecordTypeId == rtIdPersonSFMastered
+                ) {
+                    newAcc.Organization_or_Person__c = 'Person';
+                }
+            }
+        }
+    }
 }

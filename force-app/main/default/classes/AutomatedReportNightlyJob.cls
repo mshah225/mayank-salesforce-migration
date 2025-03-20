@@ -2,7 +2,7 @@ global without sharing class AutomatedReportNightlyJob implements Schedulable {
     private static final boolean debug = false; // Toggle debug error reporting
 
     global void execute(SchedulableContext sc) {
-        List<Automated_Report_Processing_Options__c> reportsToRun = new List<Automated_Report_Processing_Options__c>();
+        List<Automated_Report__c> reportsToRun = new List<Automated_Report__c>();
 
         Datetime today = DateTime.newInstance(Date.today(), Time.newInstance(0, 0, 0, 0));
         List<String> currentDays = new List<String>();
@@ -10,13 +10,13 @@ global without sharing class AutomatedReportNightlyJob implements Schedulable {
         currentDays.add('' + today.day());
 
 
-        List<Automated_Report_Processing_Options__c> listOfReports = [
+        List<Automated_Report__c> listOfReports = [
             SELECT Id, Schedule_Day__c, Schedule_Frequency__c, Last_Run__c
-            FROM Automated_Report_Processing_Options__c
+            FROM Automated_Report__c
             WHERE Active__c = TRUE AND (Schedule_Day__c IN: currentDays OR Schedule_Day__c = '' OR Schedule_Day__c = null)
         ];
 
-        for (Automated_Report_Processing_Options__c report : listOfReports) {
+        for (Automated_Report__c report : listOfReports) {
 
             if (report.Last_Run__c == null) {
                 report.Run_Required__c = true;

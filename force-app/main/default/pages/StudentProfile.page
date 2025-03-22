@@ -2270,6 +2270,13 @@
                                                                     '--', ugStudentProgram.Enrl_Deposit__c)}
                                                                 </td>
                                                             </tr>
+                                                            <tr>
+                                                                <th>Personalized Graduate Admissions Status</th>
+                                                                <td>
+                                                                    {!IF(ISBLANK(ugStudentProgram.ASUPGA_Status__c),
+                                                                    '--', ugStudentProgram.ASUPGA_Status__c)}
+                                                                </td>
+                                                            </tr>
                                                         </table>
                                                     </div>
                                                 </div>
@@ -3245,6 +3252,13 @@
                                                             <td>
                                                                 {!IF(ISBLANK(gradStudentProgram.Enrl_Deposit__c), '--',
                                                                 gradStudentProgram.Enrl_Deposit__c)}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Personalized Graduate Admissions Status</th>
+                                                            <td>
+                                                                {!IF(ISBLANK(gradStudentProgram.ASUPGA_Status__c), '--',
+                                                                gradStudentProgram.ASUPGA_Status__c)}
                                                             </td>
                                                         </tr>
                                                     </table>

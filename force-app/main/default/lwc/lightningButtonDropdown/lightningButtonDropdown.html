@@ -1,7 +1,7 @@
 <template>
-    <div class="primary-buttons slds-button_brand" onclick={stopEvent} onselect={closeDropdown}>
+    <div class="primary-buttons slds-button_brand" onclick={stopEvent}>
         <button class="primary-action" onclick={primaryAction}>{label}</button>
-        <button class="dropdown-button" onclick={toggleDropdown}>
+        <button class="dropdown-button" onclick={toggleDropdown} onfocusout={closeDropdown}>
             <lightning-icon
                 icon-name={dropdownIcon}
                 size="x-small"
@@ -11,7 +11,7 @@
         </button>
         <div lwc:ref="attachRef" lwc:dom="manual"></div>
     </div>
-    <div class={dropdownClasses}>
+    <div class={dropdownClasses} onselect={closeDropdown}>
         <slot></slot>
     </div>
 </template>

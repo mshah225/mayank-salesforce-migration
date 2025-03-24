@@ -4,11 +4,11 @@ public class AdvisorPortalTopLevelFilterController {
 
     @AuraEnabled(cacheable=true)
     public static String viewAsOptions(Boolean gradOnly) {
-        OrderedMapStringToString viewAsOptions = AdvisorCaseTransferService.getTransferToOptionsByUser(
+        List<LabelValue> viewAsOptions = AdvisorCaseTransferService.getTransferToOptionsByUser(
             UserInfo.getUserId(),
             gradOnly
         );
 
-        return JSON.serialize(viewAsOptions.getOrderedList());
+        return JSON.serialize(viewAsOptions);
     }
 }

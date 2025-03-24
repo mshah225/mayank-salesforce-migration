@@ -27,8 +27,8 @@
             </template>
 
             <span class="vert-align">{shareType}</span>
-            <span class="vert-align slds-m-horizontal_xx-small">&middot;</span>
-            <span class="vert-align slds-m-right_large">{ownerName}</span>
+            <span class="vert-align slds-var-m-horizontal_xx-small">&middot;</span>
+            <span class="vert-align slds-var-m-right_large">{ownerName}</span>
 
             <span class="vert-align slds-text-color_weak">
                 (<lightning-formatted-date-time value={createdDate}></lightning-formatted-date-time>)
@@ -46,11 +46,13 @@
                     icon-name="utility:pin"
                     name="pin"
                 ></c-lightning-button-dropdown-item>
-                <c-lightning-button-dropdown-item
-                    label="Share"
-                    icon-name="utility:share"
-                    name="share"
-                ></c-lightning-button-dropdown-item>
+                <template lwc:if={canShare}>
+                    <c-lightning-button-dropdown-item
+                        label="Share"
+                        icon-name="utility:share"
+                        name="share"
+                    ></c-lightning-button-dropdown-item>
+                </template>
                 <c-lightning-button-dropdown-item
                     label="View"
                     icon-name="utility:preview"

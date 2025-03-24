@@ -1,8 +1,29 @@
 import {LightningElement, api} from 'lwc';
 import Id from '@salesforce/user/Id';
 
+/**
+ * @typedef {Object} FilterSet Each filter set object
+ * @property {String} Id If of the filter set
+ * @property {String} Name Name of the filter set
+ * @property {String} Owner__c Id of the user who owns this filter set
+ * @property {UserRecord} Owner__r User who owns this filter set
+ * @property {String} Value__c The serialized JSON string for this filter set
+ * @property {Boolean} Is_Shared__c Is this filter set shared with anyone?
+ * @property {String} CreatedDate Datetime string
+ * @property {FilterSetUserAssociation[]} Filter_Set_User_Associations__r All filter set associations for this filter set
+ * @property {Boolean} Pinned__c Has the current user pinned this filter set
+ *
+ * @typedef FilterSetUserAssociation Each filter set association mapping filter set to each user who can use it
+ * @property {String} Id Id of the filter set association
+ * @property {String} User__c Id of the user this association is for
+ * @property {UserRecord} User__r User this association is for
+ *
+ * @typedef UserRecord
+ * @property {String} Name Name of the user
+ */
 export default class FilterSetElement extends LightningElement {
     @api filterSet;
+    @api canShare = false;
 
     get filterName() {
         return this.newName || this.filterSet?.Name || '';
@@ -69,7 +90,6 @@ export default class FilterSetElement extends LightningElement {
                 new CustomEvent('share', {
                     detail: {
                         filterSetId: this.filterId,
-                        filterSet: this.filterSet,
                     },
                 })
             );

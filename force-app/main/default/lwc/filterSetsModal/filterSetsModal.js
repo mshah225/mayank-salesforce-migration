@@ -6,11 +6,16 @@ import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import LightningConfirm from 'lightning/confirm';
 import Id from '@salesforce/user/Id';
 import {extractErrorMessages} from 'c/helperFunctions';
+import FilterSetShareModal from 'c/filterSetShareModal';
+import checkIfCanShare from '@salesforce/apex/FilterSetController.checkIfCanShare';
 
 import FILTER_SET_ID_FIELD from '@salesforce/schema/Filter_Set__c.Id';
 import FILTER_SET_NAME_FIELD from '@salesforce/schema/Filter_Set__c.Name';
 
+import FSUA_OBJECT from '@salesforce/schema/Filter_Set_User_Association__c';
 import FSUA_ID_FIELD from '@salesforce/schema/Filter_Set_User_Association__c.Id';
+import FSUA_USER_FIELD from '@salesforce/schema/Filter_Set_User_Association__c.User__c';
+import FSUA_FILTER_SET_FIELD from '@salesforce/schema/Filter_Set_User_Association__c.Filter_Set__c';
 import FSUA_PINNED_FIELD from '@salesforce/schema/Filter_Set_User_Association__c.Pinned__c';
 
 import UFSP_OBJECT from '@salesforce/schema/User_Filter_Set_Preference__c';
@@ -26,6 +31,9 @@ import UFSP_SORT_ORDER_FIELD from '@salesforce/schema/User_Filter_Set_Preference
  * @typedef {Object} RenameEventDetail Each rename event detail contains the filterSetId of which filter set this is for and its new name
  * @property {String} filterSetId Filter Set Id
  * @property {String} value New name for filter set
+ *
+ * @typedef {Object} ShareEventDetail Each share event contains only the filter set id
+ * @property {String} filterSetId Filter Set Id
  *
  * @typedef {Object} RemoveEventDetail Each remove event contains only the filter set id
  * @property {String} filterSetId Filter Set Id
@@ -48,6 +56,7 @@ import UFSP_SORT_ORDER_FIELD from '@salesforce/schema/User_Filter_Set_Preference
  *
  * @typedef UserRecord
  * @property {String} Name Name of the user
+ * @property {String} Alias ASURITE of the user
  */
 
 export default class FilterSetsModal extends LightningModal {
@@ -87,6 +96,9 @@ export default class FilterSetsModal extends LightningModal {
                                         Name {
                                             value
                                         }
+                                        Alias {
+                                            value
+                                        }
                                     }
                                     Value__c {
                                         value
@@ -107,6 +119,9 @@ export default class FilterSetsModal extends LightningModal {
                                                 }
                                                 User__r {
                                                     Name {
+                                                        value
+                                                    }
+                                                    Alias {
                                                         value
                                                     }
                                                 }
@@ -153,6 +168,16 @@ export default class FilterSetsModal extends LightningModal {
     wireData = undefined;
     wireError = undefined;
 
+    @wire(checkIfCanShare, {})
+    forCheckIfCanShare({data, errors}) {
+        if (data !== undefined) {
+            this.allowedToShare = data;
+        } else if (errors !== undefined) {
+            this.allowedToShare = false;
+        }
+    }
+    allowedToShare = false;
+
     get filterSetPreferences() {
         return (this.wireData?.uiapi?.query?.User_Filter_Set_Preference__c?.edges ?? []).map((userPref) => {
             return {
@@ -170,6 +195,7 @@ export default class FilterSetsModal extends LightningModal {
                 Owner__c: filterSet?.node?.Owner__c?.value,
                 Owner__r: {
                     Name: filterSet?.node?.Owner__r?.Name?.value,
+                    Alias: filterSet?.node?.Owner__r?.Alias?.value,
                 },
                 Value__c: filterSet?.node?.Value__c?.value,
                 Is_Shared__c: filterSet?.node?.Is_Shared__c?.value,
@@ -181,6 +207,7 @@ export default class FilterSetsModal extends LightningModal {
                             User__c: fsua?.node?.User__c?.value,
                             User__r: {
                                 Name: fsua?.node?.User__r?.Name?.value,
+                                Alias: fsua?.node?.User__r?.Alias?.value,
                             },
                         };
                     }
@@ -403,7 +430,80 @@ export default class FilterSetsModal extends LightningModal {
     }
 
     handleApplyEvent(evnt) {}
-    handleShareEvent(evnt) {}
+    handleShareEvent(evnt) {
+        if (!this.allowedToShare) {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'You are not allowed to share filter sets',
+                    message: ' ',
+                    variant: 'error',
+                })
+            );
+        }
+
+        /** @type {ShareEventDetail} */
+        const eventDetail = evnt.detail;
+        let filterSet = this.allFilterSets.filter((fs) => fs.Id === eventDetail.filterSetId)[0];
+
+        FilterSetShareModal.open({
+            size: 'medium',
+            filterSet: filterSet,
+        })
+            .then((resp) => {
+                if (resp?.userIds != null) {
+                    let shareWithUserIds = resp.userIds;
+                    shareWithUserIds.push(Id);
+
+                    let fsuas = filterSet.Filter_Set_User_Associations__r ?? [];
+                    let alreadyHaveFSUALs = fsuas.map((fsua) => fsua.User__c);
+
+                    // Any FSUA that exist but aren't in the new list
+                    // (exlcuding for the current user since the own users sharing is not managed using this button)
+                    let fSUAsToRemove = fsuas.filter((fsua) => !shareWithUserIds.includes(fsua.User__c));
+                    // Any users in the list that don't have a FSUA
+                    let usersThatNeedNewFSUA = shareWithUserIds.filter((userId) => !alreadyHaveFSUALs.includes(userId));
+
+                    let promiseList = [];
+
+                    for (const removeMe of fSUAsToRemove) {
+                        promiseList.push(deleteRecord(removeMe.Id));
+                    }
+                    for (const userId of usersThatNeedNewFSUA) {
+                        const fields = {};
+                        fields[FSUA_USER_FIELD.fieldApiName] = userId;
+                        fields[FSUA_FILTER_SET_FIELD.fieldApiName] = filterSet.Id;
+
+                        const recordInput = {
+                            apiName: FSUA_OBJECT.objectApiName,
+                            fields,
+                        };
+
+                        promiseList.push(createRecord(recordInput));
+                    }
+
+                    return Promise.all(promiseList).then(() => {
+                        this.dispatchEvent(
+                            new ShowToastEvent({
+                                title: 'Filter set has been shared',
+                                message: ' ',
+                                variant: 'success',
+                            })
+                        );
+                    });
+                }
+                // Cancelled out of modal and not applying changes
+                return Promise.resolve();
+            })
+            .catch((e) => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error',
+                        message: extractErrorMessages(e)[0],
+                        variant: 'error',
+                    })
+                );
+            });
+    }
     handleViewEvent(evnt) {}
 
     /**

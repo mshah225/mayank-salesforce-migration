@@ -4,36 +4,42 @@
         <c-lightning-error-or-retry message={errorMessage} has-error={hasError} retry-enabled="false">
             <c-lightning-await-load-block loading={isLoading} has-content="true">
                 <div class="pinned-filter-sets slds-box slds-theme_shade">
-                    <div class="slds-m-bottom_x-small">
+                    <div class="slds-var-m-bottom_x-small">
                         <lightning-icon icon-name="utility:pinned" size="x-small"></lightning-icon>
                         Pinned ({numberPinned})
+                        <label class="slds-hide" for="filter-set-pinned-icon">Toggle pinned filter sets</label>
                         <lightning-button-icon
+                            id="filter-set-pinned-icon"
                             icon-name={pinnedDropdownIcon}
                             variant="bare"
                             alternative-text={pinnedDropdownText}
-                            class="slds-m-left_xx-small"
+                            class="slds-var-m-left_xx-small"
                             title={pinnedDropdownText}
                             onclick={togglePinnedSection}
                         ></lightning-button-icon>
                     </div>
                     <div>
                         <template lwc:if={pinnedDropdownIsOpen}>
-                            <template for:each={pinnedFilterSets} for:item="filterSet">
-                                <div key={filterSet.Id} class="slds-m-vertical_xx-small">
-                                    <c-filter-set-element
-                                        onpin={handlePinEvent}
-                                        onshare={handleShareEvent}
-                                        onview={handleViewEvent}
-                                        onremove={handleRemoveEvent}
-                                        onrename={handleRenameEvent}
-                                        filter-set={filterSet}
-                                    ></c-filter-set-element>
-                                </div>
+                            <template lwc:if={numberPinned}>
+                                <template for:each={pinnedFilterSets} for:item="filterSet">
+                                    <div key={filterSet.Id} class="slds-var-m-vertical_xx-small">
+                                        <c-filter-set-element
+                                            onpin={handlePinEvent}
+                                            onshare={handleShareEvent}
+                                            onview={handleViewEvent}
+                                            onremove={handleRemoveEvent}
+                                            onrename={handleRenameEvent}
+                                            filter-set={filterSet}
+                                            can-share={allowedToShare}
+                                        ></c-filter-set-element>
+                                    </div>
+                                </template>
                             </template>
+                            <template lwc:else> You have no pinned items </template>
                         </template>
                     </div>
                 </div>
-                <div class="search-filter-sets slds-grid slds-gutters_direct-small slds-m-vertical_small">
+                <div class="search-filter-sets slds-grid slds-gutters_direct-small slds-var-m-vertical_small">
                     <div class="slds-col">
                         <lightning-input
                             variant="label-hidden"
@@ -55,10 +61,10 @@
                     </div>
                 </div>
                 <div class="filter-sets">
-                    <div class="slds-m-vertical_medium bold-text">{numberNonpinned} saved filters</div>
+                    <div class="slds-var-m-vertical_medium bold-text">{numberNonpinned} saved filters</div>
                     <template lwc:if={hasNonpinnedFilterSets}>
                         <template for:each={nonpinnedFilterSets} for:item="filterSet">
-                            <div key={filterSet.Id} class="slds-m-vertical_xx-small">
+                            <div key={filterSet.Id} class="slds-var-m-vertical_xx-small">
                                 <c-filter-set-element
                                     onpin={handlePinEvent}
                                     onshare={handleShareEvent}
@@ -66,20 +72,21 @@
                                     onremove={handleRemoveEvent}
                                     onrename={handleRenameEvent}
                                     filter-set={filterSet}
+                                    can-share={allowedToShare}
                                 ></c-filter-set-element>
                             </div>
                         </template>
                     </template>
                     <template lwc:else>
                         <template lwc:if={isSearching}>
-                            <div class="slds-m-bottom_medium">
-                                <span class="bold-text slds-m-bottom_medium">
+                            <div class="slds-var-m-bottom_medium">
+                                <span class="bold-text slds-var-m-bottom_medium">
                                     No results were found based on your current search criteria. Please try again.
                                     <br />
                                     <br />
                                     Search Suggestions
                                 </span>
-                                <ul class="search-suggestion-list slds-m-left_medium">
+                                <ul class="search-suggestion-list slds-var-m-left_medium">
                                     <li>Check your spelling</li>
                                     <li>Try different words that mean the same thing</li>
                                     <li>Try more general words</li>
@@ -88,7 +95,7 @@
                             </div>
                         </template>
                         <template lwc:else>
-                            <div class="slds-m-bottom_medium bold-text">You do not have any saved filter sets.</div>
+                            <div class="slds-var-m-bottom_medium bold-text">You do not have any saved filter sets.</div>
                         </template>
                     </template>
                 </div>

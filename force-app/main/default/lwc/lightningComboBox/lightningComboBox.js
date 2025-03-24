@@ -532,6 +532,9 @@ export default class LightningComboBox extends LightningElement {
         if (this.disabled) return;
 
         if (KeyboardController.isCloseKey(evnt.key)) {
+            evnt.preventDefault();
+            evnt.stopPropagation();
+            evnt.stopImmediatePropagation();
             this.closeDropdown();
         } else if (this.searchable && KeyboardController.isCommon(evnt.key)) {
             // Don't override any common search buttons when in search mode
@@ -557,6 +560,9 @@ export default class LightningComboBox extends LightningElement {
     listKeyDownHandler(evnt) {
         if (KeyboardController.isCloseKey(evnt.key)) {
             this.refs.primaryInput.focus();
+            evnt.preventDefault();
+            evnt.stopPropagation();
+            evnt.stopImmediatePropagation();
             this.closeDropdown();
         } else if (KeyboardController.isSelectionKey(evnt.key)) {
             evnt.preventDefault(); // prevent scrolling page with Space
@@ -596,7 +602,7 @@ export default class LightningComboBox extends LightningElement {
             // Wait to ensure, if clicked elsewhere in the dropdown, that the other event can fire before we close
             focusOutTimeout = setTimeout(() => {
                 this.closeDropdown();
-            }, 20);
+            }, 10);
         });
     }
 }

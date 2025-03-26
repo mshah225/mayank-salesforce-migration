@@ -9,7 +9,6 @@ import FilterSetShareModal from 'c/filterSetShareModal';
 
 // Private vs Shared filters
 const wirePrivate = require('./data/wire/private.json');
-const wireSharedWithMe = require('./data/wire/sharedWithMe.json');
 const wireSharedByMe = require('./data/wire/sharedByMe.json');
 
 FilterSetShareModal.open = jest.fn(() => {

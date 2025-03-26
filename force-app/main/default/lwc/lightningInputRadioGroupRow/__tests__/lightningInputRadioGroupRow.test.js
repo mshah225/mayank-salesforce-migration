@@ -51,8 +51,8 @@ describe('c-lightning-input-radio-group-row', () => {
 
         const options = [...element.shadowRoot.querySelectorAll('.option')];
 
-        expect(options[0].querySelector('input').hasAttribute('checked')).toBeFalsy();
-        expect(options[1].querySelector('input').hasAttribute('checked')).toBeTruthy();
+        expect(options[0].querySelector('input').checked).toBeFalsy();
+        expect(options[1].querySelector('input').checked).toBeTruthy();
     });
 
     test('Clicking on a value, visual display', () => {
@@ -69,8 +69,8 @@ describe('c-lightning-input-radio-group-row', () => {
 
         options[1].click();
 
-        expect(options[0].querySelector('input').hasAttribute('checked')).toBeFalsy();
-        expect(options[1].querySelector('input').hasAttribute('checked')).toBeTruthy();
+        expect(options[0].querySelector('input').checked).toBeFalsy();
+        expect(options[1].querySelector('input').checked).toBeTruthy();
     });
 
     test('Clicking on a value, raises change events', () => {

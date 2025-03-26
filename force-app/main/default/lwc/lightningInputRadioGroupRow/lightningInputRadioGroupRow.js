@@ -26,8 +26,11 @@ export default class LightningInputRadioGroupRow extends LightningElement {
         const allOptions = [...this.template.querySelectorAll('.option')];
 
         for (const opt of allOptions) {
-            if (opt.dataset.value === this.value) opt.querySelector('input').setAttribute('checked', 'true');
-            else opt.querySelector('input').removeAttribute('checked');
+            if (opt.dataset.value === this.value) {
+                opt.querySelector('input').checked = true;
+            } else {
+                opt.querySelector('input').checked = false;
+            }
         }
     }
 

@@ -1,0 +1,70 @@
+<template>
+    <lightning-modal-header label="Remove filter set"></lightning-modal-header>
+    <lightning-modal-body>
+        <template lwc:if={isPrivateFilter}>
+            <div class="slds-var-m-vertical_small">You are removing {filterSetName} from the System</div>
+        </template>
+        <template lwc:elseif={sharedWithMe}>
+            <div class="slds-var-m-vertical_small">You are removing {filterSetName} from your list</div>
+        </template>
+        <template lwc:elseif={sharedByMe}>
+            <div class="slds-text-heading_medium slds-var-m-bottom_small">
+                Are you sure you want to remove this shared filter?
+            </div>
+
+            <div class="slds-var-m-bottom_small">
+                You are removing this filter from the system and from the view of those this filter has been shared
+                with.
+            </div>
+
+            <lightning-radio-group
+                label="Mode Selection"
+                variant="label-hidden"
+                options={modeOptions}
+                value={modeValue}
+                onchange={modeSelect}
+            >
+            </lightning-radio-group>
+
+            <template lwc:if={isUnshareMode}>
+                <div class="slds-var-m-top_small slds-var-m-bottom_small">
+                    <c-lightning-combo-box
+                        value={sharedWithStr}
+                        options={userOptions}
+                        onchange={handleChange}
+                        searchable="true"
+                        dynamic-dropdown="true"
+                        multi-select="true"
+                    ></c-lightning-combo-box>
+                </div>
+
+                <div class="slds-var-m-bottom_small">
+                    <template for:each={pillList} for:item="shareUser">
+                        <lightning-pill
+                            key={shareUser.Id}
+                            class="slds-var-m-right_x-small"
+                            data-userid={shareUser.Id}
+                            label={shareUser.Name}
+                            onremove={handleRemove}
+                        >
+                            <lightning-icon icon-name="standard:user" alternative-text="User"></lightning-icon>
+                        </lightning-pill>
+                    </template>
+                </div>
+
+                <div>
+                    <lightning-button label="Clear selection" variant="base" onclick={removeAll}></lightning-button>
+                </div>
+            </template>
+        </template>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <lightning-button label="Cancel" variant="neutral" onclick={closeModal}></lightning-button>
+        <lightning-button
+            label="Save"
+            variant="brand"
+            onclick={saveChanges}
+            style="margin-left: 1rem"
+        ></lightning-button>
+    </lightning-modal-footer>
+</template>

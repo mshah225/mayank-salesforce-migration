@@ -3,10 +3,10 @@ import {api, wire} from 'lwc';
 import {gql, graphql} from 'lightning/uiGraphQLApi';
 import {createRecord, updateRecord, deleteRecord} from 'lightning/uiRecordApi';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
-import LightningConfirm from 'lightning/confirm';
 import Id from '@salesforce/user/Id';
 import {extractErrorMessages} from 'c/helperFunctions';
 import FilterSetShareModal from 'c/filterSetShareModal';
+import FilterSetRemoveModal from 'c/filterSetRemoveModal';
 import checkIfCanShare from '@salesforce/apex/FilterSetController.checkIfCanShare';
 
 import FILTER_SET_ID_FIELD from '@salesforce/schema/Filter_Set__c.Id';
@@ -515,56 +515,15 @@ export default class FilterSetsModal extends LightningModal {
         const eventDetail = evnt.detail;
 
         let filterSet = this.allFilterSets.filter((fs) => fs.Id === eventDetail.filterSetId)[0];
-        if (filterSet.Is_Shared__c) {
-            // Shared filter, deletion depends on if the user owns this filter set or not
-            if (filterSet.Owner__c === Id) {
-                // User owns this filter set, which means we need the complicated share/unshare screen
-            } else {
-                // User does not own this filter set, so we need to unshare it with the current user
-                LightningConfirm.open({
-                    label: 'Remove filter set',
-                    message: `You are removing ${filterSet.Name} from your list`,
-                })
-                    .then((val) => {
-                        if (val === true) {
-                            const filterSetUserAssociation = filterSet.Filter_Set_User_Associations__r.filter(
-                                (fsua) => fsua.User__c === Id
-                            )[0];
 
-                            // Confirmed deletion - actually delete record
-                            return deleteRecord(filterSetUserAssociation.Id).then(() => {
-                                this.dispatchEvent(
-                                    new ShowToastEvent({
-                                        title: 'Success',
-                                        message: 'Filter set has been removed',
-                                        variant: 'success',
-                                    })
-                                );
-                            });
-                        }
-                        // Cancelled deletion
-                        return Promise.resolve();
-                    })
-                    .catch((error) => {
-                        this.dispatchEvent(
-                            new ShowToastEvent({
-                                title: 'Error when removing filter set',
-                                message: extractErrorMessages(error)[0],
-                                variant: 'error',
-                                mode: 'sticky',
-                            })
-                        );
-                    });
-            }
-        } else {
-            // Private filters are simple, we can just delete it
-            LightningConfirm.open({
-                label: 'Remove filter set',
-                message: `You are removing ${filterSet.Name} from the System`,
-            })
-                .then((val) => {
-                    if (val === true) {
-                        // Confirmed deletion - actually delete record
+        FilterSetRemoveModal.open({
+            size: 'small',
+            filterSet: filterSet,
+        })
+            .then((val) => {
+                if (val?.delete != null) {
+                    if (val.delete === true) {
+                        // Delete the filter set outright
                         return deleteRecord(filterSet.Id).then(() => {
                             this.dispatchEvent(
                                 new ShowToastEvent({
@@ -574,21 +533,35 @@ export default class FilterSetsModal extends LightningModal {
                                 })
                             );
                         });
+                    } else if (val.delete === false) {
+                        // Unshare with some users
+                        let promiseList = [];
+                        for (const fsuaId of val.unshare) promiseList.push(deleteRecord(fsuaId));
+
+                        return Promise.all(promiseList).then(() => {
+                            this.dispatchEvent(
+                                new ShowToastEvent({
+                                    title: 'Success',
+                                    message: 'Filter set has been unshared with selected users',
+                                    variant: 'success',
+                                })
+                            );
+                        });
                     }
-                    // Cancelled deletion
-                    return Promise.resolve();
-                })
-                .catch((error) => {
-                    this.dispatchEvent(
-                        new ShowToastEvent({
-                            title: 'Error when removing filter set',
-                            message: extractErrorMessages(error)[0],
-                            variant: 'error',
-                            mode: 'sticky',
-                        })
-                    );
-                });
-        }
+                }
+                // Cancelled deletion
+                return Promise.resolve();
+            })
+            .catch((error) => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error when removing filter set',
+                        message: extractErrorMessages(error)[0],
+                        variant: 'error',
+                        mode: 'sticky',
+                    })
+                );
+            });
     }
 
     /**

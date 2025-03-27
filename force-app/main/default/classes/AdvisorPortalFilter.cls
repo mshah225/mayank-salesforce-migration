@@ -19,7 +19,7 @@
 
 public class AdvisorPortalFilter {
     // Static variables to describe state of the world
-    public static final String mostRecentVersion = 'v2';
+    public static final String mostRecentVersion = 'v3';
     private static final Map<String, Set<Decimal>> outlookScoresByLabels = new Map<String, Set<Decimal>>{
         'very low' => new Set<Decimal>{ 0, 1, 2, 3 },
         'low' => new Set<Decimal>{ 4, 5 },
@@ -49,6 +49,8 @@ public class AdvisorPortalFilter {
     public String caseTypeState; // "AllCasesState" | "ProactiveCasesState" | "WatchlistCasesState"
     @AuraEnabled
     public String career; // "GRD" | "UGRD"
+    @AuraEnabled
+    public String ownerIds;
 
     // -----  Used in which mode?  ---------------------  UGRAD  ------  GRAD  ------ -- v1 -- v2 --
     @AuraEnabled
@@ -241,6 +243,22 @@ public class AdvisorPortalFilter {
     /*
      * Getters and Setters for all attributes that may or may not be set
      */
+    public List<String> getOwnerIds() {
+        String val = null;
+        List<String> val_arr = null;
+
+        // Determine if the value is set at all and extract it if it is
+        if (!String.isBlank(this.ownerIds))
+            val = this.ownerIds;
+
+        if (val != null)
+            val_arr = val.split(';');
+
+        if (val_arr == null)
+            val_arr = new List<String>{ UserInfo.getUserId() };
+
+        return val_arr;
+    }
     public String getCaseTypeState() {
         String val = null;
 
@@ -645,6 +663,15 @@ public class AdvisorPortalFilter {
                 caseCategory = String.join(encodeBase64ElementsOfArray(caseCategory.split(';')), ';');
             if (String.isNotBlank(caseSubCategory))
                 caseSubCategory = String.join(encodeBase64ElementsOfArray(caseSubCategory.split(';')), ';');
+        }
+
+        if (version == 'v2') {
+            // from v2 -> v3 we added ownerIds field (default it to current user if empty)
+            upgradePath.add('v3');
+            version = 'v3';
+
+            if (String.isBlank(ownerIds))
+                ownerIds = UserInfo.getUserId();
         }
 
         if (version != mostRecentVersion) {

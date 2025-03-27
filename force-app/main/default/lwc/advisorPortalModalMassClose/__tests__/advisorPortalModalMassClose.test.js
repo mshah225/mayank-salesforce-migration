@@ -62,7 +62,7 @@ describe('c-advisor-portal-modal-mass-close', () => {
             is: AdvisorPortalModalMassCloseTest,
         });
         const toastHandler = jest.fn();
-        element.toastCb = toastHandler;
+        element.addEventListener('lightning__showtoast', toastHandler);
         document.body.appendChild(element);
 
         // Form is submitted successfully

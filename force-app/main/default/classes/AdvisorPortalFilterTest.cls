@@ -63,7 +63,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetCaseState() {
-        String filterStr = '{"version":"v2","caseTypeState":"AllCasesState"}';
+        String filterStr = '{"version":"v3","caseTypeState":"AllCasesState"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -72,7 +72,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetCareer() {
-        String filterStr = '{"version":"v2","career":"GRD"}';
+        String filterStr = '{"version":"v3","career":"GRD"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -81,7 +81,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetStudentString() {
-        String filterStr = '{"version":"v2","studentString":"rnordman"}';
+        String filterStr = '{"version":"v3","studentString":"rnordman"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -90,7 +90,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetCampus() {
-        String filterStr = '{"version":"v2","campus":"CAMP1;CAMP2"}';
+        String filterStr = '{"version":"v3","campus":"CAMP1;CAMP2"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -99,7 +99,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetAcademicLevel() {
-        String filterStr = '{"version":"v2","academicLevel":"Freshman;Sophmore"}';
+        String filterStr = '{"version":"v3","academicLevel":"Freshman;Sophmore"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -108,7 +108,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetStudentGroupCode() {
-        String filterStr = '{"version":"v2","studentGroupCode":"AZ330"}';
+        String filterStr = '{"version":"v3","studentGroupCode":"AZ330"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -117,7 +117,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetMajor() {
-        String filterStr = '{"version":"v2","major":"TVFILM"}';
+        String filterStr = '{"version":"v3","major":"TVFILM"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -126,7 +126,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetDegreeLevel() {
-        String filterStr = '{"version":"v2","degreeLevel":"master;doctorate"}';
+        String filterStr = '{"version":"v3","degreeLevel":"master;doctorate"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -135,7 +135,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetAcademicProgram() {
-        String filterStr = '{"version":"v2","academicProgram":"TVFILM;CRONKITE;ENG"}';
+        String filterStr = '{"version":"v3","academicProgram":"TVFILM;CRONKITE;ENG"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -144,7 +144,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetSchoolDepartment() {
-        String filterStr = '{"version":"v2","schoolDepartment":"TECH;LIB"}';
+        String filterStr = '{"version":"v3","schoolDepartment":"TECH;LIB"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -153,7 +153,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetAcademicPlan() {
-        String filterStr = '{"version":"v2","academicPlan":"SF;BA;PM"}';
+        String filterStr = '{"version":"v3","academicPlan":"SF;BA;PM"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -162,7 +162,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetAdmitTermFrom() {
-        String filterStr = '{"version":"v2","admitTermFrom":"2201"}';
+        String filterStr = '{"version":"v3","admitTermFrom":"2201"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -171,7 +171,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetAdmitTermTo() {
-        String filterStr = '{"version":"v2","admitTermTo":"2207"}';
+        String filterStr = '{"version":"v3","admitTermTo":"2207"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -180,7 +180,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetResidency() {
-        String filterStr = '{"version":"v2","residency":"international;resident"}';
+        String filterStr = '{"version":"v3","residency":"international;resident"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -189,7 +189,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetCaseStatus() {
-        String filterStr = '{"version":"v2","caseStatus":"busy signal"}';
+        String filterStr = '{"version":"v3","caseStatus":"busy signal"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -203,7 +203,7 @@ public class AdvisorPortalFilterTest {
         for (String cat : categories)
             b64Categories.add(EncodingUtil.base64Encode(Blob.valueOf(cat)));
 
-        String filterStr = '{"version":"v2","caseCategory":"' + String.join(b64Categories, ';') + '"}';
+        String filterStr = '{"version":"v3","caseCategory":"' + String.join(b64Categories, ';') + '"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -217,7 +217,7 @@ public class AdvisorPortalFilterTest {
         for (String subcat : subcategories)
             b64SubCategories.add(EncodingUtil.base64Encode(Blob.valueOf(subcat)));
 
-        String filterStr = '{"version":"v2","caseSubCategory":"' + String.join(b64SubCategories, ';') + '"}';
+        String filterStr = '{"version":"v3","caseSubCategory":"' + String.join(b64SubCategories, ';') + '"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -231,7 +231,7 @@ public class AdvisorPortalFilterTest {
         for (String subj : subjects)
             b64Subjects.add(EncodingUtil.base64Encode(Blob.valueOf(subj)));
 
-        String filterStr = '{"version":"v2","caseSubject":"' + String.join(b64Subjects, ';') + '"}';
+        String filterStr = '{"version":"v3","caseSubject":"' + String.join(b64Subjects, ';') + '"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -240,7 +240,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetSpecialPopulation() {
-        String filterStr = '{"version":"v2","specialPopulation":"graduating"}';
+        String filterStr = '{"version":"v3","specialPopulation":"graduating"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -249,7 +249,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetOutlookScores() {
-        String filterStr = '{"version":"v2","outlookScore":"very low;high"}';
+        String filterStr = '{"version":"v3","outlookScore":"very low;high"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -265,7 +265,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetOutlookChange() {
-        String filterStr = '{"version":"v2","outlookChange":"up;no change"}';
+        String filterStr = '{"version":"v3","outlookChange":"up;no change"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -278,7 +278,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetCreatedFromDate() {
-        String filterStr = '{"version":"v2","createdFromDate":"2022-01-02"}';
+        String filterStr = '{"version":"v3","createdFromDate":"2022-01-02"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -290,7 +290,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetCreatedToDate() {
-        String filterStr = '{"version":"v2","createdToDate":"2022-01-02"}';
+        String filterStr = '{"version":"v3","createdToDate":"2022-01-02"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -302,7 +302,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetFollowUpFromDate() {
-        String filterStr = '{"version":"v2","followUpFromDate":"2022-01-02"}';
+        String filterStr = '{"version":"v3","followUpFromDate":"2022-01-02"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -313,7 +313,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetFollowUpToDate() {
-        String filterStr = '{"version":"v2","followUpToDate":"2022-01-02"}';
+        String filterStr = '{"version":"v3","followUpToDate":"2022-01-02"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -324,7 +324,7 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetPersistenceFromDate() {
-        String filterStr = '{"version":"v2","persistenceFromDate":"2022-01-02"}';
+        String filterStr = '{"version":"v3","persistenceFromDate":"2022-01-02"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
@@ -335,12 +335,21 @@ public class AdvisorPortalFilterTest {
 
     @IsTest
     private static void testGetPersistenceToDate() {
-        String filterStr = '{"version":"v2","persistenceToDate":"2022-01-02"}';
+        String filterStr = '{"version":"v3","persistenceToDate":"2022-01-02"}';
 
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
 
         System.assertEquals(2022, filter.getPersistenceToDate().year());
         System.assertEquals(1, filter.getPersistenceToDate().month());
         System.assertEquals(2, filter.getPersistenceToDate().day());
+    }
+
+    @IsTest
+    private static void testGetOwnerIds() {
+        String filterStr = '{"version":"v3","ownerIds":"USER-1;USER-2;USER-3"}';
+
+        AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterStr);
+
+        System.assertEquals('USER-1;USER-2;USER-3', String.join(filter.getOwnerIds(), ';'));
     }
 }

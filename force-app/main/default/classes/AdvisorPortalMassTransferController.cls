@@ -41,6 +41,6 @@ public class AdvisorPortalMassTransferController {
                 AND IsActive__c = TRUE
         ];
 
-        return  resourceForCurrentUser.size() > 0;
+        return resourceForCurrentUser.size() > 0;
     }
 }

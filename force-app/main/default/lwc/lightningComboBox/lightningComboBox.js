@@ -88,7 +88,13 @@ export default class LightningComboBox extends LightningElement {
      * Text that is displayed before an option is selected, to prompt the user to select an option. The default is "Select an Option".
      * @type {String}
      */
-    @api placeholder = 'Select an Option';
+    @api set placeholder(v) {
+        this._placeholder = v;
+    }
+    get placeholder() {
+        return this._placeholder ?? 'Select an Option';
+    }
+    _placeholder;
 
     /**
      * If true, a value must be selected before the form can be submitted.

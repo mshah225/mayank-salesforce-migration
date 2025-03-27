@@ -1151,13 +1151,12 @@ private class AdvisorPortalFilterSectionControllerTest {
     }
 
     @isTest
-    private static void testHasUgradAccess() {
+    private static void testUndergradAccess() {
         /** setup */
-        User testSysAdmin = TestUserHelper.createTestSysAdmin();
-        USer testStandardUser = TestUserHelper.createTestStandardUser();
-        insert new List<User>{ testSysAdmin, testStandardUser };
+        User undergradAdvisor = TestUserHelper.createTestStandardUser();
+        insert new List<User>{ undergradAdvisor };
         PermissionSetAssignment psa = new PermissionSetAssignment(
-            AssigneeId = testStandardUser.Id,
+            AssigneeId = undergradAdvisor.Id,
             PermissionSetId = [
                 SELECT Id
                 FROM PermissionSet
@@ -1168,29 +1167,28 @@ private class AdvisorPortalFilterSectionControllerTest {
         );
         insert psa;
 
-        Boolean sysAdminHasAccess, standardUserHasAccess;
+        List<String> accessModes;
 
-        System.runAs(testSysAdmin) {
-            sysAdminHasAccess = AdvisorPortalFilterSectionController.hasUgradAccess();
+        System.runAs(undergradAdvisor) {
+            accessModes = AdvisorPortalFilterSectionController.getAccessModes();
         }
 
-        System.runAs(testStandardUser) {
-            standardUserHasAccess = AdvisorPortalFilterSectionController.hasUgradAccess();
-        }
-
-        Assert.isTrue(sysAdminHasAccess, 'Sys admin should always have access, but they do not');
         Assert.isTrue(
-            standardUserHasAccess,
+            accessModes.size() == 1,
+            'Role_Academic_Advisor_Portal_Service_Users permission set should grant access, but it did not'
+        );
+        Assert.areEqual(
+            'UGRD',
+            accessModes[0],
             'Role_Academic_Advisor_Portal_Service_Users permission set should grant access, but it did not'
         );
     }
 
     @isTest
-    private static void testHasGradAccess() {
+    private static void testGradAccess() {
         /** setup */
-        User testSysAdmin = TestUserHelper.createTestSysAdmin();
-        USer testStandardUser = TestUserHelper.createTestStandardUser();
-        insert new List<User>{ testSysAdmin, testStandardUser };
+        User testStandardUser = TestUserHelper.createTestStandardUser();
+        insert new List<User>{ testStandardUser };
         PermissionSetAssignment psa = new PermissionSetAssignment(
             AssigneeId = testStandardUser.Id,
             PermissionSetId = [
@@ -1203,21 +1201,38 @@ private class AdvisorPortalFilterSectionControllerTest {
         );
         insert psa;
 
-        Boolean sysAdminHasAccess, standardUserHasAccess;
-
-        System.runAs(testSysAdmin) {
-            sysAdminHasAccess = AdvisorPortalFilterSectionController.hasGradAccess();
-        }
+        List<String> accessModes;
 
         System.runAs(testStandardUser) {
-            standardUserHasAccess = AdvisorPortalFilterSectionController.hasGradAccess();
+            accessModes = AdvisorPortalFilterSectionController.getAccessModes();
         }
 
-        Assert.isTrue(sysAdminHasAccess, 'Sys admin should always have access, but they do not');
         Assert.isTrue(
-            standardUserHasAccess,
+            accessModes.size() == 1,
             'Role_Graduate_Academic_Advisor_Portal_Service_Users permission set should grant access, but it did not'
         );
+        Assert.areEqual(
+            'GRD',
+            accessModes[0],
+            'Role_Graduate_Academic_Advisor_Portal_Service_Users permission set should grant access, but it did not'
+        );
+    }
+
+    @isTest
+    private static void testSysAdminAccess() {
+        /** setup */
+        User testSysAdmin = TestUserHelper.createTestSysAdmin();
+        insert new List<User>{ testSysAdmin };
+
+        List<String> accessModes;
+
+        System.runAs(testSysAdmin) {
+            accessModes = AdvisorPortalFilterSectionController.getAccessModes();
+        }
+
+        Assert.isTrue(accessModes.size() == 2, 'Sys admin should always have access, but they do not');
+        Assert.areEqual('UGRD', accessModes[0], 'Sys admin should always have access, but they do not');
+        Assert.areEqual('GRD', accessModes[1], 'Sys admin should always have access, but they do not');
     }
 
     @isTest
@@ -1226,20 +1241,15 @@ private class AdvisorPortalFilterSectionControllerTest {
         USer testStandardUser = TestUserHelper.createTestStandardUser();
         insert new List<User>{ testStandardUser };
 
-        Boolean standardUserHasNoUgradAccess, standardUserHasNoGradAccess;
+        List<String> accessModes;
 
         System.runAs(testStandardUser) {
-            standardUserHasNoUgradAccess = AdvisorPortalFilterSectionController.hasUgradAccess();
-            standardUserHasNoGradAccess = AdvisorPortalFilterSectionController.hasUgradAccess();
+            accessModes = AdvisorPortalFilterSectionController.getAccessModes();
         }
 
-        Assert.isFalse(
-            standardUserHasNoUgradAccess,
-            'User should, without Role_Academic_Advisor_Portal_Service_Users, have no access to UGRAD advsior portal - but they did'
-        );
-        Assert.isFalse(
-            standardUserHasNoGradAccess,
-            'User should, without Role_Graduate_Academic_Advisor_Portal_Service_Users, have no access to GRAD advsior portal - but they did'
+        Assert.isTrue(
+            accessModes.isEmpty(),
+            'Normal user with no roles should have no access to advisor portal - but they did'
         );
     }
 
@@ -1247,15 +1257,24 @@ private class AdvisorPortalFilterSectionControllerTest {
     private static void testGetResidencyOptions() {
         LogSuite.activateTestFlowSuite('testGetResidencyOptions');
         Test.startTest();
-        Map<String, String> options = AdvisorPortalFilterSectionController.getPicklistValues(
+        List<LabelValue> options = AdvisorPortalFilterSectionController.getPicklistValues(
             'Student_Program_Plan__c',
             'Residency__c'
         );
         Test.stopTest();
 
-        System.assert(!options.isEmpty(), 'There should be SOME residency options.');
-        System.assert(options.keySet().contains('Resident'), 'Residency options should contain "Resident".');
-        System.assert(options.keySet().contains('Non-Resident'), 'Residency options should contain "Non-Resident".');
+        Assert.isFalse(options.isEmpty(), 'There should be SOME residency options.');
+
+        Boolean foundResident = false, foundNonResident = false;
+        for (LabelValue opt : options) {
+            if (opt.label == 'Resident')
+                foundResident = true;
+            else if (opt.label == 'Non-Resident')
+                foundNonResident = true;
+        }
+
+        Assert.isTrue(foundResident, 'Residency options should contain "Resident".');
+        Assert.isTrue(foundNonResident, 'Residency options should contain "Non-Resident".');
     }
 
     @IsTest
@@ -1305,14 +1324,14 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
+        filter.ownerIds = testUser.Id;
 
         // Act
         Test.startTest();
         List<LabelValue> subjectLs = AdvisorPortalFilterSectionController.getCaseSubjectPicklistValues(
-            JSON.serialize(filter),
-            new List<String>{ testUser.Id }
+            JSON.serialize(filter)
         );
         Test.stopTest();
 
@@ -1343,13 +1362,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
+        filter.ownerIds = testUser.Id;
 
         Test.startTest();
         List<LabelValue> classificationLs = AdvisorPortalFilterSectionController.getCaseClassificationPicklistValues(
-            JSON.serialize(filter),
-            new List<String>{ testUser.Id }
+            JSON.serialize(filter)
         );
         Test.stopTest();
 
@@ -1383,13 +1402,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'GRD';
+        filter.ownerIds = testUser.Id;
 
         Test.startTest();
         List<LabelValue> classificationLs = AdvisorPortalFilterSectionController.getCaseClassificationPicklistValues(
-            JSON.serialize(filter),
-            new List<String>{ testUser.Id }
+            JSON.serialize(filter)
         );
         Test.stopTest();
 
@@ -1437,36 +1456,36 @@ private class AdvisorPortalFilterSectionControllerTest {
         }
 
         AdvisorPortalFilter filter1 = new AdvisorPortalFilter();
-        filter1.version = 'v2';
+        filter1.version = 'v3';
         filter1.career = 'GRD';
+        filter1.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'GRD';
         filter2.caseCategory = EncodingUtil.base64Encode(Blob.valueOf('G-CAT-1'));
+        filter2.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
-        filter3.version = 'v2';
+        filter3.version = 'v3';
         filter3.career = 'GRD';
         filter3.caseCategory =
             EncodingUtil.base64Encode(Blob.valueOf('G-CAT-1')) +
             ';' +
             EncodingUtil.base64Encode(Blob.valueOf('G-CAT-2'));
+        filter3.ownerIds = testUser.Id;
 
         Test.startTest();
         List<LabelValue> classificationLs1 = AdvisorPortalFilterSectionController.getCaseSubClassificationPicklistValues(
-            JSON.serialize(filter1),
-            new List<String>{ testUser.Id }
+            JSON.serialize(filter1)
         );
 
         List<LabelValue> classificationLs2 = AdvisorPortalFilterSectionController.getCaseSubClassificationPicklistValues(
-            JSON.serialize(filter2),
-            new List<String>{ testUser.Id }
+            JSON.serialize(filter2)
         );
 
         List<LabelValue> classificationLs3 = AdvisorPortalFilterSectionController.getCaseSubClassificationPicklistValues(
-            JSON.serialize(filter3),
-            new List<String>{ testUser.Id }
+            JSON.serialize(filter3)
         );
         Test.stopTest();
 
@@ -1533,11 +1552,11 @@ private class AdvisorPortalFilterSectionControllerTest {
         List<Location__c> gradCampuses = [SELECT Name FROM Location__c WHERE Graduate_Enabled__c = TRUE];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'GRD';
 
         Test.startTest();
@@ -1700,13 +1719,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
         filter.caseTypeState = 'AllCasesState';
+        filter.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
@@ -1729,13 +1748,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
+        filter.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
@@ -1752,47 +1771,47 @@ private class AdvisorPortalFilterSectionControllerTest {
 
         // Search name
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.studentString = 'Anya Simms';
+        filter.ownerIds = testUser.Id;
 
         // Search preferred name
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'GRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.studentString = 'Anastasia Simms';
+        filter2.ownerIds = testUser.Id;
 
         // Search emplid
         AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
-        filter3.version = 'v2';
+        filter3.version = 'v3';
         filter3.career = 'GRD';
         filter3.caseTypeState = 'AllCasesState';
         filter3.studentString = '1200889090';
+        filter3.ownerIds = testUser.Id;
 
         // Search asurite
         AdvisorPortalFilter filter4 = new AdvisorPortalFilter();
-        filter4.version = 'v2';
+        filter4.version = 'v3';
         filter4.career = 'GRD';
         filter4.caseTypeState = 'AllCasesState';
         filter4.studentString = 'asimms4';
+        filter4.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         List<AdvisorPortalContact> results3 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter3)
         );
         List<AdvisorPortalContact> results4 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter4)
         );
         Test.stopTest();
@@ -1842,25 +1861,25 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
         filter.caseTypeState = 'AllCasesState';
         filter.campus = '0011221101';
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.campus = '0011221101;0011221102';
+        filter2.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
@@ -1905,25 +1924,25 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
         filter.caseTypeState = 'AllCasesState';
         filter.academicLevel = 'Freshman';
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.academicLevel = 'Freshman;Junior';
+        filter2.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
@@ -1956,25 +1975,25 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
         filter.caseTypeState = 'AllCasesState';
         filter.studentGroupCode = 'STGRP1';
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.studentGroupCode = 'STGRP2';
+        filter2.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
@@ -2007,25 +2026,25 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
         filter.caseTypeState = 'AllCasesState';
         filter.major = 'COMPSCI';
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.major = 'Computer Science';
+        filter2.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
@@ -2074,25 +2093,25 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.degreeLevel = 'masters';
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'GRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.degreeLevel = 'masters;certificate';
+        filter2.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
@@ -2138,25 +2157,25 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.academicProgram = 'IRAAFUL';
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'GRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.academicProgram = 'IRAAFUL;PREMED';
+        filter2.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
@@ -2207,25 +2226,25 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.academicPlan = 'TVFILM';
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'GRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.academicPlan = 'BUSNESS;TVFILM';
+        filter2.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
@@ -2289,37 +2308,37 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.admitTermFrom = '2144';
         filter.admitTermTo = '2187';
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'GRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.admitTermTo = '2191';
+        filter2.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
-        filter3.version = 'v2';
+        filter3.version = 'v3';
         filter3.career = 'GRD';
         filter3.caseTypeState = 'AllCasesState';
         filter3.admitTermFrom = '2191';
+        filter3.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
 
         List<AdvisorPortalContact> results3 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter3)
         );
         Test.stopTest();
@@ -2369,25 +2388,25 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
         filter.caseTypeState = 'AllCasesState';
         filter.residency = 'Non-Resident';
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.residency = 'Resident;Non-Resident';
+        filter2.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
@@ -2425,25 +2444,25 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.caseStatus = 'Email Sent';
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.caseStatus = 'Email Sent;Busy Signal';
+        filter2.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
@@ -2481,28 +2500,28 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.caseCategory = EncodingUtil.base64Encode(Blob.valueOf('CAT-3'));
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.caseCategory =
             EncodingUtil.base64Encode(Blob.valueOf('CAT-4')) +
             ';' +
             EncodingUtil.base64Encode(Blob.valueOf('CAT-3'));
+        filter2.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
@@ -2540,28 +2559,28 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.caseCategory = EncodingUtil.base64Encode(Blob.valueOf('CAT-3'));
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.caseCategory =
             EncodingUtil.base64Encode(Blob.valueOf('CAT-4')) +
             ';' +
             EncodingUtil.base64Encode(Blob.valueOf('CAT-3'));
+        filter2.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
@@ -2601,14 +2620,15 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'GRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.caseCategory = EncodingUtil.base64Encode(Blob.valueOf('G-CAT-1'));
         filter.caseSubCategory = EncodingUtil.base64Encode(Blob.valueOf('G-SUBCAT-1-1'));
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'GRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.caseCategory =
@@ -2621,15 +2641,14 @@ private class AdvisorPortalFilterSectionControllerTest {
             EncodingUtil.base64Encode(Blob.valueOf('G-SUBCAT-1-2')) +
             ';' +
             EncodingUtil.base64Encode(Blob.valueOf('G-SUBCAT-2-1'));
+        filter2.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
@@ -2667,28 +2686,28 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.caseSubject = EncodingUtil.base64Encode(Blob.valueOf('Tailwind'));
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.caseSubject =
             EncodingUtil.base64Encode(Blob.valueOf('Tailwind')) +
             ';' +
             EncodingUtil.base64Encode(Blob.valueOf('Bee girl'));
+        filter2.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
@@ -2726,28 +2745,28 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.caseSubject = EncodingUtil.base64Encode(Blob.valueOf('Tailwind'));
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.caseSubject =
             EncodingUtil.base64Encode(Blob.valueOf('Tailwind')) +
             ';' +
             EncodingUtil.base64Encode(Blob.valueOf('Bee girl'));
+        filter2.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
@@ -2793,25 +2812,25 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.outlookScore = 'very low';
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.outlookScore = 'very low;low';
+        filter2.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
@@ -2849,25 +2868,25 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.outlookChange = 'up';
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.outlookChange = 'down;up';
+        filter2.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
@@ -2894,14 +2913,14 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'accelerated 4+1 degrees';
+        filter.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
@@ -2924,14 +2943,14 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'format students';
+        filter.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
@@ -2954,14 +2973,14 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'provivisional admits, not met yet';
+        filter.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
@@ -2984,14 +3003,14 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'veterans';
+        filter.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
@@ -3014,14 +3033,14 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'applied to graduate';
+        filter.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
@@ -3044,14 +3063,14 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'mayo students';
+        filter.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
@@ -3074,14 +3093,14 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'cintana students';
+        filter.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
@@ -3103,14 +3122,14 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'research assistants';
+        filter.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
@@ -3133,14 +3152,14 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'teaching assistants';
+        filter.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
@@ -3163,14 +3182,14 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'concurrent enrollment';
+        filter.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
@@ -3193,14 +3212,14 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'active students with registation hold';
+        filter.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
@@ -3390,69 +3409,69 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'GRD';
         filter.caseTypeState = 'AllCasesState';
         filter.specialPopulation = 'accelerated 4+1 degrees;veterans';
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'GRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.specialPopulation = 'mayo students;cintana students';
+        filter2.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
-        filter3.version = 'v2';
+        filter3.version = 'v3';
         filter3.career = 'GRD';
         filter3.caseTypeState = 'AllCasesState';
         filter3.specialPopulation = 'applied to graduate;cintana students';
+        filter3.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter4 = new AdvisorPortalFilter();
-        filter4.version = 'v2';
+        filter4.version = 'v3';
         filter4.career = 'GRD';
         filter4.caseTypeState = 'AllCasesState';
         filter4.specialPopulation = 'concurrent enrollment';
+        filter4.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter5 = new AdvisorPortalFilter();
-        filter5.version = 'v2';
+        filter5.version = 'v3';
         filter5.career = 'GRD';
         filter5.caseTypeState = 'AllCasesState';
         filter5.specialPopulation = 'format students;provivisional admits, not met yet';
+        filter5.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter6 = new AdvisorPortalFilter();
-        filter6.version = 'v2';
+        filter6.version = 'v3';
         filter6.career = 'GRD';
         filter6.caseTypeState = 'AllCasesState';
         filter6.specialPopulation = 'active students with registation hold';
+        filter6.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
 
         List<AdvisorPortalContact> results3 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter3)
         );
 
         List<AdvisorPortalContact> results4 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter4)
         );
 
         List<AdvisorPortalContact> results5 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter5)
         );
 
         List<AdvisorPortalContact> results6 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter6)
         );
         Test.stopTest();
@@ -3504,25 +3523,25 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.caseCount = '1';
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.caseCount = '4';
+        filter2.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
@@ -3594,37 +3613,37 @@ private class AdvisorPortalFilterSectionControllerTest {
         endOftMinus9d = endOftMinus9d.addHours(-7);
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.createdFromDate = startOftMinus9d.format('yyyy-MM-dd');
         filter.createdToDate = endOftMinus3d.format('yyyy-MM-dd');
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.createdFromDate = startOftMinus3d.format('yyyy-MM-dd');
+        filter2.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
-        filter3.version = 'v2';
+        filter3.version = 'v3';
         filter3.career = 'UGRD';
         filter3.caseTypeState = 'ProactiveCasesState';
         filter3.createdToDate = endOftMinus3d.format('yyyy-MM-dd');
+        filter3.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
 
         List<AdvisorPortalContact> results3 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter3)
         );
         Test.stopTest();
@@ -3679,37 +3698,37 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.followUpFromDate = String.valueof(tPlus3d);
         filter.followUpToDate = String.valueof(tPlus9d);
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.followUpFromDate = String.valueof(tPlus3d);
+        filter2.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
-        filter3.version = 'v2';
+        filter3.version = 'v3';
         filter3.career = 'UGRD';
         filter3.caseTypeState = 'ProactiveCasesState';
         filter3.followUpToDate = String.valueof(tPlus3d);
+        filter3.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
 
         List<AdvisorPortalContact> results3 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter3)
         );
         Test.stopTest();
@@ -3767,37 +3786,37 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.persistenceFromDate = String.valueof(tMinus6d);
         filter.persistenceToDate = String.valueof(tMinus4d);
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'ProactiveCasesState';
         filter2.persistenceFromDate = String.valueof(tMinus4d);
+        filter2.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter3 = new AdvisorPortalFilter();
-        filter3.version = 'v2';
+        filter3.version = 'v3';
         filter3.career = 'UGRD';
         filter3.caseTypeState = 'ProactiveCasesState';
         filter3.persistenceToDate = String.valueof(tMinus4d);
+        filter3.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
 
         List<AdvisorPortalContact> results3 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter3)
         );
         Test.stopTest();
@@ -3835,23 +3854,23 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
         filter.caseTypeState = 'AllCasesState';
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'GRD';
         filter2.caseTypeState = 'AllCasesState';
+        filter2.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();
@@ -3880,13 +3899,13 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
         filter.caseTypeState = 'WatchlistCasesState';
+        filter.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
         Test.stopTest();
@@ -3924,27 +3943,27 @@ private class AdvisorPortalFilterSectionControllerTest {
         ];
 
         AdvisorPortalFilter filter = new AdvisorPortalFilter();
-        filter.version = 'v2';
+        filter.version = 'v3';
         filter.career = 'UGRD';
         filter.caseTypeState = 'ProactiveCasesState';
         filter.studentString = 'Ryan Castelli';
         filter.caseSubject = EncodingUtil.base64Encode(Blob.valueOf('Found bug'));
+        filter.ownerIds = testUser.Id;
 
         AdvisorPortalFilter filter2 = new AdvisorPortalFilter();
-        filter2.version = 'v2';
+        filter2.version = 'v3';
         filter2.career = 'UGRD';
         filter2.caseTypeState = 'AllCasesState';
         filter2.academicLevel = 'Junior';
         filter2.studentGroupCode = 'STGRP4';
+        filter2.ownerIds = testUser.Id;
 
         Test.startTest();
         List<AdvisorPortalContact> results = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter)
         );
 
         List<AdvisorPortalContact> results2 = AdvisorPortalFilterSectionController.getFilteredCases(
-            new List<Id>{ testUser.Id },
             JSON.serialize(filter2)
         );
         Test.stopTest();

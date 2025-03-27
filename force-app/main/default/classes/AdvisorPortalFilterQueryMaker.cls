@@ -1,5 +1,4 @@
 public class AdvisorPortalFilterQueryMaker {
-    List<Id> viewAsOptions;
     AdvisorPortalFilter filter;
 
     private QueryWith whenToQueryStudentGroups = QueryWith.STANDALONE;
@@ -10,8 +9,7 @@ public class AdvisorPortalFilterQueryMaker {
 
     private List<Id> prefilteredContactIds = null;
 
-    public AdvisorPortalFilterQueryMaker(List<Id> viewAsOptions, AdvisorPortalFilter filter, QueryWith basemode) {
-        this.viewAsOptions = viewAsOptions;
+    public AdvisorPortalFilterQueryMaker(AdvisorPortalFilter filter, QueryWith basemode) {
         this.filter = filter;
         this.whenWithBaseQuery = basemode;
     }
@@ -503,7 +501,7 @@ public class AdvisorPortalFilterQueryMaker {
         // In the AllCasesState - we use success student ownership model, not case owner model
         if (filter.getCaseTypeState() != 'AllCasesState')
             caseQuery
-                .bind('caseOwnerIds', viewAsOptions)
+                .bind('caseOwnerIds', filter.getOwnerIds())
                 .restrictIn('OwnerId', new DynamicSoqlBuilderRestriction.Bind('caseOwnerIds'));
 
         // If we are meant to filter student groups as part of the query on cases, do that now
@@ -745,7 +743,7 @@ public class AdvisorPortalFilterQueryMaker {
         // In the AllCasesState - we use success student ownership model, not case owner model, so add that restriction
         if (filter.getCaseTypeState() == 'AllCasesState')
             ssQuery
-                .bind('studentOwnerIds', viewAsOptions)
+                .bind('studentOwnerIds', filter.getOwnerIds())
                 .restrictIn('Success_Pod__r.OwnerId', new DynamicSoqlBuilderRestriction.Bind('studentOwnerIds'));
 
         // If we have any prefitlered contact ids to limit the query, apply them

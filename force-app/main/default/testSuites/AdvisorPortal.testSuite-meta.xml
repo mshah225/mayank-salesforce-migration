@@ -7,6 +7,5 @@
     <testClassName>AdvisorPortalFilterTest</testClassName>
     <testClassName>AdvisorPortalMassEmailControllerTest</testClassName>
     <testClassName>AdvisorPortalMassTransferControllerTest</testClassName>
-    <testClassName>AdvisorPortalTopLevelFilterTest</testClassName>
     <testClassName>DynamicSoqlBuilderTest</testClassName>
 </ApexTestSuite>

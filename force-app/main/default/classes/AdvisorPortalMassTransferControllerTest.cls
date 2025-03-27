@@ -98,30 +98,25 @@ private class AdvisorPortalMassTransferControllerTest {
     static void testCheckIfAllowedToUse() {
         User allowedUser1 = TestDataFactory.createUser(
             'test-mass-transfer-r1',
-            [SELECT Id FROM Profile WHERE Name = 'Standard User']
-            .Id
+            [SELECT Id FROM Profile WHERE Name = 'Standard User'].Id
         );
         User allowedUser2 = TestDataFactory.createUser(
             'test-mass-transfer-r2',
-            [SELECT Id FROM Profile WHERE Name = 'Standard User']
-            .Id
+            [SELECT Id FROM Profile WHERE Name = 'Standard User'].Id
         );
         User unallowedUser1 = TestDataFactory.createUser(
             'test-mass-transfer-r3',
-            [SELECT Id FROM Profile WHERE Name = 'Standard User']
-            .Id
+            [SELECT Id FROM Profile WHERE Name = 'Standard User'].Id
         );
 
         User unallowedUser2 = TestDataFactory.createUser(
             'test-mass-transfer-r4',
-            [SELECT Id FROM Profile WHERE Name = 'Standard User']
-            .Id
+            [SELECT Id FROM Profile WHERE Name = 'Standard User'].Id
         );
 
         User unallowedUser3 = TestDataFactory.createUser(
             'test-mass-transfer-r5',
-            [SELECT Id FROM Profile WHERE Name = 'Standard User']
-            .Id
+            [SELECT Id FROM Profile WHERE Name = 'Standard User'].Id
         );
         insert new List<User>{ allowedUser1, allowedUser2, unallowedUser1, unallowedUser2, unallowedUser3 };
 

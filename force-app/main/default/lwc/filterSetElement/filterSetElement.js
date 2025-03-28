@@ -26,7 +26,7 @@ export default class FilterSetElement extends LightningElement {
     @api canShare = false;
 
     get filterName() {
-        return this.newName || this.filterSet?.Name || '';
+        return this.filterSet?.Name || '';
     }
 
     get filterId() {
@@ -54,6 +54,10 @@ export default class FilterSetElement extends LightningElement {
 
     get userOwnsFilterSet() {
         return this.filterSet?.Owner__c === Id;
+    }
+
+    get cannotEditName() {
+        return !this.userOwnsFilterSet;
     }
 
     applyFilterSet(evnt) {
@@ -113,52 +117,15 @@ export default class FilterSetElement extends LightningElement {
         }
     }
 
-    renameMode = false;
-    newName = '';
-    handleRename() {
-        if (!this.renameMode) {
-            this.renameMode = true;
-            this.newName = this.filterName;
-        }
-    }
-
-    renderedCallback() {
-        if (this.renameMode) {
-            this.refs.editNameInput.focus();
-        }
-    }
-
-    changeFilterName(evnt) {
-        this.newName = evnt.detail.value;
-    }
-    changeFilterNameKeydown(evnt) {
-        if (evnt.key === 'Enter') {
-            this.renameMode = false;
-
-            evnt.stopPropagation();
-            evnt.stopImmediatePropagation();
-            evnt.preventDefault();
-
-            this.dispatchEvent(
-                new CustomEvent('rename', {
-                    detail: {
-                        filterSetId: this.filterId,
-                        value: this.newName,
-                    },
-                })
-            );
-            return false;
-        } else if (evnt.key === 'Escape') {
-            this.renameMode = false;
-            this.newName = '';
-
-            evnt.stopPropagation();
-            evnt.stopImmediatePropagation();
-            evnt.preventDefault();
-            return false;
-        }
-
-        return true;
+    handleRename(evnt) {
+        this.dispatchEvent(
+            new CustomEvent('rename', {
+                detail: {
+                    filterSetId: this.filterId,
+                    value: evnt.detail.value,
+                },
+            })
+        );
     }
 }
 

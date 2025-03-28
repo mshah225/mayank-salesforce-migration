@@ -1,36 +1,20 @@
 <template>
     <div class="slds-grid">
         <div class="slds-col">
-            <span class="slds-text-heading_medium vert-align">
-                <template lwc:if={renameMode}>
-                    <lightning-input
-                        variant="label-hidden"
-                        value={newName}
-                        onchange={changeFilterName}
-                        onkeydown={changeFilterNameKeydown}
-                        class="edit-name-input"
-                        lwc:ref="editNameInput"
-                    ></lightning-input>
-                </template>
-                <template lwc:else> {filterName} </template>
+            <span class="slds-text-heading_medium slds-var-m-right_small">
+                <c-lightning-text-editable
+                    value={filterName}
+                    button-variant="bare"
+                    hide-edit={cannotEditName}
+                    onchange={handleRename}
+                ></c-lightning-text-editable>
             </span>
 
-            <template lwc:if={userOwnsFilterSet}>
-                <lightning-button-icon
-                    icon-name="utility:edit"
-                    variant="bare"
-                    alternative-text="Edit filter set name"
-                    class="slds-m-left_x-small slds-m-right_large"
-                    title="Edit filter set name"
-                    onclick={handleRename}
-                ></lightning-button-icon>
-            </template>
+            <span>{shareType}</span>
+            <span class="slds-var-m-horizontal_xx-small">&middot;</span>
+            <span class="slds-var-m-right_large">{ownerName}</span>
 
-            <span class="vert-align">{shareType}</span>
-            <span class="vert-align slds-var-m-horizontal_xx-small">&middot;</span>
-            <span class="vert-align slds-var-m-right_large">{ownerName}</span>
-
-            <span class="vert-align slds-text-color_weak">
+            <span class="slds-text-color_weak">
                 (<lightning-formatted-date-time value={createdDate}></lightning-formatted-date-time>)
             </span>
         </div>

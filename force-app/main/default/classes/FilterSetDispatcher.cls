@@ -17,13 +17,17 @@ public with sharing class FilterSetDispatcher implements TriggerDispatcherInterf
     }
 
     public void beforeInsert() {
+        FilterSetService.setOwner(newList);
+        FilterSetService.checkUniqueName(newList);
     }
     public void beforeUpdate() {
         FilterSetService.checkOwnerBeforeRename(newList, oldMap);
+        FilterSetService.checkUniqueName(newList);
     }
     public void beforeDelete() {
     }
     public void afterInsert() {
+        FilterSetService.createFSUAForOwners(newList);
     }
     public void afterUpdate() {
     }

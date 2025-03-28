@@ -1,5 +1,8 @@
 import {LightningElement, wire} from 'lwc';
+import {getRecord, createRecord, updateRecord, deleteRecord} from 'lightning/uiRecordApi';
 import LightningPrompt from 'lightning/prompt';
+import ToastContainer from 'lightning/toastContainer';
+import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 
 import getAccessModes from '@salesforce/apex/AdvisorPortalFilterSectionController.getAccessModes';
 import getUsersAndPods from '@salesforce/apex/AdvisorPortalFilterSectionController.getUsersAndPods';
@@ -14,8 +17,13 @@ import getCaseSubClassificationPicklistValues from '@salesforce/apex/AdvisorPort
 import getCaseSubjectPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseSubjectPicklistValues';
 import getFilteredCases from '@salesforce/apex/AdvisorPortalFilterSectionController.getFilteredCases';
 
+import USER_ID from '@salesforce/user/Id';
 import STUDENT_PROGRAM_PLAN_OBJECT from '@salesforce/schema/Student_Program_Plan__c';
 import STUDENT_PROGRAM_PLAN_RESIDENCY from '@salesforce/schema/Student_Program_Plan__c.Residency__c';
+import USER_NAME_FIELD from '@salesforce/schema/User.Name';
+import FILTER_SET_OBJECT from '@salesforce/schema/Filter_Set__c';
+import FILTER_SET_NAME_FIELD from '@salesforce/schema/Filter_Set__c.Name';
+import FILTER_SET_VALUE_FIELD from '@salesforce/schema/Filter_Set__c.Value__c';
 
 import FilterSetsModal from 'c/filterSetsModal';
 import LightningCaseTransferModal from 'c/lightningCaseTransferModal';
@@ -456,6 +464,17 @@ export default class AdvisorPortalA extends LightningElement {
     accessModeError;
     userIsBothGradAndUgrad = false;
 
+    @wire(getRecord, {
+        recordId: USER_ID,
+        fields: [USER_NAME_FIELD],
+    })
+    gotUserDetail({error, data}) {
+        if (data !== undefined) {
+            this.myname = data.fields.Name.value;
+        }
+    }
+    myname;
+
     /***********************************************************************
      **********                 Dropdown options                  **********
      ***********************************************************************/
@@ -779,10 +798,8 @@ export default class AdvisorPortalA extends LightningElement {
      * Add event listener to detect lightning toasts
      */
     connectedCallback() {
-        // Listen for all standard toast events so we can toast using custom component (since normal toast events won't work in LWC-embedded on VF page)
-        this.template.addEventListener('lightning__showtoast', (evnt) => {
-            this.handleToast(evnt);
-        });
+        // Create toast container to show toasts
+        ToastContainer.instance();
     }
 
     /**
@@ -848,7 +865,14 @@ export default class AdvisorPortalA extends LightningElement {
                         'Unexpected error while retrieving cases. We could not extract a human readable error message. More details can be found in the JS console.  You should open a bug ticket with the Salesforce team.';
                 }
 
-                this.showToast('Error', errorStr, 'error', 60000);
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error',
+                        message: errorStr,
+                        variant: 'error',
+                        mode: 'sticky',
+                    })
+                );
             })
             .finally(() => {
                 this.isLoading = false;
@@ -861,10 +885,45 @@ export default class AdvisorPortalA extends LightningElement {
     viewFilterSets() {
         FilterSetsModal.open({
             size: 'large',
-            onlightning__showtoast: (evnt) => {
-                this.handleToast(evnt);
-            },
         });
+    }
+
+    appliedFilterSet;
+    saveFilterSet() {
+        LightningPrompt.open({
+            label: 'New Filter Set',
+            message: 'Give filter set a name',
+            defaultValue: `${this.myname ? this.myname + "'s" : 'My'} filter set`,
+        })
+            .then((filterSetName) => {
+                if (filterSetName != null) {
+                    const fields = {};
+                    fields[FILTER_SET_NAME_FIELD.fieldApiName] = filterSetName;
+                    fields[FILTER_SET_VALUE_FIELD.fieldApiName] = JSON.stringify(this.currentFilter);
+                    fields[FILTER_SET_VALUE_FIELD.fieldApiName] = JSON.stringify(this.currentFilter);
+
+                    const recordInput = {
+                        apiName: FILTER_SET_OBJECT.objectApiName,
+                        fields,
+                    };
+
+                    return createRecord(recordInput);
+                }
+                return Promise.resolve();
+            })
+            .then((v) => {
+                this.refs.hasSavedFilterSetToast.show();
+            })
+            .catch((e) => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Unable to save filter set',
+                        message: extractErrorMessages(e)[0],
+                        variant: 'error',
+                        mode: 'sticky',
+                    })
+                );
+            });
     }
 
     /**
@@ -888,7 +947,13 @@ export default class AdvisorPortalA extends LightningElement {
                             type: 'Improvement',
                             componentNames: 'Salesforce',
                         }).then((v) => {
-                            this.showToast('Success', 'Feedback successfully submitted: ' + v, 'success', 5000);
+                            this.dispatchEvent(
+                                new ShowToastEvent({
+                                    title: 'Success',
+                                    message: 'Feedback successfully submitted: ' + v,
+                                    variant: 'success',
+                                })
+                            );
                         });
                     }
 
@@ -897,13 +962,26 @@ export default class AdvisorPortalA extends LightningElement {
                         carName: 'Advisor Portal',
                         feedbackText: feedback,
                     }).then(() => {
-                        this.showToast('Success', 'Feedback successfully submitted', 'success', 5000);
+                        this.dispatchEvent(
+                            new ShowToastEvent({
+                                title: 'Success',
+                                message: 'Feedback successfully submitted',
+                                variant: 'success',
+                            })
+                        );
                     });
                 }
                 return Promise.resolve();
             })
             .catch((e) => {
-                this.showToast('Unable to submit feedback', extractErrorMessages(e)[0], 'error', 60000);
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Unable to submit feedback',
+                        message: extractErrorMessages(e)[0],
+                        variant: 'error',
+                        mode: 'sticky',
+                    })
+                );
             });
     }
 
@@ -927,7 +1005,13 @@ export default class AdvisorPortalA extends LightningElement {
     openMassTransferModal(evnt) {
         const wrappers = evnt?.detail?.value ?? [];
         if (wrappers.length === 0) {
-            this.showToast('Error', 'You must select some contacts/cases before using this', 'error', 5000);
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error',
+                    message: 'You must select some contacts/cases before using this',
+                    variant: 'error',
+                })
+            );
         } else {
             const caseIds = wrappers
                 .map((conWrap) => {
@@ -942,9 +1026,6 @@ export default class AdvisorPortalA extends LightningElement {
                 massTransfer: true,
                 grad: this.career === 'GRD',
                 caseIds: caseIds,
-                onlightning__showtoast: (e) => {
-                    this.handleToast(e);
-                },
                 onloading: (e) => {
                     if (e.detail === true) this.isLoading = true;
                     else this.isLoading = false;
@@ -962,15 +1043,18 @@ export default class AdvisorPortalA extends LightningElement {
         const wrappers = evnt?.detail?.value ?? [];
 
         if (wrappers.length === 0) {
-            this.showToast('Error', 'You must select some contacts/cases before using this', 'error', 5000);
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error',
+                    message: 'You must select some contacts/cases before using this',
+                    variant: 'error',
+                })
+            );
         } else {
             AdvisorPortalModalMassEmail.open({
                 size: 'medium',
                 description: 'Email all selected contacts/cases',
                 selectedContactWrappers: wrappers,
-                onlightning__showtoast: (e) => {
-                    this.handleToast(e);
-                },
                 onloading: (e) => {
                     if (e.detail === true) this.isLoading = true;
                     else this.isLoading = false;
@@ -985,15 +1069,18 @@ export default class AdvisorPortalA extends LightningElement {
         const wrappers = evnt?.detail?.value ?? [];
 
         if (wrappers.length === 0) {
-            this.showToast('Error', 'You must select some contacts/cases before using this', 'error', 5000);
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error',
+                    message: 'You must select some contacts/cases before using this',
+                    variant: 'error',
+                })
+            );
         } else {
             AdvisorPortalModalMassClose.open({
                 size: 'medium',
                 description: 'Close all selected cases',
                 selectedContactWrappers: wrappers,
-                onlightning__showtoast: (e) => {
-                    this.handleToast(e);
-                },
             });
         }
     }
@@ -1055,36 +1142,6 @@ export default class AdvisorPortalA extends LightningElement {
         const targetParent = target.parentElement;
         const tooltip = targetParent.querySelector('.tooltip');
         tooltip.classList.remove('tooltip-escaped');
-    }
-
-    // Toast handlers
-    handleToast(e) {
-        let title = '',
-            message = '',
-            type = '',
-            duration = 5000;
-
-        if (e.type === 'lightning__showtoast') {
-            // If this is a standard toast event - use toastAttributes
-            // @recommended
-            title = e?.toastAttributes?.title ?? title;
-            message = e?.toastAttributes?.message ?? message;
-            type = e?.toastAttributes?.type ?? type;
-            duration = e?.toastAttributes?.duration ?? duration;
-        } else {
-            // If it is a custom event, grab from details
-            // @deprecated
-            title = e?.detail?.title ?? title;
-            message = e?.detail?.message ?? message;
-            type = e?.detail?.type ?? type;
-            duration = e?.duration ?? duration;
-        }
-
-        this.showToast(title, message, type, duration);
-    }
-    showToast(title, message, type, duration) {
-        const toastLWC = this.template.querySelector('c-lightning-design-toast');
-        toastLWC.fireParams(title, message, type, duration);
     }
 
     // Error state

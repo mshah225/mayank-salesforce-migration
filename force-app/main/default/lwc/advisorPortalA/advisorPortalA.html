@@ -4,7 +4,12 @@
             <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
         </template>
 
-        <c-lightning-design-toast></c-lightning-design-toast>
+        <c-lightning-complex-toast lwc:ref="hasSavedFilterSetToast" variant="success" duration="8200">
+            <span slot="header">New filter set has been saved!</span>
+            <span slot="body">
+                <a role="button" class="" onclick={viewFilterSets}>View saved filters</a>
+            </span>
+        </c-lightning-complex-toast>
 
         <div class="slds-text-align_right slds-var-m-bottom_x-small">
             <template lwc:if={userIsBothGradAndUgrad}>
@@ -42,6 +47,7 @@
                         label="Save"
                         title="Save"
                         icon-name="utility:save"
+                        onclick={saveFilterSet}
                         class="slds-var-m-right_x-small"
                     ></lightning-button>
 

@@ -1,0 +1,9 @@
+{
+    "uiapi": {
+        "query": {
+            "Filter_Set__c": {
+                "edges": []
+            }
+        }
+    }
+}

@@ -24,6 +24,7 @@
                                 <template for:each={pinnedFilterSets} for:item="filterSet">
                                     <div key={filterSet.Id} class="slds-var-m-vertical_xx-small">
                                         <c-filter-set-element
+                                            onapply={handleApplyEvent}
                                             onpin={handlePinEvent}
                                             onshare={handleShareEvent}
                                             onview={handleViewEvent}
@@ -66,6 +67,7 @@
                         <template for:each={nonpinnedFilterSets} for:item="filterSet">
                             <div key={filterSet.Id} class="slds-var-m-vertical_xx-small">
                                 <c-filter-set-element
+                                    onapply={handleApplyEvent}
                                     onpin={handlePinEvent}
                                     onshare={handleShareEvent}
                                     onview={handleViewEvent}

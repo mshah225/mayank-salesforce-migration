@@ -65,14 +65,14 @@ describe('c-filter-sets-modal', () => {
         await flushPromises(); // Wait for page to render
 
         FilterSetShareModal.open.mockImplementationOnce(() => {
-            return Promise.resolve({userIds: [Id]});
+            return Promise.resolve({userIds: []});
         });
 
         // Raise event
         element.shadowRoot.querySelector('c-filter-set-element').dispatchEvent(
             new CustomEvent('share', {
                 detail: {
-                    filterSetId: wirePrivate.uiapi.query.Filter_Set__c.edges[0].node.Id,
+                    filterSetId: wireSharedByMe.uiapi.query.Filter_Set__c.edges[0].node.Id,
                 },
             })
         );

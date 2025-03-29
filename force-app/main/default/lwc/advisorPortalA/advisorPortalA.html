@@ -36,7 +36,45 @@
         </div>
         <div class="slds-grid slds-var-m-bottom_small">
             <div class="slds-col">
-                <span class="slds-text-heading_medium"> Start a new filter</span>
+                <template lwc:if={appliedFilterSet}>
+                    <div class="slds-text-title">{filterSetSharedType}</div>
+                    <div class="slds-grid slds-grid_vertical-align-center">
+                        <span class="slds-text-heading_medium slds-var-m-right_xx-small">
+                            <c-lightning-text-editable
+                                value={filterSetName}
+                                hide-edit={cannotEditFilterSetName}
+                                onchange={handleRenameFilterSet}
+                            ></c-lightning-text-editable>
+                        </span>
+                        <lightning-button-icon-stateful
+                            icon-name="utility:pin"
+                            selected={filterSetIsPinned}
+                            onclick={handleTogglePinFilterSet}
+                            alternative-text={filterSetPinLabel}
+                            class="slds-var-m-right_xx-small"
+                        ></lightning-button-icon-stateful>
+                        <template lwc:if={userCanShareFilterSet}>
+                            <lightning-button-icon
+                                icon-name="utility:share"
+                                variant="base"
+                                alternative-text="Share filter set"
+                                class="slds-var-m-right_xx-small"
+                                title="Share filter set"
+                                onclick={handleShareFilterSet}
+                            ></lightning-button-icon>
+                        </template>
+                        <lightning-button-icon
+                            icon-name="utility:delete"
+                            variant="base"
+                            alternative-text="Delete filter set name"
+                            title="Delete filter set name"
+                            onclick={handleDeleteFilterSet}
+                        ></lightning-button-icon>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <span class="slds-text-heading_medium"> Start a new filter</span>
+                </template>
             </div>
             <div
                 class="slds-col slds-grow-none slds-box slds-var-m-horizontal_small slds-grid slds-grid_vertical-align-center"

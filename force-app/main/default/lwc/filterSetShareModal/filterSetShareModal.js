@@ -30,7 +30,9 @@ export default class FilterSetShareModal extends LightningModal {
     @api set filterSet(v) {
         this._filterSet = v;
         // Start shared with list based on passed object
-        this.sharedWith = (v?.Filter_Set_User_Associations__r ?? []).map((fsua) => fsua.User__c);
+        this.sharedWith = (v?.Filter_Set_User_Associations__r ?? [])
+            .map((fsua) => fsua.User__c)
+            .filter((fsua) => fsua.User__c !== Id);
     }
     get filterSet() {
         return this._filterSet;
@@ -91,11 +93,11 @@ export default class FilterSetShareModal extends LightningModal {
         let seen = [];
         return allShareOptions
             .filter((v) => {
+                if (v.value === Id) return false;
                 if (seen.includes(v.value)) return false;
                 seen.push(v.value);
                 return true;
             })
-            .filter((v) => v.value !== Id)
             .sort((a, b) => {
                 if (this.sharedWith.includes(a.value) && this.sharedWith.includes(b.value)) {
                     return a.label.localeCompare(b.label);
@@ -119,14 +121,12 @@ export default class FilterSetShareModal extends LightningModal {
             sharedWithIdToLabel[userOption.value] = userOption.label;
         }
 
-        return this.sharedWith
-            .filter((v) => v.value !== Id)
-            .map((v) => {
-                return {
-                    Name: sharedWithIdToLabel[v],
-                    Id: v,
-                };
-            });
+        return this.sharedWith.map((v) => {
+            return {
+                Name: sharedWithIdToLabel[v],
+                Id: v,
+            };
+        });
     }
 
     /**
@@ -155,7 +155,6 @@ export default class FilterSetShareModal extends LightningModal {
     }
     saveChanges() {
         let shareWithIds = [...this.sharedWith];
-        shareWithIds.push(Id); // re-add current user since they are never modified by this component
         this.close({userIds: shareWithIds});
     }
 

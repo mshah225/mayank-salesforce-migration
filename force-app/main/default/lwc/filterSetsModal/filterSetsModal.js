@@ -8,36 +8,14 @@ import {extractErrorMessages} from 'c/helperFunctions';
 import FilterSetShareModal from 'c/filterSetShareModal';
 import FilterSetRemoveModal from 'c/filterSetRemoveModal';
 import checkIfCanShare from '@salesforce/apex/FilterSetController.checkIfCanShare';
-
-import FILTER_SET_ID_FIELD from '@salesforce/schema/Filter_Set__c.Id';
-import FILTER_SET_NAME_FIELD from '@salesforce/schema/Filter_Set__c.Name';
-
-import FSUA_OBJECT from '@salesforce/schema/Filter_Set_User_Association__c';
-import FSUA_ID_FIELD from '@salesforce/schema/Filter_Set_User_Association__c.Id';
-import FSUA_USER_FIELD from '@salesforce/schema/Filter_Set_User_Association__c.User__c';
-import FSUA_FILTER_SET_FIELD from '@salesforce/schema/Filter_Set_User_Association__c.Filter_Set__c';
-import FSUA_PINNED_FIELD from '@salesforce/schema/Filter_Set_User_Association__c.Pinned__c';
+import GraphqlManager from 'c/graphqlManager';
+import FilterSetManager from 'c/filterSetManager';
 
 import UFSP_OBJECT from '@salesforce/schema/User_Filter_Set_Preference__c';
 import UFSP_ID_FIELD from '@salesforce/schema/User_Filter_Set_Preference__c.Id';
 import UFSP_SORT_ORDER_FIELD from '@salesforce/schema/User_Filter_Set_Preference__c.Sort_Order__c';
 
 /**
- * @typedef {Object} PinEventDetail Each pin event detail contains the filterSetId of which filter set this is for
- *      and whether it should be pinned or not
- * @property {String} filterSetId Filter Set Id
- * @property {Boolean} pinned Should this be pinned, or unpinned?
- *
- * @typedef {Object} RenameEventDetail Each rename event detail contains the filterSetId of which filter set this is for and its new name
- * @property {String} filterSetId Filter Set Id
- * @property {String} value New name for filter set
- *
- * @typedef {Object} ShareEventDetail Each share event contains only the filter set id
- * @property {String} filterSetId Filter Set Id
- *
- * @typedef {Object} RemoveEventDetail Each remove event contains only the filter set id
- * @property {String} filterSetId Filter Set Id
- *
  * @typedef {Object} FilterSet Each filter set object
  * @property {String} Id If of the filter set
  * @property {String} Name Name of the filter set
@@ -152,11 +130,14 @@ export default class FilterSetsModal extends LightningModal {
     })
     gotData({data, errors}) {
         if (data !== undefined) {
-            this.wireData = data;
+            let graphqlManager = new GraphqlManager(data);
+            this.filterSetManager = new FilterSetManager(graphqlManager.unwrap().Filter_Set__c);
+            this.filterSetPreferences = graphqlManager.unwrap().User_Filter_Set_Preference__c[0];
             this.wireError = undefined;
         } else if (errors !== undefined) {
             this.wireError = errors;
-            this.wireData = undefined;
+            this.filterSetManager = undefined;
+            this.filterSetPreferences = undefined;
         }
     }
     get gqlVariables() {
@@ -165,7 +146,8 @@ export default class FilterSetsModal extends LightningModal {
         };
     }
 
-    wireData = undefined;
+    filterSetManager = undefined;
+    filterSetPreferences = undefined;
     wireError = undefined;
 
     @wire(checkIfCanShare, {})
@@ -178,46 +160,9 @@ export default class FilterSetsModal extends LightningModal {
     }
     allowedToShare = false;
 
-    get filterSetPreferences() {
-        return (this.wireData?.uiapi?.query?.User_Filter_Set_Preference__c?.edges ?? []).map((userPref) => {
-            return {
-                Id: userPref?.node?.Id,
-                Sort_Order__c: userPref?.node?.Sort_Order__c?.value,
-            };
-        })[0];
-    }
     /** @type {FilterSet[]} */
     get allFilterSets() {
-        return (this.wireData?.uiapi?.query?.Filter_Set__c?.edges ?? []).map((filterSet) => {
-            return {
-                Id: filterSet?.node?.Id,
-                Name: filterSet?.node?.Name?.value,
-                Owner__c: filterSet?.node?.Owner__c?.value,
-                Owner__r: {
-                    Name: filterSet?.node?.Owner__r?.Name?.value,
-                    Alias: filterSet?.node?.Owner__r?.Alias?.value,
-                },
-                Value__c: filterSet?.node?.Value__c?.value,
-                Is_Shared__c: filterSet?.node?.Is_Shared__c?.value,
-                CreatedDate: filterSet?.node?.CreatedDate?.value,
-                Filter_Set_User_Associations__r: (filterSet?.node?.Filter_Set_User_Associations__r?.edges ?? []).map(
-                    (fsua) => {
-                        return {
-                            Id: fsua?.node?.Id,
-                            User__c: fsua?.node?.User__c?.value,
-                            User__r: {
-                                Name: fsua?.node?.User__r?.Name?.value,
-                                Alias: fsua?.node?.User__r?.Alias?.value,
-                            },
-                        };
-                    }
-                ),
-                Pinned__c:
-                    (filterSet?.node?.Filter_Set_User_Associations__r?.edges ?? []).filter(
-                        (fsua) => fsua?.node?.User__c?.value === Id
-                    )[0]?.node?.Pinned__c?.value ?? false,
-            };
-        });
+        return this.filterSetManager?.getAll() ?? [];
     }
 
     /**
@@ -393,26 +338,13 @@ export default class FilterSetsModal extends LightningModal {
      * @param {CustomEvent} evnt
      */
     handlePinEvent(evnt) {
-        /** @type {PinEventDetail} */
-        const eventDetail = evnt.detail;
-
-        let filterSet = this.allFilterSets.filter((fs) => fs.Id === eventDetail.filterSetId)[0];
-        let filterSetUserAssociation = filterSet.Filter_Set_User_Associations__r.filter(
-            (fsua) => fsua.User__c === Id
-        )[0];
-
-        const fields = {};
-        fields[FSUA_ID_FIELD.fieldApiName] = filterSetUserAssociation.Id;
-        fields[FSUA_PINNED_FIELD.fieldApiName] = eventDetail.pinned;
-
-        const recordInput = {fields};
-
-        updateRecord(recordInput)
+        this.filterSetManager
+            .pin(evnt.detail.filterSetId, evnt.detail.pinned)
             .then(() => {
                 this.dispatchEvent(
                     new ShowToastEvent({
                         title: 'Success',
-                        message: eventDetail.pinned ? 'Filter set pinned' : 'Filter set unpinned',
+                        message: evnt.detail.pinned ? 'Filter set pinned' : 'Filter set unpinned',
                         variant: 'success',
                     })
                 );
@@ -420,7 +352,7 @@ export default class FilterSetsModal extends LightningModal {
             .catch((error) => {
                 this.dispatchEvent(
                     new ShowToastEvent({
-                        title: `Error when ${eventDetail.pinned ? 'pinning' : 'unpinning'} filter set`,
+                        title: `Error when ${evnt.detail.pinned ? 'pinning' : 'unpinning'} filter set`,
                         message: extractErrorMessages(error)[0],
                         variant: 'error',
                         mode: 'sticky',
@@ -429,19 +361,23 @@ export default class FilterSetsModal extends LightningModal {
             });
     }
 
-    handleApplyEvent(evnt) {}
-    handleShareEvent(evnt) {
-        if (!this.allowedToShare) {
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: 'You are not allowed to share filter sets',
-                    message: ' ',
-                    variant: 'error',
-                })
-            );
-        }
+    /**
+     * Handle applying a filter set
+     */
+    handleApplyEvent(evnt) {
+        this.close({
+            action: {
+                apply: true,
+                filterSetId: evnt.detail?.filterSetId,
+                filterSet: evnt.detail?.filterSet,
+            },
+        });
+    }
 
-        /** @type {ShareEventDetail} */
+    /**
+     * Handle sharing a filter set
+     */
+    handleShareEvent(evnt) {
         const eventDetail = evnt.detail;
         let filterSet = this.allFilterSets.filter((fs) => fs.Id === eventDetail.filterSetId)[0];
 
@@ -451,37 +387,7 @@ export default class FilterSetsModal extends LightningModal {
         })
             .then((resp) => {
                 if (resp?.userIds != null) {
-                    let shareWithUserIds = resp.userIds;
-                    shareWithUserIds.push(Id);
-
-                    let fsuas = filterSet.Filter_Set_User_Associations__r ?? [];
-                    let alreadyHaveFSUALs = fsuas.map((fsua) => fsua.User__c);
-
-                    // Any FSUA that exist but aren't in the new list
-                    // (exlcuding for the current user since the own users sharing is not managed using this button)
-                    let fSUAsToRemove = fsuas.filter((fsua) => !shareWithUserIds.includes(fsua.User__c));
-                    // Any users in the list that don't have a FSUA
-                    let usersThatNeedNewFSUA = shareWithUserIds.filter((userId) => !alreadyHaveFSUALs.includes(userId));
-
-                    let promiseList = [];
-
-                    for (const removeMe of fSUAsToRemove) {
-                        promiseList.push(deleteRecord(removeMe.Id));
-                    }
-                    for (const userId of usersThatNeedNewFSUA) {
-                        const fields = {};
-                        fields[FSUA_USER_FIELD.fieldApiName] = userId;
-                        fields[FSUA_FILTER_SET_FIELD.fieldApiName] = filterSet.Id;
-
-                        const recordInput = {
-                            apiName: FSUA_OBJECT.objectApiName,
-                            fields,
-                        };
-
-                        promiseList.push(createRecord(recordInput));
-                    }
-
-                    return Promise.all(promiseList).then(() => {
+                    return this.filterSetManager.share(eventDetail.filterSetId, resp.userIds).then(() => {
                         this.dispatchEvent(
                             new ShowToastEvent({
                                 title: 'Filter set has been shared',
@@ -504,14 +410,25 @@ export default class FilterSetsModal extends LightningModal {
                 );
             });
     }
-    handleViewEvent(evnt) {}
+
+    /**
+     * Handle viewing a filter set
+     */
+    handleViewEvent(evnt) {
+        this.close({
+            action: {
+                apply: false,
+                filterSetId: evnt.detail?.filterSetId,
+                filterSet: evnt.detail?.filterSet,
+            },
+        });
+    }
 
     /**
      * Handle removing a filter set
      * @param {CustomEvent} evnt
      */
     handleRemoveEvent(evnt) {
-        /** @type {RemoveEventDetail} */
         const eventDetail = evnt.detail;
 
         let filterSet = this.allFilterSets.filter((fs) => fs.Id === eventDetail.filterSetId)[0];
@@ -522,32 +439,17 @@ export default class FilterSetsModal extends LightningModal {
         })
             .then((val) => {
                 if (val?.delete != null) {
-                    if (val.delete === true) {
-                        // Delete the filter set outright
-                        return deleteRecord(filterSet.Id).then(() => {
-                            this.dispatchEvent(
-                                new ShowToastEvent({
-                                    title: 'Success',
-                                    message: 'Filter set has been removed',
-                                    variant: 'success',
-                                })
-                            );
-                        });
-                    } else if (val.delete === false) {
-                        // Unshare with some users
-                        let promiseList = [];
-                        for (const fsuaId of val.unshare) promiseList.push(deleteRecord(fsuaId));
-
-                        return Promise.all(promiseList).then(() => {
-                            this.dispatchEvent(
-                                new ShowToastEvent({
-                                    title: 'Success',
-                                    message: 'Filter set has been unshared with selected users',
-                                    variant: 'success',
-                                })
-                            );
-                        });
-                    }
+                    return this.filterSetManager.remove(filterSet.Id, val).then(() => {
+                        this.dispatchEvent(
+                            new ShowToastEvent({
+                                title: 'Success',
+                                message: val.delete
+                                    ? 'Filter set has been removed'
+                                    : 'Filter set has been unshared with selected users',
+                                variant: 'success',
+                            })
+                        );
+                    });
                 }
                 // Cancelled deletion
                 return Promise.resolve();
@@ -566,19 +468,10 @@ export default class FilterSetsModal extends LightningModal {
 
     /**
      * Rename a filter set
-     * @param {CustomEvent} evnt
      */
     handleRenameEvent(evnt) {
-        /** @type {RenameEventDetail} */
-        const eventDetail = evnt.detail;
-
-        const fields = {};
-        fields[FILTER_SET_ID_FIELD.fieldApiName] = eventDetail.filterSetId;
-        fields[FILTER_SET_NAME_FIELD.fieldApiName] = eventDetail.value;
-
-        const recordInput = {fields};
-
-        updateRecord(recordInput)
+        this.filterSetManager
+            .rename(evnt.detail.filterSetId, evnt.detail.value)
             .then(() => {
                 this.dispatchEvent(
                     new ShowToastEvent({
@@ -604,7 +497,7 @@ export default class FilterSetsModal extends LightningModal {
      * Loading and error state
      */
     get isLoading() {
-        return this.wireData === undefined;
+        return this.filterSetManager === undefined;
     }
     get hasError() {
         return this.wireError !== undefined;
@@ -616,7 +509,10 @@ export default class FilterSetsModal extends LightningModal {
 }
 
 export class FilterSetsModalTest extends FilterSetsModal {
-    @api get filterSetPreferences() {
+    @api set filterSetPreferences(v) {
+        super.filterSetPreferences = v;
+    }
+    get filterSetPreferences() {
         return super.filterSetPreferences;
     }
 

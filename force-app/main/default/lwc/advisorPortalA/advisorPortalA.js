@@ -1,8 +1,11 @@
 import {LightningElement, wire} from 'lwc';
 import {getRecord, createRecord, updateRecord, deleteRecord} from 'lightning/uiRecordApi';
+import {gql, graphql} from 'lightning/uiGraphQLApi';
 import LightningPrompt from 'lightning/prompt';
 import ToastContainer from 'lightning/toastContainer';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
+import GraphqlManager from 'c/graphqlManager';
+import FilterSetManager from 'c/filterSetManager';
 
 import getAccessModes from '@salesforce/apex/AdvisorPortalFilterSectionController.getAccessModes';
 import getUsersAndPods from '@salesforce/apex/AdvisorPortalFilterSectionController.getUsersAndPods';
@@ -16,16 +19,20 @@ import getCaseClassificationPicklistValues from '@salesforce/apex/AdvisorPortalF
 import getCaseSubClassificationPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseSubClassificationPicklistValues';
 import getCaseSubjectPicklistValues from '@salesforce/apex/AdvisorPortalFilterSectionController.getCaseSubjectPicklistValues';
 import getFilteredCases from '@salesforce/apex/AdvisorPortalFilterSectionController.getFilteredCases';
+import checkIfCanShareFilterSets from '@salesforce/apex/FilterSetController.checkIfCanShare';
 
 import USER_ID from '@salesforce/user/Id';
 import STUDENT_PROGRAM_PLAN_OBJECT from '@salesforce/schema/Student_Program_Plan__c';
 import STUDENT_PROGRAM_PLAN_RESIDENCY from '@salesforce/schema/Student_Program_Plan__c.Residency__c';
 import USER_NAME_FIELD from '@salesforce/schema/User.Name';
 import FILTER_SET_OBJECT from '@salesforce/schema/Filter_Set__c';
+import FILTER_SET_ID_FIELD from '@salesforce/schema/Filter_Set__c.Id';
 import FILTER_SET_NAME_FIELD from '@salesforce/schema/Filter_Set__c.Name';
 import FILTER_SET_VALUE_FIELD from '@salesforce/schema/Filter_Set__c.Value__c';
 
 import FilterSetsModal from 'c/filterSetsModal';
+import FilterSetShareModal from 'c/filterSetShareModal';
+import FilterSetRemoveModal from 'c/filterSetRemoveModal';
 import LightningCaseTransferModal from 'c/lightningCaseTransferModal';
 import AdvisorPortalModalMassEmail from 'c/advisorPortalModalMassEmail';
 import AdvisorPortalModalMassClose from 'c/advisorPortalModalMassClose';
@@ -475,6 +482,133 @@ export default class AdvisorPortalA extends LightningElement {
     }
     myname;
 
+    @wire(checkIfCanShareFilterSets, {})
+    checkedIfCanShareFilterSets({data, errors}) {
+        if (data !== undefined) {
+            this.allowedToShareFilterSets = data;
+        } else if (errors !== undefined) {
+            this.allowedToShareFilterSets = false;
+        }
+    }
+    allowedToShareFilterSets = false;
+
+    /** If there is an applied filter set, get details about it */
+    @wire(graphql, {
+        query: gql`
+            query FilterSetQuery($filterSetId: ID!) {
+                uiapi {
+                    query {
+                        Filter_Set__c(where: {Id: {eq: $filterSetId}}) {
+                            edges {
+                                node {
+                                    Id
+                                    Name {
+                                        value
+                                    }
+                                    Owner__c {
+                                        value
+                                    }
+                                    Owner__r {
+                                        Name {
+                                            value
+                                        }
+                                        Alias {
+                                            value
+                                        }
+                                    }
+                                    Value__c {
+                                        value
+                                    }
+                                    Is_Shared__c {
+                                        value
+                                    }
+                                    CreatedDate {
+                                        value
+                                    }
+
+                                    Filter_Set_User_Associations__r {
+                                        edges {
+                                            node {
+                                                Id
+                                                User__c {
+                                                    value
+                                                }
+                                                User__r {
+                                                    Name {
+                                                        value
+                                                    }
+                                                    Alias {
+                                                        value
+                                                    }
+                                                }
+                                                Pinned__c {
+                                                    value
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `,
+        variables: '$appliedFilterSetGraphQLVars',
+    })
+    gotAppliedFitlerSetDetails({data, errors}) {
+        if (data !== undefined) {
+            let graphqlManager = new GraphqlManager(data);
+            this.filterSetManager = new FilterSetManager(graphqlManager.unwrap().Filter_Set__c);
+            this.appliedFilterSet = this.filterSetManager.getAll()[0];
+        } else if (errors !== undefined) {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error loading filter set details',
+                    message: extractErrorMessages(errors)[0],
+                    variant: 'error',
+                })
+            );
+            this.appliedFilterSet = undefined;
+            this.filterSetManager = undefined;
+        }
+    }
+    get appliedFilterSetGraphQLVars() {
+        if (this.appliedFilterSetId == null) return undefined;
+        return {
+            filterSetId: this.appliedFilterSetId,
+        };
+    }
+    filterSetManager;
+    appliedFilterSetId;
+    appliedFilterSet;
+
+    get filterSetSharedType() {
+        return this.appliedFilterSet?.Is_Shared__c
+            ? this.userOwnsFilterSet
+                ? 'Shared by me'
+                : 'Shared with me'
+            : 'Private';
+    }
+    get filterSetName() {
+        return this.filterSetNameName || this.appliedFilterSet?.Name || '';
+    }
+    get userOwnsFilterSet() {
+        return this.appliedFilterSet?.Owner__c === USER_ID;
+    }
+    get filterSetIsPinned() {
+        return this.appliedFilterSet.Pinned__c ?? false;
+    }
+    get filterSetPinLabel() {
+        return this.filterSetIsPinned ? 'Unpin' : 'Pin';
+    }
+    get userCanShareFilterSet() {
+        return this.allowedToShareFilterSets && this.userOwnsFilterSet;
+    }
+    get cannotEditFilterSetName() {
+        return !this.userOwnsFilterSet;
+    }
+
     /***********************************************************************
      **********                 Dropdown options                  **********
      ***********************************************************************/
@@ -505,7 +639,6 @@ export default class AdvisorPortalA extends LightningElement {
                     isLabel: isLabel,
                 };
             });
-            this.ownerIds = this.myQueueId;
         } else if (error !== undefined) {
             this.allUsersAndPodsError = error;
         }
@@ -821,6 +954,10 @@ export default class AdvisorPortalA extends LightningElement {
         if (fieldName != null) {
             this[fieldName] = fieldValue;
         }
+
+        // Any triggers to immediately apply changes
+        if (fieldName === 'career') this.applyFilters();
+        else if (fieldName === 'caseTypeState') this.applyFilters();
     }
 
     /**
@@ -840,7 +977,7 @@ export default class AdvisorPortalA extends LightningElement {
      */
     applyFilters() {
         this.appliedFilter = {...this.currentFilter};
-        this.apply(this.currentFilter);
+        return this.apply(this.currentFilter);
     }
     reapplyFilters() {
         if (this.appliedFilter != null) this.apply(this.appliedFilter);
@@ -849,7 +986,7 @@ export default class AdvisorPortalA extends LightningElement {
     isLoading = false;
     apply(filter) {
         this.isLoading = true;
-        getFilteredCases({filterJSON: JSON.stringify(filter)})
+        return getFilteredCases({filterJSON: JSON.stringify(filter)})
             .then((val) => {
                 this.allResults = val;
             })
@@ -885,10 +1022,153 @@ export default class AdvisorPortalA extends LightningElement {
     viewFilterSets() {
         FilterSetsModal.open({
             size: 'large',
+        }).then((result) => {
+            if (result?.action != null) {
+                if (result?.action?.filterSet?.Value__c == null) {
+                    throw new Error('Could not apply filter set, filter set value was empty');
+                }
+
+                this.appliedFilterSetId = result.action.filterSetId;
+
+                // Set filter from saved filter set
+                this.currentFilter = JSON.parse(result.action.filterSet.Value__c);
+
+                // Apply filters is apply is true (rather than just viewing filter values)
+                if (result?.action?.apply === true) this.applyFilters();
+            }
         });
     }
 
-    appliedFilterSet;
+    /**
+     * Rename applied filter set
+     */
+    handleRenameFilterSet(evnt) {
+        this.filterSetManager
+            .rename(this.appliedFilterSet.Id, evnt.detail.value)
+            .then(() => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Success',
+                        message: 'Filter set renamed',
+                        variant: 'success',
+                    })
+                );
+            })
+            .catch((error) => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error while renaming filter set',
+                        message: extractErrorMessages(error)[0],
+                        variant: 'error',
+                        mode: 'sticky',
+                    })
+                );
+            });
+    }
+
+    /**
+     * Pin or unpin applied filter set
+     */
+    handleTogglePinFilterSet() {
+        let newPinValue = !this.filterSetIsPinned;
+
+        this.filterSetManager
+            .pin(this.appliedFilterSet.Id, newPinValue)
+            .then(() => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Success',
+                        message: newPinValue ? 'Filter set pinned' : 'Filter set unpinned',
+                        variant: 'success',
+                    })
+                );
+            })
+            .catch((error) => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: `Error when ${newPinValue ? 'pinning' : 'unpinning'} filter set`,
+                        message: extractErrorMessages(error)[0],
+                        variant: 'error',
+                        mode: 'sticky',
+                    })
+                );
+            });
+    }
+
+    /**
+     * Share or unshare currently applied filter set
+     */
+    handleShareFilterSet() {
+        FilterSetShareModal.open({
+            size: 'medium',
+            filterSet: this.appliedFilterSet,
+        })
+            .then((resp) => {
+                if (resp?.userIds != null) {
+                    return this.filterSetManager.share(this.appliedFilterSet.Id, resp.userIds).then(() => {
+                        this.dispatchEvent(
+                            new ShowToastEvent({
+                                title: 'Filter set has been shared',
+                                message: ' ',
+                                variant: 'success',
+                            })
+                        );
+                    });
+                }
+                // Cancelled out of modal and not applying changes
+                return Promise.resolve();
+            })
+            .catch((e) => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error',
+                        message: extractErrorMessages(e)[0],
+                        variant: 'error',
+                    })
+                );
+            });
+    }
+
+    /**
+     * Delete currently applied fileer set
+     */
+    handleDeleteFilterSet() {
+        FilterSetRemoveModal.open({
+            size: 'small',
+            filterSet: this.appliedFilterSet,
+        })
+            .then((val) => {
+                if (val?.delete != null) {
+                    return this.filterSetManager.remove(this.appliedFilterSet.Id, val).then(() => {
+                        this.dispatchEvent(
+                            new ShowToastEvent({
+                                title: 'Success',
+                                message: val.delete
+                                    ? 'Filter set has been removed'
+                                    : 'Filter set has been unshared with selected users',
+                                variant: 'success',
+                            })
+                        );
+                    });
+                }
+                // Cancelled deletion
+                return Promise.resolve();
+            })
+            .catch((error) => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error when removing filter set',
+                        message: extractErrorMessages(error)[0],
+                        variant: 'error',
+                        mode: 'sticky',
+                    })
+                );
+            });
+    }
+
+    /**
+     * Save current configuration as a new filter set
+     */
     saveFilterSet() {
         LightningPrompt.open({
             label: 'New Filter Set',
@@ -907,12 +1187,12 @@ export default class AdvisorPortalA extends LightningElement {
                         fields,
                     };
 
-                    return createRecord(recordInput);
+                    return createRecord(recordInput).then((recordOutput) => {
+                        this.appliedFilterSetId = recordOutput.id;
+                        this.refs.hasSavedFilterSetToast.show();
+                    });
                 }
                 return Promise.resolve();
-            })
-            .then((v) => {
-                this.refs.hasSavedFilterSetToast.show();
             })
             .catch((e) => {
                 this.dispatchEvent(

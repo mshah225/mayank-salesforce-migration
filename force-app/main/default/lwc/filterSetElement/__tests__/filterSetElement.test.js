@@ -215,8 +215,8 @@ describe('c-filter-set-element', () => {
 
         await flushPromises(); // Await render
 
-        // No rename button
-        expect(element.shadowRoot.querySelector('lightning-button-icon')).toBeTruthy();
+        // Yes rename button
+        expect(element.shadowRoot.querySelector('c-lightning-text-editable').hideEdit).toEqual(false);
     });
 
     test('Hide rename button if not owner', async () => {
@@ -229,33 +229,10 @@ describe('c-filter-set-element', () => {
         await flushPromises(); // Await render
 
         // No rename button
-        expect(element.shadowRoot.querySelector('lightning-button-icon')).toBeFalsy();
+        expect(element.shadowRoot.querySelector('c-lightning-text-editable').hideEdit).toEqual(true);
     });
 
-    test('Rename mode', async () => {
-        const element = createElement('c-filter-set-element', {
-            is: FilterSetElementTest,
-        });
-        element.filterSet = privateFilterSet;
-        document.body.appendChild(element);
-
-        // Currently not in rename mode
-        expect(element.renameMode).toEqual(false);
-
-        // Press rename button
-        element.shadowRoot.querySelector('lightning-button-icon').click();
-
-        // Now in rename mode
-        expect(element.renameMode).toEqual(true);
-
-        // Await re-render
-        await flushPromises();
-
-        // Text box is now rendered to change name
-        expect(element.shadowRoot.querySelector('lightning-input')).toBeTruthy();
-    });
-
-    test('Rename events are raised on enter', async () => {
+    test('Rename events are raised', async () => {
         const element = createElement('c-filter-set-element', {
             is: FilterSetElementTest,
         });
@@ -272,57 +249,14 @@ describe('c-filter-set-element', () => {
         });
         element.addEventListener('rename', renameHandler);
 
-        // Press rename button
-        element.shadowRoot.querySelector('lightning-button-icon').click();
-
-        // Await re-render
-        await flushPromises();
         // Change name
         element.shadowRoot
-            .querySelector('lightning-input')
+            .querySelector('c-lightning-text-editable')
             .dispatchEvent(new CustomEvent('change', {detail: {value: 'New Name'}}));
-
-        // Press enter to apply new name
-        element.shadowRoot.querySelector('lightning-input').dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter'}));
 
         await flushPromises();
 
         // Check for event
         expect(renameHandler).toHaveBeenCalledTimes(1);
-        // Check renamed name
-        expect(element.filterName).toEqual('New Name');
-    });
-
-    test('Rename cancelled with escape', async () => {
-        const element = createElement('c-filter-set-element', {
-            is: FilterSetElementTest,
-        });
-        element.filterSet = privateFilterSet;
-        document.body.appendChild(element);
-
-        const renameHandler = jest.fn();
-        element.addEventListener('rename', renameHandler);
-
-        // Press rename button
-        element.shadowRoot.querySelector('lightning-button-icon').click();
-
-        // Await re-render
-        await flushPromises();
-        // Change name
-        element.shadowRoot
-            .querySelector('lightning-input')
-            .dispatchEvent(new CustomEvent('change', {detail: {value: 'New Name'}}));
-
-        // Press enter to apply new name
-        element.shadowRoot
-            .querySelector('lightning-input')
-            .dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape'}));
-
-        await flushPromises();
-
-        // Check for no event
-        expect(renameHandler).toHaveBeenCalledTimes(0);
-        // Reset filter name
-        expect(element.filterName).toEqual(privateFilterSet.Name);
     });
 });

@@ -255,7 +255,7 @@ public class AdvisorPortalFilter {
             val_arr = val.split(';');
 
         if (val_arr == null)
-            val_arr = new List<String>{ UserInfo.getUserId() };
+            val_arr = new List<String>();
 
         return val_arr;
     }

@@ -580,6 +580,7 @@ global with sharing class StudentProfileController {
                 Admission_Type_Description__c,
                 Appt_Dt__c,
                 Appt_Dt_Pending__c,
+                ASUPGA_Status__c,
                 Enrl_Deposit__c,
                 Enrl_Hrs__c,
                 Enrl_Hrs_Pending__c,

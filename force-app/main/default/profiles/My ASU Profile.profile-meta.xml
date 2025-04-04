@@ -1,0 +1,1813 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Profile xmlns="http://soap.sforce.com/2006/04/metadata">
+    <categoryGroupVisibilities>
+        <dataCategoryGroup>Fall_2020</dataCategoryGroup>
+        <visibility>ALL</visibility>
+    </categoryGroupVisibilities>
+    <custom>true</custom>
+    <userLicense>Guest User License</userLicense>
+    <classAccesses>
+        <apexClass>InsertEmailMessage</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <pageAccesses>
+        <apexPage>BandwidthExceeded</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>CommunitiesLogin</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>FileNotFound</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>error</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>robots</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>studentSC</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>viewcase</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <externalDataSourceAccesses>
+        <enabled>false</enabled>
+        <externalDataSource>EdPlusCrossOrg</externalDataSource>
+    </externalDataSourceAccesses>
+    <externalDataSourceAccesses>
+        <enabled>false</enabled>
+        <externalDataSource>crm_student_profile_odata</externalDataSource>
+    </externalDataSourceAccesses>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Contact.EMPLID__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Lead.Date_of_Birth__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Lead.Gender__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Lead.Research_Experience__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Opportunity.Application_Number__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <layoutAssignments>
+        <layout>AKB_Article_Feedback__c-AKB Article Feedback Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ASU_Alert_Messages__mdt-ASU Alert Messages Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Academic_Group__c-Academic Group Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Academic_Interest__c-Academic Interest Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Account-SF Mastered Contact Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Account-SF Mastered Contact Layout</layout>
+        <recordType>Account.External_Mastered_Contact</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Account-SF Mastered Contact Layout</layout>
+        <recordType>Account.External_Mastered_Org</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Account-SF Mastered Contact Layout</layout>
+        <recordType>Account.SF_Mastered_Contact</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Account-SF Mastered Contact Layout</layout>
+        <recordType>Account.SF_Mastered_Org</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>AccountBrand-Account BrandLayout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Address-Address Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Advisor_Portal_Case_Status__mdt-Advisor Portal Case Status Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Advisor_Portal_Mass_Close_Configuration__mdt-Advisor Portal Mass Close Configuration
+            Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ApiAnomalyEventStore-API Anomaly Event Store Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Asset-Asset Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>AssetRelationship-Asset Relationship Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>AssociatedLocation-Associated Location Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>AuthorizationForm-Authorization Form Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>AuthorizationFormConsent-Authorization Form Consent Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>AuthorizationFormDataUse-Authorization Form Data Use Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>AuthorizationFormText-Authorization Form Text Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Bizcard_Campaign_Link__c-Bizcard Campaign Link Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>BusinessBrand-Business Brand Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CalcMatrixColumnRange-Decision Matrix Column Range Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CalcProcStepRelationship-Expression Set Step Relationship Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CalculationMatrix-Decision Matrix Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CalculationMatrixColumn-Decision Matrix Column Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CalculationMatrixRow-Decision Matrix Row Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CalculationMatrixVersion-Decision Matrix Version Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CalculationProcedure-Calculation Procedure Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CalculationProcedureStep-Calculation Procedure Step Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CalculationProcedureVariable-Calculation Procedure Variable Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CalculationProcedureVersion-Calculation Procedure Version Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Campaign-Communication Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Campaign-Communication Layout</layout>
+        <recordType>Campaign.Cohort</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Campaign-Communication Layout</layout>
+        <recordType>Campaign.Corporate_Relations</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Campaign-Communication Layout</layout>
+        <recordType>Campaign.Course</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Campaign-Communication Layout</layout>
+        <recordType>Campaign.EOSS_Event</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Campaign-Communication Layout</layout>
+        <recordType>Campaign.Event</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Campaign-Communication Layout</layout>
+        <recordType>Campaign.Interest</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Campaign-Communication Layout</layout>
+        <recordType>Campaign.Marketing</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Campaign-Communication Layout</layout>
+        <recordType>Campaign.Other_Source</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Campaign-Communication Layout</layout>
+        <recordType>Campaign.Scholarship</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Campaign-Communication Layout</layout>
+        <recordType>Campaign.Subscription_Center</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CampaignMember-Campaign Member Page Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CampaignMember-Campaign Member Page Layout</layout>
+        <recordType>CampaignMember.All_Students</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CampaignMember-Campaign Member Page Layout</layout>
+        <recordType>CampaignMember.Corporate_Relations_Member</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CampaignMember-Campaign Member Page Layout</layout>
+        <recordType>CampaignMember.Subscription_Center_Campaign_Member</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Case-Case Feed Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Case-Case Feed Layout</layout>
+        <recordType>Case.ASU_Admission_Services</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Case-Case Feed Layout</layout>
+        <recordType>Case.ASU_Advisor_Outreach</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Case-Case Feed Layout</layout>
+        <recordType>Case.ASU_Coach_Outreach</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Case-Case Feed Layout</layout>
+        <recordType>Case.ASU_Graduate_Advisor_Portal</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Case-Case Feed Layout</layout>
+        <recordType>Case.ASU_Retention_Outreach</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Case-Case Feed Layout</layout>
+        <recordType>Case.ASU_Secure_Case</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Case-Case Feed Layout</layout>
+        <recordType>Case.ASU_Service</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Case-Case Feed Layout</layout>
+        <recordType>Case.ASU_Student_Outreach</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CaseClose-Close Case Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CaseClose-Close Case Layout</layout>
+        <recordType>Case.ASU_Service</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Case_Assignment_Rule__c-Case Assignment Rule Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Case_Classification__c-Case Classification Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Case_Classification__c-Case Classification Layout</layout>
+        <recordType>Case_Classification__c.Category</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Case_Classification__c-Case Classification Layout</layout>
+        <recordType>Case_Classification__c.Functional_Group</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Case_Classification__c-Case Classification Layout</layout>
+        <recordType>Case_Classification__c.Sub_Category</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ChannelProgram-Channel Program Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ChannelProgramLevel-Channel Program Level Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ChannelProgramMember-Channel Program Member Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Chat_Message__c-Chat Message Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Checklist_Item__c-Checklist Item Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CollaborationGroup-Group Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CommSubscription-Communication Subscription Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CommSubscriptionChannelType-Communication Subscription Channel Type Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CommSubscriptionConsent-Communication Subscription Consent Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CommSubscriptionTiming-Communication Subscription Timing Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CommunityMemberLayout-Community Member Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Contact-Feed - SF Mastered Contact Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Contact-Feed - SF Mastered Contact Layout</layout>
+        <recordType>Contact.External_Mastered</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Contact-Feed - SF Mastered Contact Layout</layout>
+        <recordType>Contact.SF_Mastered</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ContactPointAddress-Contact Point Address Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ContactPointEmail-Contact Point Email Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ContactPointPhone-Contact Point Phone Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ContactPointTypeConsent-Contact Point Type Consent Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Contact_Upload_Detail__c-Contact Upload Detail Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Contact_Upload__c-Contact Upload Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ContentAsset-Asset File Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ContentVersion-Content Version Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Contract-Contract Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Country__c-Country Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CredentialStuffingEventStore-Credential Stuffing Event Store Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>CspTrustedSite-Content Security Policy Trusted Site Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Customer-Customer Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>DUO_Authentication__c-DUO Authentication Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>DataStage__c-DataStage Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>DataUsePurpose-Data Use Purpose Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Degree_Name__c-Degree Name Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>DelegatedAccount-External Managed Account Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>DuplicateRecordItem-Duplicate Record Item Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>DuplicateRecordSet-Duplicate Record Set Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>EA_Learner_Application__x-EA Learner Application Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>EdPlusContact__x-Contact %28EdPlus%29 Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>EdPlusTask__x-Task %28EdPlus%29 Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>EdPlusUser__x-User %28EdPlus%29 Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>EmailMessage-Email Message Layout - Email-to-Case</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>EmailReplySuffix__mdt-EmailReplySuffix Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Email_Case_Filter__c-Email Case Filter Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Email_Message_Case_Status__mdt-Email Message Case Status Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Emergency_Contact__c-Emergency Contact Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>EngagementChannelType-Engagement Channel Type Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>EngagementInteraction-Engagement Interaction Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>EngagementTopic-Engagement Topic Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Engagement_Contact__c-Engagement Contact Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Engagement_Message__c-Engagement Message Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Engagement_Planned_Message__c-Engagement Planned Message Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Engagement__c-Engagement Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Engagement__c-Engagement Layout</layout>
+        <recordType>Engagement__c.ASU_Advisor_Outreach</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Engagement__c-Engagement Layout</layout>
+        <recordType>Engagement__c.ASU_Coach_Outreach</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Engagement__c-Engagement Layout</layout>
+        <recordType>Engagement__c.None</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>EnhancedLetterhead-Enhanced Letterhead Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>EntCrossOrgUsageStats__c-Enterprise Cross Org Usage Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Event-Event Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ExpressionSet-Expression Set Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ExpressionSetVersion-Expression Set Version Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>FAQ__kav-Knowledge Internal</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>FAQ__kav-Knowledge Internal</layout>
+        <recordType>FAQ__kav.FAQ</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>FAQ__kav-Knowledge Internal</layout>
+        <recordType>FAQ__kav.FAQ</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>FERPA_Consent__c-FERPA Consent for Access Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Feature_Flag__mdt-Feature Flag Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>FeedItem-Feed Item Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Financial_Aid_Detail__c-Financial Aid Detail Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Financial_Aid_Package__c-Financial Aid Package Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>FlowInterview-Flow Interview Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>FlowOrchestrationInstance-Orchestration Run Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>FlowOrchestrationWorkItem-Orchestration Work Item Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>GFA_Proctoring__x-GFA Proctoring Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>GPA_Scale__c-GPA Scale Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Global-Global Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Help_Desk_Caller_Settings__mdt-Help Desk Caller Setting Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Help_Desk_Case_Origin__mdt-Help Desk Case Origin Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Help_Desk_DEI_Case_Configuration__mdt-Help Desk DEI Case Configuration Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Help_Desk_Profile_Map__mdt-Help Desk Profile Map Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Help_Desk_Query_Configuration__mdt-Help Desk Query Configuration Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Idea-Idea Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Idea-Idea Layout</layout>
+        <recordType>Idea.Record_type_for_community_09ad00000019KjrAAE_entity_Idea</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>IframeWhiteListUrl-Whitelisted Domain for Visualforce Inline Frames Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Image-Image Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Individual-Individual Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Jira_Project_Detail__mdt-Jira Project Detail Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Key_Value__c-Key Value Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Key_Value__c-Key Value Layout</layout>
+        <recordType>Key_Value__c.Geomarket_Code_Map</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Lead-Lead Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Lead-Lead Layout</layout>
+        <recordType>Lead.Processing</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Lead-Lead Layout</layout>
+        <recordType>Lead.Prospective_Student</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LinkedArticle-Linked Article Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ListEmail-List Email Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LiveAgentSession-Live Agent Session Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LiveAgent_Custom_Message__c-LiveAgent Custom Message Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LiveAgent_Custom_Message__c-LiveAgent Custom Message Layout</layout>
+        <recordType>LiveAgent_Custom_Message__c.Admission_Services</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LiveAgent_Custom_Message__c-LiveAgent Custom Message Layout</layout>
+        <recordType>LiveAgent_Custom_Message__c.CLAS_SOLS</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LiveAgent_Custom_Message__c-LiveAgent Custom Message Layout</layout>
+        <recordType>LiveAgent_Custom_Message__c.Global_Education_Office</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LiveAgent_Custom_Message__c-LiveAgent Custom Message Layout</layout>
+        <recordType>LiveAgent_Custom_Message__c.Help_Desk</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LiveAgent_Custom_Message__c-LiveAgent Custom Message Layout</layout>
+        <recordType>LiveAgent_Custom_Message__c.International_Students_and_Scholars_Center</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LiveAgent_Custom_Message__c-LiveAgent Custom Message Layout</layout>
+        <recordType>LiveAgent_Custom_Message__c.MU_Information_Desk</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LiveAgent_Custom_Message__c-LiveAgent Custom Message Layout</layout>
+        <recordType>LiveAgent_Custom_Message__c.New_Student_Programs</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LiveAgent_Custom_Message__c-LiveAgent Custom Message Layout</layout>
+        <recordType>LiveAgent_Custom_Message__c.Offline</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LiveAgent_Custom_Message__c-LiveAgent Custom Message Layout</layout>
+        <recordType>LiveAgent_Custom_Message__c.Registrar</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LiveAgent_Custom_Message__c-LiveAgent Custom Message Layout</layout>
+        <recordType>LiveAgent_Custom_Message__c.Sun_Devil_Fitness</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LiveAgent_Custom_Message__c-LiveAgent Custom Message Layout</layout>
+        <recordType>LiveAgent_Custom_Message__c.Universal_Learner_Courses</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LiveChatTranscript-Live Chat Transcript Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LiveChatTranscriptActive-Live Chat Transcript %28In Progress%29 Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LiveChatTranscriptEvent-Live Chat Transcript Event Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LiveChatTranscriptWaiting-Live Chat Transcript %28Waiting%29 Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LiveChatVisitor-Live Chat Visitor Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Live_Agent_Setting__mdt-Live Agent Setting Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Location-Location Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LocationTrustMeasure-Location Trust Measure Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Location__c-Location Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>LostEmail__c-LostEmail Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Macro-Macro Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Marketing_Cloud_Business_Unit__c-Marketing Cloud Business Unit Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Match_Email_Exclusion__c-Match Email Exclusion Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>MessagingEndUser-Messaging User Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>MessagingSession-Messaging Session Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>OEA_Partner_EdPlus__x-OEA Partner %28EdPlus%29 Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Object_Tag_Mapping__mdt-Object Tag Mapping Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Object_Tag__c-Object Tag Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Object_Tag__c-Object Tag Layout</layout>
+        <recordType>Object_Tag__c.Ed_Plus</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Object_Tag__c-Object Tag Layout</layout>
+        <recordType>Object_Tag__c.Service</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Opportunity-Feed - Opportunity Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Opportunity-Feed - Opportunity Layout</layout>
+        <recordType>Opportunity.Corporate_Relations_Opportunity</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Opportunity-Feed - Opportunity Layout</layout>
+        <recordType>Opportunity.Graduate_Application</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Opportunity-Feed - Opportunity Layout</layout>
+        <recordType>Opportunity.Graduate_Prospect</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Opportunity-Feed - Opportunity Layout</layout>
+        <recordType>Opportunity.Undergraduate_Application</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Opportunity-Feed - Opportunity Layout</layout>
+        <recordType>Opportunity.Undergraduate_Prospect</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>OpportunityContactRole-Opportunity Contact Role Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>OpportunityLineItem-Opportunity Product Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Organization__c-Organization Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>OutgoingEmail-Outgoing Email Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>PKB_Article_Feedback_Deflection__c-PKB Article Deflection Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>PKB_Featured__c-PKB Featured Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>PS_Country_Map__c-PS Country Map Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>PartnerFundAllocation-Partner Fund Allocation Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>PartnerFundClaim-Partner Fund Claim Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>PartnerFundRequest-Partner Fund Request Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>PartnerMarketingBudget-Partner Marketing Budget Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>PartyConsent-Party Consent Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Persistence_Outlook__c-Persistence Outlook Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Plan__c-Plan Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Portal_Email__c-Portal Email Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Portal_Email__c-Portal Email Layout</layout>
+        <recordType>Portal_Email__c.Advisor</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Portal_Email__c-Portal Email Layout</layout>
+        <recordType>Portal_Email__c.Coach</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Previous_Education__c-Previous Education Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Pricebook2-Price Book Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>PricebookEntry-Price Book Entry Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ProcessException-Process Exception Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Product2-Product Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Program_Participant__c-Program Participant Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Program__c-Program Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>QuickText-Quick Text Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Recruitment_Call__c-Recruitment Call Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Recruitment_Call__c-Recruitment Call Layout</layout>
+        <recordType>Recruitment_Call__c.Recruitment_Call</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Relationship__c-Account to Account Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Relationship__c-Account to Account Layout</layout>
+        <recordType>Relationship__c.Account_to_Account</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Relationship__c-Account to Account Layout</layout>
+        <recordType>Relationship__c.Account_to_Contact</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Relationship__c-Account to Account Layout</layout>
+        <recordType>Relationship__c.Contact_to_Account</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Relationship__c-Account to Account Layout</layout>
+        <recordType>Relationship__c.Contact_to_Contact</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ReportAnomalyEventStore-Report Anomaly Event Store Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Rest_Service_Setting__mdt-Rest Service Setting Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>SMS_Default_Owner__mdt-SMS_Default_Owner Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>SMS_Stall_Detection_Rule__mdt-SMS Stall Detection Rule Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Scorecard-Scorecard Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ScorecardAssociation-Scorecard Association Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ScorecardMetric-Scorecard Metric Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>SearchPromotionRule-Promoted Search Term Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Seller-Seller Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ServiceResource-Service Resource Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Service_Indicator__c-Service Indicator Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>SessionHijackingEventStore-Session Hijacking Event Store Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Solution-Solution Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Student_Account__c-Student Account Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Student_Group__c-Student Group Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Student_Milestone__c-Student Milestone Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Student_Profile_Message__mdt-Student Profile Message Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Student_Profile_Term__c-Student Profile Term Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Student_Program_Plan_Advisor__c-Student Program Plan Advisor Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Student_Program_Plan__c-Student Program Plan Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Student_Program_Subplan__c-Student Sub Plan Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Subscriber_Auto_Subscription_Mapping__mdt-Subscriber Auto Subscription Mapping
+            Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Subscriber__c-Subscriber Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Subscription__c-Subscription Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Coach_Case_Flag_Rule__c-Success Coach Case Flag Rule Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Coach_Case_Flag__c-Success Coach Case Flag Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Coach_Mapping__c-Success Coach Mapping Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Pod__c-Success Pod Advisor Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Pod__c-Success Pod Advisor Layout</layout>
+        <recordType>Success_Pod__c.Advisor</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Pod__c-Success Pod Advisor Layout</layout>
+        <recordType>Success_Pod__c.Coach</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Pod__c-Success Pod Advisor Layout</layout>
+        <recordType>Success_Pod__c.Grad</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Resource_Plan__c-Success Resource Plan Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Resource_Pod_Association__c-Success Resource Pod Association Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Resource_Pod_Association__c-Success Resource Pod Association Layout</layout>
+        <recordType>Success_Resource_Pod_Association__c.Advisor</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Resource_Pod_Association__c-Success Resource Pod Association Layout</layout>
+        <recordType>Success_Resource_Pod_Association__c.Coach</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Resource_Pod_Association__c-Success Resource Pod Association Layout</layout>
+        <recordType>Success_Resource_Pod_Association__c.Grad</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Resource_Skill__c-Success Resource Skill Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Resource__c-Success Resource General Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Resource__c-Success Resource General Layout</layout>
+        <recordType>Success_Resource__c.Advisor</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Resource__c-Success Resource General Layout</layout>
+        <recordType>Success_Resource__c.Career_Coach</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Resource__c-Success Resource General Layout</layout>
+        <recordType>Success_Resource__c.Coach</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Resource__c-Success Resource General Layout</layout>
+        <recordType>Success_Resource__c.Financial_Intake</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Resource__c-Success Resource General Layout</layout>
+        <recordType>Success_Resource__c.Grad</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Resource__c-Success Resource General Layout</layout>
+        <recordType>Success_Resource__c.Reentry</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Skill__c-Success Skill Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Student__c-Success Student Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Student__c-Success Student Layout</layout>
+        <recordType>Success_Student__c.Advisor</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Student__c-Success Student Layout</layout>
+        <recordType>Success_Student__c.Career_Coach</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Student__c-Success Student Layout</layout>
+        <recordType>Success_Student__c.Coach</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Student__c-Success Student Layout</layout>
+        <recordType>Success_Student__c.Financial_Intake</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Student__c-Success Student Layout</layout>
+        <recordType>Success_Student__c.Grad</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Success_Student__c-Success Student Layout</layout>
+        <recordType>Success_Student__c.Reentry</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Tag_Icon_URL__mdt-Tag_Icon_URL Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Tag__c-Tag Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Tag__c-Tag Layout</layout>
+        <recordType>Tag__c.Ed_Plus</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Tag__c-Tag Layout</layout>
+        <recordType>Tag__c.Service</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Task-Task Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Task-Task Layout</layout>
+        <recordType>Task.Admin_Task_Layout</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Task-Task Layout</layout>
+        <recordType>Task.Log_A_Call</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Task-Task Layout</layout>
+        <recordType>Task.User_Task_Layout</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Term__c-Term Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Territory_Assignment_Rule__c-Auto Territory Assignment Rule Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Test_Engagement_Contacts__c-Test Engagement Contact Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Test_Score__c-Test Score Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>ThreatDetectionFeedback-Threat Detection Feedback Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Transcript_Sent__c-Transcript Sent Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Transfer_Credit__c-Transfer Credit Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>User-User Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>UserAlt-User Profile Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>UserProvisioningRequest-User Provisioning Request Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>VoiceCall-Voice Call Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>hed_Course_Enrollment__x-Course Connection Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>hed_Course_Offering__x-Course Offering Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>me3_Career__c-me3 Career Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>me3__c-me3 Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>me3__c-me3 Layout</layout>
+        <recordType>me3__c.Current_Student</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>me3__c-me3 Layout</layout>
+        <recordType>me3__c.High_School</recordType>
+    </layoutAssignments>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Account.External_Mastered_Contact</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Account.External_Mastered_Org</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Account.SF_Mastered_Contact</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Account.SF_Mastered_Org</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Campaign.Cohort</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Campaign.Corporate_Relations</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Campaign.Course</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Campaign.EOSS_Event</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Campaign.Event</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Campaign.Interest</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Campaign.Marketing</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Campaign.Other_Source</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Campaign.Scholarship</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Campaign.Subscription_Center</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>CampaignMember.All_Students</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>CampaignMember.Corporate_Relations_Member</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>CampaignMember.Subscription_Center_Campaign_Member</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Case.ASU_Admission_Services</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Case.ASU_Advisor_Outreach</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Case.ASU_Coach_Outreach</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Case.ASU_Graduate_Advisor_Portal</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Case.ASU_Retention_Outreach</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Case.ASU_Secure_Case</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>true</default>
+        <personAccountDefault>true</personAccountDefault>
+        <recordType>Case.ASU_Service</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Case.ASU_Student_Outreach</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Case_Classification__c.Category</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Case_Classification__c.Functional_Group</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Case_Classification__c.Sub_Category</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Contact.External_Mastered</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Contact.SF_Mastered</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Engagement__c.ASU_Advisor_Outreach</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Engagement__c.ASU_Coach_Outreach</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Engagement__c.None</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <personAccountDefault>true</personAccountDefault>
+        <recordType>FAQ__kav.FAQ</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <personAccountDefault>true</personAccountDefault>
+        <recordType>FAQ__kav.FAQ</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Idea.InternalIdeasIdeaRecordType</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Idea.Record_type_for_community_09ad00000019KjrAAE_entity_Idea</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Key_Value__c.Geomarket_Code_Map</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Lead.Processing</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Lead.Prospective_Student</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>LiveAgent_Custom_Message__c.Global_Education_Office</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>LiveAgent_Custom_Message__c.Help_Desk</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>LiveAgent_Custom_Message__c.Offline</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>LiveAgent_Custom_Message__c.Universal_Learner_Courses</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Object_Tag__c.Ed_Plus</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Object_Tag__c.Service</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Opportunity.Corporate_Relations_Opportunity</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Opportunity.Graduate_Application</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Opportunity.Graduate_Prospect</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Opportunity.Undergraduate_Application</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Opportunity.Undergraduate_Prospect</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Portal_Email__c.Advisor</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Portal_Email__c.Coach</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Recruitment_Call__c.Recruitment_Call</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Relationship__c.Account_to_Account</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Relationship__c.Account_to_Contact</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Relationship__c.Contact_to_Account</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Relationship__c.Contact_to_Contact</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Success_Pod__c.Advisor</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Success_Pod__c.Coach</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Success_Pod__c.Grad</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Success_Resource_Pod_Association__c.Advisor</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Success_Resource_Pod_Association__c.Grad</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Success_Resource__c.Advisor</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Success_Resource__c.Career_Coach</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Success_Resource__c.Coach</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Success_Resource__c.Financial_Intake</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Success_Resource__c.Grad</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Success_Resource__c.Reentry</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Success_Student__c.Advisor</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Success_Student__c.Career_Coach</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Success_Student__c.Coach</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Success_Student__c.Financial_Intake</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Success_Student__c.Grad</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Success_Student__c.Reentry</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Tag__c.Ed_Plus</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Tag__c.Service</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Task.Admin_Task_Layout</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Task.Log_A_Call</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Task.User_Task_Layout</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>me3__c.Current_Student</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>me3__c.High_School</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <tabVisibilities>
+        <tab>FAQ__kav</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Account</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-AccountBrand</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-AppLauncher</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Asset</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-AuthorizationForm</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-AuthorizationFormConsent</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-AuthorizationFormDataUse</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-AuthorizationFormText</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-BusinessBrand</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-CalculationMatrix</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-CalculationProcedure</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Campaign</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Case</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-ChannelProgram</tab>
+        <visibility>DefaultOff</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-ChannelProgramLevel</tab>
+        <visibility>DefaultOff</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Chatter</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-CollaborationGroup</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-CommSubscription</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-CommSubscriptionChannelType</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-CommSubscriptionConsent</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-CommSubscriptionTiming</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Contact</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-ContactPointConsent</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-ContactPointTypeConsent</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-ContactRequest</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Contract</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Customer</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Dashboard</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-DataUseLegalBasis</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-DataUsePurpose</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-DecisionTable</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-DelegatedAccount</tab>
+        <visibility>DefaultOff</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Document</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-DuplicateRecordSet</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-EngagementAttendee</tab>
+        <visibility>DefaultOff</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-EngagementChannelType</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-EngagementInteraction</tab>
+        <visibility>DefaultOff</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-EngagementTopic</tab>
+        <visibility>DefaultOff</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-ExpressionSet</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-ExpressionSetTemplate</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-File</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-FlowOrchestrationInstance</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-FlowOrchestrationWorkItem</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Forecasting3</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Idea</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Image</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Individual</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Knowledge</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-KnowledgePublishing</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Lead</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-ListEmail</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-LiveAgentSession</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-LiveChatTranscript</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-LiveChatVisitor</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Location</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-LocationTrustMeasure</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Macro</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Opportunity</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-OtherUserProfile</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-PartnerFundAllocation</tab>
+        <visibility>DefaultOff</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-PartnerFundClaim</tab>
+        <visibility>DefaultOff</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-PartnerFundRequest</tab>
+        <visibility>DefaultOff</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-PartnerMarketingBudget</tab>
+        <visibility>DefaultOff</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-PartyConsent</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Pricebook2</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-ProcessException</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Product2</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-ProfilePlatformFeed</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-ProfilePlatformOverview</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-QuickText</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Recommendation</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-RecordAlert</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Scorecard</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Seller</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-ServiceResource</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-Solution</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-StreamingChannel</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-UserProfile</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-UserProvisioningRequest</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-home</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>standard-report</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+</Profile>

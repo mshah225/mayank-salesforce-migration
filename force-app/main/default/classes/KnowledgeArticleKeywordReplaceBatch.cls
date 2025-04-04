@@ -1,17 +1,24 @@
+/**
+ * Batchable and Schedulable class to replace keywords in Knowledge Articles.
+ * Updates articles with specific keywords defined in custom metadata.
+ */
 public class KnowledgeArticleKeywordReplaceBatch implements Database.Batchable<SObject>, Database.Stateful, Schedulable {
     // Query constants
-    private final String ONLINE_ARTICLE_QUERY = 'SELECT Id, Title, Answer__c, AWS_Website__c, PublishStatus, KnowledgeArticleId FROM FAQ__kav WHERE PublishStatus = \'Online\'';
-    private final String EMPTY_QUERY = 'SELECT Id FROM FAQ__kav LIMIT 0'; // Save for when Classic is phased out, and we need to add an empty query if Lightning Knowledge isn't enabled
+    private static final String ONLINE_ARTICLE_QUERY =
+        'SELECT Id, Title, Answer__c, AWS_Website__c, PublishStatus, KnowledgeArticleId ' +
+        'FROM FAQ__kav WHERE PublishStatus = \'Online\'';
+    private static final String EMPTY_QUERY = 'SELECT Id FROM FAQ__kav LIMIT 0';
 
     // State variables
     private Integer batchSize;
-    private Boolean isLightningKnowledgeEnabled;
+    private Boolean isLightningKnowledgeEnabled = false;
     private Map<String, String> keywordReplacementMap = new Map<String, String>();
-    private List<FAQ__kav> articlesForUpdate = new List<FAQ__kav>();
+    private Map<Id, FAQ__kav> articleMap = new Map<Id, FAQ__kav>();
+    private Set<Id> articleIdsToProcess = new Set<Id>();
+    private Set<Id> articlesWithDrafts = new Set<Id>();
     private Set<Id> processedArticleIds = new Set<Id>();
-    private List<String> articlesWithValidKeywords = new List<String>();
-    private List<String> articlesWithNoKeywordsToReplace = new List<String>();
-    private List<String> articlesWithUpdatedKeywords = new List<String>();
+    private Set<Id> processedDraftIds = new Set<Id>();
+    private List<FAQ__kav> articlesForUpdate = new List<FAQ__kav>();
     private List<String> errorMessages = new List<String>();
 
     public KnowledgeArticleKeywordReplaceBatch() {
@@ -22,20 +29,22 @@ public class KnowledgeArticleKeywordReplaceBatch implements Database.Batchable<S
         initialize(batchSize);
     }
 
+    /**
+     * Initializes the batch process with default or specified batch size.
+     * @param batchSize Number of records per batch.
+     */
     private void initialize(Integer batchSize) {
-        this.batchSize = (batchSize != null && batchSize > 0 && batchSize <= 40) ? batchSize : 20; // Default to 20 if null
+        System.debug('KnowledgeArticleKeywordReplaceBatch is starting up...');
 
+        this.batchSize = (batchSize != null && batchSize > 0 && batchSize <= 40) ? batchSize : 20; // Default to 20
         checkLightningKnowledgeAvailability();
         loadKeywordReplacements();
     }
 
     /**
-     * Checks if Lightning Knowledge is enabled
+     * Checks if Lightning Knowledge is enabled.
      */
     private void checkLightningKnowledgeAvailability() {
-        System.debug('Checking Lightning Knowledge availability...');
-
-        isLightningKnowledgeEnabled = false;
         try {
             Database.query('SELECT ArticleType FROM FAQ__kav LIMIT 1');
         } catch (QueryException e) {
@@ -46,31 +55,21 @@ public class KnowledgeArticleKeywordReplaceBatch implements Database.Batchable<S
     }
 
     /**
-     * Loads keyword replacements from custom metadata
+     * Loads keyword replacements from custom metadata.
      */
     private void loadKeywordReplacements() {
-        if (isLightningKnowledgeEnabled) {
-            System.debug('Initializing keyword replacements for Lightning articles...');
-        } else {
-            System.debug('Initializing keyword replacements for Classic articles...');
-        }
-
         for (
-            Knowledge_Article_Keyword_Replacement__mdt keywordReplacement : Knowledge_Article_Keyword_Replacement__mdt.getAll()
+            Knowledge_Article_Keyword_Replacement__mdt keyword : Knowledge_Article_Keyword_Replacement__mdt.getAll()
                 .values()
         ) {
-            if (keywordReplacement.Replacement_Enabled__c) {
-                keywordReplacementMap.put(
-                    keywordReplacement.Old_Keyword__c.trim(),
-                    keywordReplacement.New_Keyword__c.trim()
-                );
+            if (keyword.Replacement_Enabled__c) {
+                keywordReplacementMap.put(keyword.Old_Keyword__c.trim(), keyword.New_Keyword__c.trim());
             }
         }
     }
 
     public Database.QueryLocator start(Database.BatchableContext batchContext) {
-        System.debug('Starting batch with query for online articles...');
-        return Database.getQueryLocator(ONLINE_ARTICLE_QUERY);
+        return Database.getQueryLocator(isLightningKnowledgeEnabled ? ONLINE_ARTICLE_QUERY : EMPTY_QUERY);
     }
 
     public void execute(Database.BatchableContext batchContext, List<SObject> scope) {
@@ -78,31 +77,32 @@ public class KnowledgeArticleKeywordReplaceBatch implements Database.Batchable<S
             return;
         }
 
-        Map<Id, FAQ__kav> articleMap = new Map<Id, FAQ__kav>((List<FAQ__kav>) scope);
-        Set<Id> articleIdsToProcess = filterArticlesByKeywords(articleMap);
-        Set<Id> articlesWithExistingDrafts = handleArticleDrafts(articleIdsToProcess);
-        createOrUpdateDrafts(articleMap, articlesWithExistingDrafts);
+        articleMap = new Map<Id, FAQ__kav>((List<FAQ__kav>) scope);
+        filterArticlesForProcessing();
+        handleExistingDrafts();
+        createOrUpdateDrafts();
         publishDrafts();
-        processedArticleIds.addAll(articleIdsToProcess);
     }
 
-    private Set<Id> filterArticlesByKeywords(Map<Id, FAQ__kav> articleMap) {
-        Set<Id> articleIds = new Set<Id>();
+    /**
+     * Filters articles requiring keyword updates and prepares for processing.
+     */
+    private void filterArticlesForProcessing() {
         for (FAQ__kav article : articleMap.values()) {
-            if (!processedArticleIds.contains(article.KnowledgeArticleId)) {
-                if (!articleContainsKeywords(article.Answer__c) && !articleContainsKeywords(article.AWS_Website__c)) {
-                    articlesWithNoKeywordsToReplace.add(article.Id + ' - ' + article.Title);
-                } else if (articleRequiresKeywordUpdate(article)) {
-                    articleIds.add(article.KnowledgeArticleId);
-                } else {
-                    articlesWithValidKeywords.add(article.Id + ' - ' + article.Title);
-                }
+            if (!processedArticleIds.contains(article.KnowledgeArticleId) && articleRequiresKeywordUpdate(article)) {
+                articleIdsToProcess.add(article.KnowledgeArticleId);
             }
         }
-        return articleIds;
     }
 
-    private Boolean articleContainsKeywords(String content) {
+    /**
+     * Determines if an article requires keyword updates.
+     */
+    private Boolean articleRequiresKeywordUpdate(FAQ__kav article) {
+        return containsKeywords(article.Answer__c) || containsKeywords(article.AWS_Website__c);
+    }
+
+    private Boolean containsKeywords(String content) {
         if (content == null)
             return false;
         for (String oldKeyword : keywordReplacementMap.keySet()) {
@@ -113,73 +113,100 @@ public class KnowledgeArticleKeywordReplaceBatch implements Database.Batchable<S
         return false;
     }
 
-    private Boolean articleRequiresKeywordUpdate(FAQ__kav article) {
-        return articleContainsKeywords(article.Answer__c) || articleContainsKeywords(article.AWS_Website__c);
-    }
-
-    private Set<Id> handleArticleDrafts(Set<Id> articleIds) {
+    /**
+     * Handles updates for existing draft articles.
+     */
+    private void handleExistingDrafts() {
         List<FAQ__kav> draftArticles = [
             SELECT Id, Title, Answer__c, AWS_Website__c, PublishStatus, KnowledgeArticleId
             FROM FAQ__kav
-            WHERE PublishStatus = 'Draft' AND KnowledgeArticleId IN :articleIds
+            WHERE PublishStatus = 'Draft' AND KnowledgeArticleId IN :articleIdsToProcess
         ];
 
-        Set<Id> articlesWithDrafts = new Set<Id>();
-        for (FAQ__kav draftArticle : draftArticles) {
-            articlesWithDrafts.add(draftArticle.KnowledgeArticleId);
-            updateDraftIfNecessary(draftArticle);
-        }
-        return articlesWithDrafts;
-    }
-
-    private void createOrUpdateDrafts(Map<Id, FAQ__kav> articleMap, Set<Id> articlesWithDrafts) {
-        for (FAQ__kav article : articleMap.values()) {
-            if (!articlesWithDrafts.contains(article.KnowledgeArticleId) && articleRequiresKeywordUpdate(article)) {
-                Id draftId = KbManagement.PublishingService.editOnlineArticle(article.KnowledgeArticleId, false);
-                if (draftId != null) {
-                    FAQ__kav draftArticle = fetchDraftArticle(draftId);
-                    updateDraftIfNecessary(draftArticle);
-                }
+        for (FAQ__kav draft : draftArticles) {
+            if (!processedDraftIds.contains(draft.Id)) {
+                articlesWithDrafts.add(draft.KnowledgeArticleId);
+                updateDraftIfNecessary(draft);
+                processedDraftIds.add(draft.Id);
             }
         }
     }
 
-    private FAQ__kav fetchDraftArticle(Id draftId) {
-        return [
+    /**
+     * Creates or updates drafts for articles needing keyword replacements.
+     */
+    private void createOrUpdateDrafts() {
+        List<Id> draftIdsToFetch = new List<Id>();
+
+        for (FAQ__kav article : articleMap.values()) {
+            if (!articlesWithDrafts.contains(article.KnowledgeArticleId)) {
+                Id draftId = KbManagement.PublishingService.editOnlineArticle(article.KnowledgeArticleId, false);
+                if (draftId != null && !processedDraftIds.contains(draftId)) {
+                    draftIdsToFetch.add(draftId); // Collect draft IDs for bulk fetching
+                    articlesWithDrafts.add(article.KnowledgeArticleId); // Track articles with drafts
+                }
+            }
+        }
+
+        // Fetch and process drafts in bulk
+        if (!draftIdsToFetch.isEmpty()) {
+            fetchDraftArticles(draftIdsToFetch);
+        }
+    }
+
+    /**
+     * Fetches and updates articles requiring keyword replacement for a list of draft IDs.
+     * @param draftIds List of draft article IDs to fetch and process.
+     */
+    private void fetchDraftArticles(List<Id> draftIds) {
+        List<FAQ__kav> drafts = [
             SELECT Id, Title, Answer__c, AWS_Website__c, PublishStatus, KnowledgeArticleId
             FROM FAQ__kav
-            WHERE Id = :draftId
+            WHERE Id IN :draftIds
         ];
-    }
 
-    private void updateDraftIfNecessary(FAQ__kav draftArticle) {
-        if (draftArticle.PublishStatus == 'Draft') {
-            Boolean updated = false;
-
-            if (draftArticle.Answer__c != null) {
-                String updatedAnswer = replaceOldKeywords(draftArticle.Answer__c);
-                if (!updatedAnswer.equals(draftArticle.Answer__c)) {
-                    draftArticle.Answer__c = updatedAnswer;
-                    updated = true;
-                }
-            }
-
-            if (draftArticle.AWS_Website__c != null) {
-                String updatedWebsite = replaceOldKeywords(draftArticle.AWS_Website__c);
-                if (!updatedWebsite.equals(draftArticle.AWS_Website__c)) {
-                    draftArticle.AWS_Website__c = updatedWebsite;
-                    updated = true;
-                }
-            }
-
-            if (updated) {
-                articlesForUpdate.add(draftArticle);
-                articlesWithUpdatedKeywords.add(draftArticle.Id + ' - ' + draftArticle.Title);
+        for (FAQ__kav draft : drafts) {
+            if (!processedDraftIds.contains(draft.Id)) {
+                updateDraftIfNecessary(draft);
+                processedDraftIds.add(draft.Id); // Track processed drafts to avoid reprocessing
             }
         }
     }
 
-    private String replaceOldKeywords(String content) {
+    /**
+     * Updates a draft if keywords require replacement.
+     */
+    private void updateDraftIfNecessary(FAQ__kav draft) {
+        if (draft.PublishStatus != 'Draft')
+            return;
+
+        Boolean updated = false;
+
+        if (draft.Answer__c != null) {
+            String updatedAnswer = replaceKeywords(draft.Answer__c);
+            if (!updatedAnswer.equals(draft.Answer__c)) {
+                draft.Answer__c = updatedAnswer;
+                updated = true;
+            }
+        }
+
+        if (draft.AWS_Website__c != null) {
+            String updatedWebsite = replaceKeywords(draft.AWS_Website__c);
+            if (!updatedWebsite.equals(draft.AWS_Website__c)) {
+                draft.AWS_Website__c = updatedWebsite;
+                updated = true;
+            }
+        }
+
+        if (updated) {
+            articlesForUpdate.add(draft);
+        }
+    }
+
+    /**
+     * Replaces old keywords with new ones in the given content.
+     */
+    private String replaceKeywords(String content) {
         if (content == null)
             return null;
         for (String oldKeyword : keywordReplacementMap.keySet()) {
@@ -188,15 +215,14 @@ public class KnowledgeArticleKeywordReplaceBatch implements Database.Batchable<S
         return content;
     }
 
+    /**
+     * Publishes drafts after updating and clears relevant state variables for the next batch.
+     */
     private void publishDrafts() {
-        if (!articlesForUpdate.isEmpty()) {
-            List<Database.SaveResult> updateResults = Database.update(articlesForUpdate, false);
-            handleUpdateResults(updateResults);
-            articlesForUpdate.clear();
-        }
-    }
+        if (articlesForUpdate.isEmpty())
+            return;
 
-    private void handleUpdateResults(List<Database.SaveResult> updateResults) {
+        List<Database.SaveResult> updateResults = Database.update(articlesForUpdate, false);
         for (Integer i = 0; i < updateResults.size(); i++) {
             if (updateResults[i].isSuccess()) {
                 try {
@@ -208,10 +234,16 @@ public class KnowledgeArticleKeywordReplaceBatch implements Database.Batchable<S
                 errorMessages.add('Failed to update article: ' + updateResults[i].getErrors()[0].getMessage());
             }
         }
+
+        // Clear relevant variables for the next batch
+        articlesForUpdate.clear(); // Clear the list of articles pending update
+        articleIdsToProcess.clear(); // Clear processed article IDs for this batch
+        articleMap.clear(); // Clear the article map for this batch
+        articlesWithDrafts.clear(); // Reset draft tracking for the next batch
     }
 
     public void finish(Database.BatchableContext batchContext) {
-        System.debug('KnowledgeArticleKeywordReplaceBatch is finishing up...');
+        System.debug('...KnowledgeArticleKeywordReplaceBatch is finishing up');
 
         AsyncApexJob batchJob = [SELECT Id, CreatedById, Status FROM AsyncApexJob WHERE Id = :batchContext.getJobId()];
         System.debug(
@@ -226,6 +258,6 @@ public class KnowledgeArticleKeywordReplaceBatch implements Database.Batchable<S
     }
 
     public void execute(SchedulableContext ctx) {
-        Database.executeBatch(new KnowledgeArticleKeywordReplaceBatch(), batchSize);
+        Database.executeBatch(new KnowledgeArticleKeywordReplaceBatch(batchSize));
     }
 }

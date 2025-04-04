@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Knowledge read access for AWS Kendra user</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>API User: AWS KB FAQ</label>
+    <license>Salesforce</license>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>FAQ__kav.AWS_Answers__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>FAQ__kav.AWS_Website__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>FAQ__kav.Answer__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>FAQ__kav.Article_Expiration_Date__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>FAQ__kav.Date_Last_Updated__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>FAQ__kav.Days_until_expires__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>FAQ__kav.Functional_Group__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>false</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>FAQ__kav</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+    <tabSettings>
+        <tab>standard-Knowledge</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+</PermissionSet>

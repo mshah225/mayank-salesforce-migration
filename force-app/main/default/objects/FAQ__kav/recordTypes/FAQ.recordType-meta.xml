@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FAQ</fullName>
+    <active>true</active>
+    <label>FAQ</label>
+    <picklistValues>
+        <picklist>Functional_Group__c</picklist>
+        <values>
+            <fullName>ASISD Admission Services</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>ASU Bookstore</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>ASU Online</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Academic Technologies</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Academic Transfer Credit Solutions</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Admission Services</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>American Indian Student Support Service</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Barrett Honors College</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Career Services</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Changemaker Central</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Classroom Support</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Clubs %26 Organizations</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>College of Global Futures</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>College of Health Solutions</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>College of Integrative Sciences and Arts</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>College of Liberal Arts and Sciences</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>College of Nursing and Health Innovation</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>College of Public Service and Community Solutions</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Counseling Services</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Cronkite</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>EdPlus Open Scale</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Financial Aid</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>First Year Success</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Fraternity %26 Sorority Life</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Fulton Schools of Engineering</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Graduate College</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Health Services</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Help Desk</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Herberger Institute</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Housing</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Int%27l Students and Scholars Center</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Internal Knowledge</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Internal Knowledge %28Finances%29</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>LEAD</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Learning Enterprise</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Library Resources</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Mary Lou Fulton Teachers College</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>New College</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Orientation and Family Programs</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Parking and Transit Services</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Pat Tillman Veterans Center</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Provost Office</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Registrar</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>School for the Future of Innov%2E in Soc%2E</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sexual Violence Awareness</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Student Accessibility</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Student Advocacy %26 Assistance</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Student Business Services</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Student Government</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Student Rights %26 Responsibilities</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Study Abroad</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sun Card Services</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sun Devil Athletics</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sun Devil Dining</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Sun Devil Fitness</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Technical Resources%3A Email</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Technical Resources%3A Identity Management</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Technical Resources%3A MyApps %26 Software</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Technical Resources%3A Network</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Technical Resources%3A Other Support</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Thunderbird</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>University Academic Success Programs</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>W%2EP%2E Carey School of Business</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>WPC Tech Services</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Wellness</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

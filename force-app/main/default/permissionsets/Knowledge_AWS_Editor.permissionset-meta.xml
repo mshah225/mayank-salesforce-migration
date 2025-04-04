@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Knowledge Editor - RW on FAQ including AWS fields</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Knowledge -AWS Editor</label>
+    <license>Salesforce</license>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>FAQ__kav.AWS_Answers__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>FAQ__kav.AWS_Kendra_Visible__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>FAQ__kav.AWS_Website__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>FAQ__kav</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+</PermissionSet>

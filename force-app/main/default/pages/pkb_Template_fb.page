@@ -1,108 +1,156 @@
-<apex:page cache="false" standardStylesheets="false" showHeader="false" sidebar="false" standardController="KnowledgeArticle"
-    extensions="pkb_Controller" language="{!$CurrentPage.parameters.l}">
-    <html>
+<!--
+    This Visualforce page renders a knowledge article from the Salesforce Knowledge base.
+    It includes metadata and script resources, as well as custom components for styling and functionality.
 
-    <head>
-        <c:pkb_fb_css />
-        <c:pkb_js pkbCon="{!pkbCon}" />
-        <apex:includeScript value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/js/bootstrap.min.js')}" />
-        <title>{!pageTitle}</title>
-        <apex:outputText rendered="{!viewingArticle}">
-            <apex:variable var="typeName" value="{!SUBSTITUTE(pkbCon.theKad.articleTypeName, pkbCon.kavExtension, '')}" />
-            <apex:variable var="articleURL" value="{!pkbCon.currentSiteUrl}articles{!pkbCon.selectedLanguageURL}{!typeName}/{!pkbCon.theKad.urlName}"
-            />
-            <meta name="viewport" content="width=device-width, initial-scale=.5, minimum-scale=.5, maximum-scale=.5, target-densitydpi=device-dpi"
-            />
-            <meta property="og:title" content="{!pkbCon.theKad.title}" />
-            <meta property="og:type" content="article" />
-            <meta property="og:url" content="{!articleURL}" />
-            <meta property="og:site_name" content="{!SUBSTITUTE(pkbCon.siteName,'_',' ')}" />
-        </apex:outputText>
-    </head>
-
-    <body>
-        <!--
-HELPFUL DEBUG DATA
-
-SITE ADMIN: {!pkbCon.siteAdmin.Email}, {!pkbCon.siteAdmin.Name}<br/>
-ALL PARAMS: {!allSearchParams}<br/>
-SITE/PAGE URL: {!pkbCon.currentSiteUrl}<br/>
-FEEDBACK? : {!displayFeedback}<br/>
-SESSION: {!$Api.Session_ID}<br/>
-RSS URL: {!$Page.pkb_RSS}<br/>
-CATEGORIES: {!selectedCategory}<br/>
-KNOWLEDGE ARTICLE ID: {!theKad.Id}<br/>
-KNOWLEDGE ARTICLE ID (FROM CONTROLLER): {!KnowledgeArticle.Id}<br/>
+    Page Attributes:
+    - cache: false (Disable caching)
+    - standardStylesheets: false (Disable standard Salesforce stylesheets)
+    - showHeader: false (Hide the Salesforce header)
+    - sidebar: false (Hide the Salesforce sidebar)
+    - standardController: FAQ__ka (Uses the standard controller for the FAQ__ka object)
+    - extensions: pkb_Controller (Extends functionality with pkb_Controller)
+    - language: Dynamically sets the language based on URL parameters
 -->
-
-        <!--  HOME PAGE LAYOUT -->
-        <div id="body" class="mx-4 my-1 pkb-scope">
-            <apex:form id="alius-format1180">
-                <apex:outputPanel layout="block" styleClass="w-100 mt-1" rendered="{!NOT(pkbCon.displayContactUs)}">
-                    <div class="d-block w-100 mb-0 h6 font-weight-bold">
-                        <apex:outputText id="alius-format1181">
-                            Knowledge Base &nbsp;&#124;&nbsp;
-                            <apex:outputLink value="{!pkbCon.currentSiteUrl}">
-                                {!$Label.PKB2_Contact_Us}
-                                <apex:param name="{!pkbCon.contactUsParam}" value="{!pkbCon.contactUsValue}" />
-                                <apex:param name="{!pkbCon.feedbackSourceParam}" value="{!pkbCon.feedbackContactUs}" />
-                                <apex:param name="{!pkbCon.languageParam}" value="{!pkbCon.selectedLanguage}" />
-                            </apex:outputLink>
-                        </apex:outputText>
-                    </div>
-                </apex:outputPanel>
-            </apex:form>
-
-            <div>
-                <c:pkb_search pkbCon="{!pkbCon}" showBackLinks="{!AND(facebook, viewingArticle)}" dirVertical="true" />
-            </div>
-            <apex:outputText rendered="{!displayContactUs}">
-                <apex:outputText rendered="{!searchExecuted}">
-                    <div id="immediateHelp" style="text-align: right; font-weight: bold; font-size: 110%; padding-top: 12px">
-                        {!$Label.PKB2_Answers_Might_Help}
-                    </div>
-                </apex:outputText>
+<apex:page
+    cache="false"
+    standardStylesheets="false"
+    showHeader="false"
+    sidebar="false"
+    standardController="FAQ__ka"
+    extensions="pkb_Controller"
+    language="{!$CurrentPage.parameters.l}"
+>
+    <html>
+        <head>
+            <!-- Include custom CSS and JavaScript components -->
+            <c:pkb_fb_css />
+            <c:pkb_js pkbCon="{!pkbCon}" />
+            <!-- Include Bootstrap script from static resource -->
+            <apex:includeScript value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/js/bootstrap.min.js')}" />
+            <title>{!pageTitle}</title>
+            <!-- Conditional metadata for when viewing an article -->
+            <apex:outputText rendered="{!viewingArticle}">
+                <!-- Define variables for article type and URL -->
+                <apex:variable
+                    var="typeName"
+                    value="{!SUBSTITUTE(pkbCon.theKad.articleTypeName, pkbCon.kavExtension, '')}"
+                />
+                <apex:variable
+                    var="articleURL"
+                    value="{!pkbCon.currentSiteUrl}articles{!pkbCon.selectedLanguageURL}{!typeName}/{!pkbCon.theKad.urlName}"
+                />
+                <meta
+                    name="viewport"
+                    content="width=device-width, initial-scale=0.5, minimum-scale=0.5, maximum-scale=0.5, target-densitydpi=device-dpi"
+                />
+                <!-- Open Graph metadata for social sharing -->
+                <meta property="og:title" content="{!pkbCon.theKad.title}" />
+                <meta property="og:type" content="article" />
+                <meta property="og:url" content="{!articleURL}" />
+                <meta property="og:site_name" content="{!SUBSTITUTE(pkbCon.siteName,'_',' ')}" />
+                <meta property="og:description" content="{!pkbCon.theKad.summary}" />
+                <meta property="description" content="{!pkbCon.theKad.summary}" />
+                <link rel="canonical" href="{!articleURL}" />
             </apex:outputText>
-            <apex:outputText rendered="{!AND(NOT(displayContactUs), NOT(viewingArticle))}">
+        </head>
+
+        <body>
+            <!-- DEBUG DATA -->
+            <!--
+            SITE ADMIN: {!pkbCon.siteAdmin.Email}, {!pkbCon.siteAdmin.Name}<br/>
+            ALL PARAMS: {!allSearchParams}<br/>
+            SITE/PAGE URL: {!pkbCon.currentSiteUrl}<br/>
+            FEEDBACK? : {!displayFeedback}<br/>
+            SESSION: {!$Api.Session_ID}<br/>
+            RSS URL: {!$Page.pkb_RSS}<br/>
+            CATEGORIES: {!selectedCategory}<br/>
+            KNOWLEDGE ARTICLE ID: {!theKad.Id}<br/>
+            KNOWLEDGE ARTICLE ID (FROM CONTROLLER): {!FAQ__ka.Id}<br/>
+            -->
+
+            <!-- HOME PAGE LAYOUT -->
+            <div id="body" class="mx-4 my-1 pkb-scope">
+                <!-- Form container -->
+                <apex:form id="alius-format1180">
+                    <apex:outputPanel layout="block" styleClass="w-100 mt-1" rendered="{!NOT(pkbCon.displayContactUs)}">
+                        <div class="d-block w-100 mb-0 h6 font-weight-bold">
+                            <!-- Display knowledge base link -->
+                            <apex:outputText id="alius-format1181">
+                                Knowledge Base &nbsp;&#124;&nbsp;
+                                <apex:outputLink value="{!pkbCon.currentSiteUrl}">
+                                    {!$Label.PKB2_Contact_Us}
+                                    <apex:param name="{!pkbCon.contactUsParam}" value="{!pkbCon.contactUsValue}" />
+                                    <apex:param
+                                        name="{!pkbCon.feedbackSourceParam}"
+                                        value="{!pkbCon.feedbackContactUs}"
+                                    />
+                                    <apex:param name="{!pkbCon.languageParam}" value="{!pkbCon.selectedLanguage}" />
+                                </apex:outputLink>
+                            </apex:outputText>
+                        </div>
+                    </apex:outputPanel>
+                </apex:form>
+
                 <div>
-                    <c:pkb_narrow pkbCon="{!pkbCon}" dirVertical="true" />
+                    <!-- Search component -->
+                    <c:pkb_search
+                        pkbCon="{!pkbCon}"
+                        showBackLinks="{!AND(facebook, viewingArticle)}"
+                        dirVertical="true"
+                    />
                 </div>
-            </apex:outputText>
-            <div>
-                <apex:outputText rendered="{!NOT(displayContactUs)}">
-                    <apex:outputText rendered="{!NOT(viewingArticle)}">
-                        <c:pkb_featured pkbCon="{!pkbCon}" rendered="{!NOT(searchExecuted)}" />
-                        <c:pkb_popular pkbCon="{!pkbCon}" rendered="{!NOT(searchExecuted)}" />
-                        <c:pkb_results pkbCon="{!pkbCon}" rendered="{!searchExecuted}" showHeaderInfo="true" />
-                    </apex:outputText>
-
-                    <apex:outputText rendered="{!viewingArticle}">
-                        <div>
-                            <c:pkb_articleview pkbCon="{!pkbCon}" showFeedbackYesNo="true" showBackLinks="true" />
+                <!-- Conditional display for contact us section -->
+                <apex:outputText rendered="{!displayContactUs}">
+                    <apex:outputText rendered="{!searchExecuted}">
+                        <div
+                            id="immediateHelp"
+                            style="text-align: right; font-weight: bold; font-size: 110%; padding-top: 12px"
+                        >
+                            {!$Label.PKB2_Answers_Might_Help}
                         </div>
                     </apex:outputText>
                 </apex:outputText>
-
-                <apex:outputText rendered="{!displayContactUs}">
-                    <c:pkb_results pkbCon="{!pkbCon}" rendered="{!searchExecuted}" showHeaderInfo="false" />
-                    <c:pkb_contactus_buttons_article pkbCon="{!pkbCon}" />
+                <apex:outputText rendered="{!AND(NOT(displayContactUs), NOT(viewingArticle))}">
+                    <div>
+                        <c:pkb_narrow pkbCon="{!pkbCon}" dirVertical="true" />
+                    </div>
                 </apex:outputText>
+                <div>
+                    <!-- Conditional content for search results and articles -->
+                    <apex:outputText rendered="{!NOT(displayContactUs)}">
+                        <apex:outputText rendered="{!NOT(viewingArticle)}">
+                            <c:pkb_featured pkbCon="{!pkbCon}" rendered="{!NOT(searchExecuted)}" />
+                            <c:pkb_popular pkbCon="{!pkbCon}" rendered="{!NOT(searchExecuted)}" />
+                            <c:pkb_results pkbCon="{!pkbCon}" rendered="{!searchExecuted}" showHeaderInfo="true" />
+                        </apex:outputText>
+
+                        <apex:outputText rendered="{!viewingArticle}">
+                            <div>
+                                <c:pkb_articleview pkbCon="{!pkbCon}" showFeedbackYesNo="true" showBackLinks="true" />
+                            </div>
+                        </apex:outputText>
+                    </apex:outputText>
+
+                    <apex:outputText rendered="{!displayContactUs}">
+                        <c:pkb_results pkbCon="{!pkbCon}" rendered="{!searchExecuted}" showHeaderInfo="false" />
+                        <c:pkb_contactus_buttons_article pkbCon="{!pkbCon}" />
+                    </apex:outputText>
+                </div>
+
+                <div style="clear: both"></div>
             </div>
-
-            <div style="clear: both"></div>
-        </div>
-        <div id="fb-root"></div>
-        <script src="http://connect.facebook.net/en_US/all.js"></script>
-        <script>
-            window.fbAsyncInit = function () {
-                FB.init({
-                    appId: '{!pkbCon.fbAppId}', // App ID
-                });
-                FB.Canvas.setAutoGrow();
-            };
-        </script>
-    </body>
-
+            <div id="fb-root"></div>
+            <!-- Facebook SDK for JavaScript -->
+            <script src="http://connect.facebook.net/en_US/all.js"></script>
+            <script>
+                window.fbAsyncInit = function () {
+                    FB.init({
+                        appId: '{!pkbCon.fbAppId}', // App ID
+                    });
+                    FB.Canvas.setAutoGrow();
+                };
+            </script>
+        </body>
     </html>
     <site:previewAsAdmin />
 </apex:page>

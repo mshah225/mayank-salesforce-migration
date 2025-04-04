@@ -1,11 +1,26 @@
+/**
+ * This REST resource class provides endpoints for retrieving the top five knowledge articles
+ * based on view statistics or data category. The class includes methods for constructing article URLs
+ * and determining the environment type.
+ *
+ * URL Mapping: /services/apexrest/TopFiveArticles/*
+ */
 @RestResource(urlMapping='/TopFiveArticles/*')
 global class TopFiveArticleController {
+    /**
+     * Inner class representing the structure of an article, including its URL, title, and rank.
+     */
     global class ArticleInfo {
-        string url;
-        string title;
-        integer rank;
+        public String url;
+        public String title;
+        public Integer rank;
     }
 
+    /**
+     * Retrieves the top five knowledge articles based on view statistics.
+     *
+     * @return A list of the top five articles, each represented by an instance of the ArticleInfo class.
+     */
     @HttpGet
     global static List<ArticleInfo> getTopFiveArticles() {
         Id knowledgeBaseSiteId = [SELECT Id FROM Site WHERE Name = 'kb']?.Id;
@@ -13,20 +28,20 @@ global class TopFiveArticleController {
             ? [SELECT SecureUrl FROM SiteDetail WHERE DurableId = :knowledgeBaseSiteId]?.SecureUrl + '/articles/FAQ/'
             : '';
 
-        List<KnowledgeArticleViewStat> articleViewStatList = [
+        List<FAQ__ViewStat> articleViewStatList = [
             SELECT Id, ParentId
-            FROM KnowledgeArticleViewStat
+            FROM FAQ__ViewStat
             ORDER BY ViewCount DESC
             LIMIT 5
         ];
         Set<Id> articleIds = new Set<Id>();
-        System.debug('GRF1: ' + articleIds);
         List<ArticleInfo> articles = new List<ArticleInfo>();
-        integer articleRank = 0;
+        Integer articleRank = 0;
+
         if (articleViewStatList.size() > 0) {
-            for (KnowledgeArticleViewStat kavs : [
+            for (FAQ__ViewStat kavs : [
                 SELECT Id, ParentId
-                FROM KnowledgeArticleViewStat
+                FROM FAQ__ViewStat
                 WHERE Channel = 'AllChannels'
                 ORDER BY ViewCount DESC
                 LIMIT 5
@@ -34,10 +49,10 @@ global class TopFiveArticleController {
                 articleIds.add(kavs.ParentId);
             }
 
-            for (KnowledgeArticleVersion kav : [
-                SELECT Id, Title, UrlName, KnowledgeArticleId, PublishStatus, language
-                FROM KnowledgeArticleVersion
-                WHERE PublishStatus = 'Online' AND language = 'en_US' AND KnowledgeArticleId IN :articleIds
+            for (FAQ__kav kav : [
+                SELECT Id, Title, UrlName, KnowledgeArticleId, PublishStatus, Language
+                FROM FAQ__kav
+                WHERE PublishStatus = 'Online' AND Language = 'en_US' AND KnowledgeArticleId IN :articleIds
             ]) {
                 articleRank++;
                 ArticleInfo ai = new ArticleInfo();
@@ -48,44 +63,36 @@ global class TopFiveArticleController {
             }
         }
 
-        System.debug('GRF2: ' + articles);
         return articles;
     }
 
+    /**
+     * Retrieves the top five knowledge articles based on the specified list name.
+     *
+     * @param listName The name of the list or data category to filter articles.
+     * @return A list of the top five articles, each represented by an instance of the ArticleInfo class.
+     */
     @HttpPost
     global static List<ArticleInfo> getTopFiveArticles2(String listName) {
-        //string urlPrefix = getPkbSiteUrl();
         List<ArticleInfo> articles = new List<ArticleInfo>();
-        integer articleRank = 0;
+        Integer articleRank = 0;
         Set<Id> kavIds = new Set<Id>();
         Set<Id> articleIds = new Set<Id>();
 
-        /*
-        List<KnowledgeArticleVersion> kavList = new List<KnowledgeArticleVersion>([
-            SELECT Id, KnowledgeArticleId
-            FROM KnowledgeArticleVersion
-            WHERE PublishStatus='Online'
-            AND language ='en_US'
-            AND isVisibleInPkb = true
-            WITH DATA CATEGORY Finances__c ABOVE_OR_BELOW All__c]
-        );
-        */
-
-        string kavQuery =
+        String kavQuery =
             'SELECT Id, KnowledgeArticleId ' +
-            'FROM KnowledgeArticleVersion ' +
+            'FROM FAQ__kav ' +
             'WHERE PublishStatus=\'Online\' ' +
-            'AND language =\'en_US\' ' +
-            'AND isVisibleInPkb = true';
-        string dataCategory = '';
-        string dcGroup;
-        System.debug('GRF listname: ' + listName);
+            'AND Language =\'en_US\' ' +
+            'AND IsVisibleInPkb = true';
+        String dataCategory = '';
+        String dcGroup;
 
+        // Determine data category group and category based on list name
         if (listName.indexOf('\\') > 0 && listName.indexOf('\\') < listName.length()) {
             Integer slashPosition = listName.indexOf('\\');
             dcGroup = listName.substring(0, slashPosition);
             dataCategory = listName.substring(slashPosition + 1);
-            System.debug('GRF backslash found: ' + dcGroup + ' \\ ' + dataCategory);
         } else if (listName == 'Classes') {
             dcGroup = 'Academics__c';
             dataCategory = 'My_ASU_Classes__c';
@@ -106,21 +113,23 @@ global class TopFiveArticleController {
             dataCategory = 'My_ASU_Financial_Aid__c';
         }
 
+        // Append data category to query if available
         if (dataCategory != '') {
             kavQuery += ' WITH DATA CATEGORY ' + dcGroup + ' AT ' + dataCategory;
         }
 
-        List<Sobject> kavList = new List<Sobject>(database.query(kavQuery));
-        System.debug('GRF3: ' + kavList);
+        // Execute query to retrieve knowledge article versions
+        List<SObject> kavList = new List<SObject>(Database.query(kavQuery));
 
-        for (Sobject so : kavList) {
-            KnowledgeArticleVersion kav = (KnowledgeArticleVersion) so;
+        for (SObject so : kavList) {
+            FAQ__kav kav = (FAQ__kav) so;
             kavIds.add(kav.KnowledgeArticleId);
         }
 
-        for (KnowledgeArticleViewStat kavs : [
+        // Retrieve the top five articles based on view count
+        for (FAQ__ViewStat kavs : [
             SELECT Id, ParentId
-            FROM KnowledgeArticleViewStat
+            FROM FAQ__ViewStat
             WHERE ParentId IN :kavIds AND Channel = 'PKB'
             ORDER BY ViewCount DESC
             LIMIT 5
@@ -128,10 +137,11 @@ global class TopFiveArticleController {
             articleIds.add(kavs.ParentId);
         }
 
-        for (KnowledgeArticleVersion kav : [
-            SELECT id, Title, UrlName, KnowledgeArticleId, PublishStatus, language
-            FROM KnowledgeArticleVersion
-            WHERE PublishStatus = 'Online' AND language = 'en_US' AND KnowledgeArticleId IN :articleIds
+        // Populate article information and add to articles list
+        for (FAQ__kav kav : [
+            SELECT Id, Title, UrlName, KnowledgeArticleId, PublishStatus, Language
+            FROM FAQ__kav
+            WHERE PublishStatus = 'Online' AND Language = 'en_US' AND KnowledgeArticleId IN :articleIds
         ]) {
             articleRank++;
             ArticleInfo ai = new ArticleInfo();
@@ -144,12 +154,18 @@ global class TopFiveArticleController {
         return articles;
     }
 
-    global static string getArticleUrl(KnowledgeArticleVersion kav) {
+    /**
+     * Constructs the URL for a given knowledge article version.
+     *
+     * @param kav The knowledge article version object.
+     * @return The constructed URL as a string.
+     */
+    global static String getArticleUrl(FAQ__kav kav) {
         String url = System.URL.getOrgDomainUrl().toExternalForm();
         url = url.replace('salesforce.com', 'salesforce-site.com/kb/articles/');
 
-        string articleTypeString;
-        string articleIdPrefix = String.valueOf(kav.Id).substring(0, 3);
+        String articleTypeString;
+        String articleIdPrefix = String.valueOf(kav.Id).substring(0, 3);
 
         if (articleIdPrefix == 'ka1') {
             articleTypeString = 'FAQ/';
@@ -164,12 +180,18 @@ global class TopFiveArticleController {
         return url + articleTypeString + kav.UrlName;
     }
 
-    global static string getMoreArticlesUrl(string dcGroup, string dataCategory) {
+    /**
+     * Constructs the URL for retrieving more articles based on data category group and category.
+     *
+     * @param dcGroup The data category group.
+     * @param dataCategory The data category.
+     * @return The constructed URL as a string.
+     */
+    global static String getMoreArticlesUrl(String dcGroup, String dataCategory) {
         String url = System.URL.getOrgDomainUrl().toExternalForm();
         url = url.replace('salesforce.com', 'salesforce-site.com');
 
         url += '/kb/pkb_Home?l=en_US&c=';
-
         url += dcGroup.replace('__c', '') + '%3A' + dataCategory.replace('__c', '');
 
         return url;

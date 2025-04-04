@@ -13,7 +13,9 @@ public class LiveAgentPreSurveyController {
     public String chatButtonId { get; set; }
     public String chatEndpoint { get; set; }
     public String scriptEndpointUrl { get; set; }
-    public Live_Agent_Button__c buttonConfig { get; set; }
+
+    @TestVisible
+    private static Live_Agent_Button_Setting__mdt TEST_BUTTON_CONFIG;
 
     public LiveAgentPreSurveyController() {
         getButtonIdFromURL();
@@ -31,7 +33,11 @@ public class LiveAgentPreSurveyController {
     }
 
     private void setButtonInformation() {
-        buttonConfig = Live_Agent_Button__c.getInstance(buttonPressed);
+        Live_Agent_Button_Setting__mdt buttonConfig = Live_Agent_Button_Setting__mdt.getInstance(buttonPressed);
+
+        if (Test.isRunningTest() && TEST_BUTTON_CONFIG != null)
+            buttonConfig = TEST_BUTTON_CONFIG;
+
         orgId = buttonConfig.Org_Id__c;
         chatDeploymentId = buttonConfig.Chat_Deployment__c;
         chatButtonId = buttonConfig.Chat_Button_Id__c;

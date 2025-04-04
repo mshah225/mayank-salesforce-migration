@@ -6,21 +6,17 @@ public with sharing class NonAuthenticatedLiveAgentLandingPageTest {
     private static final String liveAgentBtnDisplayName = 'DISPLAY_NAME';
     private static final String liveAgentBtnOrgId = 'ORG_ID';
 
-    @TestSetup
-    static void setup() {
-        Live_Agent_Button__c liveAgentBtn = new Live_Agent_Button__c(
-            Name = 'Non_Authenticated_Live_Chat',
+    @isTest
+    private static void testBasicFields() {
+        NonAuthenticatedLiveAgentLandingPage.TEST_BUTTON_CONFIG = new Live_Agent_Button_Setting__mdt(
+            Label = liveAgentBtnDisplayName,
+            DeveloperName = 'Non_Authenticated_Live_Chat',
             Chat_Button_Id__c = liveAgentBtnChatButtonId,
             Chat_Deployment__c = liveAgentBtnChatDeployment,
             Chat_Endpoint__c = liveAgentBtnChatEndpoint,
-            Display_Name__c = liveAgentBtnDisplayName,
             Org_Id__c = liveAgentBtnOrgId
         );
-        insert liveAgentBtn;
-    }
 
-    @isTest
-    private static void testBasicFields() {
         PageReference pageRef = Page.NonAuthenticatedLiveAgentLandingPage;
         // Start with 3D in button_id because parsing relies on equal sign being represented as %3D but
         // using .getParameters().put(...) uses a equal sign, = (1 character instead of the needed 3)

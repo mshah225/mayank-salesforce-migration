@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Chat_Deployment__c</fullName>
+    <description>The unique ID of your Chat deployment. To get this value, from Setup, select Chat | Deployments. The script at the bottom of the page contains a call to the liveagent.init function with the pod, the deploymentId, and orgId as arguments. Copy the deploymentId value.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>The unique ID of your Chat deployment. To get this value, from Setup, select Chat | Deployments. The script at the bottom of the page contains a call to the liveagent.init function with the pod, the deploymentId, and orgId as arguments. Copy the deploymentId value.</inlineHelpText>
+    <label>Chat Deployment</label>
+    <length>255</length>
+    <required>true</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -56,22 +56,6 @@ public class AKBControllerTest {
         testUser.ContactId = testContact.Id;
         testUser.UserPermissionsKnowledgeUser = true;
         insert testUser;
-
-        List<Live_Agent_Button__c> buttonsToInsert = new List<Live_Agent_Button__c>{
-            new Live_Agent_Button__c(
-                Name = 'Finances_Live_Chat',
-                Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat'
-            ),
-            new Live_Agent_Button__c(
-                Name = 'ASU_Services_Live_Chat',
-                Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat'
-            ),
-            new Live_Agent_Button__c(
-                Name = 'Technical_Support_Live_Chat',
-                Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat'
-            )
-        };
-        insert buttonsToInsert;
     }
 
     /**

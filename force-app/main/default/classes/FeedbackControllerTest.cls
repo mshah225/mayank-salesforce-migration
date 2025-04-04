@@ -42,28 +42,6 @@ private class FeedbackControllerTest {
             ContactId = testContact.Id
         );
 
-        List<Live_Agent_Button__c> buttonsToInsert = new List<Live_Agent_Button__c>();
-        buttonsToInsert.add(
-            new Live_Agent_Button__c(
-                Name = 'Finances_Live_Chat',
-                Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat'
-            )
-        );
-        buttonsToInsert.add(
-            new Live_Agent_Button__c(
-                Name = 'ASU_Services_Live_Chat',
-                Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat'
-            )
-        );
-        buttonsToInsert.add(
-            new Live_Agent_Button__c(
-                Name = 'Technical_Support_Live_Chat',
-                Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat'
-            )
-        );
-
-        insert buttonsToInsert;
-
         if ([SELECT Id FROM Group WHERE Name = 'Student Success Innovations (Case)' AND Type = 'Queue'].size() == 0) {
             // Add group if needed
             Group testGroup = new Group(Name = 'Student Success Innovations (Case)', Type = 'Queue');

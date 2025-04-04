@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Chatbot_URL__c</fullName>
+    <description>This is used when this button is display on the Help tab.  When a user clicks on this button, they are sent to the chatbot rather than starting a live agent chat with a person.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>This is used when this button is display on the Help tab.  When a user clicks on this button, they are sent to the chatbot rather than starting a live agent chat with a person.</inlineHelpText>
+    <label>Chatbot URL</label>
+    <required>false</required>
+    <type>Url</type>
+</CustomField>

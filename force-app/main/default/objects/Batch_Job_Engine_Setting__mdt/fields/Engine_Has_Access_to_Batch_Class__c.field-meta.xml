@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Engine_Has_Access_to_Batch_Class__c</fullName>
-    <defaultValue>true</defaultValue>
-    <externalId>false</externalId>
-    <fieldManageability>DeveloperControlled</fieldManageability>
-    <label>Engine Has Access to Batch Class</label>
-    <type>Checkbox</type>
-</CustomField>

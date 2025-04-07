@@ -41,10 +41,11 @@ export default class LightningTextEditable extends LightningElement {
     saveChanges() {
         this.editMode = false;
         this.dispatchEvent(new CustomEvent('change', {detail: {value: this.newValue}}));
+        this.newValue = null;
     }
     cancelChanges() {
         this.editMode = false;
-        this.newValue = this.value;
+        this.newValue = null;
     }
     changeHandler(evnt) {
         evnt.stopPropagation();

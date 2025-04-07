@@ -1,7 +1,8 @@
-import {LightningElement, wire} from 'lwc';
-import {getRecord, createRecord, updateRecord, deleteRecord} from 'lightning/uiRecordApi';
+import {LightningElement, api, wire} from 'lwc';
+import {getRecord, createRecord, updateRecord} from 'lightning/uiRecordApi';
 import {gql, graphql} from 'lightning/uiGraphQLApi';
 import LightningPrompt from 'lightning/prompt';
+import LightningConfirm from 'lightning/confirm';
 import ToastContainer from 'lightning/toastContainer';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import GraphqlManager from 'c/graphqlManager';
@@ -83,6 +84,7 @@ export default class AdvisorPortalA extends LightningElement {
             ownerIds: this.ownerIds,
             studentString: this.studentString,
             campus: this.campus,
+            academicLevel: this.academicLevel,
             studentGroupCode: this.studentGroupCode,
             major: this.major,
             degreeLevel: this.degreeLevel,
@@ -932,7 +934,7 @@ export default class AdvisorPortalA extends LightningElement {
      */
     connectedCallback() {
         // Create toast container to show toasts
-        ToastContainer.instance();
+        this.toastContainer = ToastContainer.instance();
     }
 
     /**
@@ -1034,6 +1036,7 @@ export default class AdvisorPortalA extends LightningElement {
     viewFilterSets() {
         FilterSetsModal.open({
             size: 'large',
+            forceRefresh: true,
         }).then((result) => {
             if (result?.action != null) {
                 if (result?.action?.filterSet?.Value__c == null) {
@@ -1184,6 +1187,22 @@ export default class AdvisorPortalA extends LightningElement {
         return this.appliedFilterSet != null && this.hasChangedFields;
     }
 
+    /** Can save as if no filter set OR filter set and changed fields OR filter set and not owner */
+    get disableSaveAsButton() {
+        return !(
+            this.appliedFilterSet == null ||
+            (this.appliedFilterSet != null && this.hasChangedFields) ||
+            (this.appliedFilterSet != null && !this.userOwnsFilterSet)
+        );
+    }
+    /** Can overwrite if viewing a filter set, and user owns filter set, and has modified  */
+    get disableOverwriteButton() {
+        return !(this.appliedFilterSet != null && this.hasChangeFields && this.userOwnsFilterSet);
+    }
+    /** Can reset if viewing a filter set and has modified */
+    get disableResetButton() {
+        return !(this.appliedFilterSet != null && this.hasChangedFields);
+    }
 
     /**
      * Save current configuration as a new filter set
@@ -1192,13 +1211,13 @@ export default class AdvisorPortalA extends LightningElement {
         LightningPrompt.open({
             label: 'New Filter Set',
             message: 'Give filter set a name',
-            defaultValue: `${this.myname ? this.myname + "'s" : 'My'} filter set`,
+            defaultValue: this.lastFilterSetName ?? `${this.myname ? this.myname + "'s" : 'My'} filter set`,
         })
             .then((filterSetName) => {
                 if (filterSetName != null) {
+                    this.lastFilterSetName = filterSetName;
                     const fields = {};
                     fields[FILTER_SET_NAME_FIELD.fieldApiName] = filterSetName;
-                    fields[FILTER_SET_VALUE_FIELD.fieldApiName] = JSON.stringify(this.currentFilter);
                     fields[FILTER_SET_VALUE_FIELD.fieldApiName] = JSON.stringify(this.currentFilter);
 
                     const recordInput = {
@@ -1206,10 +1225,25 @@ export default class AdvisorPortalA extends LightningElement {
                         fields,
                     };
 
-                    return createRecord(recordInput).then((recordOutput) => {
-                        this.appliedFilterSetId = recordOutput.id;
-                        this.refs.hasSavedFilterSetToast.show();
-                    });
+                    return createRecord(recordInput)
+                        .then((recordOutput) => {
+                            this.appliedFilterSetId = recordOutput.id;
+                            this.hasChangedFields = false;
+                            this.hideAllToasts(); // close existing to prevent toasts from overlapping
+                            this.refs.hasSavedFilterSetToast.show();
+                            this.lastFilterSetName = undefined;
+                        })
+                        .catch((e) => {
+                            this.dispatchEvent(
+                                new ShowToastEvent({
+                                    title: 'Unable to save filter set',
+                                    message: extractErrorMessages(e)[0],
+                                    variant: 'error',
+                                    mode: 'sticky',
+                                })
+                            );
+                            this.saveFilterSet();
+                        });
                 }
                 return Promise.resolve();
             })
@@ -1223,6 +1257,58 @@ export default class AdvisorPortalA extends LightningElement {
                     })
                 );
             });
+    }
+    lastFilterSetName;
+
+    /**
+     * Overwrite  the filter field for a filter set
+     */
+    overwriteFilterSet() {
+        LightningConfirm.open({
+            label: 'Update filter set',
+            message: 'This will update the filter set filters for you and any users you have shared it with',
+        })
+            .then((result) => {
+                if (result) {
+                    const fields = {};
+                    fields[FILTER_SET_ID_FIELD.fieldApiName] = this.appliedFilterSetId;
+                    fields[FILTER_SET_VALUE_FIELD.fieldApiName] = JSON.stringify(this.currentFilter);
+
+                    const recordInput = {
+                        fields,
+                    };
+
+                    return updateRecord(recordInput).then(() => {
+                        this.dispatchEvent(
+                            new ShowToastEvent({
+                                title: 'Filter set has been updated',
+                                variant: 'success',
+                            })
+                        );
+                        this.hasChangedFields = false;
+                    });
+                }
+                return Promise.resolve();
+            })
+            .catch((e) => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Unable to overwrite filter set',
+                        message: extractErrorMessages(e)[0],
+                        variant: 'error',
+                        mode: 'sticky',
+                    })
+                );
+            });
+    }
+
+    /**
+     * Undo any changes and revert to values of the applied filter set
+     */
+    resetFilterSet() {
+        this.currentFilter = JSON.parse(this.appliedFilterSet.Value__c);
+        this.hasChangedFields = false;
+        this.applyFilters();
     }
 
     /**

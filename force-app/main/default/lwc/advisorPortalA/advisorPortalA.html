@@ -87,6 +87,7 @@
                             alternative-text="Delete filter set name"
                             title="Delete filter set name"
                             onclick={handleDeleteFilterSet}
+                            class="slds-var-m-right_xx-small"
                         ></lightning-button-icon>
                     </div>
                 </template>
@@ -100,10 +101,11 @@
                 <div>
                     <lightning-button
                         variant="brand"
-                        label="Save"
-                        title="Save"
+                        label="Save As"
+                        title="Save As"
                         icon-name="utility:save"
                         onclick={saveFilterSet}
+                        disabled={disableSaveAsButton}
                         class="slds-var-m-right_x-small"
                     ></lightning-button>
 
@@ -112,6 +114,8 @@
                         label="Overwrite"
                         title="Overwrite"
                         icon-name="utility:edit"
+                        onclick={overwriteFilterSet}
+                        disabled={disableOverwriteButton}
                         class="slds-var-m-right_x-small"
                     ></lightning-button>
 
@@ -120,6 +124,8 @@
                         label="Reset"
                         title="Reset"
                         icon-name="utility:refresh"
+                        onclick={resetFilterSet}
+                        disabled={disableResetButton}
                     ></lightning-button>
                 </div>
             </div>
@@ -136,6 +142,7 @@
                 my-queue-id={myQueueId}
                 is-loading={loadingUsersAndPodOptions}
                 onchangeusers={changeSelectedUsers}
+                oncommitusers={commitSelectedUsers}
             ></c-advisor-portal-user-select>
         </div>
         <div class="slds-box light-blue-background slds-grid slds-var-m-bottom_small">

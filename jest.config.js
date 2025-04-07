@@ -23,6 +23,7 @@ module.exports = {
         '^lightning/prompt$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/prompt',
         '^lightning/modal$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/modal',
         '^lightning/refresh$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/refresh',
+        '^lightning/toastContainer$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/toastContainer',
         '^lightning/combobox$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/combobox',
         '^lightning/inputField$': '<rootDir>/force-app/main/default/lwc/__jestMocks__/lightning/inputField',
     },

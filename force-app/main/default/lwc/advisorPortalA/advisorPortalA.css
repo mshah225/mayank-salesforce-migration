@@ -41,6 +41,11 @@
     cursor: pointer;
 }
 
+/** Styling for edit alert */
+:host .filterSetEditAlert {
+    --slds-c-alert-color-background: var(--slds-g-color-palette-yellow-80, #fcc003);
+}
+
 /** Input tooltips */
 :host .tooltip {
    border: var(--lwc-borderWidthThin, 1px) solid var(--lwc-colorTextLabel,rgb(116, 116, 116));

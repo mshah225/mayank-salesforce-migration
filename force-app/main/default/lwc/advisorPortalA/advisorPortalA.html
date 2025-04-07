@@ -11,6 +11,24 @@
             </span>
         </c-lightning-complex-toast>
 
+        <template lwc:if={showEditWarning}>
+            <div
+                class="slds-notify slds-notify_alert slds-alert_warning slds-var-m-bottom_small filterSetEditAlert"
+                role="alert"
+            >
+                <span class="slds-icon_container slds-icon-utility-warning slds-var-m-right_x-small">
+                    <lightning-icon
+                        icon-name="utility:warning"
+                        variant="inverse"
+                        alternative-text="warning"
+                        size="small"
+                        title="warning"
+                    ></lightning-icon>
+                </span>
+                <h2>You're editting an existing Filter set.</h2>
+            </div>
+        </template>
+
         <div class="slds-text-align_right slds-var-m-bottom_x-small">
             <template lwc:if={userIsBothGradAndUgrad}>
                 <c-lightning-input-radio-group-row

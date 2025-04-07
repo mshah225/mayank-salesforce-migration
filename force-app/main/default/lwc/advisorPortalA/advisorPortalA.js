@@ -940,6 +940,15 @@ export default class AdvisorPortalA extends LightningElement {
      */
     changeSelectedUsers(evnt) {
         this.ownerIds = evnt.detail.value;
+        this.hasChangedFields = true;
+    }
+
+    /**
+     * User pressed the apply button - commit the changes and reload the filters
+     */
+    commitSelectedUsers(evnt) {
+        this.ownerIds = evnt.detail.value;
+        this.hasChangedFields = true;
         this.applyFilters();
     }
 
@@ -955,10 +964,13 @@ export default class AdvisorPortalA extends LightningElement {
             this[fieldName] = fieldValue;
         }
 
+        this.hasChangedFields = true;
+
         // Any triggers to immediately apply changes
         if (fieldName === 'career') this.applyFilters();
         else if (fieldName === 'caseTypeState') this.applyFilters();
     }
+    hasChangedFields = false;
 
     /**
      * Reset all filters to empty
@@ -1029,6 +1041,7 @@ export default class AdvisorPortalA extends LightningElement {
                 }
 
                 this.appliedFilterSetId = result.action.filterSetId;
+                this.hasChangedFields = false;
 
                 // Set filter from saved filter set
                 this.currentFilter = JSON.parse(result.action.filterSet.Value__c);
@@ -1165,6 +1178,12 @@ export default class AdvisorPortalA extends LightningElement {
                 );
             });
     }
+
+    /** Has applied a filter set and is editting it */
+    get showEditWarning() {
+        return this.appliedFilterSet != null && this.hasChangedFields;
+    }
+
 
     /**
      * Save current configuration as a new filter set
@@ -1366,6 +1385,14 @@ export default class AdvisorPortalA extends LightningElement {
     }
 
     /**
+     * Forcibly close all toasts
+     */
+    hideAllToasts() {
+        this.toastContainer.close();
+        this.toastContainer = ToastContainer.instance();
+    }
+
+    /**
      * Handle navigation events
      */
     navigate(e) {
@@ -1451,5 +1478,21 @@ export default class AdvisorPortalA extends LightningElement {
         if (this.caseSubCategoryError !== undefined) return extractErrorMessages(this.caseSubCategoryError)[0];
         if (this.caseSubjectError !== undefined) return extractErrorMessages(this.caseSubjectError)[0];
         return '';
+    }
+}
+
+export class AdvisorPortalTest extends AdvisorPortalA {
+    @api set currentFilter(v) {
+        super.currentFilter = v;
+    }
+    get currentFilter() {
+        return super.currentFilter;
+    }
+
+    @api set showAdditionalFilters(v) {
+        super.showAdditionalFilters = v;
+    }
+    get showAdditionalFilters() {
+        return super.showAdditionalFilters;
     }
 }

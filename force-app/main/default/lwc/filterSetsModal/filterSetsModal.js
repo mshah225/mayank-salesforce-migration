@@ -1,10 +1,10 @@
 import LightningModal from 'lightning/modal';
 import {api, wire} from 'lwc';
-import {gql, graphql} from 'lightning/uiGraphQLApi';
+import {gql, graphql, refreshGraphQL} from 'lightning/uiGraphQLApi';
 import {createRecord, updateRecord, deleteRecord} from 'lightning/uiRecordApi';
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import Id from '@salesforce/user/Id';
-import {extractErrorMessages} from 'c/helperFunctions';
+import {parseBoolean, extractErrorMessages} from 'c/helperFunctions';
 import FilterSetShareModal from 'c/filterSetShareModal';
 import FilterSetRemoveModal from 'c/filterSetRemoveModal';
 import checkIfCanShare from '@salesforce/apex/FilterSetController.checkIfCanShare';
@@ -38,6 +38,14 @@ import UFSP_SORT_ORDER_FIELD from '@salesforce/schema/User_Filter_Set_Preference
  */
 
 export default class FilterSetsModal extends LightningModal {
+    @api set forceRefresh(v) {
+        this._forceRefresh = parseBoolean(v);
+    }
+    get forceRefresh() {
+        return this._forceRefresh;
+    }
+    _forceRefresh = false;
+
     /**
      * Get all the details for all filter sets the current user has access to
      */
@@ -128,7 +136,16 @@ export default class FilterSetsModal extends LightningModal {
         `,
         variables: '$gqlVariables',
     })
-    gotData({data, errors}) {
+    gotData(resp) {
+        const {data, errors} = resp;
+
+        /** If this field is set, then we will invalidate the cache and force the modal to get more recent data */
+        if (this.forceRefresh) {
+            this.forceRefresh = false;
+            refreshGraphQL(resp);
+            return;
+        }
+
         if (data !== undefined) {
             let graphqlManager = new GraphqlManager(data);
             this.filterSetManager = new FilterSetManager(graphqlManager.unwrap().Filter_Set__c);

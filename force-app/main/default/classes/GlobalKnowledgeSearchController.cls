@@ -79,7 +79,6 @@ public with sharing class GlobalKnowledgeSearchController {
 
         if (!articleMap.isEmpty()) {
             List<FAQ__DataCategorySelection> selections = getSelections(articleMap.keySet());
-            System.debug('✅ Selections returned: ' + selections.size());
 
             if (categoryFilter != null && categoryFilter != '*') {
                 for (FAQ__DataCategorySelection sel : selections) {
@@ -132,7 +131,6 @@ public with sharing class GlobalKnowledgeSearchController {
     @TestVisible
     private static List<FAQ__DataCategorySelection> getSelections(Set<String> articleIds) {
         if (isTesting && testSelections != null) {
-            System.debug('🧪 Using test override for selections.');
             return testSelections;
         }
 

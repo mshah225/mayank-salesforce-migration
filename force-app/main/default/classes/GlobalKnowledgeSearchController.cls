@@ -37,7 +37,7 @@ public with sharing class GlobalKnowledgeSearchController {
 
         String query = 'FIND {' + cleanedTerm + '} RETURNING FAQ__kav(' +
             'Id, Title, Answer__c, ArticleTotalViewCount, Functional_Group__c, ' +
-            'KnowledgeArticleId, LastPublishedDate, PublishStatus' +
+            'KnowledgeArticleId, LastPublishedDate, PublishStatus, IsDeleted' +
         ')';
 
         String endpoint = '/services/data/v63.0/search/?q=' + EncodingUtil.urlEncode(query, 'UTF-8');
@@ -58,7 +58,10 @@ public with sharing class GlobalKnowledgeSearchController {
         Map<String, Article> articleMap = new Map<String, Article>();
         for (Object obj : records) {
             Map<String, Object> rec = (Map<String, Object>) obj;
+
+            // Only include published and not-deleted articles
             if ((String) rec.get('PublishStatus') != 'Online') continue;
+            if ((Boolean) rec.get('IsDeleted') == true) continue;
 
             Article a = new Article();
             a.Id = (String) rec.get('Id');

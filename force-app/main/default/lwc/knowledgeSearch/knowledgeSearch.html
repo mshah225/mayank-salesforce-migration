@@ -4,7 +4,6 @@
         <lightning-card title="Knowledge Search" icon-name="utility:search">
             <!-- Search and filter section -->
             <div class="search-and-filter-container">
-                <!-- Layout to organize search input, filter dropdown, and search button -->
                 <lightning-layout vertical-align="center" horizontal-align="center" multiple-rows="true">
                     <!-- Search Input -->
                     <lightning-layout-item
@@ -15,7 +14,6 @@
                         padding="around-small"
                     >
                         <div class="search-input-container">
-                            <!-- Input field for entering the search term -->
                             <lightning-input
                                 class="search-input"
                                 type="text"
@@ -37,7 +35,6 @@
                         padding="around-small"
                     >
                         <div class="filter-container">
-                            <!-- Dropdown to filter articles by category -->
                             <lightning-combobox
                                 class="filter-dropdown"
                                 label="Filter by Category Group"
@@ -57,7 +54,6 @@
                         padding="around-small"
                     >
                         <div class="search-button-container">
-                            <!-- Button to trigger the search action -->
                             <lightning-button
                                 class="search-button"
                                 label="Search for Articles"
@@ -80,49 +76,59 @@
 
             <!-- Results Section -->
             <template if:true={hasSearched}>
-                <!-- Articles are displayed when search results are available -->
-                <template if:true={filteredArticles.length}>
-                    <div class="articles">
-                        <template for:each={filteredArticles} for:item="article">
-                            <div key={article.Id} class="article">
-                                <!-- Article title with a link to its record page -->
-                                <h3>
-                                    <a data-record-id={article.KnowledgeArticleId} onclick={handleArticleLink}>
-                                        {article.Title}
-                                    </a>
-                                </h3>
-                                <!-- Article metadata -->
-                                <p class="article-info">
-                                    <strong>Category: </strong>{article.Category}
-                                    <strong> • </strong>
-                                    <strong>Updated: </strong>{article.LastPublishedDate}
-                                </p>
-                            </div>
-                        </template>
-                    </div>
-                    <div class="pagination-controls mt-1">
-                        <lightning-button
-                            variant="destructive"
-                            class="asu-pagination-button"
-                            label="⇤"
-                            onclick={handlePreviousPage}
-                            disabled={disablePrevious}
-                            style="margin-right: 0.5rem"
-                        ></lightning-button>
-                        <lightning-button
-                            variant="destructive"
-                            class="asu-pagination-button"
-                            label="⇥"
-                            onclick={handleNextPage}
-                            disabled={disableNext}
-                        ></lightning-button>
-                    </div>
-                </template>
+                <div class="results-container slds-is-relative">
+                    <!-- Spinner Overlay -->
+                    <template if:true={isLoading}>
+                        <div class="spinner-overlay">
+                            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                        </div>
+                    </template>
 
-                <!-- Message displayed when no search results match the criteria -->
-                <template if:true={noResults}>
-                    <p class="no-results">No articles found matching your criteria.</p>
-                </template>
+                    <!-- Articles are displayed when search results are available -->
+                    <template if:true={filteredArticles.length}>
+                        <div class="articles">
+                            <template for:each={filteredArticles} for:item="article">
+                                <div key={article.Id} class="article">
+                                    <h3>
+                                        <a data-record-id={article.KnowledgeArticleId} onclick={handleArticleLink}>
+                                            {article.Title}
+                                        </a>
+                                    </h3>
+                                    <p>
+                                        {article.AnswerPreview}
+                                    </p>
+                                    <p class="article-info">
+                                        <strong>Category: </strong>{article.Category}
+                                        <strong> • </strong>
+                                        <strong>Updated: </strong>{article.LastPublishedDate}
+                                    </p>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="pagination-controls mt-1">
+                            <lightning-button
+                                variant="destructive"
+                                class="asu-pagination-button"
+                                label="⇤"
+                                onclick={handlePreviousPage}
+                                disabled={disablePrevious}
+                                style="margin-right: 0.5rem"
+                            ></lightning-button>
+                            <lightning-button
+                                variant="destructive"
+                                class="asu-pagination-button"
+                                label="⇥"
+                                onclick={handleNextPage}
+                                disabled={disableNext}
+                            ></lightning-button>
+                        </div>
+                    </template>
+
+                    <!-- Message displayed when no search results match the criteria -->
+                    <template if:true={noResults}>
+                        <p class="no-results">No articles found matching your criteria.</p>
+                    </template>
+                </div>
             </template>
         </lightning-card>
     </div>

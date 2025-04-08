@@ -1,38 +1,25 @@
-import {LightningElement, wire} from 'lwc';
-import {NavigationMixin} from 'lightning/navigation';
-import {getListRecordsByName} from 'lightning/uiListsApi';
-import {ShowToastEvent} from 'lightning/platformShowToastEvent';
-import {IsConsoleNavigation, getFocusedTabInfo, setTabLabel, setTabIcon} from 'lightning/platformWorkspaceApi';
+import { LightningElement, wire } from 'lwc';
+import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
+import searchArticles from '@salesforce/apex/GlobalKnowledgeSearchController.searchArticles';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { IsConsoleNavigation, getFocusedTabInfo, setTabLabel, setTabIcon } from 'lightning/platformWorkspaceApi';
 
 // Constants
 const TAB_LABEL = 'Knowledge Search';
 const TAB_ICON = 'utility:search';
-const DEFAULT_LIST_VIEW = 'SEARCH_All_Published_Articles';
-const FIELDS = [
-    'FAQ__kav.Answer__c',
-    'FAQ__kav.ArticleTotalViewCount',
-    'FAQ__kav.Functional_Group__c',
-    'FAQ__kav.KnowledgeArticleId',
-    'FAQ__kav.LastPublishedDate',
-    'FAQ__kav.Title',
-];
-const SORT_BY_FIELDS = ['-FAQ__kav.ArticleTotalViewCount'];
 const PAGE_SIZE = 10;
 
 export default class KnowledgeSearch extends NavigationMixin(LightningElement) {
-    pageToken = null;
-    nextPageToken = null;
-    previousPageToken = null;
-
     // Component state variables
     selectedSearchTerm = ''; // Search term at time of clicking 'Search' button or clicking ENTER
     desiredSearchTerm = ''; // Current search term entered by the user, irregardless of search state
-    selectedFilter = DEFAULT_LIST_VIEW; // Search filter at time of clicking 'Search' button or clicking ENTER
-    desiredFilter = DEFAULT_LIST_VIEW; // Current search filter selected by the user, irregardless of search state
+    selectedFilter = '*'; // Search filter at time of clicking 'Search' button or clicking ENTER
+    desiredFilter = '*'; // Current search filter selected by the user, irregardless of search state
 
-    articles = []; // All articles fetched from the selected list view
+    articles = []; // All articles fetched from Apex global search
     filteredArticles = []; // Filtered articles to display to the user
 
+    currentPage = 1;
     nextPageAvailable = false;
     previousPageAvailable = false;
 
@@ -40,14 +27,19 @@ export default class KnowledgeSearch extends NavigationMixin(LightningElement) {
     error = null; // Error message, if any
     hasSearched = false; // Tracks whether a search has been performed
 
+    isLoading = false; // Loading indicator
+
     // Dropdown filter options for category groups
     filterOptions = [
-        {label: 'All Category Groups', value: 'SEARCH_All_Published_Articles'},
-        {label: 'Academics', value: 'SEARCH_All_Academics_Articles'},
-        {label: 'Campus Services', value: 'SEARCH_All_Campus_Services_Articles'},
-        {label: 'Finances', value: 'SEARCH_All_Finances_Articles'},
-        {label: 'Internal Knowledge', value: 'SEARCH_All_Internal_Knowledge_Articles'},
+        { label: 'All Category Groups', value: '*' },
+        { label: 'Academics', value: 'Academics' },
+        { label: 'Campus Services', value: 'Campus_Services' },
+        { label: 'Finances', value: 'Finances' },
+        { label: 'Internal Knowledge', value: 'Internal_Knowledge' },
     ];
+
+    @wire(CurrentPageReference)
+    currentPageReference;
 
     // Indicates whether the user is in a console navigation environment
     @wire(IsConsoleNavigation) isConsoleNavigation;
@@ -59,7 +51,7 @@ export default class KnowledgeSearch extends NavigationMixin(LightningElement) {
         if (!this.isConsoleNavigation) {
             return;
         }
-        const {tabId} = await getFocusedTabInfo();
+        const { tabId } = await getFocusedTabInfo();
         setTabLabel(tabId, TAB_LABEL);
     }
 
@@ -70,56 +62,186 @@ export default class KnowledgeSearch extends NavigationMixin(LightningElement) {
         if (!this.isConsoleNavigation) {
             return;
         }
-        const {tabId} = await getFocusedTabInfo();
+        const { tabId } = await getFocusedTabInfo();
         setTabIcon(tabId, TAB_ICON, {
             iconAlt: TAB_LABEL,
         });
     }
 
     /**
-     * @description Wire adapter to fetch articles based on the selected filter.
-     * @param {object} response - The response object containing data or error.
+     * @description Handles user input in the search field.
+     * @param {Event} event - The input event from the search field.
      */
-    @wire(getListRecordsByName, {
-        objectApiName: 'FAQ__kav',
-        fields: FIELDS,
-        sortBy: SORT_BY_FIELDS,
-        pageSize: PAGE_SIZE,
-        pageToken: '$pageToken',
-        listViewApiName: '$selectedFilter',
-        searchTerm: '$selectedTerm',
-    })
-    listRelevantArticles({data, error}) {
-        if (data) {
-            console.log(data);
+    handleSearchInput(event) {
+        this.searchTerm = event.target?.value;
+    }
 
-            this.nextPageToken = data?.nextPageToken;
-            this.nextPageAvailable = this.nextPageToken ? true : false;
-            this.previousPageToken = data?.previousPageToken;
-            this.previousPageAvailable = this.previousPageToken ? true : false;
-
-            // Transform the fetched articles into a usable format
-            this.articles = data.records.map((record) => ({
-                Id: record.id,
-                Answer: record.fields.Answer__c.value,
-                ArticleTotalViewCount: record.fields.ArticleTotalViewCount.value,
-                Category: record.fields.Functional_Group__c.value,
-                KnowledgeArticleId: record.fields.KnowledgeArticleId.value,
-                LastPublishedDate: this.formatDate(record.fields.LastPublishedDate.value),
-                Title: record.fields.Title.value,
-            }));
-
-            this.filteredArticles = [...this.articles];
-            this.noResults = this.filteredArticles.length === 0;
-            this.error = null;
-        } else if (error) {
-            console.error(error);
-
-            this.showErrorToast('Error fetching articles.');
-            this.error = 'Error fetching articles.';
-            this.articles = [];
-            this.filteredArticles = [];
+    /**
+     * @description Handles changes in the filter dropdown.
+     * @param {Event} event - The change event from the filter dropdown.
+     */
+    handleFilterChange(event) {
+        this.desiredFilter = event.target.value;
+    
+        if (this.hasSearched) {
+            this.selectedFilter = this.desiredFilter;
+            this.currentPage = 1;
+            this.fetchArticles();
         }
+    }
+
+    /**
+     * @description Handles the Enter keypress in the search input field.
+     * @param {Event} event - The keypress event.
+     */
+    handleEnterKey(event) {
+        if (event.which === 13) {
+            this.handleSearch();
+        }
+    }
+
+    /**
+     * @description Executes the search based on the current search term and category filter.
+     */
+    handleSearch() {
+        const hasValidSearch = /\S/.test(this.desiredSearchTerm);
+        const searchTermChanged = this.selectedSearchTerm !== this.desiredSearchTerm;
+        const filterChanged = this.selectedFilter !== this.desiredFilter;
+
+        if (!hasValidSearch) {
+            this.template.querySelector('.search-input')?.focus();
+            return;
+        }
+
+        // Only do the heavy lifting if something changed
+        if (searchTermChanged || filterChanged) {
+            this.hasSearched = true;
+            this.selectedSearchTerm = this.desiredSearchTerm;
+            this.selectedFilter = this.desiredFilter;
+            this.currentPage = 1; // Reset page on new search
+            this.fetchArticles();
+        }
+    }
+
+    /**
+     * @description Calls the Apex controller to fetch articles using global search.
+     */
+    fetchArticles() {
+        this.isLoading = true;
+    
+        searchArticles({
+            searchTerm: this.selectedSearchTerm,
+            pageSize: PAGE_SIZE,
+            pageNumber: this.currentPage,
+            categoryFilter: this.selectedFilter
+        })
+            .then((result) => {
+                this.articles = result.articles.map(article => {
+                    // Strip HTML tags
+                    const cleanAnswer = article.Answer
+                        ? article.Answer.replace(/<[^>]*>/g, '')
+                        : '';
+                
+                    // Truncate to 150 chars, without cutting a word
+                    let truncatedAnswer = cleanAnswer;
+                    if (cleanAnswer.length > 150) {
+                        const cutPoint = cleanAnswer.lastIndexOf(' ', 150);
+                        truncatedAnswer = cleanAnswer.substring(0, cutPoint !== -1 ? cutPoint : 150) + '...';
+                    }
+                
+                    return {
+                        ...article,
+                        Category: article.FunctionalGroup,
+                        LastPublishedDate: this.formatDate(article.LastPublishedDate),
+                        AnswerPreview: truncatedAnswer
+                    };
+                });
+    
+                this.nextPageAvailable = result.hasNextPage;
+                this.previousPageAvailable = result.hasPreviousPage;
+                this.currentPage = result.currentPage;
+    
+                this.filteredArticles = [...this.articles];
+                this.noResults = this.articles.length === 0;
+                this.error = null;
+    
+                // Log metadata to console
+                this.debugSearchResult(result);
+            })
+            .catch((error) => {
+                console.error(error);
+                this.showErrorToast('Error fetching articles.');
+                this.error = error;
+                this.articles = [];
+                this.filteredArticles = [];
+                this.noResults = true;
+            })
+            .finally(() => {
+                this.isLoading = false;
+            });
+    }    
+
+    /**
+     * @description Filters articles based on the selected data category group name.
+     */
+    filterByCategory() {
+        if (this.selectedFilter === '*') {
+            this.filteredArticles = [...this.articles];
+        } else {
+            this.filteredArticles = this.articles.filter(article =>
+                article.Categories?.some(cat => cat.startsWith(this.selectedFilter + ':'))
+            );
+        }
+
+        this.noResults = this.filteredArticles.length === 0;
+    }
+
+    /**
+     * @description Goes to the next page of results.
+     */
+    handleNextPage() {
+        if (this.nextPageAvailable) {
+            this.currentPage += 1;
+            this.fetchArticles();
+        }
+    }
+
+    /**
+     * @description Goes to the previous page of results.
+     */
+    handlePreviousPage() {
+        if (this.previousPageAvailable && this.currentPage > 1) {
+            this.currentPage -= 1;
+            this.fetchArticles();
+        }
+    }
+
+    /**
+     * @description Navigates to the record page for the selected article.
+     * @param {Event} event - The click event from the article link.
+     */
+    handleArticleLink(event) {
+        this[NavigationMixin.Navigate]({
+            type: 'standard__recordPage',
+            attributes: {
+                recordId: event.target.dataset.recordId,
+                objectApiName: 'FAQ__ka',
+                actionName: 'view',
+            },
+        });
+    }
+
+    /**
+     * @description Displays an error toast notification.
+     * @param {string} message - The error message to display.
+     */
+    showErrorToast(message) {
+        const toastEvent = new ShowToastEvent({
+            title: 'Error',
+            message,
+            variant: 'error',
+        });
+        this.dispatchEvent(toastEvent);
     }
 
     /**
@@ -141,101 +263,18 @@ export default class KnowledgeSearch extends NavigationMixin(LightningElement) {
     }
 
     /**
-     * @description Displays an error toast notification.
-     * @param {string} message - The error message to display.
+     * @description Keeps the existing searchTerm property bound to the UI.
      */
-    showErrorToast(message) {
-        const toastEvent = new ShowToastEvent({
-            title: 'Error',
-            message,
-            variant: 'error',
-        });
-        this.dispatchEvent(toastEvent);
+    get searchTerm() {
+        return this.desiredSearchTerm;
     }
 
-    /**
-     * @description Handles user input in the search field.
-     * @param {Event} event - The input event from the search field.
-     */
-    handleSearchInput(event) {
-        this.desiredSearchTerm = event.target?.value.trim().toLowerCase();
-    }
-
-    /**
-     * @description Handles changes in the filter dropdown.
-     * @param {Event} event - The change event from the filter dropdown.
-     */
-    handleFilterChange(event) {
-        this.desiredFilter = event.target.value;
-    }
-
-    /**
-     * @description Handles the Enter keypress in the search input field.
-     * @param {Event} event - The keypress event.
-     */
-    handleEnterKey(event) {
-        if (event.which === 13) {
-            this.handleSearch();
-        }
-    }
-
-    /**
-     * @description Executes the search based on the current search term.
-     */
-    handleSearch() {
-        const hasValidSearch = /\S/.test(this.desiredSearchTerm);
-        const searchTermChanged = this.selectedSearchTerm !== this.desiredSearchTerm.toLowerCase();
-        const filterChanged = this.selectedFilter !== this.desiredFilter;
-
-        if (!hasValidSearch) {
-            this.template.querySelector('.search-input')?.focus();
-            return;
-        }
-
-        // Only do the heavy lifting if something changed
-        if (searchTermChanged || filterChanged) {
-            this.hasSearched = true;
-            this.selectedSearchTerm = this.desiredSearchTerm.toLowerCase();
-            this.selectedFilter = this.desiredFilter;
-            this.pageToken = null; // Reset page on new search
-            this.articles = [];
-            this.filteredArticles = [];
-        }
-    }
-
-    handleNextPage() {
-        if (this.nextPageToken) {
-            this.pageToken = this.nextPageToken;
-        }
-    }
-
-    handlePreviousPage() {
-        if (this.previousPageToken) {
-            this.pageToken = this.previousPageToken;
-        }
-    }
-
-    /**
-     * @description Navigates to the record page for the selected article.
-     * @param {Event} event - The click event from the article link.
-     */
-    handleArticleLink(event) {
-        this[NavigationMixin.Navigate]({
-            type: 'standard__recordPage',
-            attributes: {
-                recordId: event.target.dataset.recordId,
-                objectApiName: 'FAQ__ka',
-                actionName: 'view',
-            },
-        });
-    }
-
-    get selectedTerm() {
-        return this.hasSearched ? this.selectedSearchTerm : undefined;
+    set searchTerm(value) {
+        this.desiredSearchTerm = value?.trim().toLowerCase();
     }
 
     get disableSearchButton() {
-        const searchTerm = this.desiredSearchTerm?.trim().toLowerCase();
+        const searchTerm = this.desiredSearchTerm?.trim();
         const isSameSearch = searchTerm === this.selectedSearchTerm;
         const isSameFilter = this.desiredFilter === this.selectedFilter;
         const isBlank = !searchTerm;
@@ -250,4 +289,17 @@ export default class KnowledgeSearch extends NavigationMixin(LightningElement) {
     get disablePrevious() {
         return !this.previousPageAvailable;
     }
+
+    debugSearchResult(result) {
+        if (!this.currentPageReference?.state?.c__debug) return;
+
+        console.log('🔎 Knowledge Search Debug Info:');
+        console.log('  • Search Term:', this.selectedSearchTerm);
+        console.log('  • Category Filter:', this.selectedFilter);
+        console.log('  • Total Results:', result.totalResults);
+        console.log('  • Total Pages:', result.totalPages);
+        console.log('  • Current Page:', result.currentPage);
+        console.log('  • Page Size:', PAGE_SIZE);
+        console.log(JSON.stringify(this.articles, null, 2));
+    }    
 }

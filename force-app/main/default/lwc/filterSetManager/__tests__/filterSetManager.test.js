@@ -10,6 +10,8 @@ describe('c-filter-set-manager', () => {
         while (document.body.firstChild) {
             document.body.removeChild(document.body.firstChild);
         }
+        // Clear mocks
+        jest.clearAllMocks();
     });
 
     test('Test pinning', () => {

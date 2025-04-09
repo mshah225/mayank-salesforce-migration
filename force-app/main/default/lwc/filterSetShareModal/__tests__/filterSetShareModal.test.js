@@ -17,6 +17,8 @@ jest.mock(
 const wireUserOptionsMock = require('./data/userOptions.json');
 const filterSetPrivate = require('./data/filterSetPrivate.json');
 const filterSetShared = require('./data/filterSetShared.json');
+const filterSetGrad = require('./data/filterSetGRAD.json');
+const filterSetUgrad = require('./data/filterSetUGRAD.json');
 
 describe('c-filter-set-share-modal', () => {
     afterEach(() => {
@@ -26,6 +28,28 @@ describe('c-filter-set-share-modal', () => {
         }
         // Clear mocks
         jest.clearAllMocks();
+    });
+
+    test('Queries for users based on career=GRD', async () => {
+        const element = createElement('c-filter-set-share-modal', {
+            is: FilterSetShareModal,
+        });
+        element.filterSet = filterSetGrad;
+        document.body.appendChild(element);
+        await flushPromises(); // Wait for wire to enqueue
+
+        expect(getShareOptions.getLastConfig()).toEqual({mode: 'GRAD'});
+    });
+
+    test('Queries for users based on career=UGRD', async () => {
+        const element = createElement('c-filter-set-share-modal', {
+            is: FilterSetShareModal,
+        });
+        element.filterSet = filterSetUgrad;
+        document.body.appendChild(element);
+        await flushPromises(); // Wait for wire to enqueue
+
+        expect(getShareOptions.getLastConfig()).toEqual({mode: 'UGRAD'});
     });
 
     test('All options from user list', async () => {

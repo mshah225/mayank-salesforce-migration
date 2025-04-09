@@ -53,7 +53,7 @@ export default class FilterSetShareModal extends LightningModal {
     /**
      * Get a list of all users the current user can transfer to
      */
-    @wire(getShareOptions, {})
+    @wire(getShareOptions, {mode: '$gradMode'})
     gotShareOptions(result) {
         const {data, error} = result;
 
@@ -67,6 +67,17 @@ export default class FilterSetShareModal extends LightningModal {
     }
     shareOptionsData;
     shareOptionsError;
+
+    // Parse filter value to determine if should get grad or ugrad filter set values
+    get gradMode() {
+        if (this.filterSet.Value__c == null || this.filterSet.Value__c === '') return null;
+        const filter = JSON.parse(this.filterSet.Value__c);
+
+        if (['UGRD', 'GRD'].includes(filter?.career)) {
+            return filter?.career === 'GRD' ? 'GRAD' : 'UGRAD';
+        }
+        return null;
+    }
 
     /**
      * Get the list of all possible users we can share with - this will be those we are already

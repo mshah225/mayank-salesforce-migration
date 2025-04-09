@@ -41,7 +41,7 @@
             </template>
 
             <span class="feedbackWrapper">
-                <button onclick={feedbackHandler}>
+                <button onclick={feedbackHandler} class="slds-var-m-right_xx-small">
                     <lightning-icon
                         icon-name="utility:anywhere_chat"
                         alternative-text="Provide Feedback"
@@ -51,6 +51,14 @@
                     <label>Feedback</label>
                 </button>
             </span>
+
+            <lightning-button-icon
+                icon-name="utility:refresh"
+                variant="bare"
+                alternative-text="Reset page"
+                title="Reset page"
+                onclick={resetPageHandler}
+            ></lightning-button-icon>
         </div>
         <div class="slds-grid slds-var-m-bottom_small">
             <div class="slds-col">

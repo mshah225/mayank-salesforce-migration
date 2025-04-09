@@ -158,14 +158,14 @@ export default class AdvisorPortalA extends LightningElement {
     _ownerIds;
 
     get caseTypeState() {
-        return this._caseTypeState ?? 'ProactiveCasesState';
+        return this._caseTypeState ?? '';
     }
     set caseTypeState(v) {
         if (v === this.caseTypeState) return;
         this._caseTypeState = v;
     }
     /** @type {"AllCasesState"|"ProactiveCasesState"|"WatchlistCasesState"} */
-    _caseTypeState;
+    _caseTypeState = 'ProactiveCasesState';
 
     get studentString() {
         return this._studentString ?? '';
@@ -1377,6 +1377,41 @@ export default class AdvisorPortalA extends LightningElement {
     }
 
     /**
+     * Reset the page, clearing any applied filters or filter sets
+     */
+    resetPageHandler() {
+        LightningConfirm.open({
+            label: 'Reset page',
+            message: 'This will clear the page, clearing applied filter and filter sets.',
+            variant: 'headerless',
+        })
+            .then((result) => {
+                if (result === true) {
+                    this.appliedFilterSetId = undefined;
+                    this.appliedFilterSet = undefined;
+
+                    this.currentFilter = {
+                        career: this.career,
+                        caseTypeState: 'ProactiveCasesState',
+                    };
+                    this.appliedFilter = undefined;
+
+                    this.allResults = [];
+                }
+            })
+            .catch((e) => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Unable to reset page',
+                        message: extractErrorMessages(e)[0],
+                        variant: 'error',
+                        mode: 'sticky',
+                    })
+                );
+            });
+    }
+
+    /**
      * Toggle if majority of filters are shown or not
      */
     toggleAdditionalFilters() {
@@ -1745,6 +1780,13 @@ export class AdvisorPortalTest extends AdvisorPortalA {
     }
     get appliedFilterSetId() {
         return super.appliedFilterSetId;
+    }
+
+    @api set appliedFilterSet(v) {
+        super.appliedFilterSet = v;
+    }
+    get appliedFilterSet() {
+        return super.appliedFilterSet;
     }
 
     @api get filterSetSharedType() {

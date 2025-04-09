@@ -78,7 +78,7 @@ export default class AdvisorPortalA extends LightningElement {
         this.persistenceToDate = v.persistenceToDate || '';
     }
     get currentFilter() {
-        return {
+        let filter = {
             caseTypeState: this.caseTypeState,
             career: this.career,
             ownerIds: this.ownerIds,
@@ -109,6 +109,12 @@ export default class AdvisorPortalA extends LightningElement {
             persistenceFromDate: this.persistenceFromDate,
             persistenceToDate: this.persistenceToDate,
         };
+
+        // Remove empty fields
+        let properties = Object.keys(filter);
+        for (let prop of properties) if (filter[prop] == null || filter[prop] === '') delete filter[prop];
+
+        return filter;
     }
     appliedFilter;
 
@@ -421,25 +427,25 @@ export default class AdvisorPortalA extends LightningElement {
     _followUpToDate;
 
     set persistenceChangeDateRange(v) {
-        this.persistenceChangeFromDate = v.from || '';
-        this.persistenceChangeToDate = v.to || '';
+        this.persistenceFromDate = v.from || '';
+        this.persistenceToDate = v.to || '';
     }
 
-    get persistenceChangeFromDate() {
-        return this._persistenceChangeFromDate ?? '';
+    get persistenceFromDate() {
+        return this._persistenceFromDate ?? '';
     }
-    set persistenceChangeFromDate(v) {
-        if (v === this.persistenceChangeFromDate) return;
-        this._persistenceChangeFromDate = v;
+    set persistenceFromDate(v) {
+        if (v === this.persistenceFromDate) return;
+        this._persistenceFromDate = v;
     }
     /** @type {String} */
-    _persistenceChangeFromDate;
+    _persistenceFromDate;
 
-    get persistenceChangeToDate() {
+    get persistenceToDate() {
         return this._persistenceToDate ?? '';
     }
-    set persistenceChangeToDate(v) {
-        if (v === this.persistenceChangeToDate) return;
+    set persistenceToDate(v) {
+        if (v === this.persistenceToDate) return;
         this._persistenceToDate = v;
     }
     /** @type {String} */
@@ -599,7 +605,7 @@ export default class AdvisorPortalA extends LightningElement {
         return this.appliedFilterSet?.Owner__c === USER_ID;
     }
     get filterSetIsPinned() {
-        return this.appliedFilterSet.Pinned__c ?? false;
+        return this.appliedFilterSet?.Pinned__c ?? false;
     }
     get filterSetPinLabel() {
         return this.filterSetIsPinned ? 'Unpin' : 'Pin';
@@ -1197,7 +1203,7 @@ export default class AdvisorPortalA extends LightningElement {
     }
     /** Can overwrite if viewing a filter set, and user owns filter set, and has modified  */
     get disableOverwriteButton() {
-        return !(this.appliedFilterSet != null && this.hasChangeFields && this.userOwnsFilterSet);
+        return !(this.appliedFilterSet != null && this.hasChangedFields && this.userOwnsFilterSet);
     }
     /** Can reset if viewing a filter set and has modified */
     get disableResetButton() {

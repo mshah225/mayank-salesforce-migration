@@ -2,6 +2,7 @@ import {parseBoolean} from 'c/helperFunctions';
 import {LightningElement, api} from 'lwc';
 
 export default class LightningTextEditable extends LightningElement {
+    @api name;
     @api value;
     @api buttonVariant = 'base';
     @api buttonSize = 'medium';
@@ -40,7 +41,7 @@ export default class LightningTextEditable extends LightningElement {
     }
     saveChanges() {
         this.editMode = false;
-        this.dispatchEvent(new CustomEvent('change', {detail: {value: this.newValue}}));
+        this.dispatchEvent(new CustomEvent('change', {detail: {name: this.name, value: this.newValue}}));
         this.newValue = null;
     }
     cancelChanges() {

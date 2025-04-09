@@ -22,6 +22,24 @@ import {parseBoolean, getFixedYOffset} from 'c/helperFunctions';
  * This does come with the limitation of odd behavior when scrolling in the modal. This does come with some CPU-cost, as it requires us to update the position
  * of the dropdown using JS every time the element rerenders
  *
+ *
+ *
+ * NOTE::
+ *
+ * You can get similar results by using the built-in, lightning-button-group component, however, the dropdown in lightning-button-group
+ * is not designed to support dropping outside of modals, which this one it able to dropdown outside modals.
+ * ```
+ * <lightning-button-group>
+ *      <lightning-button label="Apply filter set" onclick={applyFilterSet}></lightning-button>
+ *      <lightning-button-menu alternative-text="Show menu" variant="border-filled">
+ *          <lightning-menu-item label="Pin" prefix-icon-name="utility:pin" value="pin"></lightning-menu-item>
+ *          <lightning-menu-item label="View" prefix-icon-name="utility:preview" value="view"></lightning-menu-item>
+ *          <lightning-menu-item label="Remove" prefix-icon-name="utility:delete" value="remove"></lightning-menu-item>
+ *      </lightning-button-menu>
+ * </lightning-button-group>
+ * ```
+ *
+ *
  * Author: Tommy Nordman
  * Created: 2025-03-17
  */

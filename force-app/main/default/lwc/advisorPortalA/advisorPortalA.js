@@ -1574,6 +1574,137 @@ export default class AdvisorPortalA extends LightningElement {
 }
 
 export class AdvisorPortalTest extends AdvisorPortalA {
+    @api set allUsersAndPods(v) {
+        super.allUsersAndPods = v;
+    }
+    get allUsersAndPods() {
+        return super.allUsersAndPods;
+    }
+
+    @api set loadingUsersAndPodOptions(v) {
+        super.loadingUsersAndPodOptions = v;
+    }
+    get loadingUsersAndPodOptions() {
+        return super.loadingUsersAndPodOptions;
+    }
+
+    @api set campusOptions(v) {
+        super.campusOptions = v;
+    }
+    get campusOptions() {
+        return super.campusOptions;
+    }
+
+    @api set loadingCampusOptions(v) {
+        super.loadingCampusOptions = v;
+    }
+    get loadingCampusOptions() {
+        return super.loadingCampusOptions;
+    }
+
+    @api set academicProgramOptions(v) {
+        super.academicProgramOptions = v;
+    }
+    get academicProgramOptions() {
+        return super.academicProgramOptions;
+    }
+
+    @api get loadingAcadProgramOptions() {
+        return super.loadingAcadProgramOptions;
+    }
+
+    @api set schoolDepartmentOptions(v) {
+        super.schoolDepartmentOptions = v;
+    }
+    get schoolDepartmentOptions() {
+        return super.schoolDepartmentOptions;
+    }
+
+    @api set loadingSchoolDepartmentOptions(v) {
+        super.loadingSchoolDepartmentOptions = v;
+    }
+    get loadingSchoolDepartmentOptions() {
+        return super.loadingSchoolDepartmentOptions;
+    }
+
+    @api set academicPlanOptions(v) {
+        super.academicPlanOptions = v;
+    }
+    get academicPlanOptions() {
+        return super.academicPlanOptions;
+    }
+
+    @api set loadingAcadPlanOptions(v) {
+        super.loadingAcadPlanOptions = v;
+    }
+    get loadingAcadPlanOptions() {
+        return super.loadingAcadPlanOptions;
+    }
+
+    @api set residencyOptions(v) {
+        super.residencyOptions = v;
+    }
+    get residencyOptions() {
+        return super.residencyOptions;
+    }
+
+    @api get loadingResidencyOptions() {
+        return super.loadingResidencyOptions;
+    }
+
+    @api set caseStatusOptions(v) {
+        super.caseStatusOptions = v;
+    }
+    get caseStatusOptions() {
+        return super.caseStatusOptions;
+    }
+
+    @api get loadingCaseStatusOptions() {
+        return super.loadingCaseStatusOptions;
+    }
+
+    @api set caseCategoryOptions(v) {
+        super.caseCategoryOptions = v;
+    }
+    get caseCategoryOptions() {
+        return super.caseCategoryOptions;
+    }
+
+    @api set loadingCaseCategoryOptions(v) {
+        super.loadingCaseCategoryOptions = v;
+    }
+    get loadingCaseCategoryOptions() {
+        return super.loadingCaseCategoryOptions;
+    }
+
+    @api set caseSubCategoryOptions(v) {
+        super.caseSubCategoryOptions = v;
+    }
+    get caseSubCategoryOptions() {
+        return super.caseSubCategoryOptions;
+    }
+
+    @api set loadingCaseSubCategoryOptions(v) {
+        super.loadingCaseSubCategoryOptions = v;
+    }
+    get loadingCaseSubCategoryOptions() {
+        return super.loadingCaseSubCategoryOptions;
+    }
+
+    @api set caseSubjectOptions(v) {
+        super.caseSubjectOptions = v;
+    }
+    get caseSubjectOptions() {
+        return super.caseSubjectOptions;
+    }
+
+    @api set loadingCaseSubjectOptions(v) {
+        super.loadingCaseSubjectOptions = v;
+    }
+    get loadingCaseSubjectOptions() {
+        return super.loadingCaseSubjectOptions;
+    }
+
     @api set currentFilter(v) {
         super.currentFilter = v;
     }
@@ -1581,10 +1712,61 @@ export class AdvisorPortalTest extends AdvisorPortalA {
         return super.currentFilter;
     }
 
+    @api set appliedFilter(v) {
+        super.appliedFilter = v;
+    }
+    get appliedFilter() {
+        return super.appliedFilter;
+    }
+
+    @api set allowedToShareFilterSets(v) {
+        super.allowedToShareFilterSets = v;
+    }
+    get allowedToShareFilterSets() {
+        return super.allowedToShareFilterSets;
+    }
+
+    @api set userIsBothGradAndUgrad(v) {
+        super.userIsBothGradAndUgrad = v;
+    }
+    get userIsBothGradAndUgrad() {
+        return super.userIsBothGradAndUgrad;
+    }
+
     @api set showAdditionalFilters(v) {
         super.showAdditionalFilters = v;
     }
     get showAdditionalFilters() {
         return super.showAdditionalFilters;
+    }
+
+    @api set appliedFilterSetId(v) {
+        super.appliedFilterSetId = v;
+    }
+    get appliedFilterSetId() {
+        return super.appliedFilterSetId;
+    }
+
+    @api get filterSetSharedType() {
+        return super.filterSetSharedType;
+    }
+    @api get filterSetName() {
+        return super.filterSetName;
+    }
+
+    @api get gradMode() {
+        return super.gradMode;
+    }
+
+    @api get ugradMode() {
+        return super.ugradMode;
+    }
+
+    @api get hasError() {
+        return super.hasError;
+    }
+
+    @api get errorMessage() {
+        return super.errorMessage;
     }
 }

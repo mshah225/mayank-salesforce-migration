@@ -1,0 +1,39 @@
+{
+    "uiapi": {
+        "query": {
+            "Filter_Set__c": {
+                "edges": [
+                    {
+                        "node": {
+                            "Id": "FS-1",
+                            "Name": {"value": "Freshmen"},
+                            "Owner__c": {"value": "005000000000000000"},
+                            "Owner__r": {
+                                "Name": "Tommy Nordman",
+                                "Alias": "rnordman"
+                            },
+                            "Value__c": {"value": "{\"career\":\"UGRD\",\"academicLevel\":\"freshman\"}"},
+                            "Is_Shared__c": {"value": false},
+                            "CreatedDate": {"value": "2024-12-15T18:30:00.000Z"},
+                            "Filter_Set_User_Associations__r": {
+                                "edges": [
+                                    {
+                                        "node": {
+                                            "Id": "FSUA-1",
+                                            "User__c": {"value": "005000000000000000"},
+                                            "User__r": {
+                                                "Name": "Tommy Nordman",
+                                                "Alias": "rnordman"
+                                            },
+                                            "Pinned__c": {"value": false}
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

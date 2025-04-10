@@ -141,14 +141,14 @@ export default class FilterSetsModal extends LightningModal {
     gotData(resp) {
         const {data, errors} = resp;
 
-        /** If this field is set, then we will invalidate the cache and force the modal to get more recent data */
-        if (this.forceRefresh) {
-            this.forceRefresh = false;
-            refreshGraphQL(resp);
-            return;
-        }
-
         if (data !== undefined) {
+            /** If this field is set, then we will invalidate the cache and force the modal to get more recent data */
+            if (this.forceRefresh) {
+                this.forceRefresh = false;
+                refreshGraphQL(resp);
+                return;
+            }
+
             let graphqlManager = new GraphqlManager(data);
             this.filterSetManager = new FilterSetManager(graphqlManager.unwrap().Filter_Set__c);
             this.filterSetPreferences = graphqlManager.unwrap().User_Filter_Set_Preference__c[0];

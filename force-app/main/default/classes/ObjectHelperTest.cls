@@ -8,7 +8,7 @@ public class ObjectHelperTest {
         String category = 'Card_Services';
         String label = ObjectHelper.getDataCategoryLabelByName(objectType, categoryGroup, category);
 
-        System.assert(label.containsOnly('Card Services'), 'Label should match for valid categories');
+        System.assert(label.contains('Card Services'), 'Label should match for valid categories');
     }
 
     // Tests the getDataCategoryLabelByName method for an invalid data category
@@ -54,10 +54,10 @@ public class ObjectHelperTest {
             labelName
         );
 
-        System.assert(result.name == null, 'Data category name should be empty when label is not found');
-        System.assert(result.label == null, 'Data category label should be empty when label is not found');
-        System.assert(result.parentGroup == null, 'Data category group name should be empty when label is not found');
-        System.assert(result.objectType == null, 'Data category object should be empty when label is not found');
+        System.assert(result.name == null, 'Data category name should be null when label is not found');
+        System.assert(result.label == null, 'Data category label should be null when label is not found');
+        System.assert(result.parentGroup == null, 'Data category group name should be null when label is not found');
+        System.assert(result.objectType == null, 'Data category object should be null when label is not found');
     }
 
     // Tests the isValidDataCategory method for valid data categories

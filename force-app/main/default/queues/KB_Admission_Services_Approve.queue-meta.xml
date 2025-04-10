@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Queue xmlns="http://soap.sforce.com/2006/04/metadata">
+    <doesSendEmailToMembers>false</doesSendEmailToMembers>
+    <name>KB: Admission Services (Approve)</name>
+    <queueMembers>
+        <publicGroups>
+            <publicGroup>Knowledge_Managers</publicGroup>
+        </publicGroups>
+        <users>
+            <user>csthoma1@asu.edu</user>
+            <user>jdbrowe@asu.edu</user>
+        </users>
+    </queueMembers>
+    <queueSobject>
+        <sobjectType>KnowledgeArticleVersion</sobjectType>
+    </queueSobject>
+</Queue>

@@ -1,0 +1,195 @@
+@import 'c/asuBrandColorPalette'; /* Import ASU brand color palette */
+
+/* Host styling for component-wide customization */
+:host {
+    /* Destructive Button Variants */
+    --slds-c-button-destructive-color-background: var(--asu-maroon); /* Background color for destructive buttons */
+    --slds-c-button-destructive-color-background-active: #6a132d; /* Active state background */
+    --slds-c-button-destructive-color-background-hover: #6a132d; /* Hover state background */
+    --slds-c-button-destructive-color-border: var(--asu-maroon); /* Button border color */
+    --slds-c-button-destructive-color-border-active: #6a132d; /* Active state border */
+    --slds-c-button-destructive-color-border-hover: #6a132d; /* Hover state border */
+    --slds-c-button-destructive-text-color: var(--asu-white); /* Button text color */
+    --slds-c-button-destructive-text-color-active: var(--asu-white); /* Active state text color */
+    --slds-c-button-destructive-text-color-hover: var(--asu-white); /* Hover state text color */
+
+    /* Default Button Text Color */
+    --slds-c-button-text-color: var(--asu-white); /* Default text color */
+    --slds-c-button-text-color-active: var(--asu-white); /* Active state text color */
+    --slds-c-button-text-color-hover: var(--asu-white); /* Hover state text color */
+
+    /* Button Border Radius */
+    --slds-c-button-radius-border: 1rem; /* Rounded corners for buttons */
+    --lwc-buttonBorderRadius: 1rem; /* Consistent border radius for LWC buttons */
+}
+
+:host lightning-icon.outreach-icn {
+    /* Turns gray icon into green */
+    --lwc-colorTextSuccess: green;
+}
+:host .persistence-icon {
+    width: var(--lwc-squareIconUtilityLarge, 1.5rem);
+}
+
+:host .light-gray-background {
+    background-color: rgb(250, 250, 249);
+}
+
+:host .px-2 {
+    padding-left: var(--lwc-varSpacingMedium, 1rem);
+    padding-right: var(--lwc-varSpacingMedium, 1rem);
+}
+
+:host .py-1 {
+    padding-top: var(--lwc-varSpacingXSmall, 0.5rem);
+    padding-bottom: var(--lwc-varSpacingXSmall, 0.5rem);
+}
+
+:host .mt-1 {
+    margin-top: var(--lwc-varSpacingXSmall, 0.5rem);
+}
+
+/* Container for the search and filter section */
+.search-and-filter-container {
+    margin-bottom: 1.5rem; /* Space below the section */
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 95%; /* Restrict maximum width for responsiveness */
+    font-weight: 600; /* Slightly bold for text elements */
+}
+
+/* Search button styling */
+.search-button {
+    font-weight: bold; /* Emphasize the button text */
+    min-width: 100%; /* Full-width button */
+}
+
+/* Styling for search input and filter dropdown containers */
+.search-input-container,
+.filter-container {
+    font-weight: 400; /* Normal font weight for input and dropdown */
+}
+
+/* Search button container styling */
+.search-button-container {
+    text-align: center; /* Center align the button */
+}
+
+/* Welcome message styling */
+.search-instructions-welcome {
+    font-size: 1rem; /* Medium font size */
+    text-align: center; /* Center align the welcome text */
+    color: var(--asu-gray-1); /* Use a subtle gray for text color */
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    max-width: 95%; /* Restrict maximum width */
+    margin-left: auto;
+    margin-right: auto; /* Center align within the parent container */
+}
+
+/* Styling for <code> elements inside the welcome message */
+.search-instructions-welcome code {
+    font-weight: bold; /* Make code snippets bold */
+}
+
+/* Articles section styling */
+.articles {
+    margin-top: 1rem; /* Add space above the articles section */
+}
+
+/* Individual article card styling */
+.article {
+    border: 1px solid var(--asu-gray-5); /* Light gray border */
+    padding: 1rem; /* Inner spacing for content */
+    margin-bottom: 1rem; /* Space between articles */
+    background-color: var(--asu-gray-7); /* Light gray background */
+    border-radius: 4px; /* Slightly rounded corners */
+    max-width: 95%; /* Restrict maximum width for responsiveness */
+    margin-right: auto;
+    margin-left: auto; /* Center align the article card */
+}
+
+/* Article title and link styling */
+.article h3 a {
+    text-decoration: none; /* Remove underline */
+    color: var(--asu-maroon); /* Maroon color for links */
+    font-size: 1.1rem; /* Slightly larger font size */
+    font-weight: 600; /* Bold the text */
+}
+
+/* Hover state for article title links */
+.article h3 a:hover {
+    text-decoration: underline; /* Add underline on hover */
+}
+
+/* Article metadata (category and date) styling */
+.article-info {
+    margin-top: 0.5rem; /* Space above metadata */
+    color: var(--asu-gray-2); /* Subtle gray color */
+    font-size: 0.75rem; /* Smaller font size */
+}
+
+/* Styling for the no-results message */
+.no-results {
+    color: var(--asu-warning-text); /* Use warning text color */
+    font-weight: bold; /* Bold text to emphasize the message */
+    text-align: center; /* Center align the message */
+    font-size: 1.1rem; /* Slightly larger font size */
+}
+
+/* Main container styling */
+.main-container {
+    margin-left: auto;
+    margin-right: auto; /* Center the container horizontally */
+    width: 65%; /* Restrict width for better readability */
+    padding: 1rem; /* Inner spacing for content */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for a clean look */
+    background-color: var(--asu-gray-6); /* Light gray background for the container */
+    border-radius: 8px; /* Rounded corners for the container */
+    min-width: 680px; /* Ensure a minimum width for layout consistency */
+    max-width: 1200px; /* Restrict maximum width for larger screens */
+}
+
+.pagination-controls {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.pagination-button {
+    font-weight: bold;
+    border-radius: 1rem;
+    padding: 0.5rem 1.25rem;
+    --slds-c-button-color-background: var(--asu-maroon);
+    --slds-c-button-text-color: white;
+    --slds-c-button-color-background-hover: #6a132d;
+    --slds-c-button-color-border: var(--asu-maroon);
+    --slds-c-button-color-border-hover: #6a132d;
+}
+
+/* Disabled button styles */
+.pagination-button[disabled] {
+    --slds-c-button-color-background: #e0e0e0;
+    --slds-c-button-text-color: #999;
+    cursor: not-allowed;
+}
+
+.asu-pagination-button {
+    --slds-c-button-brand-color-background: #8c1d40; /* Maroon */
+    --slds-c-button-brand-text-color: #fff; /* White text */
+    --slds-c-button-brand-color-background-hover: #6a132d; /* Darker maroon on hover */
+    --slds-c-button-brand-text-color-hover: #ffc627; /* Gold text on hover */
+    --slds-c-button-brand-color-border: #8c1d40;
+    --slds-c-button-brand-color-border-hover: #6a132d;
+
+    font-weight: bold;
+    border-radius: 1rem;
+    min-width: 6rem;
+    text-transform: uppercase;
+}
+
+/* Disabled state override */
+.asu-pagination-button[disabled] {
+    --slds-c-button-brand-color-background: #e0e0e0;
+    --slds-c-button-brand-text-color: #999;
+    cursor: not-allowed;
+}

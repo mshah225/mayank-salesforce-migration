@@ -1,5 +1,4 @@
 public class NonAuthenticatedLiveAgentLandingPage {
-    public Live_Agent_Button__c nonAuthenticatedButton { get; set; }
     public String orgId { get; set; }
     public String chatDeploymentId { get; set; }
     public String chatButtonId { get; set; }
@@ -7,8 +6,17 @@ public class NonAuthenticatedLiveAgentLandingPage {
     public String scriptEndpointUrl { get; set; }
     public String agentOfflineMessage { get; set; }
 
+    @TestVisible
+    private static Live_Agent_Button_Setting__mdt TEST_BUTTON_CONFIG;
+
     public NonAuthenticatedLiveAgentLandingPage() {
-        nonAuthenticatedButton = Live_Agent_Button__c.getInstance('Non_Authenticated_Live_Chat');
+        Live_Agent_Button_Setting__mdt nonAuthenticatedButton = Live_Agent_Button_Setting__mdt.getInstance(
+            'Non_Authenticated_Live_Chat'
+        );
+
+        if (Test.isRunningTest() && TEST_BUTTON_CONFIG != null)
+            nonAuthenticatedButton = TEST_BUTTON_CONFIG;
+
         orgId = nonAuthenticatedButton.Org_Id__c;
         chatDeploymentId = nonAuthenticatedButton.Chat_Deployment__c;
         chatButtonId = nonAuthenticatedButton.Chat_Button_Id__c;

@@ -20,5 +20,31 @@
             background-color: var(--maroon);
             border-color: var(--maroon);
         }
+
+        .knowledgeTOCRendererContent {
+            overflow: visible;
+        }
+
+        .knowledgeTOCRendererContent .sectionName:nth-child(1),
+        .knowledgeTOCRendererContent .sectionName.selected {
+            background-color: #8c1d40;
+        }
+
+        .knowledgeTOCRendererContent .sectionName:nth-child(1) td,
+        .knowledgeTOCRendererContent .sectionName.selected td {
+            color: #fff;
+        }
+
+        .knowledgeTOCRendererSection.selected {
+            background: #8c1d40 url(/img/knowledge/toc_active_indicator.png) no-repeat right;
+            color: #fff;
+        }
+
+        .knowledgeTOCRendererSections,
+        .knowledgeTOCRendererContent .sectionName:nth-child(3),
+        .knowledgeTOCRendererContent .sectionContent:nth-child(4),
+        .knowledgeTOCRendererContent .sectionContent table .fieldName {
+            display: none;
+        }
     </style>
 </apex:component>

@@ -48,40 +48,6 @@ private class MyASUHelpControllerTest {
         }
         insert testUsers;
 
-        // Insert buttons
-        List<Live_Agent_Button__c> liveAgentButtonSettings = new List<Live_Agent_Button__c>();
-        liveAgentButtonSettings.add(
-            new Live_Agent_Button__c(
-                Name = 'Finances_Live_Chat',
-                Org_Id__c = '00D2D000000DhIo',
-                Chat_Deployment__c = '5720W000001UJD8',
-                Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat',
-                Chat_Button_Id__c = '5730W000001YVMU',
-                Display_Name__c = 'Finances'
-            )
-        );
-        liveAgentButtonSettings.add(
-            new Live_Agent_Button__c(
-                Name = 'ASU_Services_Live_Chat',
-                Org_Id__c = '00D2D000000DhIo',
-                Chat_Deployment__c = '5720W000001UJD8',
-                Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat',
-                Chat_Button_Id__c = '5730W000001YVMR',
-                Display_Name__c = 'ASU Services'
-            )
-        );
-        liveAgentButtonSettings.add(
-            new Live_Agent_Button__c(
-                Name = 'Technical_Support_Live_Chat',
-                Org_Id__c = '00D2D000000DhIo',
-                Chat_Deployment__c = '5720W000001UJD8',
-                Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat',
-                Chat_Button_Id__c = '5730W000001YVMW',
-                Display_Name__c = 'Technical Support'
-            )
-        );
-        insert liveAgentButtonSettings;
-
         // Insert terms
         List<Term__c> testTerms = new List<Term__c>();
         Date acTermStart = Date.today().adddays(365);
@@ -1153,5 +1119,73 @@ private class MyASUHelpControllerTest {
         System.assert(foundFatal, 'Should have created fatal alert - but it did not');
         System.assert(foundWarning, 'Should have created warning alert - but it did not');
         System.assert(foundConfirm, 'Should have created confirmation alert - but it did not');
+    }
+
+    @isTest
+    private static void testLiveChatButtons() {
+        User testUser = [
+            SELECT Id, ContactId, FirstName, LastName, EMPLID__c, ASURite_Id__c
+            FROM User
+            WHERE Alias = :testUserAliasBase + '0'
+        ];
+
+        MyASUHelpController.TEST_BUTTONS = new List<Live_Agent_Button_Setting__mdt>{
+            new Live_Agent_Button_Setting__mdt(
+                Label = 'Finances',
+                DeveloperName = 'Finances_Live_Chat',
+                Chat_Button_Id__c = '5730W000001YVMU',
+                Chat_Deployment__c = '5720W000001UJD8',
+                Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat',
+                Org_Id__c = '00D2D000000DhIo',
+                Chatbot_URL__c = 'https://chatbotweb-test.m.asu.edu/?full=true'
+            ),
+            new Live_Agent_Button_Setting__mdt(
+                Label = 'Technical Support',
+                DeveloperName = 'Technical_Support_Live_Chat',
+                Chat_Button_Id__c = '5730W000001YVMW',
+                Chat_Deployment__c = '5720W000001UJD8',
+                Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat',
+                Org_Id__c = '00D2D000000DhIo',
+                Chatbot_URL__c = 'https://chatbotweb-test.m.asu.edu/?full=true'
+            ),
+            new Live_Agent_Button_Setting__mdt(
+                Label = 'ASU Services',
+                DeveloperName = 'ASU_Services_Live_Chat',
+                Chat_Button_Id__c = '5730W000001YVMR',
+                Chat_Deployment__c = '5720W000001UJD8',
+                Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat',
+                Org_Id__c = '00D2D000000DhIo'
+            )
+        };
+
+        Test.setCurrentPage(Page.studentSC);
+        MyASUHelpController helpTab;
+
+        Test.startTest();
+        System.runAs(testUser) {
+            helpTab = new MyASUHelpController();
+        }
+        Test.stopTest();
+
+        // Correct liveagent init values
+        Assert.areEqual('00D2D000000DhIo', helpTab.orgId);
+        Assert.areEqual('https://d.la4-c1cs-phx.salesforceliveagent.com/chat', helpTab.chatEndpoint);
+        Assert.areEqual('https://c.la4-c1cs-phx.salesforceliveagent.com', helpTab.scriptEndpointUrl);
+        Assert.areEqual('5720W000001UJD8', helpTab.deploymentId);
+
+        // And all 3 buttons
+        Assert.areEqual(3, helpTab.livechatButtons.size());
+        // Finances button
+        Assert.areEqual('Finances', helpTab.livechatButtons[0].Label);
+        Assert.areEqual('https://chatbotweb-test.m.asu.edu/?full=true', helpTab.livechatButtons[0].Chatbot_URL__c);
+        Assert.areEqual('5730W000001YVMU', helpTab.livechatButtons[0].Chat_Button_Id__c);
+        // Tech support button
+        Assert.areEqual('Technical Support', helpTab.livechatButtons[1].Label);
+        Assert.areEqual('https://chatbotweb-test.m.asu.edu/?full=true', helpTab.livechatButtons[1].Chatbot_URL__c);
+        Assert.areEqual('5730W000001YVMW', helpTab.livechatButtons[1].Chat_Button_Id__c);
+        // ASU Services button
+        Assert.areEqual('ASU Services', helpTab.livechatButtons[2].Label);
+        Assert.areEqual(null, helpTab.livechatButtons[2].Chatbot_URL__c);
+        Assert.areEqual('5730W000001YVMR', helpTab.livechatButtons[2].Chat_Button_Id__c);
     }
 }

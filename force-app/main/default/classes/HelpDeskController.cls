@@ -647,7 +647,7 @@ public with sharing class HelpDeskController {
         List<Help_Desk_Profile_Map__mdt> profileToFGMap = [
             SELECT Functional_Group_Id__c
             FROM Help_Desk_Profile_Map__mdt
-            WHERE Profile_Id__c =: userProfileId
+            WHERE Profile_Id__c = :userProfileId
             LIMIT 1
         ];
 

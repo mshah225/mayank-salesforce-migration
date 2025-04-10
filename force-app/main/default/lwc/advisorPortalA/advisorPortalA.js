@@ -876,6 +876,7 @@ export default class AdvisorPortalA extends LightningElement {
         {label: 'Format Students', value: 'format students'},
         {label: 'Personalized Graduate Admissions', value: 'personalized graduate admissions'},
         {label: 'Mayo Students', value: 'mayo students'},
+        {label: 'Personalized Graduate Admissions', value: 'personalized graduate admissions'},
         {label: 'Provisional Admits, not met yet', value: 'provivisional admits, not met yet'},
         {label: 'Research Assistants', value: 'research assistants'},
         {label: 'Teaching Assistants', value: 'teaching assistants'},

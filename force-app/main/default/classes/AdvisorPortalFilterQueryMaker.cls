@@ -170,6 +170,12 @@ public class AdvisorPortalFilterQueryMaker {
                         }
                         previousContactId = contactId;
                     }
+
+                    // need to check if any SPP has ASUPGA_Checkbox__c
+                    if (specialPopulations.contains('personalized graduate admissions')) {
+                        if (spp.ASUPGA_Checkbox__c == true)
+                            specialPopulationContactIds.add(spp.Contact__c);
+                    }
                 }
             }
 
@@ -767,13 +773,17 @@ public class AdvisorPortalFilterQueryMaker {
      *         selected, then returns null
      */
     private DynamicSoqlBuilder generateSpecialPopulationDualOrAppliedToGradQuery() {
-        DynamicSoqlBuilder sppQuery = new DynamicSoqlBuilder('Student_Program_Plan__c')
-            .returnField('Contact__c')
-            .returnField('Career__c')
-            .returnField('Status__c')
-            .returnField('Degree_Chkout_Stat_Code__c')
-            .restrictLessThanOrEqual('Effective_Date__c', new DynamicSoqlBuilderRestriction.Keyword('TODAY'))
-            .restrictEqual('Status__c', 'Active in Program')
+        DynamicSoqlBuilder sppQuery = new DynamicSoqlBuilder(Schema.SObjectType.Student_Program_Plan__c)
+            .returnField(Schema.SObjectType.Student_Program_Plan__c.fields.Contact__c)
+            .returnField(Schema.SObjectType.Student_Program_Plan__c.fields.Career__c)
+            .returnField(Schema.SObjectType.Student_Program_Plan__c.fields.Status__c)
+            .returnField(Schema.SObjectType.Student_Program_Plan__c.fields.Degree_Chkout_Stat_Code__c)
+            .returnField(Schema.SObjectType.Student_Program_Plan__c.fields.ASUPGA_Checkbox__c)
+            .restrictLessThanOrEqual(
+                Schema.SObjectType.Student_Program_Plan__c.fields.Effective_Date__c,
+                new DynamicSoqlBuilderRestriction.Keyword('TODAY')
+            )
+            .restrictEqual(Schema.SObjectType.Student_Program_Plan__c.fields.Status__c, 'Active in Program')
             .setOrder('Contact__c, Effective_Date__c, Plan_Sequence__c DESC NULLS LAST')
             .setLimit(2000);
         Boolean appliedRestriction = false;
@@ -790,9 +800,12 @@ public class AdvisorPortalFilterQueryMaker {
                 restrict.add(
                     new DynamicSoqlBuilderRestriction.AndRestriction(
                         new List<DynamicSoqlBuilderRestriction>{
-                            new DynamicSoqlBuilderRestriction.EqualRestriction('Career__c', 'Graduate'),
+                            new DynamicSoqlBuilderRestriction.EqualRestriction(
+                                Schema.SObjectType.Student_Program_Plan__c.fields.Career__c.getName(),
+                                'Graduate'
+                            ),
                             new DynamicSoqlBuilderRestriction.InRestriction(
-                                'Degree_Chkout_Stat_Code__c',
+                                Schema.SObjectType.Student_Program_Plan__c.fields.Degree_Chkout_Stat_Code__c.getName(),
                                 appliedToGraduateCodes
                             )
                         }
@@ -802,7 +815,22 @@ public class AdvisorPortalFilterQueryMaker {
             }
 
             if (specialPopulations.contains('concurrent enrollment')) {
-                restrict.add(new DynamicSoqlBuilderRestriction.InRestriction('Career__c', dualEnrollmentCareers));
+                restrict.add(
+                    new DynamicSoqlBuilderRestriction.InRestriction(
+                        Schema.SObjectType.Student_Program_Plan__c.fields.Career__c.getName(),
+                        dualEnrollmentCareers
+                    )
+                );
+                appliedRestriction = true;
+            }
+
+            if (specialPopulations.contains('personalized graduate admissions')) {
+                restrict.add(
+                    new DynamicSoqlBuilderRestriction.EqualRestriction(
+                        Schema.SObjectType.Student_Program_Plan__c.fields.ASUPGA_Checkbox__c.getName(),
+                        true
+                    )
+                );
                 appliedRestriction = true;
             }
         }

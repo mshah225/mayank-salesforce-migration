@@ -1,5 +1,15 @@
+/**
+ * This REST resource class provides an endpoint for retrieving the top five knowledge articles
+ * based on view statistics or data category for a given list name. The class includes methods
+ * for constructing article URLs and determining the environment type.
+ *
+ * URL Mapping: /services/apexrest/TopFiveArticlesAKB/*
+ */
 @RestResource(urlMapping='/TopFiveArticlesAKB/*')
 global class TopFiveArticleControllerAKB {
+    /**
+     * Inner class representing the structure of an article, including its ID, URL, title, and rank.
+     */
     global class ArticleInfo {
         public String id;
         public String url;
@@ -7,6 +17,12 @@ global class TopFiveArticleControllerAKB {
         public Integer rank;
     }
 
+    /**
+     * Retrieves the top five knowledge articles based on view statistics or data category for a given list name.
+     *
+     * @param listName The name of the list or data category to filter articles.
+     * @return A list of the top five articles, each represented by an instance of the ArticleInfo class.
+     */
     @HttpPost
     global static List<ArticleInfo> getTopFiveArticles(String listName) {
         List<ArticleInfo> articles = new List<ArticleInfo>();
@@ -16,20 +32,21 @@ global class TopFiveArticleControllerAKB {
 
         String kavQuery =
             'SELECT Id, KnowledgeArticleId ' +
-            'FROM KnowledgeArticleVersion ' +
+            'FROM FAQ__kav ' +
             'WHERE PublishStatus=\'Online\' ' +
             'AND Language =\'en_US\' ' +
             'AND IsVisibleInPkb = true';
         String dataCategory;
         String dataCategoryGroup;
 
+        // Determine data category and data category group based on listName
         if (listName.indexOf('\\') > 0 && listName.indexOf('\\') < listName.length()) {
-            dataCategoryGroup = listName.subString(0, listName.indexOf('\\'));
-            dataCategory = listName.subString(listName.indexOf('\\') + 1);
+            dataCategoryGroup = listName.substring(0, listName.indexOf('\\'));
+            dataCategory = listName.substring(listName.indexOf('\\') + 1);
         } else {
             if (String.isNotBlank(listName)) {
                 ObjectHelper.DataCategoryWrapper dataCategoryInfo = ObjectHelper.getDataCategoryNameAndGroupByLabel(
-                    'KnowledgeArticleVersion',
+                    'FAQ__kav',
                     'My ASU ' + listName
                 );
                 dataCategoryGroup = dataCategoryInfo?.parentGroup;
@@ -37,36 +54,41 @@ global class TopFiveArticleControllerAKB {
             }
         }
 
+        // Append data category to query if available
         if (String.isNotBlank(dataCategory)) {
             kavQuery += ' WITH DATA CATEGORY ' + dataCategoryGroup + ' AT ' + dataCategory;
         }
 
-        List<sObject> kavList = new List<sObject>(Database.query(kavQuery));
-        for (sObject so : kavList) {
-            KnowledgeArticleVersion kav = (KnowledgeArticleVersion) so;
+        // Execute query to retrieve knowledge article versions
+        List<SObject> kavList = new List<SObject>(Database.query(kavQuery));
+        for (SObject so : kavList) {
+            FAQ__kav kav = (FAQ__kav) so;
             kavIds.add(kav.KnowledgeArticleId);
         }
 
-        for (KnowledgeArticleViewStat kavs : [
+        // Retrieve the top five articles based on view count
+        for (FAQ__ViewStat kavs : [
             SELECT Id, ParentId
-            FROM KnowledgeArticleViewStat
+            FROM FAQ__ViewStat
             WHERE ParentId IN :kavIds AND Channel = 'PKB'
             ORDER BY ViewCount DESC
             LIMIT 5
         ]) {
             articleIds.add(kavs.ParentId);
         }
-        //We need this to deal with the case where none of these articles have been viewed (i.e. in testing)
+
+        // Handle case where no articles have been viewed (e.g., in testing)
         if (articleIds.size() == 0) {
             for (Integer x = 0; x < Math.min(kavIds.size(), 5); x++) {
                 articleIds.add(kavIds.get(x));
             }
         }
 
-        for (KnowledgeArticleVersion kav : [
-            SELECT id, Title, UrlName, KnowledgeArticleId, PublishStatus, language
-            FROM KnowledgeArticleVersion
-            WHERE PublishStatus = 'Online' AND language = 'en_US' AND KnowledgeArticleId IN :articleIds
+        // Populate article information and add to articles list
+        for (FAQ__kav kav : [
+            SELECT Id, Title, UrlName, KnowledgeArticleId, PublishStatus, Language
+            FROM FAQ__kav
+            WHERE PublishStatus = 'Online' AND Language = 'en_US' AND KnowledgeArticleId IN :articleIds
         ]) {
             articleRank++;
             ArticleInfo ai = new ArticleInfo();
@@ -79,18 +101,33 @@ global class TopFiveArticleControllerAKB {
         return articles;
     }
 
-    global static String getArticleUrl(KnowledgeArticleVersion kav) {
+    /**
+     * Constructs the URL for a given knowledge article version.
+     *
+     * @param kav The knowledge article version object.
+     * @return The constructed URL as a string.
+     */
+    global static String getArticleUrl(FAQ__kav kav) {
         return getUrlPrefix() + '/authkb?id=' + kav.KnowledgeArticleId;
     }
 
+    /**
+     * Retrieves the base URL for the current organization and modifies it for site-specific use.
+     *
+     * @return The base URL as a string.
+     */
     global static String getUrlPrefix() {
         String baseURL = System.URL.getOrgDomainUrl().toExternalForm();
         baseURL = baseURL.replace('salesforce.com', 'site.com');
-
         return baseURL;
     }
 
+    /**
+     * Determines if the current environment is a sandbox.
+     *
+     * @return True if the environment is a sandbox, false otherwise.
+     */
     global static Boolean isSandbox() {
-        return [SELECT IsSandbox FROM Organization LIMIT 1].isSandbox;
+        return [SELECT IsSandbox FROM Organization LIMIT 1].IsSandbox;
     }
 }

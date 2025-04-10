@@ -495,7 +495,10 @@ export default class LightningComboBox extends LightningElement {
         const allValidValues = parentValueLs.filter((val) => optionsValues.includes(val));
         this._value = allValidValues.join(';');
 
-        if (startingValue !== this._value) {
+        // If the value differs from the current value we should raise an event
+        // we should also raise events if the value differs from the last event
+        // this is useful when the parent is ignoring change events
+        if (startingValue !== this._value || this.lastChangeValue !== this._value) {
             this.sendChangeEvent();
             this.sendCommitEvent();
         }
@@ -505,6 +508,7 @@ export default class LightningComboBox extends LightningElement {
      * Send a change event - this happens whenever the value in the dropdown changes from one value to another
      */
     sendChangeEvent() {
+        this.lastChangeValue = this._value;
         this.dispatchEvent(
             new CustomEvent('change', {
                 detail: {
@@ -514,6 +518,7 @@ export default class LightningComboBox extends LightningElement {
             })
         );
     }
+    lastChangeValue;
 
     /**
      * Send a commit event - this happens whenever the dropdown is closed (and a change was made)

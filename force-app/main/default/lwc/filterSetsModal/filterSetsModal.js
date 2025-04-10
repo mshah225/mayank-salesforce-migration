@@ -170,10 +170,10 @@ export default class FilterSetsModal extends LightningModal {
     wireError = undefined;
 
     @wire(checkIfCanShare, {})
-    forCheckIfCanShare({data, errors}) {
+    forCheckIfCanShare({data, error}) {
         if (data !== undefined) {
             this.allowedToShare = data;
-        } else if (errors !== undefined) {
+        } else if (error !== undefined) {
             this.allowedToShare = false;
         }
     }

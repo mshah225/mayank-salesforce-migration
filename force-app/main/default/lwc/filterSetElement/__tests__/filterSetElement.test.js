@@ -26,7 +26,7 @@ describe('c-filter-set-element', () => {
         // Assert
         expect(element.filterName).toEqual(privateFilterSet.Name);
         expect(element.shareType).toEqual('Private');
-        expect(element.ownerName).toContain(privateFilterSet.Owner__r.Name);
+        expect(element.ownerName).toContain(privateFilterSet.Owner.Name);
         expect(element.createdDate).toContain(privateFilterSet.CreatedDate);
     });
 

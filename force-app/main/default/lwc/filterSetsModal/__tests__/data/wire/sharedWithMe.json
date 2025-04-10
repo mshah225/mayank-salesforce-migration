@@ -7,8 +7,8 @@
                         "node": {
                             "Id": "a4HDk0000009si4MAA",
                             "Name": {"value": "All Freshmen (UGRAD)"},
-                            "Owner__c": {"value": "005000000000000001"},
-                            "Owner__r": {"Name": {"value": "Justin Sanchez"}},
+                            "OwnerId": {"value": "005000000000000001"},
+                            "Owner": {"Name": {"value": "Justin Sanchez"}},
                             "Value__c": {
                                 "value": "{\"academicLevel\":\"Freshman\",\"campus\":\"\",\"career\":\"UGRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}"
                             },

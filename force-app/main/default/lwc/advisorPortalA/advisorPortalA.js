@@ -513,15 +513,17 @@ export default class AdvisorPortalA extends LightningElement {
                                     Name {
                                         value
                                     }
-                                    Owner__c {
+                                    OwnerId {
                                         value
                                     }
-                                    Owner__r {
-                                        Name {
-                                            value
-                                        }
-                                        Alias {
-                                            value
+                                    Owner {
+                                        ... on User {
+                                            Name {
+                                                value
+                                            }
+                                            Alias {
+                                                value
+                                            }
                                         }
                                     }
                                     Value__c {
@@ -602,7 +604,7 @@ export default class AdvisorPortalA extends LightningElement {
         return this.filterSetNameName || this.appliedFilterSet?.Name || '';
     }
     get userOwnsFilterSet() {
-        return this.appliedFilterSet?.Owner__c === USER_ID;
+        return this.appliedFilterSet?.OwnerId === USER_ID;
     }
     get filterSetIsPinned() {
         return this.appliedFilterSet?.Pinned__c ?? false;

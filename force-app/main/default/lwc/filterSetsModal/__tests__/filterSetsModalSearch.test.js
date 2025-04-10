@@ -33,7 +33,7 @@ describe('c-filter-sets-modal', () => {
 
         let filteredFilterSets = expectedBasic
             .filter((v) => !v.Pinned__c)
-            .filter((v) => v.Name.toLowerCase().includes('senior') || v.Owner__r.Name.toLowerCase().includes('senior'));
+            .filter((v) => v.Name.toLowerCase().includes('senior') || v.Owner.Name.toLowerCase().includes('senior'));
 
         expect(element.numberNonpinned).toEqual(filteredFilterSets.length);
         expect(element.nonpinnedFilterSets).toMatchObject(filteredFilterSets);
@@ -55,9 +55,7 @@ describe('c-filter-sets-modal', () => {
 
         let filteredFilterSets = expectedBasic
             .filter((v) => !v.Pinned__c)
-            .filter(
-                (v) => v.Name.toLowerCase().includes('nordman') || v.Owner__r.Name.toLowerCase().includes('nordman')
-            );
+            .filter((v) => v.Name.toLowerCase().includes('nordman') || v.Owner.Name.toLowerCase().includes('nordman'));
 
         expect(element.numberNonpinned).toEqual(filteredFilterSets.length);
         expect(element.nonpinnedFilterSets).toMatchObject(filteredFilterSets);

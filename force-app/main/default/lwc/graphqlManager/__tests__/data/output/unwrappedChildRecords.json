@@ -3,8 +3,8 @@
         {
             "Id": "a4H000000000000001",
             "Name": "All Freshmen (UGRAD)",
-            "Owner__c": "005000000000000001",
-            "Owner__r": {
+            "OwnerId": "005000000000000001",
+            "Owner": {
                 "Name": "Hornet"
             },
             "Value__c": "{\"academicLevel\":\"Freshman\",\"campus\":\"\",\"career\":\"UGRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}",
@@ -24,8 +24,8 @@
         {
             "Id": "a4H000000000000002",
             "Name": "All Sophmores (UGRAD)",
-            "Owner__c": "005000000000000002",
-            "Owner__r": {
+            "OwnerId": "005000000000000002",
+            "Owner": {
                 "Name": "Tuk"
             },
             "Value__c": "{\"academicLevel\":\"Sophmore\",\"campus\":\"\",\"career\":\"UGRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}",
@@ -45,8 +45,8 @@
         {
             "Id": "a4H000000000000003",
             "Name": "All Juniors (UGRAD)",
-            "Owner__c": "005000000000000002",
-            "Owner__r": {
+            "OwnerId": "005000000000000002",
+            "Owner": {
                 "Name": "Tuk"
             },
             "Value__c": "{\"academicLevel\":\"Junior\",\"campus\":\"\",\"career\":\"UGRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}",
@@ -74,8 +74,8 @@
         {
             "Id": "a4H000000000000004",
             "Name": "All Seniors (UGRAD)",
-            "Owner__c": "005000000000000003",
-            "Owner__r": {
+            "OwnerId": "005000000000000003",
+            "Owner": {
                 "Name": "Millibelle the Banker"
             },
             "Value__c": "{\"academicLevel\":\"Senior\",\"campus\":\"\",\"career\":\"UGRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}",
@@ -95,8 +95,8 @@
         {
             "Id": "a4H000000000000005",
             "Name": "Masters Degrees (GRAD)",
-            "Owner__c": "005000000000000004",
-            "Owner__r": {
+            "OwnerId": "005000000000000004",
+            "Owner": {
                 "Name": "Relic Seeker Lemm"
             },
             "Value__c": "{\"academicLevel\":\"\",\"campus\":\"\",\"career\":\"GRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"masters\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}",
@@ -116,8 +116,8 @@
         {
             "Id": "a4H000000000000006",
             "Name": "Online Students (GRAD)",
-            "Owner__c": "005000000000000004",
-            "Owner__r": {
+            "OwnerId": "005000000000000004",
+            "Owner": {
                 "Name": "Relic Seeker Lemm"
             },
             "Value__c": "{\"academicLevel\":\"\",\"campus\":\"ONLNE\",\"career\":\"GRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}",

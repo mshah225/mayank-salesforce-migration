@@ -7,8 +7,8 @@
                         "node": {
                             "Id": "a4HDk0000009si4MAA",
                             "Name": {"value": "All Freshmen (UGRAD)"},
-                            "Owner__c": {"value": "005000000000000000"},
-                            "Owner__r": {"Name": {"value": "Tommy Nordman"}},
+                            "OwnerId": {"value": "005000000000000000"},
+                            "Owner": {"Name": {"value": "Tommy Nordman"}},
                             "Value__c": {
                                 "value": "{\"academicLevel\":\"Freshman\",\"campus\":\"\",\"career\":\"UGRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}"
                             },
@@ -32,8 +32,8 @@
                         "node": {
                             "Id": "a4HDk0000009si5MAA",
                             "Name": {"value": "All Sophmores (UGRAD)"},
-                            "Owner__c": {"value": "005000000000000000"},
-                            "Owner__r": {"Name": {"value": "Tommy Nordman"}},
+                            "OwnerId": {"value": "005000000000000000"},
+                            "Owner": {"Name": {"value": "Tommy Nordman"}},
                             "Value__c": {
                                 "value": "{\"academicLevel\":\"Sophmore\",\"campus\":\"\",\"career\":\"UGRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}"
                             },
@@ -57,8 +57,8 @@
                         "node": {
                             "Id": "a4HDk0000009si6MAA",
                             "Name": {"value": "All Juniors (UGRAD)"},
-                            "Owner__c": {"value": "005000000000000000"},
-                            "Owner__r": {"Name": {"value": "Tommy Nordman"}},
+                            "OwnerId": {"value": "005000000000000000"},
+                            "Owner": {"Name": {"value": "Tommy Nordman"}},
                             "Value__c": {
                                 "value": "{\"academicLevel\":\"Junior\",\"campus\":\"\",\"career\":\"UGRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}"
                             },
@@ -82,8 +82,8 @@
                         "node": {
                             "Id": "a4HDk0000009si7MAA",
                             "Name": {"value": "All Seniors (UGRAD)"},
-                            "Owner__c": {"value": "005000000000000000"},
-                            "Owner__r": {"Name": {"value": "Tommy Nordman"}},
+                            "OwnerId": {"value": "005000000000000000"},
+                            "Owner": {"Name": {"value": "Tommy Nordman"}},
                             "Value__c": {
                                 "value": "{\"academicLevel\":\"Senior\",\"campus\":\"\",\"career\":\"UGRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}"
                             },
@@ -107,8 +107,8 @@
                         "node": {
                             "Id": "a4HDk0000009si8MAA",
                             "Name": {"value": "Masters Degrees (GRAD)"},
-                            "Owner__c": {"value": "005000000000000000"},
-                            "Owner__r": {"Name": {"value": "Tommy Nordman"}},
+                            "OwnerId": {"value": "005000000000000000"},
+                            "Owner": {"Name": {"value": "Tommy Nordman"}},
                             "Value__c": {
                                 "value": "{\"academicLevel\":\"\",\"campus\":\"\",\"career\":\"GRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"masters\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}"
                             },
@@ -132,8 +132,8 @@
                         "node": {
                             "Id": "a4HDk0000009si9MAA",
                             "Name": {"value": "Online Students (GRAD)"},
-                            "Owner__c": {"value": "005000000000000000"},
-                            "Owner__r": {"Name": {"value": "Tommy Nordman"}},
+                            "OwnerId": {"value": "005000000000000000"},
+                            "Owner": {"Name": {"value": "Tommy Nordman"}},
                             "Value__c": {
                                 "value": "{\"academicLevel\":\"\",\"campus\":\"ONLNE\",\"career\":\"GRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}"
                             },

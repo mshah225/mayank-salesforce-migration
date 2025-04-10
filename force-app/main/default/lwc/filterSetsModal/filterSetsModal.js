@@ -19,8 +19,8 @@ import UFSP_SORT_ORDER_FIELD from '@salesforce/schema/User_Filter_Set_Preference
  * @typedef {Object} FilterSet Each filter set object
  * @property {String} Id If of the filter set
  * @property {String} Name Name of the filter set
- * @property {String} Owner__c Id of the user who owns this filter set
- * @property {UserRecord} Owner__r User who owns this filter set
+ * @property {String} OwnerId Id of the user who owns this filter set
+ * @property {UserRecord} Owner User who owns this filter set
  * @property {String} Value__c The serialized JSON string for this filter set
  * @property {Boolean} Is_Shared__c Is this filter set shared with anyone?
  * @property {String} CreatedDate Datetime string
@@ -75,15 +75,17 @@ export default class FilterSetsModal extends LightningModal {
                                     Name {
                                         value
                                     }
-                                    Owner__c {
+                                    OwnerId {
                                         value
                                     }
-                                    Owner__r {
-                                        Name {
-                                            value
-                                        }
-                                        Alias {
-                                            value
+                                    Owner {
+                                        ... on User {
+                                            Name {
+                                                value
+                                            }
+                                            Alias {
+                                                value
+                                            }
                                         }
                                     }
                                     Value__c {
@@ -316,7 +318,7 @@ export default class FilterSetsModal extends LightningModal {
                 return (
                     !this.isSearching ||
                     filterSet.Name.toLowerCase().includes(this.searchText.toLowerCase()) ||
-                    filterSet.Owner__r.Name.toLowerCase().includes(this.searchText.toLowerCase())
+                    filterSet.Owner.Name.toLowerCase().includes(this.searchText.toLowerCase())
                 );
             })
             .sort((a, b) => {
@@ -331,9 +333,9 @@ export default class FilterSetsModal extends LightningModal {
                     } else if (this.sortOrder === 'Created Date Desc') {
                         return -1 * (new Date(a.CreatedDate).getTime() - new Date(b.CreatedDate).getTime());
                     } else if (this.sortOrder === 'Owner Name Asc') {
-                        return a.Owner__r.Name.localeCompare(b.Owner__r.Name);
+                        return a.Owner.Name.localeCompare(b.Owner.Name);
                     } else if (this.sortOrder === 'Owner Name Desc') {
-                        return -1 * a.Owner__r.Name.localeCompare(b.Owner__r.Name);
+                        return -1 * a.Owner.Name.localeCompare(b.Owner.Name);
                     } else if (this.sortOrder === 'Private First') {
                         return a.Is_Shared__c === b.Is_Shared__c ? 0 : !a.Is_Shared__c ? -1 : 1;
                     } else if (this.sortOrder === 'Shared First') {

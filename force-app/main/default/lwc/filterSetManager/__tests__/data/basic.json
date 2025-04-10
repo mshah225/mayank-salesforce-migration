@@ -2,8 +2,8 @@
     {
         "Id": "a4HDk0000009si4MAA",
         "Name": "All Freshmen (UGRAD)",
-        "Owner__c": "005000000000000000",
-        "Owner__r": {"Name": "Tommy Nordman"},
+        "OwnerId": "005000000000000000",
+        "Owner": {"Name": "Tommy Nordman"},
         "Value__c": "{\"academicLevel\":\"Freshman\",\"campus\":\"\",\"career\":\"UGRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}",
         "Is_Shared__c": false,
         "CreatedDate": "2025-03-17T23:55:01.000Z",
@@ -25,8 +25,8 @@
     {
         "Id": "a4HDk0000009si5MAA",
         "Name": "All Sophmores (UGRAD)",
-        "Owner__c": "005000000000000000",
-        "Owner__r": {"Name": "Tommy Nordman"},
+        "OwnerId": "005000000000000000",
+        "Owner": {"Name": "Tommy Nordman"},
         "Value__c": "{\"academicLevel\":\"Sophmore\",\"campus\":\"\",\"career\":\"UGRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}",
         "Is_Shared__c": false,
         "CreatedDate": "2025-03-17T23:55:02.000Z",

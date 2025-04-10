@@ -14,8 +14,8 @@ import FSUA_PINNED_FIELD from '@salesforce/schema/Filter_Set_User_Association__c
  * @typedef {Object} FilterSet Each filter set object
  * @property {String} Id If of the filter set
  * @property {String} Name Name of the filter set
- * @property {String} Owner__c Id of the user who owns this filter set
- * @property {UserRecord} Owner__r User who owns this filter set
+ * @property {String} OwnerId Id of the user who owns this filter set
+ * @property {UserRecord} Owner User who owns this filter set
  * @property {String} Value__c The serialized JSON string for this filter set
  * @property {Boolean} Is_Shared__c Is this filter set shared with anyone?
  * @property {String} CreatedDate Datetime string
@@ -112,7 +112,7 @@ export default class FilterSetManager {
         // Any FSUA that exist but aren't in the new list
         // (excluding the owner since the owner cannot be unshared with)
         let fSUAsToRemove = fsuas.filter(
-            (fsua) => fsua.User__c !== filterSet.Owner__c && !userIds.includes(fsua.User__c)
+            (fsua) => fsua.User__c !== filterSet.OwnerId && !userIds.includes(fsua.User__c)
         );
         // Any users in the list that don't have a FSUA
         let usersThatNeedNewFSUA = userIds.filter((userId) => !alreadyHaveFSUALs.includes(userId));

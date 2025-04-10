@@ -5,8 +5,8 @@ import Id from '@salesforce/user/Id';
  * @typedef {Object} FilterSet Each filter set object
  * @property {String} Id If of the filter set
  * @property {String} Name Name of the filter set
- * @property {String} Owner__c Id of the user who owns this filter set
- * @property {UserRecord} Owner__r User who owns this filter set
+ * @property {String} OwnerId Id of the user who owns this filter set
+ * @property {UserRecord} Owner User who owns this filter set
  * @property {String} Value__c The serialized JSON string for this filter set
  * @property {Boolean} Is_Shared__c Is this filter set shared with anyone?
  * @property {String} CreatedDate Datetime string
@@ -37,7 +37,7 @@ export default class FilterSetElement extends LightningElement {
         return this.filterSet?.Is_Shared__c ? (this.userOwnsFilterSet ? 'Shared by me' : 'Shared with me') : 'Private';
     }
     get ownerName() {
-        return this.filterSet?.Owner__r.Name || '';
+        return this.filterSet?.Owner?.Name || '';
     }
 
     get createdDate() {
@@ -53,7 +53,7 @@ export default class FilterSetElement extends LightningElement {
     }
 
     get userOwnsFilterSet() {
-        return this.filterSet?.Owner__c === Id;
+        return this.filterSet?.OwnerId === Id;
     }
 
     get cannotEditName() {

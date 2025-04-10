@@ -17,7 +17,6 @@ public with sharing class FilterSetDispatcher implements TriggerDispatcherInterf
     }
 
     public void beforeInsert() {
-        FilterSetService.setOwner(newList);
         FilterSetService.checkUniqueName(newList);
     }
     public void beforeUpdate() {

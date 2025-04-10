@@ -7,7 +7,7 @@
                         "node": {
                             "Id": "a4H000000000000001",
                             "Name": {"value": "All Freshmen (UGRAD)"},
-                            "Owner__c": {"value": "005000000000000001"},
+                            "OwnerId": {"value": "005000000000000001"},
                             "Value__c": {
                                 "value": "{\"academicLevel\":\"Freshman\",\"campus\":\"\",\"career\":\"UGRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}"
                             },
@@ -19,7 +19,7 @@
                         "node": {
                             "Id": "a4H000000000000002",
                             "Name": {"value": "All Sophmores (UGRAD)"},
-                            "Owner__c": {"value": "005000000000000002"},
+                            "OwnerId": {"value": "005000000000000002"},
                             "Value__c": {
                                 "value": "{\"academicLevel\":\"Sophmore\",\"campus\":\"\",\"career\":\"UGRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}"
                             },
@@ -31,7 +31,7 @@
                         "node": {
                             "Id": "a4H000000000000003",
                             "Name": {"value": "All Juniors (UGRAD)"},
-                            "Owner__c": {"value": "005000000000000002"},
+                            "OwnerId": {"value": "005000000000000002"},
                             "Value__c": {
                                 "value": "{\"academicLevel\":\"Junior\",\"campus\":\"\",\"career\":\"UGRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}"
                             },
@@ -43,7 +43,7 @@
                         "node": {
                             "Id": "a4H000000000000004",
                             "Name": {"value": "All Seniors (UGRAD)"},
-                            "Owner__c": {"value": "005000000000000003"},
+                            "OwnerId": {"value": "005000000000000003"},
                             "Value__c": {
                                 "value": "{\"academicLevel\":\"Senior\",\"campus\":\"\",\"career\":\"UGRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}"
                             },
@@ -55,7 +55,7 @@
                         "node": {
                             "Id": "a4H000000000000005",
                             "Name": {"value": "Masters Degrees (GRAD)"},
-                            "Owner__c": {"value": "005000000000000004"},
+                            "OwnerId": {"value": "005000000000000004"},
                             "Value__c": {
                                 "value": "{\"academicLevel\":\"\",\"campus\":\"\",\"career\":\"GRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"masters\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}"
                             },
@@ -67,7 +67,7 @@
                         "node": {
                             "Id": "a4H000000000000006",
                             "Name": {"value": "Online Students (GRAD)"},
-                            "Owner__c": {"value": "005000000000000004"},
+                            "OwnerId": {"value": "005000000000000004"},
                             "Value__c": {
                                 "value": "{\"academicLevel\":\"\",\"campus\":\"ONLNE\",\"career\":\"GRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}"
                             },

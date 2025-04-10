@@ -1,8 +1,8 @@
 {
     "Id": "a4HDk0000009si4MAA",
     "Name": "Masters Degrees (GRAD)",
-    "Owner__c": "005000000000000000",
-    "Owner__r": {"Name": "Robert Nordman", "Alias": "rnordman"},
+    "OwnerId": "005000000000000000",
+    "Owner": {"Name": "Robert Nordman", "Alias": "rnordman"},
     "Value__c": "{\"academicLevel\":\"\",\"campus\":\"\",\"career\":\"GRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"masters\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}",
     "Is_Shared__c": true,
     "CreatedDate": "2025-03-17T23:55:02.000Z",

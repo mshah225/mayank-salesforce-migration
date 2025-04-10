@@ -1,8 +1,8 @@
 {
     "Id": "a4HDk0000009si4MAA",
     "Name": "All Freshmen",
-    "Owner__c": "005000000000000001",
-    "Owner__r": {"Name": "Justin Sanchez"},
+    "OwnerId": "005000000000000001",
+    "Owner": {"Name": "Justin Sanchez"},
     "Value__c": null,
     "Is_Shared__c": false,
     "CreatedDate": "2025-03-17T23:55:01.000Z",

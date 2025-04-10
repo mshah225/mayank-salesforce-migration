@@ -45,7 +45,7 @@ function unwrapNode(node) {
                 // eslint-disable-next-line no-shadow
                 unwrapped[key] = value.edges.map(({node}) => unwrapNode(node));
             } else {
-                // Related object (like Owner__r), possibly has fields with .value inside
+                // Related object (like Owner), possibly has fields with .value inside
                 unwrapped[key] = unwrapNode(value);
             }
         } else {

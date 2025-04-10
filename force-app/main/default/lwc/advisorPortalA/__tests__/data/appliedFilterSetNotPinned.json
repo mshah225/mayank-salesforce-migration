@@ -7,8 +7,8 @@
                         "node": {
                             "Id": "FS-1",
                             "Name": {"value": "Freshmen"},
-                            "Owner__c": {"value": "005000000000000000"},
-                            "Owner__r": {
+                            "OwnerId": {"value": "005000000000000000"},
+                            "Owner": {
                                 "Name": "Tommy Nordman",
                                 "Alias": "rnordman"
                             },

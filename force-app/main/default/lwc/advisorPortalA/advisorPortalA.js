@@ -656,7 +656,6 @@ export default class AdvisorPortalA extends LightningElement {
     get usersAndPodsPartialFilter() {
         return JSON.stringify({career: this.career});
     }
-    loadingUsersAndPodOptions = true;
     /** @type {String} This users queue id */
     get myQueueId() {
         for (let option of this.allUsersAndPods ?? []) if (!option.isLabel) return option.value;
@@ -692,7 +691,6 @@ export default class AdvisorPortalA extends LightningElement {
     get campusPartialFilter() {
         return JSON.stringify({career: this.career});
     }
-    loadingCampusOptions = true;
 
     /**
      * Degree Levels are hardcoded
@@ -741,7 +739,6 @@ export default class AdvisorPortalA extends LightningElement {
     get schoolDepartmentPartialFilter() {
         return JSON.stringify({academicProgram: this.academicProgram});
     }
-    loadingSchoolDepartmentOptions = true;
 
     /**
      * Get options for academic plan dropdown
@@ -767,7 +764,6 @@ export default class AdvisorPortalA extends LightningElement {
             schoolDepartment: this.schoolDepartment,
         });
     }
-    loadingAcadPlanOptions = true;
 
     /**
      * Academic Levels are hardcoded
@@ -840,7 +836,6 @@ export default class AdvisorPortalA extends LightningElement {
             ownerIds: this.ownerIds,
         });
     }
-    loadingCaseCategoryOptions = true;
 
     /**
      * Get options for case subcategory dropdown
@@ -866,7 +861,6 @@ export default class AdvisorPortalA extends LightningElement {
             caseCategory: this.caseCategory,
         });
     }
-    loadingCaseSubCategoryOptions = true;
 
     /**
      * Special Population options are hardcoded
@@ -909,7 +903,6 @@ export default class AdvisorPortalA extends LightningElement {
             ownerIds: this.ownerIds,
         });
     }
-    loadingCaseSubjectOptions = true;
 
     /**
      * Outlook Score options are hardcoded
@@ -932,6 +925,111 @@ export default class AdvisorPortalA extends LightningElement {
     ];
 
     /***********************************************************************
+     **********                 Loading Indicators                **********
+     ***********************************************************************/
+    set loadingUsersAndPodOptions(v) {
+        if (v === this.loadingUsersAndPodOptions) return;
+        this._loadingUsersAndPodOptions = v;
+        if (this.applyingFilterSet) {
+            if (v) this.applyingFilterSetCounter += 1;
+            else this.applyingFilterSetCounter -= 1;
+        }
+    }
+    get loadingUsersAndPodOptions() {
+        return this._loadingUsersAndPodOptions;
+    }
+    _loadingUsersAndPodOptions = true;
+
+    set loadingAcadPlanOptions(v) {
+        if (v === this.loadingAcadPlanOptions) return;
+        this._loadingAcadPlanOptions = v;
+        if (this.applyingFilterSet) {
+            if (v) this.applyingFilterSetCounter += 1;
+            else this.applyingFilterSetCounter -= 1;
+        }
+    }
+    get loadingAcadPlanOptions() {
+        return this._loadingAcadPlanOptions;
+    }
+    _loadingAcadPlanOptions = true;
+
+    set loadingSchoolDepartmentOptions(v) {
+        if (v === this.loadingSchoolDepartmentOptions) return;
+        this._loadingSchoolDepartmentOptions = v;
+        if (this.applyingFilterSet) {
+            if (v) this.applyingFilterSetCounter += 1;
+            else this.applyingFilterSetCounter -= 1;
+        }
+    }
+    get loadingSchoolDepartmentOptions() {
+        return this._loadingSchoolDepartmentOptions;
+    }
+    _loadingSchoolDepartmentOptions = true;
+
+    set loadingCampusOptions(v) {
+        if (v === this.loadingCampusOptions) return;
+        this._loadingCampusOptions = v;
+        if (this.applyingFilterSet) {
+            if (v) this.applyingFilterSetCounter += 1;
+            else this.applyingFilterSetCounter -= 1;
+        }
+    }
+    get loadingCampusOptions() {
+        return this._loadingCampusOptions;
+    }
+    _loadingCampusOptions = true;
+
+    set loadingCaseCategoryOptions(v) {
+        if (v === this.loadingCaseCategoryOptions) return;
+        this._loadingCaseCategoryOptions = v;
+        if (this.applyingFilterSet) {
+            if (v) this.applyingFilterSetCounter += 1;
+            else this.applyingFilterSetCounter -= 1;
+        }
+    }
+    get loadingCaseCategoryOptions() {
+        return this._loadingCaseCategoryOptions;
+    }
+    _loadingCaseCategoryOptions = true;
+
+    set loadingCaseSubCategoryOptions(v) {
+        if (v === this.loadingCaseSubCategoryOptions) return;
+        this._loadingCaseSubCategoryOptions = v;
+        if (this.applyingFilterSet) {
+            if (v) this.applyingFilterSetCounter += 1;
+            else this.applyingFilterSetCounter -= 1;
+        }
+    }
+    get loadingCaseSubCategoryOptions() {
+        return this._loadingCaseSubCategoryOptions;
+    }
+    _loadingCaseSubCategoryOptions = true;
+
+    set loadingCaseSubjectOptions(v) {
+        if (v === this.loadingCaseSubjectOptions) return;
+        this._loadingCaseSubjectOptions = v;
+        if (this.applyingFilterSet) {
+            if (v) this.applyingFilterSetCounter += 1;
+            else this.applyingFilterSetCounter -= 1;
+        }
+    }
+    get loadingCaseSubjectOptions() {
+        return this._loadingCaseSubjectOptions;
+    }
+    _loadingCaseSubjectOptions = true;
+
+    // Counter variable used to track when a filter set is being applied so we can ignore change events until all
+    // loading has completed
+    set applyingFilterSetCounter(v) {
+        this._applyingFilterSetCounter = v;
+        if (this.applyingFilterSet && v === 0) this.applyingFilterSet = false; // unset apply flag if counter has reached 0
+    }
+    get applyingFilterSetCounter() {
+        return this._applyingFilterSetCounter;
+    }
+    _applyingFilterSetCounter = 0;
+
+    /***********************************************************************
      **********                 Most functions                    **********
      ***********************************************************************/
 
@@ -947,16 +1045,26 @@ export default class AdvisorPortalA extends LightningElement {
      * Apply the new user options
      */
     changeSelectedUsers(evnt) {
-        this.ownerIds = evnt.detail.value;
-        this.hasChangedFields = true;
+        // Ignore change event if currently in process of applying a filter set
+        if (this.applyingFilterSet) return;
+
+        if (this.ownerIds !== evnt.detail.value) {
+            this.ownerIds = evnt.detail.value;
+            this.hasChangedFields = true;
+        }
     }
 
     /**
      * User pressed the apply button - commit the changes and reload the filters
      */
     commitSelectedUsers(evnt) {
-        this.ownerIds = evnt.detail.value;
-        this.hasChangedFields = true;
+        // Ignore change event if currently in process of applying a filter set
+        if (this.applyingFilterSet) return;
+
+        if (this.ownerIds !== evnt.detail.value) {
+            this.ownerIds = evnt.detail.value;
+            this.hasChangedFields = true;
+        }
         this.applyFilters();
     }
 
@@ -964,15 +1072,21 @@ export default class AdvisorPortalA extends LightningElement {
      * Change handler - all field-specific logic is in the setter function
      */
     changeField(evnt) {
+        // Ignore change event if currently in process of applying a filter set
+        if (this.applyingFilterSet) return;
+
         // Custom component all raise field name in event - for standard components grab it from the currentTarget
         const fieldName = evnt.detail?.name || evnt.currentTarget?.dataset?.name;
         const fieldValue = evnt.detail?.value || evnt.currentTarget?.value;
 
-        if (fieldName != null) {
-            this[fieldName] = fieldValue;
-        }
+        if (fieldName == null) return;
 
-        this.hasChangedFields = true;
+        const currentValue = this[fieldName];
+
+        if (currentValue !== fieldValue) {
+            this[fieldName] = fieldValue;
+            this.hasChangedFields = true;
+        }
 
         // Any triggers to immediately apply changes
         if (fieldName === 'career') this.applyFilters();
@@ -1050,16 +1164,18 @@ export default class AdvisorPortalA extends LightningElement {
                 }
 
                 this.appliedFilterSetId = result.action.filterSetId;
-                this.hasChangedFields = false;
-
+                this.applyingFilterSet = true; // currently applying
                 // Set filter from saved filter set
                 this.currentFilter = JSON.parse(result.action.filterSet.Value__c);
+                this.hasChangedFields = false; // Clear has changed flag
 
                 // Apply filters is apply is true (rather than just viewing filter values)
                 if (result?.action?.apply === true) this.applyFilters();
             }
         });
     }
+    // When we are applying a filter set, we need to ignore change events until all wires are done loading
+    applyingFilterSet;
 
     /**
      * Rename applied filter set

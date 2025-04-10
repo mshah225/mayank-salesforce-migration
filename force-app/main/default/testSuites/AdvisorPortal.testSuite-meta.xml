@@ -8,4 +8,6 @@
     <testClassName>AdvisorPortalMassEmailControllerTest</testClassName>
     <testClassName>AdvisorPortalMassTransferControllerTest</testClassName>
     <testClassName>DynamicSoqlBuilderTest</testClassName>
+    <testClassName>FilterSetControllerTest</testClassName>
+    <testClassName>FilterSetTriggerTest</testClassName>
 </ApexTestSuite>

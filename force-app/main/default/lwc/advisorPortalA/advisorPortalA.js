@@ -1160,22 +1160,33 @@ export default class AdvisorPortalA extends LightningElement {
         FilterSetsModal.open({
             size: 'large',
             forceRefresh: true,
-        }).then((result) => {
-            if (result?.action != null) {
-                if (result?.action?.filterSet?.Value__c == null) {
-                    throw new Error('Could not apply filter set, filter set value was empty');
+        })
+            .then((result) => {
+                if (result?.action != null) {
+                    if (result?.action?.filterSet?.Value__c == null) {
+                        throw new Error('Could not apply filter set, filter set value was empty');
+                    }
+
+                    this.appliedFilterSetId = result.action.filterSetId;
+                    this.applyingFilterSet = true; // currently applying
+                    // Set filter from saved filter set
+                    this.currentFilter = JSON.parse(result.action.filterSet.Value__c);
+                    this.hasChangedFields = false; // Clear has changed flag
+
+                    // Apply filters is apply is true (rather than just viewing filter values)
+                    if (result?.action?.apply === true) this.applyFilters();
                 }
-
-                this.appliedFilterSetId = result.action.filterSetId;
-                this.applyingFilterSet = true; // currently applying
-                // Set filter from saved filter set
-                this.currentFilter = JSON.parse(result.action.filterSet.Value__c);
-                this.hasChangedFields = false; // Clear has changed flag
-
-                // Apply filters is apply is true (rather than just viewing filter values)
-                if (result?.action?.apply === true) this.applyFilters();
-            }
-        });
+            })
+            .catch((error) => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error while viewing filter sets',
+                        message: extractErrorMessages(error)[0],
+                        variant: 'error',
+                        mode: 'sticky',
+                    })
+                );
+            });
     }
     // When we are applying a filter set, we need to ignore change events until all wires are done loading
     applyingFilterSet;

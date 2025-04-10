@@ -79,6 +79,7 @@ export default class AdvisorPortalA extends LightningElement {
     }
     get currentFilter() {
         let filter = {
+            version: 'v3',
             caseTypeState: this.caseTypeState,
             career: this.career,
             ownerIds: this.ownerIds,

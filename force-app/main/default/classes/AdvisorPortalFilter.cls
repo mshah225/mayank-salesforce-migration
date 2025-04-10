@@ -682,6 +682,76 @@ public class AdvisorPortalFilter {
     }
 
     /**
+     * Get the advisor portal as a serialized JSON string
+     */
+    override public String toString() {
+        Map<String, String> jsonMp = new Map<String, String>();
+
+        if (String.isNotBlank(version))
+            jsonMp.put('version', version);
+        if (String.isNotBlank(caseTypeState))
+            jsonMp.put('caseTypeState', caseTypeState);
+        if (String.isNotBlank(career))
+            jsonMp.put('career', career);
+        if (String.isNotBlank(ownerIds))
+            jsonMp.put('ownerIds', ownerIds);
+        if (String.isNotBlank(studentString))
+            jsonMp.put('studentString', studentString);
+        if (String.isNotBlank(campus))
+            jsonMp.put('campus', campus);
+        if (String.isNotBlank(academicLevel))
+            jsonMp.put('academicLevel', academicLevel);
+        if (String.isNotBlank(studentGroupCode))
+            jsonMp.put('studentGroupCode', studentGroupCode);
+        if (String.isNotBlank(major))
+            jsonMp.put('major', major);
+        if (String.isNotBlank(degreeLevel))
+            jsonMp.put('degreeLevel', degreeLevel);
+        if (String.isNotBlank(academicProgram))
+            jsonMp.put('academicProgram', academicProgram);
+        if (String.isNotBlank(schoolDepartment))
+            jsonMp.put('schoolDepartment', schoolDepartment);
+        if (String.isNotBlank(academicPlan))
+            jsonMp.put('academicPlan', academicPlan);
+        if (String.isNotBlank(admitTermFrom))
+            jsonMp.put('admitTermFrom', admitTermFrom);
+        if (String.isNotBlank(admitTermTo))
+            jsonMp.put('admitTermTo', admitTermTo);
+        if (String.isNotBlank(residency))
+            jsonMp.put('residency', residency);
+        if (String.isNotBlank(caseStatus))
+            jsonMp.put('caseStatus', caseStatus);
+        if (String.isNotBlank(caseCategory))
+            jsonMp.put('caseCategory', caseCategory);
+        if (String.isNotBlank(caseSubCategory))
+            jsonMp.put('caseSubCategory', caseSubCategory);
+        if (String.isNotBlank(caseSubject))
+            jsonMp.put('caseSubject', caseSubject);
+        if (String.isNotBlank(specialPopulation))
+            jsonMp.put('specialPopulation', specialPopulation);
+        if (String.isNotBlank(outlookScore))
+            jsonMp.put('outlookScore', outlookScore);
+        if (String.isNotBlank(outlookChange))
+            jsonMp.put('outlookChange', outlookChange);
+        if (String.isNotBlank(caseCount))
+            jsonMp.put('caseCount', caseCount);
+        if (String.isNotBlank(createdFromDate))
+            jsonMp.put('createdFromDate', createdFromDate);
+        if (String.isNotBlank(createdToDate))
+            jsonMp.put('createdToDate', createdToDate);
+        if (String.isNotBlank(followUpFromDate))
+            jsonMp.put('followUpFromDate', followUpFromDate);
+        if (String.isNotBlank(followUpToDate))
+            jsonMp.put('followUpToDate', followUpToDate);
+        if (String.isNotBlank(persistenceFromDate))
+            jsonMp.put('persistenceFromDate', persistenceFromDate);
+        if (String.isNotBlank(persistenceToDate))
+            jsonMp.put('persistenceToDate', persistenceToDate);
+
+        return JSON.serialize(jsonMp);
+    }
+
+    /**
      * Assumes each element of orgArr is base64 encoded.
      * Decodes each value and returns an array with the decoded values.
      *

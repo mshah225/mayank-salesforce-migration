@@ -1076,6 +1076,8 @@ export default class AdvisorPortalA extends LightningElement {
      * Change handler - all field-specific logic is in the setter function
      */
     changeField(evnt) {
+        console.debug('change', this.applyingFilterSet, this.hasChangedFields);
+
         // Ignore change event if currently in process of applying a filter set
         if (this.applyingFilterSet) return;
 
@@ -1095,6 +1097,8 @@ export default class AdvisorPortalA extends LightningElement {
         // Any triggers to immediately apply changes
         if (fieldName === 'career') this.applyFilters();
         else if (fieldName === 'caseTypeState') this.applyFilters();
+
+        console.debug('change 2', fieldName, fieldValue, this.hasChangedFields);
     }
     hasChangedFields = false;
 
@@ -1173,6 +1177,7 @@ export default class AdvisorPortalA extends LightningElement {
                     // Set filter from saved filter set
                     this.currentFilter = JSON.parse(result.action.filterSet.Value__c);
                     this.hasChangedFields = false; // Clear has changed flag
+                    if (this.applyingFilterSetCounter === 0) this.applyingFilterSet = false; // clear applying whenever no fields actually need to reload
 
                     // Apply filters is apply is true (rather than just viewing filter values)
                     if (result?.action?.apply === true) this.applyFilters();

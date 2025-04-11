@@ -23,7 +23,6 @@ public class OpportunityDispatcher implements TriggerDispatcherInterface {
         OpportunityService.assignTerritory(newList, oldMap);
         OpportunityService.updateOpportunityTypeForGrads(newList);
         OpportunityService.checkAndCreateMasterTracker(newList);
-
     }
     public void beforeUpdate() {
         OpportunityService.updateCollegeIfPlanChanged(newList, oldMap);

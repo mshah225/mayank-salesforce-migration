@@ -912,9 +912,11 @@ public class OpportunityService {
     }
 
     private static Boolean meetsMasterTrackerConditions(Opportunity opp) {
-        return opp.Interview_Status__c == 'Complete' && opp.Plan_Code__c == 'BAFULLMBA' && 
-        opp.Round__c != null && opp.Interview_Date__c <= Date.today() &&
-        opp.Graduate_Master_Tracker__c == null;
+        return opp.Interview_Status__c == 'Complete' &&
+            opp.Plan_Code__c == 'BAFULLMBA' &&
+            opp.Round__c != null &&
+            opp.Interview_Date__c <= Date.today() &&
+            opp.Graduate_Master_Tracker__c == null;
     }
 
     public static void disableSyncingForMasterTracker(Map<Id, Opportunity> newOpps, Map<Id, Opportunity> oldOpps) {

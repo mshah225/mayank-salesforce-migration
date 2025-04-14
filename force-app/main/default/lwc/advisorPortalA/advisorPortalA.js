@@ -1076,8 +1076,6 @@ export default class AdvisorPortalA extends LightningElement {
      * Change handler - all field-specific logic is in the setter function
      */
     changeField(evnt) {
-        console.debug('change', this.applyingFilterSet, this.hasChangedFields);
-
         // Ignore change event if currently in process of applying a filter set
         if (this.applyingFilterSet) return;
 
@@ -1097,8 +1095,6 @@ export default class AdvisorPortalA extends LightningElement {
         // Any triggers to immediately apply changes
         if (fieldName === 'career') this.applyFilters();
         else if (fieldName === 'caseTypeState') this.applyFilters();
-
-        console.debug('change 2', fieldName, fieldValue, this.hasChangedFields);
     }
     hasChangedFields = false;
 

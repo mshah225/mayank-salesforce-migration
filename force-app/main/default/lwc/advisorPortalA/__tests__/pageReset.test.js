@@ -54,6 +54,7 @@ describe('c-advisor-portal reset button', () => {
 
         // Reset values
         expect(element.currentFilter).toEqual({
+            version: 'v3',
             career: 'UGRD',
             caseTypeState: 'ProactiveCasesState',
         });
@@ -109,6 +110,7 @@ describe('c-advisor-portal reset button', () => {
 
         // Not modified current filter
         expect(element.currentFilter).toEqual({
+            version: 'v3',
             career: 'UGRD',
             studentString: 'wow',
             caseCount: '4',

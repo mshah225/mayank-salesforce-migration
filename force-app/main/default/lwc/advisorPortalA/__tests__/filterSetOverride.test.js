@@ -140,7 +140,7 @@ describe('c-advisor-portal Save filter set', () => {
         expect(updateRecord).toHaveBeenCalledWith({
             fields: {
                 Id: 'FS-1',
-                Value__c: '{"caseTypeState":"ProactiveCasesState","ownerIds":"USER-1;POD-2"}',
+                Value__c: '{"version":"v3","caseTypeState":"ProactiveCasesState","ownerIds":"USER-1;POD-2"}',
             },
         });
     });

@@ -268,6 +268,21 @@ public class OpportunityService {
         }
     }
 
+    public static void enforceLeadSourceSubtype(List<Opportunity> newList, Map<Id, Opportunity> oldMap) {
+        DependentPicklistManager dependentPicklistManager = new DependentPicklistManager(
+            Opportunity.Lead_Source_Subtype__c
+        );
+
+        for (Opportunity opp : newList) {
+            Opportunity oldOpp = oldMap != null ? oldMap.get(opp.Id) : null;
+            if (oldOpp == null || opp.LeadSource != oldOpp.LeadSource) {
+                if (!dependentPicklistManager.isValid(opp.LeadSource, opp.Lead_Source_Subtype__c)) {
+                    opp.Lead_Source_Subtype__c = '';
+                }
+            }
+        }
+    }
+
     public static void assignTerritory(List<Opportunity> newOpportunities, Map<Id, Opportunity> oldOpportunitiesMap) {
         Set<Id> contactIdSet = new Set<Id>();
         List<Contact> contactList = new List<Contact>();

@@ -516,4 +516,50 @@ public with sharing class LeadTriggerTest {
             'Rule did not assign correctly when changing relevant fields'
         );
     }
+
+    @isTest
+    public static void testCannotSetInvalidLeadSourceSubtype() {
+        Test.startTest();
+        Lead testLead = new Lead(
+            FirstName = 'Tester',
+            LastName = 'Lead',
+            Company = 'Tester Company',
+            LeadSource = 'Email',
+            Lead_Source_Subtype__c = 'GRE'
+        );
+        insert testLead;
+        Test.stopTest();
+
+        testLead = [SELECT Id, LeadSource, Lead_Source_Subtype__c FROM Lead WHERE Id = :testLead.Id];
+
+        Assert.areEqual('Email', testLead.LeadSource);
+        Assert.areEqual(null, testLead.Lead_Source_Subtype__c);
+    }
+
+    @isTest
+    public static void testClearLeadSourceSubtype() {
+        Lead testLead = new Lead(
+            FirstName = 'Tester',
+            LastName = 'Lead',
+            Company = 'Tester Company',
+            LeadSource = 'Test Scores',
+            Lead_Source_Subtype__c = 'GRE'
+        );
+        insert testLead;
+
+        testLead = [SELECT Id, LeadSource, Lead_Source_Subtype__c FROM Lead WHERE Id = :testLead.Id];
+
+        Assert.areEqual('Test Scores', testLead.LeadSource);
+        Assert.areEqual('GRE', testLead.Lead_Source_Subtype__c);
+
+        Test.startTest();
+        testLead.LeadSource = 'Email';
+        update testLead;
+        Test.stopTest();
+
+        testLead = [SELECT Id, LeadSource, Lead_Source_Subtype__c FROM Lead WHERE Id = :testLead.Id];
+
+        Assert.areEqual('Email', testLead.LeadSource);
+        Assert.areEqual(null, testLead.Lead_Source_Subtype__c);
+    }
 }

@@ -464,7 +464,9 @@ export default class FilterSetsModal extends LightningModal {
                                 title: 'Success',
                                 message: val.delete
                                     ? 'Filter set has been removed'
-                                    : 'Filter set has been unshared with selected users',
+                                    : filterSet.OwnerId === Id
+                                    ? 'Filter set has been unshared with selected users'
+                                    : 'Shared filter set has been removed',
                                 variant: 'success',
                             })
                         );

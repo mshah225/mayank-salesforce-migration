@@ -56,14 +56,19 @@
                     <lightning-button label="Clear selection" variant="base" onclick={removeAll}></lightning-button>
                 </div>
             </template>
+            <template lwc:else>
+                <div class="slds-var-m-top_small slds-var-m-bottom_small">
+                    Deleting this filter will remove it for all the users you shared it with.
+                </div>
+            </template>
         </template>
     </lightning-modal-body>
     <lightning-modal-footer>
         <lightning-button label="Cancel" variant="neutral" onclick={closeModal}></lightning-button>
         <lightning-button
-            label="Save"
+            label="Remove"
             variant="brand"
-            onclick={saveChanges}
+            onclick={commitChanges}
             style="margin-left: 1rem"
         ></lightning-button>
     </lightning-modal-footer>

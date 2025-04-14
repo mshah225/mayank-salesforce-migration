@@ -62,8 +62,10 @@ describe('c-filter-set-remove-modal', () => {
         // Await rerender
         await flushPromises();
 
-        // Press save button
-        [...element.shadowRoot.querySelectorAll('lightning-button')].filter((elem) => elem.label === 'Save')[0].click();
+        // Press remove button
+        [...element.shadowRoot.querySelectorAll('lightning-button')]
+            .filter((elem) => elem.label === 'Remove')[0]
+            .click();
         await flushPromises();
 
         // Correct close payload
@@ -204,8 +206,10 @@ describe('c-filter-set-remove-modal', () => {
         // Await rerender
         await flushPromises();
 
-        // Press save button
-        [...element.shadowRoot.querySelectorAll('lightning-button')].filter((elem) => elem.label === 'Save')[0].click();
+        // Press remove button
+        [...element.shadowRoot.querySelectorAll('lightning-button')]
+            .filter((elem) => elem.label === 'Remove')[0]
+            .click();
         await flushPromises();
 
         // Correct close payload

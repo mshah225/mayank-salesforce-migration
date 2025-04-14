@@ -144,7 +144,7 @@ export default class FilterSetRemoveModal extends LightningModal {
     /**
      * Close with details to delete
      */
-    saveChanges() {
+    commitChanges() {
         if (this.isPrivateFilter) {
             this.close({delete: true});
         } else if (this.sharedWithMe) {

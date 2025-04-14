@@ -602,7 +602,7 @@ export default class AdvisorPortalA extends LightningElement {
             : 'Private';
     }
     get filterSetName() {
-        return this.filterSetNameName || this.appliedFilterSet?.Name || '';
+        return this.appliedFilterSet?.Name || '';
     }
     get userOwnsFilterSet() {
         return this.appliedFilterSet?.OwnerId === USER_ID;
@@ -1294,12 +1294,21 @@ export default class AdvisorPortalA extends LightningElement {
             .then((val) => {
                 if (val?.delete != null) {
                     return this.filterSetManager.remove(this.appliedFilterSet.Id, val).then(() => {
+                        // If they just removed a filter they don't own, clear it
+                        if (!this.userOwnsFilterSet) {
+                            this.appliedFilterSetId = undefined;
+                            this.appliedFilterSet = undefined;
+                        }
+
+                        // And nice toast
                         this.dispatchEvent(
                             new ShowToastEvent({
                                 title: 'Success',
                                 message: val.delete
                                     ? 'Filter set has been removed'
-                                    : 'Filter set has been unshared with selected users',
+                                    : this.userOwnsFilterSet
+                                    ? 'Filter set has been unshared with selected users'
+                                    : 'Shared filter set has been removed',
                                 variant: 'success',
                             })
                         );

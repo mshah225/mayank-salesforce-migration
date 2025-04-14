@@ -2,6 +2,7 @@
 private class MyASUHelpPaginationControllerTest {
     /**
      * Helper method to publish articles
+     * @param articleIds List of article IDs to be published
      */
     private static void publishArticles(List<Id> articleIds) {
         for (FAQ__kav faqArticle : [SELECT KnowledgeArticleId FROM FAQ__kav WHERE Id IN :articleIds]) {
@@ -16,7 +17,7 @@ private class MyASUHelpPaginationControllerTest {
     private static void setup() {
         List<FAQ__kav> faqArticles = new List<FAQ__kav>();
         for (Integer i = 0; i < 30; i++) {
-            faqArticles.add(new FAQ__kav(
+            FAQ__kav faqArticle = new FAQ__kav(
                 Title = 'Testing FAQ Article' + i,
                 Summary = 'Test FAQ From Apex' + i,
                 Answer__c = 'Test' + i,
@@ -25,32 +26,37 @@ private class MyASUHelpPaginationControllerTest {
                 IsVisibleInCsp = true,
                 IsVisibleInPrm = true,
                 URLName = 'MyASUHelpPaginationController-Test-Article-' + i
-            ));
+            );
+            faqArticles.add(faqArticle);
         }
         insert faqArticles;
-    
+
         List<Id> faqArticleIds = new List<Id>();
-        for (FAQ__kav faq : faqArticles) {
-            faqArticleIds.add(faq.Id);
+        for (FAQ__kav faqArticle : faqArticles) {
+            faqArticleIds.add(faqArticle.Id);
         }
-    
+
+        // Publish all test articles
         publishArticles(faqArticleIds);
     }
 
-
     /**
-     * Sets fixed search results based on published FAQ__kav records
+     * Set fixed search results for testing
      */
     private static void setFixedSearchResults() {
-        List<FAQ__kav> published = [SELECT Id FROM FAQ__kav WHERE PublishStatus = 'Online'];
-        List<Id> ids = new List<Id>();
-        for (FAQ__kav article : published) {
-            ids.add(article.Id);
+        List<FAQ__kav> allKAVs = [SELECT Id FROM FAQ__kav WHERE PublishStatus = 'Online'];
+        List<Id> fixedResultIds = new List<Id>();
+        for (FAQ__kav kav : allKAVs) {
+            fixedResultIds.add(kav.Id);
         }
-        Test.setFixedSearchResults(ids);
+        Test.setFixedSearchResults(fixedResultIds);
     }
 
-    @isTest private static void testAutofillSearchText() {
+    /**
+     * Test to verify autofill search text functionality
+     */
+    @isTest
+    private static void testAutofillSearchText() {
         MyASUHelpPaginationController.isTestMode = true;
         setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
@@ -65,7 +71,11 @@ private class MyASUHelpPaginationControllerTest {
         System.assertEquals(30, vf.resultCount);
     }
 
-    @isTest private static void testNextPrevPage() {
+    /**
+     * Test to verify next and previous page functionality
+     */
+    @isTest
+    private static void testNextPrevPage() {
         MyASUHelpPaginationController.isTestMode = true;
         setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
@@ -84,8 +94,8 @@ private class MyASUHelpPaginationControllerTest {
         Integer pageNum5 = vf.currentPage;
         Test.stopTest();
 
-        System.assertEquals(10, vf.pageSize);
-        System.assertEquals(3, vf.lastPage);
+        System.assertEquals(10, vf.pageSize, 'These tests expect the page size to be 10');
+        System.assertEquals(3, vf.lastPage, '30 results / 10 per page means we should have 3 pages');
         System.assertEquals(1, pageNum1);
         System.assertEquals(2, pageNum2);
         System.assertEquals(3, pageNum3);
@@ -93,14 +103,18 @@ private class MyASUHelpPaginationControllerTest {
         System.assertEquals(2, pageNum5);
     }
 
-    @isTest private static void testWhenOnlyOnePage() {
+    /**
+     * Test to verify behavior when only one page of results is present
+     */
+    @isTest
+    private static void testWhenOnlyOnePage() {
         MyASUHelpPaginationController.isTestMode = true;
-        List<FAQ__kav> fewArticles = [SELECT Id FROM FAQ__kav WHERE PublishStatus = 'Online' LIMIT 5];
-        List<Id> fewIds = new List<Id>();
-        for (FAQ__kav kav : fewArticles) {
-            fewIds.add(kav.Id);
+        List<FAQ__kav> allKAVs = [SELECT Id FROM FAQ__kav WHERE PublishStatus = 'Online' LIMIT 5];
+        List<Id> fixedResultIds = new List<Id>();
+        for (FAQ__kav kav : allKAVs) {
+            fixedResultIds.add(kav.Id);
         }
-        Test.setFixedSearchResults(fewIds);
+        Test.setFixedSearchResults(fixedResultIds);
         Test.setCurrentPage(Page.viewAllArticles);
         ApexPages.currentPage().getParameters().put('q', 'Test');
 
@@ -108,11 +122,15 @@ private class MyASUHelpPaginationControllerTest {
         MyASUHelpPaginationController vf = new MyASUHelpPaginationController();
         Test.stopTest();
 
-        System.assert(vf.onFirstPage);
-        System.assert(vf.onLastPage);
+        System.assertEquals(true, vf.onFirstPage);
+        System.assertEquals(true, vf.onLastPage);
     }
 
-    @isTest private static void testNoSearchTerm() {
+    /**
+     * Test to verify behavior when no search term is provided
+     */
+    @isTest
+    private static void testNoSearchTerm() {
         MyASUHelpPaginationController.isTestMode = true;
         setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
@@ -123,11 +141,15 @@ private class MyASUHelpPaginationControllerTest {
         Test.stopTest();
 
         System.assertEquals('', vf.textToSearch);
-        System.assert(vf.onFirstPage);
-        System.assert(vf.onLastPage);
+        System.assertEquals(true, vf.onFirstPage);
+        System.assertEquals(true, vf.onLastPage);
     }
 
-    @isTest private static void testChangeSearchTerm() {
+    /**
+     * Test to verify behavior when the search term is changed
+     */
+    @isTest
+    private static void testChangeSearchTerm() {
         MyASUHelpPaginationController.isTestMode = true;
         setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
@@ -143,7 +165,11 @@ private class MyASUHelpPaginationControllerTest {
         System.assertEquals(30, vf.resultCount);
     }
 
-    @isTest private static void testViewAllResultsRef() {
+    /**
+     * Test to verify view all results reference functionality
+     */
+    @isTest
+    private static void testViewAllResultsRef() {
         MyASUHelpPaginationController.isTestMode = true;
         setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
@@ -157,12 +183,18 @@ private class MyASUHelpPaginationControllerTest {
         System.assertEquals('/viewAllArticles?q=Test', actualPageRefUrl);
     }
 
-    @isTest private static void testMyASUHelpControllerConstructor() {
+    /**
+     * Test to verify MyASUHelpController constructor functionality
+     */
+    @isTest
+    private static void testMyASUHelpControllerConstructor() {
         MyASUHelpPaginationController.isTestMode = true;
 
+        // Need contact for MyASUHelpController constructor
         Contact testContact = new Contact(FirstName = 'John', LastName = 'McTesterson');
         insert testContact;
 
+        // New user for MyASUHelpController constructor
         User testUser = new User(
             FirstName = 'John',
             LastName = 'McTesterson',
@@ -179,12 +211,18 @@ private class MyASUHelpPaginationControllerTest {
         );
         insert testUser;
 
+        // Need terms for MyASUHelpController constructor
         Date dTac = System.today().addDays(365);
         Date dTb = System.today().addDays(405);
-        insert new List<Term__c>{
-            new Term__c(Session_A_C_Start_Date__c = dTac, Year__c = String.valueOf(dTac.year())),
-            new Term__c(Session_B_Start_Date__c = dTb, Year__c = String.valueOf(dTb.year()))
-        };
+        Term__c termAC = new Term__c(
+            Session_A_C_Start_Date__c = date.newInstance(dTac.year(), dTac.month(), dTac.day()),
+            Year__c = String.valueOf(dTac.year())
+        );
+        Term__c termB = new Term__c(
+            Session_B_Start_Date__c = date.newInstance(dTb.year(), dTb.month(), dTb.day()),
+            Year__c = String.valueOf(dTb.year())
+        );
+        insert new List<Term__c>{ termAC, termB };
 
         setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);

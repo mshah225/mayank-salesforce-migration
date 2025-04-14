@@ -55,6 +55,7 @@ export default class FilterSetsModal extends LightningModal {
                 uiapi {
                     query {
                         Filter_Set__c(
+                            first: 2000
                             where: {
                                 and: [
                                     {
@@ -98,7 +99,7 @@ export default class FilterSetsModal extends LightningModal {
                                         value
                                     }
 
-                                    Filter_Set_User_Associations__r {
+                                    Filter_Set_User_Associations__r(first: 2000) {
                                         edges {
                                             node {
                                                 Id

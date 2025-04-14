@@ -537,7 +537,7 @@ export default class AdvisorPortalA extends LightningElement {
                                         value
                                     }
 
-                                    Filter_Set_User_Associations__r {
+                                    Filter_Set_User_Associations__r(first: 2000) {
                                         edges {
                                             node {
                                                 Id

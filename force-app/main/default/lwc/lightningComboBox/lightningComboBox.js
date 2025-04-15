@@ -309,6 +309,16 @@ export default class LightningComboBox extends LightningElement {
             this.alignValueToOptions();
         }
 
+        // If this re-renders due to the options list changing (such as because it is being resorted)
+        // the element that was clicked on might stop existing (this is browser dependent). When this happens
+        // we need to set focus on some other element as to prevent the dropdown from automatically
+        // closing due to the focusout event
+        if (this.isOpen) {
+            if (this.template?.activeElement == null) {
+                this.refs.primaryInput.focus();
+            }
+        }
+
         if (this.dynamicDropdown) {
             // Every rerender, update alignment CSS
             this.regenerateDropdownAlignmentCss();

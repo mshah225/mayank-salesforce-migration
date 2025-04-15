@@ -81,8 +81,8 @@ public without sharing class UserDeprovisioner {
                 // If this is the type - one of the custom setting details might be wrong - add which to check
                 e.setMessage(
                     e.getMessage() +
-                    '\nSuspected incorrect setting detail: ' +
-                    whichSettingDetailIsResponsible(e.getMessage())
+                        '\nSuspected incorrect setting detail: ' +
+                        whichSettingDetailIsResponsible(e.getMessage())
                 );
             }
 
@@ -120,9 +120,9 @@ public without sharing class UserDeprovisioner {
                 if (userToDeprovision.get(configuration.Name__c) != null) {
                     addToProcessingNotes(
                         'Removed value ' +
-                        userToDeprovision.get(configuration.Name__c) +
-                        ' for ' +
-                        configuration.Name__c
+                            userToDeprovision.get(configuration.Name__c) +
+                            ' for ' +
+                            configuration.Name__c
                     );
                     deprovisionedUser.put(configuration.Name__c, null);
                 }
@@ -259,8 +259,8 @@ public without sharing class UserDeprovisioner {
                 if (userToDeprovision.ProfileId == profileIdToMatch) {
                     addToProcessingNotes(
                         'Profile matched to: ' +
-                        deprovisionUserConfiguration.get(deprovisionConfigurationName).Name__c +
-                        ', Stopping User Deprovision'
+                            deprovisionUserConfiguration.get(deprovisionConfigurationName).Name__c +
+                            ', Stopping User Deprovision'
                     );
                     return true;
                 }
@@ -308,8 +308,8 @@ public without sharing class UserDeprovisioner {
                     // record this in the notes
                     addToProcessingNotes(
                         'Permission set matched to: ' +
-                        permSetToIgnoreIdToName.get(permSet.PermissionSetId) +
-                        ', Stopping User Deprovision'
+                            permSetToIgnoreIdToName.get(permSet.PermissionSetId) +
+                            ', Stopping User Deprovision'
                     );
                     break;
                 }
@@ -319,9 +319,7 @@ public without sharing class UserDeprovisioner {
     }
     private void changeUserField(String fieldName) {
         Deprovision_User_Configuration__c changeFieldTo = deprovisionUserConfiguration.get(
-            'Change ' +
-            fieldName +
-            ' To'
+            'Change ' + fieldName + ' To'
         );
 
         String fieldValue = (String) (userToDeprovision.get(fieldName));

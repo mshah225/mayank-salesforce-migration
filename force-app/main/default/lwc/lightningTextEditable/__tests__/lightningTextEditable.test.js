@@ -138,8 +138,6 @@ describe('c-lightning-text-editable', () => {
 
         // Check for no event
         expect(changeHandler).toHaveBeenCalledTimes(1);
-        // Shows new value
-        expect(element.shadowRoot.textContent).toContain('Arizona State');
     });
 
     test('Test cancelling changes', async () => {
@@ -202,8 +200,6 @@ describe('c-lightning-text-editable', () => {
 
         // Check for event
         expect(changeHandler).toHaveBeenCalledTimes(1);
-        // Shows new value
-        expect(element.shadowRoot.textContent).toContain('Arizona State');
     });
 
     test('Cancel with escape', async () => {

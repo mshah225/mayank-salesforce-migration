@@ -5,7 +5,10 @@
             <div class="slds-var-m-vertical_small">You are removing {filterSetName} from the System</div>
         </template>
         <template lwc:elseif={sharedWithMe}>
-            <div class="slds-var-m-vertical_small">You are removing {filterSetName} from your list</div>
+            <div class="slds-var-m-vertical_small">
+                You are removing {filterSetName} from your list. Deleting this shared filter will only remove it for
+                you, not the other users this filter is shared with.
+            </div>
         </template>
         <template lwc:elseif={sharedByMe}>
             <div class="slds-text-heading_medium slds-var-m-bottom_small">

@@ -2,7 +2,7 @@
     <lightning-modal-header label="Remove filter set"></lightning-modal-header>
     <lightning-modal-body>
         <template lwc:if={isPrivateFilter}>
-            <div class="slds-var-m-vertical_small">You are removing {filterSetName} from the System</div>
+            <div class="slds-var-m-vertical_small">You are removing {filterSetName} from the system</div>
         </template>
         <template lwc:elseif={sharedWithMe}>
             <div class="slds-var-m-vertical_small">
@@ -16,8 +16,7 @@
             </div>
 
             <div class="slds-var-m-bottom_small">
-                You are removing this filter from the system and from the view of those this filter has been shared
-                with.
+                Delete {filterSetName} from system, or unshare from selected users?
             </div>
 
             <lightning-radio-group

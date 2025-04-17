@@ -1,79 +1,76 @@
+/**
+ * The UserDeprovisioner is used to do the main job of figuring out WHAT to deprovision for each user.
+ *
+ * You setup the object and then call `deprovisionUser`, which logs the necessary changes on the user, and figures out
+ * which records of each related records need to be updated/removed.
+ *
+ * Then the caller needs use the getter functions to actually get those updated/remove-ready records and apply those changes
+ * to the database, ideally batching them so that you don't hit DML limits when deprovisioning multiple users at once.
+ *
+ * For the deprovisioning process, these records are created initially in the UserTrigger context, where it launches the deprovisioning
+ * process and logs all necessary changes on the user. Then it is passed along to each Queueable and Batch apex instance in order to keep
+ * track of the record throughout the process.
+ */
 public without sharing class UserDeprovisioner {
-    private String processingNotes;
-    private User deprovisionedUser;
-    private User userToDeprovision;
-    private Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration;
-    private Map<Id, String> fieldIdToNameMap;
+    // Global custom setting
+    private static Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration = Deprovision_User_Configuration__c.getAll();
 
-    // original data
-    private UserLogin userLogin;
+    // The user to deprovision
+    private User deprovisionUser;
+    private User updatedUser; // updated version with changes since this is launched from after trigger context
+    private Boolean doDeprovision = false;
+
+    // All related records
     private List<GroupMember> groupMemberships;
-    private List<CollaborationGroupMember> chatterGroupMemberships;
     private List<PermissionSetAssignment> permissionSetAssignments;
     private List<UserPackageLicense> userPackageLicenses;
     private List<CronTrigger> cronJobs;
-    // Data to delete/update data
-    private UserLogin toUpdateUserLogin;
-    private List<GroupMember> toDeleteGroupMemberships;
-    private List<CollaborationGroupMember> toDeleteChatterGroupMemberships;
-    private List<PermissionSetAssignment> toDeletePermissionSetAssignments;
-    private List<UserPackageLicense> toDeleteUserPackageLicenses;
-    private List<CronTrigger> toAbortCronJobs;
+    private List<CollaborationGroupMember> chatterGroupMemberships;
+    private UserLogin userLogin;
 
-    private static Boolean debug = false;
-    private static Boolean allowRepeatCases = true;
-    private Integer countTransferred = 0;
-
-    public UserDeprovisioner(
-        Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration,
-        User userToDeprovision
-    ) {
-        processingNotes = '';
-        this.userToDeprovision = userToDeprovision;
-        this.deprovisionedUser = new User(Id = userToDeprovision.Id);
-        this.deprovisionUserConfiguration = deprovisionUserConfiguration;
-        this.fieldIdToNameMap = new Map<Id, String>();
-
-        toUpdateUserLogin = null;
-        toDeleteGroupMemberships = new List<GroupMember>();
-        toDeleteChatterGroupMemberships = new List<CollaborationGroupMember>();
-        toDeletePermissionSetAssignments = new List<PermissionSetAssignment>();
-        toDeleteUserPackageLicenses = new List<UserPackageLicense>();
-        toAbortCronJobs = new List<CronTrigger>();
+    public UserDeprovisioner(User deprovisionUser) {
+        this.deprovisionUser = deprovisionUser;
+        this.updatedUser = new User(Id = deprovisionUser.Id);
     }
 
     // Wraps together all the logic
     public Boolean deprovisionUser() {
         try {
-            if (userToDeprovision.Processing_Notes__c != null) {
-                addToProcessingNotes(
-                    userToDeprovision.Processing_Notes__c + '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'
-                );
+            // Separator if there are already notes
+            if (String.isNotBlank(deprovisionUser.Processing_Notes__c)) {
+                addToProcessingNotes('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
             }
-            addToProcessingNotes(initialUserTimeStamp());
-            if (matchProfileToIgnore()) {
+
+            // Start timestamp
+            addToProcessingNotes(
+                System.now().format('YYYY-MM-dd HH:mm:ss') +
+                    ' UserId: ' +
+                    UserInfo.getUserId() +
+                    ', UserName: ' +
+                    UserInfo.getName()
+            );
+
+            if (matchProfileToIgnore())
                 throw new DeprovisionUserException('Could not deprovision user. Matched profile.');
-            }
-            if (matchSFAdminOrDeveloper()) {
+            if (matchSFAdminOrDeveloper())
                 throw new DeprovisionUserException('Could not deprovision user. Matched SF Admin/Developer.');
-            }
-            if (matchDelegatedAdmin()) {
+            if (matchDelegatedAdmin())
                 throw new DeprovisionUserException('Could not deprovision user. Matched Delegated Adminstrator.');
-            }
-            if (matchPermSetToIgnore()) {
+            if (matchPermSetToIgnore())
                 throw new DeprovisionUserException('Could not deprovision user. Matched Permission Set.');
-            }
+
             changeUserField('ProfileId');
             changeUserField('UserRoleId');
             updateUserFields();
-            updateUserLogin();
-            removeGroupMemberships();
-            removePermissionSetAssignments();
-            removeChatterGroupMemberships();
-            removeUserPackageLicenses();
-            abortCronJobs();
-            deprovisionedUser.Deprovision_User__c = false;
-            deprovisionedUser.IsActive = false;
+            removeGroupMemberships(true);
+            removePermissionSetAssignments(true);
+            removeUserPackageLicenses(true);
+            abortCronJobs(true);
+            removeChatterGroupMemberships(true);
+            updateUserLogin(true);
+            updatedUser.Deprovision_User__c = false;
+            updatedUser.IsActive = false;
+            doDeprovision = true;
 
             return true; // User is allowed to be deprovisioned
         } catch (Exception e) {
@@ -89,87 +86,82 @@ public without sharing class UserDeprovisioner {
             addToProcessingNotes('Exception Thrown: ' + e.getMessage());
             addToProcessingNotes('' + e.getStackTraceString());
 
-            List<String> vars = new List<String>();
+            updatedUser.Deprovision_User__c = false;
 
-            if (deprovisionedUser != null) {
-                vars.add(ErrorLogger.convertIdToJSON('deprovisionedUser.Id', deprovisionedUser.Id));
-                deprovisionedUser.Deprovision_User__c = false;
-            }
-
-            ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(e, vars, debug, allowRepeatCases);
-            System.enqueueJob(logQueue);
-
-            return false; // unexpected error: user cannot be deprovisioned at this moment
+            return false; // user not allowed to be deprovisioned
         }
     }
 
+    // Toggle fields to false and clear any fields that should be removed
     private void updateUserFields() {
         for (String deprovisionConfigurationName : deprovisionUserConfiguration.keySet()) {
             if (deprovisionConfigurationName.contains('SwitchToFalse')) {
                 Deprovision_User_Configuration__c configuration = deprovisionUserConfiguration.get(
                     deprovisionConfigurationName
                 );
-                if (userToDeprovision.get(configuration.Name__c) == true) {
-                    deprovisionedUser.put(configuration.Name__c, false);
+                if (deprovisionUser.get(configuration.Name__c) == true) {
+                    updatedUser.put(configuration.Name__c, false);
                     addToProcessingNotes('Switched ' + configuration.Name__c + ' to false');
                 }
             } else if (deprovisionConfigurationName.contains('RemoveValue')) {
                 Deprovision_User_Configuration__c configuration = deprovisionUserConfiguration.get(
                     deprovisionConfigurationName
                 );
-                if (userToDeprovision.get(configuration.Name__c) != null) {
+                if (deprovisionUser.get(configuration.Name__c) != null) {
                     addToProcessingNotes(
-                        'Removed value ' +
-                            userToDeprovision.get(configuration.Name__c) +
-                            ' for ' +
-                            configuration.Name__c
+                        'Removed value ' + deprovisionUser.get(configuration.Name__c) + ' for ' + configuration.Name__c
                     );
-                    deprovisionedUser.put(configuration.Name__c, null);
+                    updatedUser.put(configuration.Name__c, null);
                 }
             }
         }
     }
-    private void removeGroupMemberships() {
+
+    // Remove user from all groups
+    private void removeGroupMemberships(Boolean logIt) {
         if (groupMemberships != null && !groupMemberships.isEmpty()) {
-            String removedStr = 'Removed user from Public Groups: ';
-            for (GroupMember membership : groupMemberships) {
-                toDeleteGroupMemberships.add(membership);
-                removedStr += membership.Group.Name + ', ';
+            if (logIt) {
+                List<String> nameList = new List<String>();
+                for (GroupMember membership : groupMemberships)
+                    nameList.add(membership?.Group?.Name);
+                addToProcessingNotes('Removed user from Public Groups: ' + String.join(nameList, ', '));
             }
-            addToProcessingNotes(removedStr.substring(0, removedStr.length() - 2));
+        } else {
+            groupMemberships = null;
         }
     }
-    private void removeChatterGroupMemberships() {
-        if (chatterGroupMemberships != null && !chatterGroupMemberships.isEmpty()) {
-            String removedStr = 'Removed user from Chatter Groups: ';
-            for (CollaborationGroupMember chatterMembership : chatterGroupMemberships) {
-                toDeleteChatterGroupMemberships.add(chatterMembership);
-                removedStr += chatterMembership.CollaborationGroup.Name + ', ';
-            }
-            addToProcessingNotes(removedStr.substring(0, removedStr.length() - 2));
-        }
-    }
-    private void removePermissionSetAssignments() {
+
+    // Remove user from all permission set assignments
+    private void removePermissionSetAssignments(Boolean logIt) {
         if (permissionSetAssignments != null && !permissionSetAssignments.isEmpty()) {
-            String removedStr = 'Removed user from permissionSets: ';
-            for (PermissionSetAssignment permSet : permissionSetAssignments) {
-                toDeletePermissionSetAssignments.add(permSet);
-                removedStr += permSet.PermissionSet.Name + ', ';
+            if (logIt) {
+                List<String> nameList = new List<String>();
+                for (PermissionSetAssignment permSet : permissionSetAssignments)
+                    nameList.add(permSet?.PermissionSet?.Name);
+                addToProcessingNotes('Removed user from Permission Sets: ' + String.join(nameList, ', '));
             }
-            addToProcessingNotes(removedStr.substring(0, removedStr.length() - 2));
+        } else {
+            permissionSetAssignments = null;
         }
     }
-    private void removeUserPackageLicenses() {
+
+    // Remove any user package licenses
+    private void removeUserPackageLicenses(Boolean logIt) {
         if (userPackageLicenses != null && !userPackageLicenses.isEmpty()) {
-            String removedStr = 'Removed user from Package Licenses: ';
-            for (UserPackageLicense license : userPackageLicenses) {
-                toDeleteUserPackageLicenses.add(license);
-                removedStr += license.PackageLicense.NamespacePrefix + ', ';
+            if (logIt) {
+                List<String> nameList = new List<String>();
+                for (UserPackageLicense license : userPackageLicenses)
+                    nameList.add(license?.PackageLicense?.NamespacePrefix);
+                addToProcessingNotes('Removed user from Package Licenses: ' + String.join(nameList, ', '));
             }
-            addToProcessingNotes(removedStr.substring(0, removedStr.length() - 2));
+        } else {
+            userPackageLicenses = null;
         }
     }
-    private void abortCronJobs() {
+
+    // Abort any cron jobs
+    private void abortCronJobs(Boolean logIt) {
+        // Get a set of all types of cron jobs we need to abort
         Set<String> abortTypesSet = new Set<String>();
         for (String deprovisionConfigurationName : deprovisionUserConfiguration.keySet()) {
             if (deprovisionConfigurationName.contains('AbortCronJob')) {
@@ -180,38 +172,62 @@ public without sharing class UserDeprovisioner {
             }
         }
 
+        List<CronTrigger> dontAbortList = new List<CronTrigger>();
+
         if (cronJobs != null && !cronJobs.isEmpty()) {
-            String removedStr = 'Aborting scheduled jobs: ';
             List<String> removedJobStrs = new List<String>();
-            for (CronTrigger job : cronJobs) {
-                // Abort types form the configuration settings
-                if (abortTypesSet.contains(job.CronJobDetail.JobType)) {
-                    toAbortCronJobs.add(job);
-                    String name = job.CronJobDetail.Name;
 
-                    // if type 8 (a Report Run) - then the name is actually an id, and we need to get the name of the Report from fieldIdToNameMap
-                    if (job.CronJobDetail.JobType == '8') {
-                        name = fieldIdToNameMap.get(name);
-                    }
+            // Filter to only abort types from the configuration settings
+            for (CronTrigger job : cronJobs)
+                if (!abortTypesSet.contains(job.CronJobDetail.JobType))
+                    dontAbortList.add(job);
+            for (CronTrigger job : dontAbortList)
+                cronJobs.remove(cronJobs.indexOf(job));
 
-                    removedJobStrs.add(name + ' (type: ' + getCronTypeNameFromType(job.CronJobDetail.JobType) + ')');
+            // Note either list of aborted jobs or lack of jobs to abort
+            if (logIt) {
+                if (!cronJobs.isEmpty()) {
+                    List<String> nameList = new List<String>();
+                    for (CronTrigger job : cronJobs)
+                        nameList.add(
+                            job?.CronJobDetail?.Name +
+                                ' (type: ' +
+                                getCronTypeNameFromType(job?.CronJobDetail?.JobType) +
+                                ')'
+                        );
+                    addToProcessingNotes('Aborting scheduled jobs: ' + String.join(nameList, ', '));
+                } else {
+                    addToProcessingNotes('Aborting scheduled jobs: No jobs to abort');
                 }
             }
-
-            // only note if there were aborted jobs
-            if (!toAbortCronJobs.isEmpty()) {
-                removedStr += String.join(removedJobStrs, ', ');
-            } else {
-                removedStr += 'No jobs to abort';
-            }
-
-            addToProcessingNotes(removedStr);
+        } else {
+            cronJobs = null;
         }
     }
-    private void updateUserLogin() {
+
+    // Remove user from all chatter groups
+    private void removeChatterGroupMemberships(Boolean logIt) {
+        if (chatterGroupMemberships != null && !chatterGroupMemberships.isEmpty()) {
+            if (logIt) {
+                List<String> nameList = new List<String>();
+                for (CollaborationGroupMember chatterMembership : chatterGroupMemberships)
+                    nameList.add(chatterMembership?.CollaborationGroup?.Name);
+                addToProcessingNotes('Removed user from Chatter Groups: ' + String.join(nameList, ', '));
+            }
+        } else {
+            chatterGroupMemberships = null;
+        }
+    }
+
+    // Update user login
+    private void updateUserLogin(Boolean logIt) {
         if (userLogin != null && userLogin.IsFrozen) {
-            addToProcessingNotes('Unfroze related UserLogin (' + userLogin.Id + ')');
-            toUpdateUserLogin = new UserLogin(Id = userLogin.Id, IsFrozen = false);
+            if (logIt) {
+                addToProcessingNotes('Unfroze related UserLogin (' + userLogin.Id + ')');
+            }
+            userLogin.IsFrozen = false;
+        } else {
+            userLogin = null;
         }
     }
 
@@ -242,21 +258,22 @@ public without sharing class UserDeprovisioner {
             return suspectedBrokenConfigOption.substring(2);
         }
     }
+
+    // Add message to the end of the processing notes for this user
     public void addToProcessingNotes(String message) {
-        processingNotes += message + '\n';
+        if (updatedUser.Processing_Notes__c == null)
+            updatedUser.Processing_Notes__c = String.isNotBlank(deprovisionUser.Processing_Notes__c)
+                ? deprovisionUser.Processing_Notes__c
+                : '';
+        updatedUser.Processing_Notes__c += message + '\n';
     }
-    private String initialUserTimeStamp() {
-        return System.now().format('YYYY-MM-dd HH:mm:ss') +
-            ' UserId: ' +
-            UserInfo.getUserId() +
-            ', UserName: ' +
-            UserInfo.getName();
-    }
+
+    // Check if user has an unpermitted profile
     private Boolean matchProfileToIgnore() {
         for (String deprovisionConfigurationName : deprovisionUserConfiguration.keySet()) {
             if (deprovisionConfigurationName.contains('ProfileToIgnore')) {
                 Id profileIdToMatch = Id.valueOf(deprovisionUserConfiguration.get(deprovisionConfigurationName).Id__c);
-                if (userToDeprovision.ProfileId == profileIdToMatch) {
+                if (deprovisionUser.ProfileId == profileIdToMatch) {
                     addToProcessingNotes(
                         'Profile matched to: ' +
                             deprovisionUserConfiguration.get(deprovisionConfigurationName).Name__c +
@@ -268,8 +285,10 @@ public without sharing class UserDeprovisioner {
         }
         return false;
     }
+
+    // Check if user has Admin/Developer role
     private Boolean matchSFAdminOrDeveloper() {
-        if (userToDeprovision.Role_Administrator_Developer__c) {
+        if (deprovisionUser.Role_Administrator_Developer__c) {
             addToProcessingNotes(
                 'Detected SF Developer or Admin based on PeopleSoft Roles Administrator/Developer. Stopping User Deprovision'
             );
@@ -277,14 +296,18 @@ public without sharing class UserDeprovisioner {
         }
         return false;
     }
+
+    // Check if user is a delegated admin
     private Boolean matchDelegatedAdmin() {
-        if (userToDeprovision.Sandbox_Delagated_Administrator__c) {
+        if (deprovisionUser.Sandbox_Delagated_Administrator__c) {
             addToProcessingNotes('Detected Delegated Administrator. Stopping User Deprovision');
             return true;
         } else {
             return false;
         }
     }
+
+    // Check if user has an unpermitted permission set
     private Boolean matchPermSetToIgnore() {
         Boolean hasPermSet = false;
 
@@ -315,73 +338,77 @@ public without sharing class UserDeprovisioner {
                 }
             }
         }
+
         return hasPermSet;
     }
+
+    // Change a single field according to metadata
     private void changeUserField(String fieldName) {
         Deprovision_User_Configuration__c changeFieldTo = deprovisionUserConfiguration.get(
             'Change ' + fieldName + ' To'
         );
 
-        String fieldValue = (String) (userToDeprovision.get(fieldName));
-
-        // Get name of field (instead of id) if possible
-        if (fieldValue != null && fieldIdToNameMap.containsKey(Id.valueOf(fieldValue))) {
-            fieldValue = fieldIdToNameMap.get(Id.valueOf(fieldValue));
-        }
+        String fieldValue = (String) (deprovisionUser.get(fieldName));
 
         addToProcessingNotes('Changed ' + fieldName + ' from: ' + fieldValue + ' to ' + changeFieldTo.Name__c);
 
-        deprovisionedUser.put(fieldName, Id.valueOf(changeFieldTo.Id__c));
+        updatedUser.put(fieldName, Id.valueOf(changeFieldTo.Id__c));
     }
 
-    // Set optional attributes
+    // Set fields before deprovisioning - if you change these after deprovisioning it'll rerun the portion to
+    // deprovision those records
     public void setGroupMemberships(List<GroupMember> groupMemberships) {
         this.groupMemberships = groupMemberships;
-    }
-    public void setChatterGroupMemberships(List<CollaborationGroupMember> chatterGroupMemberships) {
-        this.chatterGroupMemberships = chatterGroupMemberships;
+        if (doDeprovision)
+            removeGroupMemberships(false);
     }
     public void setPermissionSetAssignments(List<PermissionSetAssignment> permissionSetAssignments) {
         this.permissionSetAssignments = permissionSetAssignments;
+        if (doDeprovision)
+            removePermissionSetAssignments(false);
     }
     public void setUserPackageLicenses(List<UserPackageLicense> userPackageLicenses) {
         this.userPackageLicenses = userPackageLicenses;
+        if (doDeprovision)
+            removeUserPackageLicenses(false);
     }
     public void setCronJobs(List<CronTrigger> cronJobs) {
         this.cronJobs = cronJobs;
+        if (doDeprovision)
+            abortCronJobs(false);
+    }
+    public void setChatterGroupMemberships(List<CollaborationGroupMember> chatterGroupMemberships) {
+        this.chatterGroupMemberships = chatterGroupMemberships;
+        if (doDeprovision)
+            removeChatterGroupMemberships(false);
     }
     public void setUserLogin(UserLogin userLogin) {
         this.userLogin = userLogin;
-    }
-    public void setFieldIdToNameMap(Map<Id, String> fieldIdToNameMap) {
-        this.fieldIdToNameMap = fieldIdToNameMap;
+        if (doDeprovision)
+            updateUserLogin(false);
     }
 
-    // Access values that are ready for alteration/deletion
-    public User getUserToDeprovision() {
-        return userToDeprovision;
+    // Get lists of modified records after deprovisioning
+    public User getUser() {
+        return updatedUser;
     }
-    public User getDeprovisionedUserWithProcessingNotes() {
-        deprovisionedUser.Processing_Notes__c = processingNotes;
-        return deprovisionedUser;
+    public List<GroupMember> getGroupMemberships() {
+        return groupMemberships;
     }
-    public UserLogin getToUpdateUserLogin() {
-        return toUpdateUserLogin;
+    public List<PermissionSetAssignment> getPermissionSetAssignments() {
+        return permissionSetAssignments;
     }
-    public List<GroupMember> getToDeleteGroupMemberships() {
-        return toDeleteGroupMemberships;
+    public List<UserPackageLicense> getUserPackageLicenses() {
+        return userPackageLicenses;
     }
-    public List<CollaborationGroupMember> getToDeleteChatterGroupMemberships() {
-        return toDeleteChatterGroupMemberships;
+    public List<CronTrigger> getCronJobs() {
+        return cronJobs;
     }
-    public List<PermissionSetAssignment> getToDeletePermissionSetAssignments() {
-        return toDeletePermissionSetAssignments;
+    public List<CollaborationGroupMember> getChatterGroupMemberships() {
+        return chatterGroupMemberships;
     }
-    public List<CronTrigger> getToAbortCronJobs() {
-        return toAbortCronJobs;
-    }
-    public List<UserPackageLicense> getToDeleteUserPackageLicenses() {
-        return toDeleteUserPackageLicenses;
+    public UserLogin getUserLogin() {
+        return userLogin;
     }
 
     public class DeprovisionUserException extends Exception {

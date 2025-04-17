@@ -273,6 +273,32 @@ public without sharing class ErrorLogger {
         return el.log();
     }
 
+    @future
+    public static void logFuture(
+        String errorTypeName,
+        String errorMessage,
+        String errorStackTrace,
+        List<String> variables
+    ) {
+        ErrorLogger el = new ErrorLogger();
+
+        Map<String, Object> details = new Map<String, Object>();
+
+        Map<String, String> errorDetails = new Map<String, String>();
+        errorDetails.put('typeName', errorTypeName);
+        errorDetails.put('message', errorMessage);
+        errorDetails.put('stackTrace', errorStackTrace);
+
+        details.put('error', errorDetails);
+        details.put('variables', variables);
+
+        el.setDetails(JSON.serialize(details));
+        el.setContactId(null);
+        el.setAllowRepeats(false);
+
+        el.log();
+    }
+
     /**
      * Convert Supplied List of SObjects to a JSON string
      *

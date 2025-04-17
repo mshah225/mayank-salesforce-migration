@@ -1,563 +1,504 @@
+/**
+ * The `UserDeprovisionOrganizer` is primarily used to launch the user deprovisioning process and to provide several common
+ * utilities to each stage of the deprovisioner.
+ *
+ * It creates the initial `UserDeprovisioner` objects, updates the users as needed, and then launches the first of several stages.
+ * The main stages are:
+ * 1. Document all changes on user and modify User fields
+ * 2. Update most non-setup objects
+ * 3. Setup setup objects
+ * 4. Reassign cases
+ *
+ * At each stage it is wide to re-get the objects about to be updated and re-run them through the `UserDeprovisioner` objects, since
+ * each stage runs asynchronously and the records could change from one stage to another.
+ */
 public without sharing class UserDeprovisionOrganizer {
-    /** All setup objects should be updated through here.  And non-setup objects in the UserDeprovisionerOrganizer
-     * https://developer.salesforce.com/docs/atlas.en-us.230.0.apexcode.meta/apexcode/apex_dml_non_mix_sobjects.htm
-     * contains a list of setup objects, but it is incomplete so you should perform a quick test via the developer
-     * console if you are unsure if an object is a setup object or not.
+    private static Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration = Deprovision_User_Configuration__c.getAll();
+    public static Boolean isDeprovisoning = false;
+
+    /**
+     * This is the primary interface for launching with the user deporvisioner.
+     * This should be called from the user trigger in a after-update context.
+     *
+     * @param newList Trigger.new of updated Users
+     * @param oldMap Trigger.oldMap of updated Users
      */
+    public static void handleDeprovisioning(List<User> newList, Map<Id, User> oldMap) {
+        try {
+            Map<Id, User> usersToDeprovision = new Map<Id, User>();
 
-    private List<User> newUsers;
-    private Map<Id, User> oldUsersMap;
-    private Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration;
-
-    List<UserDeprovisioner> userDeprovisionersList;
-
-    private List<Id> userToDeprovisionIds;
-    private List<GroupMember> allUserPublicGroupMemberships;
-    private List<CollaborationGroupMember> allUserChatterGroupMemberships;
-    private List<PermissionSetAssignment> allUserPermissionSetAssignments;
-    private List<UserPackageLicense> allUserPackageLicenses;
-    private List<UserLogin> allUserLogins;
-    private List<CronTrigger> allCronJobs;
-
-    private Map<Id, UserLogin> userToUserLoginMap;
-    private Map<Id, List<GroupMember>> userToGroupMembershipMap;
-    private Map<Id, List<CollaborationGroupMember>> userToChatterGroupMembershipMap;
-    private Map<Id, List<PermissionSetAssignment>> userToPermissionSetMap;
-    private Map<Id, List<UserPackageLicense>> userToPackageLicenseMap;
-    private Map<Id, List<CronTrigger>> userToCronJobsMap;
-    private Map<Id, String> userToProcessingNotesMap;
-    private Map<Id, String> fieldIdToNameMap;
-
-    private static Boolean debug = false;
-    private static Boolean allowRepeatCases = true;
-
-    public UserDeprovisionOrganizer(Map<Id, User> oldUsersMap, List<User> newUsers) {
-        this.newUsers = newUsers;
-        this.oldUsersMap = oldUsersMap;
-        this.deprovisionUserConfiguration = Deprovision_User_Configuration__c.getAll();
-
-        this.userToDeprovisionIds = new List<Id>();
-        this.userDeprovisionersList = new List<UserDeprovisioner>();
-
-        this.userToUserLoginMap = new Map<Id, UserLogin>();
-        this.userToGroupMembershipMap = new Map<Id, List<GroupMember>>();
-        this.userToChatterGroupMembershipMap = new Map<Id, List<CollaborationGroupMember>>();
-        this.userToPermissionSetMap = new Map<Id, List<PermissionSetAssignment>>();
-        this.userToPackageLicenseMap = new Map<Id, List<UserPackageLicense>>();
-        this.userToCronJobsMap = new Map<Id, List<CronTrigger>>();
-        this.userToProcessingNotesMap = new Map<Id, String>();
-        this.fieldIdToNameMap = new Map<Id, String>();
-
-        // Make list of user's that need deprovisioning
-        for (User userToDeprovision : newUsers) {
-            if (userToDeprovision.Deprovision_User__c && !oldUsersMap.get(userToDeprovision.Id).Deprovision_User__c) {
-                userToDeprovisionIds.add(userToDeprovision.Id);
-                userDeprovisionersList.add(new UserDeprovisioner(deprovisionUserConfiguration, userToDeprovision));
-            }
-        }
-
-        if (!userDeprovisionersList.isEmpty()) {
-            populateUserToDeprovisionGroupMembershipMap();
-            populateUserToDeprovisionChatterGroupMembershipMap();
-            populateUserToDeprovisionPermissionSetMap();
-            populateUserToDeprovisionPackageLicenseMap();
-            populateUserToCronJobsMap();
-            populateUserToUserLoginMap();
-            populateFieldIdToNameMap();
-        }
-    }
-
-    public void deprovisionUsersAfterUpdate() {
-        if (!userDeprovisionersList.isEmpty()) {
-            List<UserLogin> toUpdateUserLogins = new List<UserLogin>();
-            List<GroupMember> toDeletePublicGroupMemberships = new List<GroupMember>();
-            List<CollaborationGroupMember> toDeleteChatterGroupMemberships = new List<CollaborationGroupMember>();
-            List<PermissionSetAssignment> toDeletePermissionSetAssignments = new List<PermissionSetAssignment>();
-            List<UserPackageLicense> toDeleteUserPackageLicense = new List<UserPackageLicense>();
-            List<CronTrigger> toAbortCronJobs = new List<CronTrigger>();
-            List<Id> userIdsToTransferCases = new List<Id>();
-            Map<User, Boolean> userDeprovisionCapabilityMap = new Map<User, Boolean>();
-
-            for (UserDeprovisioner userDeprovisioner : userDeprovisionersList) {
-                // Setup deprovision
-                Id userId = userDeprovisioner.getUserToDeprovision().Id;
-                userDeprovisioner.setGroupMemberships(userToGroupMembershipMap.get(userId));
-                userDeprovisioner.setChatterGroupMemberships(userToChatterGroupMembershipMap.get(userId));
-                userDeprovisioner.setPermissionSetAssignments(userToPermissionSetMap.get(userId));
-                userDeprovisioner.setUserPackageLicenses(userToPackageLicenseMap.get(userId));
-                userDeprovisioner.setCronJobs(userToCronJobsMap.get(userId));
-                userDeprovisioner.setUserLogin(userToUserLoginMap.get(userId));
-                userDeprovisioner.setFieldIdToNameMap(fieldIdToNameMap);
-                
-                // Deprovision
-                Boolean canDeprovision = userDeprovisioner.deprovisionUser();
-                
-                // Get all updated and deleted data
-                UserLogin needToUpdateUserLogin = userDeprovisioner.getToUpdateUserLogin();
-                if (needToUpdateUserLogin != null) {
-                    toUpdateUserLogins.add(needToUpdateUserLogin);
+            for (User newUser : newList) {
+                // If Deprovision_User__c is now true and previously was false
+                if (newUser.Deprovision_User__c && !oldMap.get(newUser.Id).Deprovision_User__c) {
+                    usersToDeprovision.put(newUser.Id, newUser);
                 }
-                toDeletePublicGroupMemberships.addAll(userDeprovisioner.getToDeleteGroupMemberships());
-                toDeleteChatterGroupMemberships.addAll(userDeprovisioner.getToDeleteChatterGroupMemberships());
-                toDeletePermissionSetAssignments.addAll(userDeprovisioner.getToDeletePermissionSetAssignments());
-                toAbortCronJobs.addAll(userDeprovisioner.getToAbortCronJobs());
-                toDeleteUserPackageLicense.addAll(userDeprovisioner.getToDeleteUserPackageLicenses());
-
-                User userWithProcessingNotes = userDeprovisioner.getDeprovisionedUserWithProcessingNotes();
-                userDeprovisionCapabilityMap.put(userWithProcessingNotes, canDeprovision);
-                userToProcessingNotesMap.put(userId, userWithProcessingNotes.Processing_Notes__c);
             }
 
-            if (!toDeletePublicGroupMemberships.isEmpty()) {
-                deleteSobjectRecords('UserOrGroupId', toDeletePublicGroupMemberships, userToProcessingNotesMap);
+            // Quit early if no users need to be deprovisioned
+            if (usersToDeprovision.isEmpty())
+                return;
+
+            // Get list of all records for these users
+            List<Id> potentialDeprovisionUserIds = new List<Id>(usersToDeprovision.keySet());
+            Map<Id, List<GroupMember>> groupMembershipPerUser = getGroupMemberships(potentialDeprovisionUserIds);
+            Map<Id, List<PermissionSetAssignment>> psasPerUser = getPermissionSetAssignments(
+                potentialDeprovisionUserIds
+            );
+            Map<Id, List<UserPackageLicense>> uplsPerUser = getUserPackageLicenses(potentialDeprovisionUserIds);
+            Map<Id, List<CronTrigger>> cronJobsPerUser = getCronJobs(potentialDeprovisionUserIds);
+            Map<Id, List<CollaborationGroupMember>> chatterGroupsPerUser = getChatterGroupMembership(
+                potentialDeprovisionUserIds
+            );
+            Map<Id, UserLogin> userLoginPerUser = getUserLogins(potentialDeprovisionUserIds);
+
+            List<UserDeprovisioner> userDeprovisioners = new List<UserDeprovisioner>();
+            List<User> updatedUsers = new List<User>();
+
+            for (User deproUser : usersToDeprovision.values()) {
+                Id userId = deproUser.Id;
+                UserDeprovisioner userDeprovisioner = new UserDeprovisioner(deproUser);
+                userDeprovisioner.setGroupMemberships(groupMembershipPerUser.get(userId));
+                userDeprovisioner.setPermissionSetAssignments(psasPerUser.get(userId));
+                userDeprovisioner.setUserPackageLicenses(uplsPerUser.get(userId));
+                userDeprovisioner.setCronJobs(cronJobsPerUser.get(userId));
+                userDeprovisioner.setChatterGroupMemberships(chatterGroupsPerUser.get(userId));
+                userDeprovisioner.setUserLogin(userLoginPerUser.get(userId));
+
+                // Figure out what we need to do for each user and mark it on the user
+                // If user is meant to deprovision enqueue for further actions
+                Boolean doDeprovision = userDeprovisioner.deprovisionUser();
+                updatedUsers.add(userDeprovisioner.getUser());
+                if (doDeprovision)
+                    userDeprovisioners.add(userDeprovisioner);
             }
 
-            if (!toDeletePermissionSetAssignments.isEmpty()) {
-                // * We need to do this before the user is updated/deactivated, since otherwise the permission sets can be reloaded (and thus record ids change)
-                deleteSobjectRecords('AssigneeId', toDeletePermissionSetAssignments, userToProcessingNotesMap);
-            }
+            // Deprovisioning will require us to update the user record
+            GovernorLimitPreemptException.assertCanDML(
+                updatedUsers.size(),
+                'Could not deprovision users - too close to DML limit'
+            );
+            update updatedUsers;
 
-            if (!toDeleteUserPackageLicense.isEmpty()) {
-                deleteSobjectRecords('UserId', toDeleteUserPackageLicense, userToProcessingNotesMap);
-            }
+            // Now enqueue a job to do the real work
+            GovernorLimitPreemptException.assertCanEnqueueJobs(
+                1,
+                'Could not enqueue stage 2 of user deprovisioning - reached queueable limit'
+            );
 
-            if (!toAbortCronJobs.isEmpty()) {
-                abortCronJobs('OwnerId', toAbortCronJobs, userToProcessingNotesMap);
-            }
+            // Need to set this large enough for all stages of deprovisioning (including error logging queues)
+            // we need to explicitly set this or the limit will be too low in our test class
+            AsyncOptions asyncOptions = new AsyncOptions();
+            asyncOptions.maximumQueueableStackDepth = 20;
 
-            // And handle all non-setup objects here
-            if (toDeleteChatterGroupMemberships.size() > 0 || toUpdateUserLogins.size() > 0) {
-                UserDeprovisionQueue userDeprovisionQueue = new UserDeprovisionQueue();
-                userDeprovisionQueue.setAllUserChatterGroupMemberships(toDeleteChatterGroupMemberships);
-                userDeprovisionQueue.setUpdatedUserLogins(toUpdateUserLogins);
-
-                userDeprovisionQueue.setUserToProcessingNotesMap(userToProcessingNotesMap);
-                System.enqueueJob(userDeprovisionQueue);
-            }
-
-            batchTransferDeprovisionUserCases(userDeprovisionCapabilityMap);
+            System.enqueueJob(new UserDeprovisionerQueueNonSetupRecords(userDeprovisioners), asyncOptions);
+        } catch (Exception ex) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertSetToJSON('userIds', new Map<Id, User>(newList).keySet()));
+            ErrorLogger.log(ex, vars, false);
         }
     }
 
-    private void batchTransferDeprovisionUserCases(Map<User, Boolean> userDeprovisionCapabilityMap) {
-        UserDeprovisionCaseTransferBatch batch = new UserDeprovisionCaseTransferBatch(userDeprovisionCapabilityMap);
-        Database.executeBatch(batch, 200);
-    }
+    /** Get a list of all groups each user is a member of */
+    public static Map<Id, List<GroupMember>> getGroupMemberships(List<Id> userIds) {
+        GovernorLimitPreemptException.assertCanQueryN(
+            1,
+            'Could not query group memberships for deprovisioning - reached SOQL governor limit'
+        );
 
-    private void populateUserToDeprovisionGroupMembershipMap() {
-        allUserPublicGroupMemberships = [
+        List<GroupMember> allUserPublicGroupMemberships = [
             SELECT UserOrGroupId, Group.Name
             FROM GroupMember
-            WHERE UserOrGroupId IN :userToDeprovisionIds
+            WHERE UserOrGroupId IN :userIds
         ];
 
-        for (GroupMember groupMember : allUserPublicGroupMemberships) {
-            if (!userToGroupMembershipMap.containsKey(groupMember.UserOrGroupId)) {
-                userToGroupMembershipMap.put(groupMember.UserOrGroupId, new List<GroupMember>());
-            }
-            userToGroupMembershipMap.get(groupMember.UserOrGroupId).add(groupMember);
-        }
+        if (Test.isRunningTest() && fakePublicGroupMemberships != null)
+            allUserPublicGroupMemberships = fakePublicGroupMemberships;
+
+        Map<Id, List<GroupMember>> userIdToGroupMemberships = new Map<Id, List<GroupMember>>();
+
+        for (Id uId : userIds)
+            userIdToGroupMemberships.put(uId, new List<GroupMember>());
+
+        for (GroupMember groupMember : allUserPublicGroupMemberships)
+            userIdToGroupMemberships.get(groupMember.UserOrGroupId).add(groupMember);
+
+        return userIdToGroupMemberships;
     }
+    @TestVisible
+    private static List<GroupMember> fakePublicGroupMemberships;
 
-    private void populateUserToDeprovisionChatterGroupMembershipMap() {
-        allUserChatterGroupMemberships = [
-            SELECT MemberId, CollaborationGroup.Name
-            FROM CollaborationGroupMember
-            WHERE MemberId IN :userToDeprovisionIds AND NetworkId = ''
-        ];
+    /** Get a list of all permission set assignments each user has */
+    public static Map<Id, List<PermissionSetAssignment>> getPermissionSetAssignments(List<Id> userIds) {
+        GovernorLimitPreemptException.assertCanQueryN(
+            1,
+            'Could not query permission set assignments for deprovisioning - reached SOQL governor limit'
+        );
 
-        for (CollaborationGroupMember collaborationGroupMember : allUserChatterGroupMemberships) {
-            if (!userToChatterGroupMembershipMap.containsKey(collaborationGroupMember.MemberId)) {
-                userToChatterGroupMembershipMap.put(
-                    collaborationGroupMember.MemberId,
-                    new List<CollaborationGroupMember>()
-                );
-            }
-            userToChatterGroupMembershipMap.get(collaborationGroupMember.MemberId).add(collaborationGroupMember);
-        }
-    }
-
-    private void populateUserToDeprovisionPermissionSetMap() {
-        allUserPermissionSetAssignments = [
+        List<PermissionSetAssignment> allUserPermissionSetAssignments = [
             SELECT AssigneeId, PermissionSet.Name
             FROM PermissionSetAssignment
-            WHERE AssigneeId IN :userToDeprovisionIds AND PermissionSet.IsOwnedByProfile = FALSE
+            WHERE AssigneeId IN :userIds AND PermissionSet.IsOwnedByProfile = FALSE
         ];
 
-        for (PermissionSetAssignment permissionSetAssignment : allUserPermissionSetAssignments) {
-            if (!userToPermissionSetMap.containsKey(permissionSetAssignment.AssigneeId)) {
-                userToPermissionSetMap.put(permissionSetAssignment.AssigneeId, new List<PermissionSetAssignment>());
-            }
-            userToPermissionSetMap.get(permissionSetAssignment.AssigneeId).add(permissionSetAssignment);
-        }
+        if (Test.isRunningTest() && fakePermissionSetAssignments != null)
+            allUserPermissionSetAssignments = fakePermissionSetAssignments;
+
+        Map<Id, List<PermissionSetAssignment>> userToPermissionSetAssignments = new Map<Id, List<PermissionSetAssignment>>();
+
+        for (Id uId : userIds)
+            userToPermissionSetAssignments.put(uId, new List<PermissionSetAssignment>());
+
+        for (PermissionSetAssignment psa : allUserPermissionSetAssignments)
+            userToPermissionSetAssignments.get(psa.AssigneeId).add(psa);
+
+        return userToPermissionSetAssignments;
     }
+    @TestVisible
+    private static List<PermissionSetAssignment> fakePermissionSetAssignments;
 
-    private void populateUserToDeprovisionPackageLicenseMap() {
-        allUserPackageLicenses = [
-            SELECT UserId, PackageLicense.NamespacePrefix
-            FROM UserPackageLicense
-            WHERE
-                UserId IN :userToDeprovisionIds
-                AND PackageLicenseId IN :getDeprovisionConfigurationPackageLicenseIds()
-        ];
+    /** Get a list of all user package licenses for each user */
+    public static Map<Id, List<UserPackageLicense>> getUserPackageLicenses(List<Id> userIds) {
+        GovernorLimitPreemptException.assertCanQueryN(
+            1,
+            'Could not query user package licenses for deprovisioning - reached SOQL governor limit'
+        );
 
-        for (UserPackageLicense userPackageLicense : allUserPackageLicenses) {
-            if (!userToPackageLicenseMap.containsKey(userPackageLicense.UserId)) {
-                userToPackageLicenseMap.put(userPackageLicense.UserId, new List<UserPackageLicense>());
-            }
-            userToPackageLicenseMap.get(userPackageLicense.UserId).add(userPackageLicense);
-        }
-    }
-
-    private void populateUserToCronJobsMap() {
-        allCronJobs = [
-            SELECT Id, CronJobDetail.Name, CronJobDetail.JobType, OwnerId
-            FROM CronTrigger
-            WHERE OwnerId IN :userToDeprovisionIds
-        ];
-
-        userToCronJobsMap = new Map<Id, List<CronTrigger>>();
-        for (CronTrigger job : allCronJobs) {
-            if (!userToCronJobsMap.containsKey(job.OwnerId)) {
-                userToCronJobsMap.put(job.OwnerId, new List<CronTrigger>());
-            }
-            userToCronJobsMap.get(job.OwnerId).add(job);
-        }
-    }
-
-    private void populateUserToUserLoginMap() {
-        allUserLogins = [SELECT Id, UserId, IsFrozen FROM UserLogin WHERE UserId IN :userToDeprovisionIds];
-
-        userToUserLoginMap = new Map<Id, UserLogin>();
-        for (UserLogin ul : allUserLogins) {
-            userToUserLoginMap.put(ul.UserId, ul);
-        }
-    }
-
-    private void populateFieldIdToNameMap() {
-        Set<Id> profileIds = new Set<Id>();
-        Set<Id> userRoleIds = new Set<Id>();
-        Set<Id> reportIds = new Set<Id>();
-
-        for (UserDeprovisioner toDepro : userDeprovisionersList) {
-            User toDeproUser = toDepro.getUserToDeprovision();
-            if ((toDeproUser.get('ProfileId')) != null) {
-                profileIds.add(Id.valueOf((String) (toDeproUser.get('ProfileId'))));
-            }
-            if ((toDeproUser.get('UserRoleId')) != null) {
-                userRoleIds.add(Id.valueOf((String) (toDeproUser.get('UserRoleId'))));
-            }
-
-            List<CronTrigger> jobsForThisUser = userToCronJobsMap.get(toDeproUser.Id);
-            if (jobsForThisUser != null) {
-                for (CronTrigger job : jobsForThisUser) {
-                    if (job.CronJobDetail.JobType == '8') {
-                        reportIds.add(job.CronJobDetail.Name);
-                    }
-                }
-            }
-        }
-
-        for (UserRole ur : [SELECT Id, Name FROM UserRole WHERE Id IN :userRoleIds]) {
-            fieldIdToNameMap.put(ur.Id, ur.Name);
-        }
-
-        for (Profile pro : [SELECT Id, Name FROM Profile WHERE Id IN :profileIds]) {
-            fieldIdToNameMap.put(pro.Id, pro.Name);
-        }
-
-        for (Report rep : [SELECT Id, Name FROM Report WHERE Id IN :reportIds]) {
-            fieldIdToNameMap.put(rep.Id, rep.Name);
-        }
-    }
-
-    private List<Id> getDeprovisionConfigurationPackageLicenseIds() {
+        // Get which to remove based on custom setting
         List<Id> packageLicenseIds = new List<Id>();
         for (String deprovisionConfigurationName : deprovisionUserConfiguration.keySet()) {
             if (deprovisionConfigurationName.contains('RemovePackageLicense')) {
                 packageLicenseIds.add(Id.valueOf(deprovisionUserConfiguration.get(deprovisionConfigurationName).Id__c));
             }
         }
-        return packageLicenseIds;
+
+        // Get records and map to each user
+        List<UserPackageLicense> allUserPackageLicenses = [
+            SELECT UserId, PackageLicense.NamespacePrefix
+            FROM UserPackageLicense
+            WHERE UserId IN :userIds AND PackageLicenseId IN :packageLicenseIds
+        ];
+
+        if (Test.isRunningTest() && fakeUserPackageLicenses != null)
+            allUserPackageLicenses = fakeUserPackageLicenses;
+
+        Map<Id, List<UserPackageLicense>> userToPackageLicenses = new Map<Id, List<UserPackageLicense>>();
+
+        for (Id uId : userIds)
+            userToPackageLicenses.put(uId, new List<UserPackageLicense>());
+
+        for (UserPackageLicense upl : allUserPackageLicenses)
+            userToPackageLicenses.get(upl.UserId).add(upl);
+
+        return userToPackageLicenses;
+    }
+    @TestVisible
+    private static List<UserPackageLicense> fakeUserPackageLicenses;
+
+    /** Get a list of all cron jobs for each user */
+    public static Map<Id, List<CronTrigger>> getCronJobs(List<Id> userIds) {
+        GovernorLimitPreemptException.assertCanQueryN(
+            1,
+            'Could not query cron jobs for deprovisioning - reached SOQL governor limit'
+        );
+
+        List<CronTrigger> allCronJobs = [
+            SELECT Id, CronJobDetail.Name, CronJobDetail.JobType, OwnerId
+            FROM CronTrigger
+            WHERE OwnerId IN :userIds
+        ];
+
+        Map<Id, List<CronTrigger>> userToCronJobs = new Map<Id, List<CronTrigger>>();
+
+        for (Id uId : userIds)
+            userToCronJobs.put(uId, new List<CronTrigger>());
+
+        for (CronTrigger upl : allCronJobs)
+            userToCronJobs.get(upl.OwnerId).add(upl);
+
+        return userToCronJobs;
     }
 
-    public static void updateSobjectRecords(
-        String userIdField,
-        List<SObject> recordListToOperate,
-        Map<Id, String> userToProcessingNotes
-    ) {
-        Map<Id, String> usersWithErrors = new Map<Id, String>();
-        Map<Id, List<String>> errorsForUser = new Map<Id, List<String>>();
+    /** Get a list of all chatter groyos for each user */
+    public static Map<Id, List<CollaborationGroupMember>> getChatterGroupMembership(List<Id> userIds) {
+        GovernorLimitPreemptException.assertCanQueryN(
+            1,
+            'Could not query chatter group memberships for deprovisioning - reached SOQL governor limit'
+        );
 
-        Database.SaveResult[] saveResult = Database.update(recordListToOperate, false);
+        List<CollaborationGroupMember> allUserChatterGroupMemberships = [
+            SELECT MemberId, CollaborationGroup.Name
+            FROM CollaborationGroupMember
+            WHERE MemberId IN :userIds AND NetworkId = ''
+        ];
 
-        Boolean thereWasAnError = false;
+        Map<Id, List<CollaborationGroupMember>> userToChatterGroupMembers = new Map<Id, List<CollaborationGroupMember>>();
+
+        for (Id uId : userIds)
+            userToChatterGroupMembers.put(uId, new List<CollaborationGroupMember>());
+
+        for (CollaborationGroupMember cgm : allUserChatterGroupMemberships)
+            userToChatterGroupMembers.get(cgm.MemberId).add(cgm);
+
+        return userToChatterGroupMembers;
+    }
+
+    /** Get a list of all user logins for each user */
+    public static Map<Id, UserLogin> getUserLogins(List<Id> userIds) {
+        GovernorLimitPreemptException.assertCanQueryN(
+            1,
+            'Could not query user logins for deprovisioning - reached SOQL governor limit'
+        );
+
+        List<UserLogin> allUserLogins = [
+            SELECT Id, UserId, IsFrozen
+            FROM UserLogin
+            WHERE UserId IN :userIds
+        ];
+
+        Map<Id, UserLogin> userToUserLogin = new Map<Id, UserLogin>();
+
+        for (UserLogin cgm : allUserLogins)
+            userToUserLogin.put(cgm.UserId, cgm);
+
+        return userToUserLogin;
+    }
+
+    /**
+     * Update a list of SObjects related to users
+     *
+     * @param userIdField Name of the field which maps this object back to the corresponding user
+     * @param recordList List of records to update
+     * @return ResultWrapper describing any errors or processing notes to add to corresponding users
+     */
+    public static ResultWrapper updateSobjectRecords(String userIdField, List<SObject> recordList) {
+        // Update the records
+        Database.SaveResult[] saveResults = Database.update(recordList, false);
+
+        // Response details
+        Map<Id, List<String>> userIdToProcessingNotes = new Map<Id, List<String>>();
         List<String> errorLoggerVars = new List<String>();
-        String errorNote =
+
+        // Error prefix and whether there are any errors at all?
+        Boolean thereWasAnError = false;
+        String errorPrefix =
             'Error while updating the ' +
-            String.valueOf(recordListToOperate[0]).split(':')[0] +
-            ' objects during user deprovisioning.\n';
+            recordList.getSObjectType() +
+            ' objects during user deprovisioning';
 
-        for (Integer i = 0; i < saveResult.size(); i++) {
-            Id userId = (Id) recordListToOperate[i].get(userIdField);
-            Map<String, String> stringToStringMapForThisResult = new Map<String, String>();
+        // Collect error details on a per-user and in-total basis
+        for (Integer i = 0; i < saveResults.size(); i++) {
+            SObject updatedRecord = recordList[i];
+            Database.SaveResult saveResult = saveResults[i];
+            Id userId = (Id) updatedRecord.get(userIdField);
 
-            // Error log details about this object
-            stringToStringMapForThisResult.put('userId', userId);
-            if (saveResult[i] != null)
-                stringToStringMapForThisResult.put('getId()', saveResult[i].getId());
+            // Build description about this record update
+            Map<String, String> resultDescription = new Map<String, String>();
+            resultDescription.put('recordId', updatedRecord.Id);
+            resultDescription.put(userIdField, userId);
 
-            if (saveResult[i].isSuccess()) {
-                // this object was successful
-                stringToStringMapForThisResult.put('Status', 'Successful');
+            if (saveResult.isSuccess()) {
+                resultDescription.put('Status', 'Successful');
             } else {
-                // this object was a failure
                 thereWasAnError = true;
-                stringToStringMapForThisResult.put('Status', 'Failure');
+                resultDescription.put('Status', 'Failure');
 
-                // record all errors for this object
-                List<String> allErrorStrs = new List<String>();
-                for (Database.Error err : saveResult[i].getErrors()) {
-                    String errorStr =
-                        '{err.getStatusCode(): ' +
-                        err.getStatusCode() +
-                        ', err.getMessage(): ' +
-                        err.getMessage() +
-                        ', err.getFields(): ' +
-                        err.getFields() +
-                        '}';
-                    allErrorStrs.add(errorStr);
+                // Collect all errors for this record
+                List<Map<String, String>> errorDetails = new List<Map<String, String>>();
+                for (Database.Error err : saveResult.getErrors()) {
+                    errorDetails.add(
+                        new Map<String, String>{
+                            'statusCode' => err.getStatusCode().toString(),
+                            'message' => err.getMessage(),
+                            'fields' => err.getFields().toString()
+                        }
+                    );
                 }
-                String bigErrorStr = String.join(allErrorStrs, ', ');
-                stringToStringMapForThisResult.put('Errors', bigErrorStr);
+                resultDescription.put('Errors', JSON.serialize(errorDetails));
 
-                // We will record this on the user
-                if (!errorsForUser.containsKey(userId))
-                    errorsForUser.put(userId, new List<String>());
-                errorsForUser.get(userId)
-                    .add(ErrorLogger.convertMapToJSON('saveResult[' + i + ']', stringToStringMapForThisResult));
+                // Add description to the user notes
+                if (!userIdToProcessingNotes.containsKey(userId))
+                    userIdToProcessingNotes.put(userId, new List<String>());
+                userIdToProcessingNotes.get(userId).add(errorPrefix + '\n' + JSON.serialize(resultDescription));
             }
 
-            errorLoggerVars.add(ErrorLogger.convertMapToJSON('saveResult[' + i + ']', stringToStringMapForThisResult));
+            // Add description to error logger
+            errorLoggerVars.add(ErrorLogger.convertMapToJSON('saveResults[' + i + ']', resultDescription));
         }
 
-        // make a single error message for each user with some errors
-        for (Id userId : errorsForUser.keySet()) {
-            String newProcessingNotes =
-                getCurUserProcessingNotes(userId, userToProcessingNotes) +
-                errorNote +
-                String.join(errorsForUser.get(userId), '\n');
-            usersWithErrors.put(userId, newProcessingNotes);
+        // Flatten processing notes for each user
+        Map<Id, String> userIdToProcessingNotesSimplified = new Map<Id, String>();
+        for (Id userId : userIdToProcessingNotes.keySet()) {
+            userIdToProcessingNotesSimplified.put(userId, String.join(userIdToProcessingNotes.get(userId), '\n'));
         }
 
-        // actually make the error log
-        if (thereWasAnError) {
-            Id userId = (Id) recordListToOperate[0].get(userIdField);
-            String userProcessingNotes = usersWithErrors.get(userId);
-
-            errorLoggerVars.add(ErrorLogger.convertStringToJSON('processingNotes', userProcessingNotes));
-
-            DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
-            carefulErrorLog(dbException, errorLoggerVars);
-        }
-
-        // and update the users processing note
-        if (!usersWithErrors.isEmpty()) {
-            updateUsersProcessingNotes(usersWithErrors);
-        }
+        return new ResultWrapper(
+            thereWasAnError ? new DatabaseErrorException(errorPrefix) : null,
+            userIdToProcessingNotesSimplified,
+            errorLoggerVars
+        );
     }
 
-    public static void deleteSobjectRecords(
-        String userIdField,
-        List<SObject> recordListToOperate,
-        Map<Id, String> userToProcessingNotes
-    ) {
-        Map<Id, String> usersWithErrors = new Map<Id, String>();
-        Map<Id, List<String>> errorsForUser = new Map<Id, List<String>>();
+    /**
+     * Delete a list of SObjects related to users
+     *
+     * @param userIdField Name of the field which maps this object back to the corresponding user
+     * @param recordList List of records to delete
+     * @return ResultWrapper describing any errors or processing notes to add to corresponding users
+     */
+    public static ResultWrapper deleteSobjectRecords(String userIdField, List<SObject> recordList) {
+        // Update the records
+        Database.DeleteResult[] deleteResults = Database.delete(recordList, false);
 
-        Database.DeleteResult[] deleteResult = Database.delete(recordListToOperate, false);
-
-        Boolean thereWasAnError = false;
+        // Response details
+        Map<Id, List<String>> userIdToProcessingNotes = new Map<Id, List<String>>();
         List<String> errorLoggerVars = new List<String>();
-        String errorNote =
+
+        // Error prefix and whether there are any errors at all?
+        Boolean thereWasAnError = false;
+        String errorPrefix =
             'Error while deleting the ' +
-            String.valueOf(recordListToOperate[0]).split(':')[0] +
-            ' objects during user deprovisioning.\n';
+            recordList.getSObjectType() +
+            ' objects during user deprovisioning';
 
-        for (Integer i = 0; i < deleteResult.size(); i++) {
-            Id userId = (Id) recordListToOperate[i].get(userIdField);
-            Map<String, String> stringToStringMapForThisResult = new Map<String, String>();
+        // Collect error details on a per-user and in-total basis
+        for (Integer i = 0; i < deleteResults.size(); i++) {
+            SObject deletedRecord = recordList[i];
+            Database.DeleteResult deleteResult = deleteResults[i];
+            Id userId = (Id) deletedRecord.get(userIdField);
 
-            // Error log details about this object
-            stringToStringMapForThisResult.put('userId', userId);
-            if (deleteResult[i] != null)
-                stringToStringMapForThisResult.put('getId()', deleteResult[i].getId());
+            // Build description about this record deletion
+            Map<String, String> resultDescription = new Map<String, String>();
+            resultDescription.put('recordId', deletedRecord.Id);
+            resultDescription.put(userIdField, userId);
 
-            if (deleteResult[i].isSuccess()) {
-                // this object was successful
-                stringToStringMapForThisResult.put('Status', 'Successful');
+            if (deleteResult.isSuccess()) {
+                resultDescription.put('Status', 'Successful');
             } else {
-                // this object was a failure
                 thereWasAnError = true;
-                stringToStringMapForThisResult.put('Status', 'Failure');
+                resultDescription.put('Status', 'Failure');
 
-                // record all errors for this object
-                List<String> allErrorStrs = new List<String>();
-                for (Database.Error err : deleteResult[i].getErrors()) {
-                    String errorStr =
-                        '{err.getStatusCode(): ' +
-                        err.getStatusCode() +
-                        ', err.getMessage(): ' +
-                        err.getMessage() +
-                        ', err.getFields(): ' +
-                        err.getFields() +
-                        '}';
-                    allErrorStrs.add(errorStr);
+                // Collect all errors for this record
+                List<Map<String, String>> errorDetails = new List<Map<String, String>>();
+                for (Database.Error err : deleteResult.getErrors()) {
+                    errorDetails.add(
+                        new Map<String, String>{
+                            'statusCode' => err.getStatusCode().toString(),
+                            'message' => err.getMessage(),
+                            'fields' => err.getFields().toString()
+                        }
+                    );
                 }
-                String bigErrorStr = String.join(allErrorStrs, ', ');
-                stringToStringMapForThisResult.put('Errors', bigErrorStr);
+                resultDescription.put('Errors', JSON.serialize(errorDetails));
 
-                // We will record this on the user
-                if (!errorsForUser.containsKey(userId))
-                    errorsForUser.put(userId, new List<String>());
-                errorsForUser.get(userId)
-                    .add(ErrorLogger.convertMapToJSON('saveResult[' + i + ']', stringToStringMapForThisResult));
+                // Add description to the user notes
+                if (!userIdToProcessingNotes.containsKey(userId))
+                    userIdToProcessingNotes.put(userId, new List<String>());
+                userIdToProcessingNotes.get(userId).add(errorPrefix + '\n' + JSON.serialize(resultDescription));
             }
 
-            errorLoggerVars.add(
-                ErrorLogger.convertMapToJSON('deleteResult[' + i + ']', stringToStringMapForThisResult)
-            );
+            // Add description to error logger
+            errorLoggerVars.add(ErrorLogger.convertMapToJSON('deleteResults[' + i + ']', resultDescription));
         }
 
-        // make a single error message for each user with some errors
-        for (Id userId : errorsForUser.keySet()) {
-            String newProcessingNotes =
-                getCurUserProcessingNotes(userId, userToProcessingNotes) +
-                errorNote +
-                String.join(errorsForUser.get(userId), '\n');
-            usersWithErrors.put(userId, newProcessingNotes);
+        // Flatten processing notes for each user
+        Map<Id, String> userIdToProcessingNotesSimplified = new Map<Id, String>();
+        for (Id userId : userIdToProcessingNotes.keySet()) {
+            userIdToProcessingNotesSimplified.put(userId, String.join(userIdToProcessingNotes.get(userId), '\n'));
         }
 
-        // actually make the error log
-        if (thereWasAnError) {
-            Id userId = (Id) recordListToOperate[0].get(userIdField);
-            String userProcessingNotes = usersWithErrors.get(userId);
-
-            errorLoggerVars.add(ErrorLogger.convertStringToJSON('processingNotes', userProcessingNotes));
-
-            DatabaseErrorException dbException = new DatabaseErrorException(errorNote);
-            carefulErrorLog(dbException, errorLoggerVars);
-        }
-
-        // and update the users processing note
-        if (!usersWithErrors.isEmpty()) {
-            updateUsersProcessingNotes(usersWithErrors);
-        }
+        return new ResultWrapper(
+            thereWasAnError ? new DatabaseErrorException(errorPrefix) : null,
+            userIdToProcessingNotesSimplified,
+            errorLoggerVars
+        );
     }
 
-    public static void abortCronJobs(
-        String userIdField,
-        List<CronTrigger> cronJobs,
-        Map<Id, String> userToProcessingNotes
-    ) {
-        Map<Id, String> usersWithErrors = new Map<Id, String>();
-        Map<Id, List<String>> errorsForUser = new Map<Id, List<String>>();
+    /**
+     * Abort a list of cron jobs
+     *
+     * @param cronJobs A list of all jobs that need to be aborted
+     * @return ResultWrapper describing any errors or processing notes to add to corresponding users
+     */
+    public static ResultWrapper abortCronJobs(List<CronTrigger> cronJobs) {
+        // Response details
+        Map<Id, List<String>> userIdToProcessingNotes = new Map<Id, List<String>>();
+        List<String> errorLoggerVars = new List<String>();
         Exception ex = null;
 
-        Boolean thereWasAnError = false;
-        List<String> errorLoggerVars = new List<String>();
-
-        String errorNote = 'Error while aborting the cron jobs during user deprovisioning.\n';
-
+        // Abort each job and collect error details on a per-user and in-total basis
         for (Integer i = 0; i < cronJobs.size(); i++) {
             CronTrigger job = cronJobs[i];
-            Id userId = (Id) job.get(userIdField);
-            Map<String, String> stringToStringMapForThisResult = new Map<String, String>();
+            Id userId = job.OwnerId;
 
-            // Error log details about this object
-            stringToStringMapForThisResult.put('userId', userId);
-            stringToStringMapForThisResult.put('Id', job.Id);
+            Map<String, String> resultDescription = new Map<String, String>();
+            resultDescription.put('recordId', job.Id);
+            resultDescription.put('OwnerId', userId);
 
             try {
                 System.abortJob(job.Id);
-                // this object was successful
-                stringToStringMapForThisResult.put('Status', 'Successful');
+                resultDescription.put('Status', 'Successful');
             } catch (Exception e) {
-                // this object was a failure
-                thereWasAnError = true;
-                ex = e;
-                stringToStringMapForThisResult.put('Status', 'Failure');
+                if (ex == null)
+                    ex = e;
 
-                String errorStr =
-                    '{e.getTypeName(): ' +
-                    e.getTypeName() +
-                    ', e.getMessage(): ' +
-                    e.getMessage() +
-                    ', e.getCause(): ' +
-                    e.getCause() +
-                    '}';
+                resultDescription.put('Status', 'Failure');
 
-                stringToStringMapForThisResult.put('errorStr', errorStr);
+                Map<String, String> errorDetails = new Map<String, String>{
+                    'errorType' => e.getTypeName(),
+                    'message' => e.getMessage(),
+                    'cause' => e.getCause().toString()
+                };
+                resultDescription.put('Error', JSON.serialize(errorDetails));
 
-                // We will record this on the user
-                if (!errorsForUser.containsKey(userId))
-                    errorsForUser.put(userId, new List<String>());
-                errorsForUser.get(userId)
-                    .add(ErrorLogger.convertMapToJSON('saveResult[' + i + ']', stringToStringMapForThisResult));
+                // Add description to the user notes
+                if (!userIdToProcessingNotes.containsKey(userId))
+                    userIdToProcessingNotes.put(userId, new List<String>());
+                userIdToProcessingNotes.get(userId).add(JSON.serialize(resultDescription));
             }
 
-            errorLoggerVars.add(ErrorLogger.convertMapToJSON('cronJobs[' + i + ']', stringToStringMapForThisResult));
+            // Add description to error logger
+            errorLoggerVars.add(ErrorLogger.convertMapToJSON('cronJob[' + i + ']', resultDescription));
         }
 
-        // make a single error message for each user with some errors
-        for (Id userId : errorsForUser.keySet()) {
-            String newProcessingNotes =
-                getCurUserProcessingNotes(userId, userToProcessingNotes) +
-                errorNote +
-                String.join(errorsForUser.get(userId), '\n');
-            usersWithErrors.put(userId, newProcessingNotes);
+        // Flatten processing notes for each user
+        Map<Id, String> userIdToProcessingNotesSimplified = new Map<Id, String>();
+        for (Id userId : userIdToProcessingNotes.keySet()) {
+            userIdToProcessingNotesSimplified.put(
+                userId,
+                'Error while aborting the cron jobs during user deprovisioning\n' +
+                String.join(userIdToProcessingNotes.get(userId), '\n')
+            );
         }
 
-        // actually make the error log
-        if (thereWasAnError) {
-            Id userId = (Id) cronJobs[0].get(userIdField);
-            String userProcessingNotes = usersWithErrors.get(userId);
-
-            errorLoggerVars.add(ErrorLogger.convertStringToJSON('processingNotes', userProcessingNotes));
-
-            carefulErrorLog(ex, errorLoggerVars);
-        }
-
-        // and update the users processing note
-        if (!usersWithErrors.isEmpty()) {
-            updateUsersProcessingNotes(usersWithErrors);
-        }
+        return new ResultWrapper(ex, userIdToProcessingNotesSimplified, errorLoggerVars);
     }
 
-    @future
-    public static void updateUsersProcessingNotes(Map<Id, String> uidToNewNotesMap) {
-        List<User> users = new List<User>();
-        for (Id uid : uidToNewNotesMap.keySet()) {
-            users.add(new User(Id = uid, Processing_Notes__c = uidToNewNotesMap.get(uid), Deprovision_User__c = false));
-        }
-        update users;
-    }
+    /**
+     * Description of WHAT happened while trying to update/delete sObjects or abort cron jobs
+     * This can then be used to actually apply those changes
+     * `ex` is set if there was an error that needs to be error logged (the error log variables are in `vars`),
+     * `userIdToProcessingNotes` is a map of each user id to any new processing notes that need to be added on that user.
+     */
+    public class ResultWrapper {
+        /**
+         * Per-user processing notes that should be appended to each user's current processing notes
+         */
+        public Map<Id, String> userIdToProcessingNotes;
 
-    private static void carefulErrorLog(Exception ex, List<String> vars) {
-        ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(ex, vars, debug, allowRepeatCases);
-        System.enqueueJob(logQueue);
-    }
+        /**
+         * Exception to use for error logger if there was any
+         */
+        public Exception ex;
+        /**
+         * Variables to use for error logger
+         */
+        public List<String> vars;
 
-    private static String getCurUserProcessingNotes(String userId, Map<Id, String> userToProcessingNotes) {
-        String userProcessingNotes = '';
-        if (
-            userToProcessingNotes != null &&
-            userToProcessingNotes.containsKey(userId) &&
-            userToProcessingNotes.get(userId) != null
-        ) {
-            userProcessingNotes = userToProcessingNotes.get(userId) + '---\n';
+        public ResultWrapper(Exception ex, Map<Id, String> userIdToProcessingNotes, List<String> vars) {
+            this.ex = ex;
+            this.userIdToProcessingNotes = userIdToProcessingNotes;
+            this.vars = vars;
         }
-        return userProcessingNotes;
     }
 
     private class DatabaseErrorException extends Exception {

@@ -1,85 +1,99 @@
 public class UserDeprovisionCaseTransferBatch implements Database.Batchable<SObject>, Database.Stateful {
-    private List<Id> userToDeprovisionIds;
-    private Map<User, Boolean> userDeprovisionCapabilityMap;
-    private Map<Id, User> userIdToUserMap;
-    Map<Id, String> userToProcessingNotesMap;
-    private Integer totalCasesTransferred;
-    private Map<Id, Integer> countTransferredPerUser;
+    private List<UserDeprovisioner> userDeprovisioners;
+    private Map<Id, UserDeprovisioner> userIdToDeprovisionerMp = new Map<Id, UserDeprovisioner>();
+    private Map<Id, Integer> countTransferredPerUser = new Map<Id, Integer>();
 
-    public UserDeprovisionCaseTransferBatch(Map<User, Boolean> userDeprovisionCapabilityMap) {
-        this.userDeprovisionCapabilityMap = userDeprovisionCapabilityMap;
-        this.userIdToUserMap = new Map<Id, User>();
-        this.userToDeprovisionIds = new List<Id>();
-        this.userToProcessingNotesMap = new Map<Id, String>();
-        this.countTransferredPerUser = new Map<Id, Integer>();
-        this.totalCasesTransferred = 0;
+    public UserDeprovisionCaseTransferBatch(List<UserDeprovisioner> userDeprovisioners) {
+        this.userDeprovisioners = userDeprovisioners;
 
-        for (User userToDeprovision : userDeprovisionCapabilityMap.keySet()) {
-            if (userDeprovisionCapabilityMap.get(userToDeprovision) == true) {
-                this.userToDeprovisionIds.add(userToDeprovision.Id);
-            }
-            this.userIdToUserMap.put(userToDeprovision.Id, userToDeprovision);
-            this.countTransferredPerUser.put(userToDeprovision.Id, 0);
+        for (UserDeprovisioner userDeprovisioner : userDeprovisioners) {
+            Id userId = userDeprovisioner.getUser().Id;
+            userIdToDeprovisionerMp.put(userId, userDeprovisioner);
+            countTransferredPerUser.put(userId, 0);
         }
     }
 
     public Database.Querylocator start(Database.BatchableContext context) {
-        String query = 'SELECT Id, OwnerId, CC_Functional_Group__c, CC_Functional_Group__r.Name, CC_Functional_Group__r.Queue_Id__c, CC_Functional_Group__r.Is_Functional_Group_Private__c FROM Case WHERE OwnerId IN :userToDeprovisionIds';
+        List<Id> userIds = new List<Id>(userIdToDeprovisionerMp.keySet());
+        String query = 'SELECT Id, OwnerId, CC_Functional_Group__r.Queue_Id__c FROM Case WHERE OwnerId IN :userIds AND CC_Functional_Group__r.Is_Functional_Group_Private__c = TRUE';
         return Database.getQueryLocator(query);
     }
 
     public void execute(Database.BatchableContext context, List<Case> scope) {
-        List<Case> casesToUpdate = new List<Case>();
-        
-        for (Case userCase : scope) {
-            String deprovisionedUserId = userCase.OwnerId;
-            try {
-                if (userCase != null) {
-                    if (userCase.CC_Functional_Group__r.Is_Functional_Group_Private__c) {
-                        userCase.OwnerId = userCase.CC_Functional_Group__r.Queue_Id__c;
-                        casesToUpdate.add(userCase);
-                        totalCasesTransferred++;
-                        countTransferredPerUser.put(deprovisionedUserId, countTransferredPerUser.get(deprovisionedUserId) + 1);
-                    }
-                }
-            } catch (Exception e) {
-                String message = 'Exception Thrown for case ID (' + userCase.Id + ') : ' + e.getMessage();
-                addToProcessingNotes(userCase.OwnerId, message);
-                addToProcessingNotes(userCase.OwnerId, e.getStackTraceString());
+        UserDeprovisionOrganizer.isDeprovisoning = true;
 
-                List<String> vars = new List<String>();
+        Map<Id, List<Case>> userToCasesMp = new Map<Id, List<Case>>();
 
-                vars.add(ErrorLogger.convertIdToJSON('deprovisionedUser.Id', userCase.OwnerId));
-                ErrorLogger.ErrorLoggerQueue logQueue = new ErrorLogger.ErrorLoggerQueue(e, vars, false, true);
-                System.enqueueJob(logQueue);
+        try {
+            // Collect cases per user and reassign
+            for (Case userCase : scope) {
+                String userId = userCase.OwnerId;
+
+                // Group by current owner
+                if (!userToCasesMp.containsKey(userId))
+                    userToCasesMp.put(userId, new List<Case>());
+                userToCasesMp.get(userId).add(userCase);
+
+                // Reassign case owner
+                userCase.OwnerId = userCase.CC_Functional_Group__r.Queue_Id__c;
+                // Increment counter
+                countTransferredPerUser.put(userId, countTransferredPerUser.get(userId) + 1);
             }
+
+            // Flatten cases into a list
+            List<Case> casesToUpdate = new List<Case>();
+            for (List<Case> userCases : userToCasesMp.values())
+                casesToUpdate.addAll(userCases);
+
+            update casesToUpdate;
+        } catch (Exception e) {
+            List<String> vars = new List<String>();
+            List<Id> caseIds = new List<Id>();
+
+            for (Id userId : userToCasesMp.keySet()) {
+                for (Case userCase : userToCasesMp.get(userId)) {
+                    String message = 'Exception Thrown for case ID (' + userCase.Id + ') : ' + e.getMessage();
+
+                    userIdToDeprovisionerMp.get(userId).addToProcessingNotes(message);
+                    userIdToDeprovisionerMp.get(userId).addToProcessingNotes(e.getStackTraceString());
+
+                    caseIds.add((userCase.Id));
+                }
+            }
+
+            vars.add(ErrorLogger.convertSetToJSON('userIds', userToCasesMp.keySet()));
+            vars.add(ErrorLogger.convertListToJSON('caseIds', caseIds));
+
+            ErrorLogger.log(e, vars, false);
         }
-        Database.update(casesToUpdate, false);
+
+        UserDeprovisionOrganizer.isDeprovisoning = false;
     }
 
     public void finish(Database.BatchableContext context) {
-        for (Id userId : countTransferredPerUser.keySet()) {
-            Integer countTransferred = countTransferredPerUser.get(userId);
+        UserDeprovisionOrganizer.isDeprovisoning = true;
+        try {
+            for (UserDeprovisioner userDeprovisioner : userDeprovisioners) {
+                Id userId = userDeprovisioner.getUser().Id;
+                Integer countTransferred = countTransferredPerUser.get(userId);
 
-            String message = 'Successfully transferred ' + countTransferred + ' private cases to queue.';
-            addToProcessingNotes(userId, message);
+                userDeprovisioner.addToProcessingNotes(
+                    'Successfully transferred ' + countTransferred + ' private cases to queue.'
+                );
+            }
+
+            List<User> modifiedUsers = new List<User>();
+            for (UserDeprovisioner userDeprovisioner : userDeprovisioners) {
+                String notes = userDeprovisioner.getUser().Processing_Notes__c;
+                notes = notes.right(40);
+                System.debug(notes);
+                modifiedUsers.add(userDeprovisioner.getUser());
+            }
+            update modifiedUsers;
+        } catch (Exception e) {
+            List<String> vars = new List<String>();
+            ErrorLogger.log(e, vars, false);
         }
-
-        for(Id userId : userIdToUserMap.keySet()) {
-            userToProcessingNotesMap.put(userId, userIdToUserMap.get(userId).Processing_Notes__c);
-        }
-
-        UserDeprovisionOrganizer.updateSobjectRecords('Id', userIdToUserMap.values(), userToProcessingNotesMap);
-    }
-
-    public void addToProcessingNotes(Id userId, String message) {
-        if (userIdToUserMap.containsKey(userId)){
-            User userToUpdate = userIdToUserMap.get(userId);
-            String updatedProcessingNotes = userToUpdate.Processing_Notes__c + message + '\n';
-            userToUpdate.Processing_Notes__c = updatedProcessingNotes;
-        }
-    }
-
-    public class DeprovisionUserException extends Exception {
+        UserDeprovisionOrganizer.isDeprovisoning = false;
     }
 }

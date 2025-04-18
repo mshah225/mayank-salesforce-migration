@@ -27,6 +27,14 @@ public without sharing class UserDeprovisioner {
     private List<CronTrigger> cronJobs;
     private List<CollaborationGroupMember> chatterGroupMemberships;
     private UserLogin userLogin;
+    private List<smagicinteract__SMS_SenderId__c> smsSenderIds;
+    private List<smagicinteract__SenderId_Profile_Map__c> smsSenderIdAssignments;
+    private List<smagicinteract__License__c> smsLicenses;
+
+    // Flag to lock records objects after initial deprovisioning - this allows us to force errors to check what happens during DML error
+    @TestVisible
+    private static Boolean FORCE_LOCK = false;
+    private Boolean locked = false;
 
     public UserDeprovisioner(User deprovisionUser) {
         this.deprovisionUser = deprovisionUser;
@@ -68,9 +76,15 @@ public without sharing class UserDeprovisioner {
             abortCronJobs(true);
             removeChatterGroupMemberships(true);
             updateUserLogin(true);
+            updateSmsSenderIds(true);
+            removeSmsSenderIdAssignments(true);
+            removeSmsLicenses(true);
             updatedUser.Deprovision_User__c = false;
             updatedUser.IsActive = false;
             doDeprovision = true;
+
+            if (Test.isRunningTest() && FORCE_LOCK)
+                locked = true;
 
             return true; // User is allowed to be deprovisioned
         } catch (Exception e) {
@@ -231,6 +245,42 @@ public without sharing class UserDeprovisioner {
         }
     }
 
+    // Update SMS Sender Ids labels
+    private void updateSmsSenderIds(Boolean logIt) {
+        if (smsSenderIds != null && !smsSenderIds.isEmpty()) {
+            for (smagicinteract__SMS_SenderId__c smsSenderId : smsSenderIds) {
+                String newLabel = smsSenderId.smagicinteract__label__c
+                    ?.replaceAll(deprovisionUser.FirstName + ' ' + deprovisionUser.LastName, '')
+                    ?.trim();
+                smsSenderId.smagicinteract__label__c = newLabel;
+            }
+        } else {
+            smsSenderIds = null;
+        }
+    }
+
+    // Remove SMS Sender Id Assignments
+    private void removeSmsSenderIdAssignments(Boolean logIt) {
+        if (smsSenderIdAssignments != null && !smsSenderIdAssignments.isEmpty()) {
+            if (logIt) {
+                addToProcessingNotes('Unassigned ' + smsSenderIdAssignments.size() + ' Sender Ids');
+            }
+        } else {
+            smsSenderIdAssignments = null;
+        }
+    }
+
+    // Remove SMS licenses
+    private void removeSmsLicenses(Boolean logIt) {
+        if (smsLicenses != null && !smsLicenses.isEmpty()) {
+            if (logIt) {
+                addToProcessingNotes('Removed ' + smsLicenses.size() + ' SMS Licenses');
+            }
+        } else {
+            smsLicenses = null;
+        }
+    }
+
     // Helper functionality
     @TestVisible
     private String whichSettingDetailIsResponsible(String errorMessage) {
@@ -358,34 +408,68 @@ public without sharing class UserDeprovisioner {
     // Set fields before deprovisioning - if you change these after deprovisioning it'll rerun the portion to
     // deprovision those records
     public void setGroupMemberships(List<GroupMember> groupMemberships) {
+        if (locked)
+            return;
         this.groupMemberships = groupMemberships;
         if (doDeprovision)
             removeGroupMemberships(false);
     }
     public void setPermissionSetAssignments(List<PermissionSetAssignment> permissionSetAssignments) {
+        if (locked)
+            return;
         this.permissionSetAssignments = permissionSetAssignments;
         if (doDeprovision)
             removePermissionSetAssignments(false);
     }
     public void setUserPackageLicenses(List<UserPackageLicense> userPackageLicenses) {
+        if (locked)
+            return;
         this.userPackageLicenses = userPackageLicenses;
         if (doDeprovision)
             removeUserPackageLicenses(false);
     }
     public void setCronJobs(List<CronTrigger> cronJobs) {
+        if (locked)
+            return;
         this.cronJobs = cronJobs;
         if (doDeprovision)
             abortCronJobs(false);
     }
     public void setChatterGroupMemberships(List<CollaborationGroupMember> chatterGroupMemberships) {
+        if (locked)
+            return;
         this.chatterGroupMemberships = chatterGroupMemberships;
         if (doDeprovision)
             removeChatterGroupMemberships(false);
     }
     public void setUserLogin(UserLogin userLogin) {
+        if (locked)
+            return;
         this.userLogin = userLogin;
         if (doDeprovision)
             updateUserLogin(false);
+    }
+    public void setSmsSenderIdAssignments(List<smagicinteract__SenderId_Profile_Map__c> smsSenderIdAssignments) {
+        if (locked)
+            return;
+        this.smsSenderIdAssignments = smsSenderIdAssignments;
+        this.smsSenderIds = new List<smagicinteract__SMS_SenderId__c>();
+
+        for (smagicinteract__SenderId_Profile_Map__c smsSenderIdAssignment : smsSenderIdAssignments)
+            this.smsSenderIds.add(smsSenderIdAssignment.smagicinteract__senderid_lookup__r);
+
+        if (doDeprovision) {
+            updateSmsSenderIds(false);
+            removeSmsSenderIdAssignments(false);
+        }
+    }
+    public void setSmsLicenses(List<smagicinteract__License__c> smsLicenses) {
+        if (locked)
+            return;
+        this.smsLicenses = smsLicenses;
+
+        if (doDeprovision)
+            removeSmsLicenses(false);
     }
 
     // Get lists of modified records after deprovisioning
@@ -409,6 +493,15 @@ public without sharing class UserDeprovisioner {
     }
     public UserLogin getUserLogin() {
         return userLogin;
+    }
+    public List<smagicinteract__SMS_SenderId__c> getSmsSenderIds() {
+        return smsSenderIds;
+    }
+    public List<smagicinteract__SenderId_Profile_Map__c> getSmsSenderIdAssignments() {
+        return smsSenderIdAssignments;
+    }
+    public List<smagicinteract__License__c> getSmsLicenses() {
+        return smsLicenses;
     }
 
     public class DeprovisionUserException extends Exception {

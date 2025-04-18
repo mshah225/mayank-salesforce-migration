@@ -1,4 +1,4 @@
-public class UserDeprovisionCaseTransferBatch implements Database.Batchable<SObject>, Database.Stateful {
+public class UserDeprovisionCaseTransferBatch implements Database.Batchable<SObject>, Database.Stateful, Nextable {
     private List<UserDeprovisioner> userDeprovisioners;
     private Map<Id, UserDeprovisioner> userIdToDeprovisionerMp = new Map<Id, UserDeprovisioner>();
     private Map<Id, Integer> countTransferredPerUser = new Map<Id, Integer>();
@@ -84,16 +84,26 @@ public class UserDeprovisionCaseTransferBatch implements Database.Batchable<SObj
 
             List<User> modifiedUsers = new List<User>();
             for (UserDeprovisioner userDeprovisioner : userDeprovisioners) {
-                String notes = userDeprovisioner.getUser().Processing_Notes__c;
-                notes = notes.right(40);
-                System.debug(notes);
                 modifiedUsers.add(userDeprovisioner.getUser());
             }
             update modifiedUsers;
+            launchNext();
         } catch (Exception e) {
             List<String> vars = new List<String>();
             ErrorLogger.log(e, vars, false);
         }
         UserDeprovisionOrganizer.isDeprovisoning = false;
+
+    }
+
+    /**
+     * Nextable implementation
+     */
+    private NextableDefaultImplementation nextImpl = new NextableDefaultImplementation();
+    public void launchNext() {
+        nextImpl.launchNext();
+    }
+    public void enqueueNext(Nextable next) {
+        nextImpl.enqueueNext(next);
     }
 }

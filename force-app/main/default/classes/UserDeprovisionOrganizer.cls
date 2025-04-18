@@ -50,6 +50,12 @@ public without sharing class UserDeprovisionOrganizer {
                 potentialDeprovisionUserIds
             );
             Map<Id, UserLogin> userLoginPerUser = getUserLogins(potentialDeprovisionUserIds);
+            Map<Id, List<smagicinteract__SenderId_Profile_Map__c>> smsSenderIdAssignmentsPerUser = getSMSMagicSenderIdsAssignments(
+                potentialDeprovisionUserIds
+            );
+            Map<Id, List<smagicinteract__License__c>> smsMagicLicensesPerUser = getSMSMagicLicenses(
+                potentialDeprovisionUserIds
+            );
 
             List<UserDeprovisioner> userDeprovisioners = new List<UserDeprovisioner>();
             List<User> updatedUsers = new List<User>();
@@ -63,6 +69,8 @@ public without sharing class UserDeprovisionOrganizer {
                 userDeprovisioner.setCronJobs(cronJobsPerUser.get(userId));
                 userDeprovisioner.setChatterGroupMemberships(chatterGroupsPerUser.get(userId));
                 userDeprovisioner.setUserLogin(userLoginPerUser.get(userId));
+                userDeprovisioner.setSmsSenderIdAssignments(smsSenderIdAssignmentsPerUser.get(userId));
+                userDeprovisioner.setSmsLicenses(smsMagicLicensesPerUser.get(userId));
 
                 // Figure out what we need to do for each user and mark it on the user
                 // If user is meant to deprovision enqueue for further actions
@@ -111,9 +119,6 @@ public without sharing class UserDeprovisionOrganizer {
             WHERE UserOrGroupId IN :userIds
         ];
 
-        if (Test.isRunningTest() && fakePublicGroupMemberships != null)
-            allUserPublicGroupMemberships = fakePublicGroupMemberships;
-
         Map<Id, List<GroupMember>> userIdToGroupMemberships = new Map<Id, List<GroupMember>>();
 
         for (Id uId : userIds)
@@ -124,8 +129,6 @@ public without sharing class UserDeprovisionOrganizer {
 
         return userIdToGroupMemberships;
     }
-    @TestVisible
-    private static List<GroupMember> fakePublicGroupMemberships;
 
     /** Get a list of all permission set assignments each user has */
     public static Map<Id, List<PermissionSetAssignment>> getPermissionSetAssignments(List<Id> userIds) {
@@ -140,9 +143,6 @@ public without sharing class UserDeprovisionOrganizer {
             WHERE AssigneeId IN :userIds AND PermissionSet.IsOwnedByProfile = FALSE
         ];
 
-        if (Test.isRunningTest() && fakePermissionSetAssignments != null)
-            allUserPermissionSetAssignments = fakePermissionSetAssignments;
-
         Map<Id, List<PermissionSetAssignment>> userToPermissionSetAssignments = new Map<Id, List<PermissionSetAssignment>>();
 
         for (Id uId : userIds)
@@ -153,8 +153,6 @@ public without sharing class UserDeprovisionOrganizer {
 
         return userToPermissionSetAssignments;
     }
-    @TestVisible
-    private static List<PermissionSetAssignment> fakePermissionSetAssignments;
 
     /** Get a list of all user package licenses for each user */
     public static Map<Id, List<UserPackageLicense>> getUserPackageLicenses(List<Id> userIds) {
@@ -178,9 +176,6 @@ public without sharing class UserDeprovisionOrganizer {
             WHERE UserId IN :userIds AND PackageLicenseId IN :packageLicenseIds
         ];
 
-        if (Test.isRunningTest() && fakeUserPackageLicenses != null)
-            allUserPackageLicenses = fakeUserPackageLicenses;
-
         Map<Id, List<UserPackageLicense>> userToPackageLicenses = new Map<Id, List<UserPackageLicense>>();
 
         for (Id uId : userIds)
@@ -191,8 +186,6 @@ public without sharing class UserDeprovisionOrganizer {
 
         return userToPackageLicenses;
     }
-    @TestVisible
-    private static List<UserPackageLicense> fakeUserPackageLicenses;
 
     /** Get a list of all cron jobs for each user */
     public static Map<Id, List<CronTrigger>> getCronJobs(List<Id> userIds) {
@@ -218,7 +211,7 @@ public without sharing class UserDeprovisionOrganizer {
         return userToCronJobs;
     }
 
-    /** Get a list of all chatter groyos for each user */
+    /** Get a list of all chatter groups for each user */
     public static Map<Id, List<CollaborationGroupMember>> getChatterGroupMembership(List<Id> userIds) {
         GovernorLimitPreemptException.assertCanQueryN(
             1,
@@ -261,6 +254,61 @@ public without sharing class UserDeprovisionOrganizer {
             userToUserLogin.put(cgm.UserId, cgm);
 
         return userToUserLogin;
+    }
+
+    /** Get a list of all SMS Magic Sender Ids Assignments for each user */
+    public static Map<Id, List<smagicinteract__SenderId_Profile_Map__c>> getSMSMagicSenderIdsAssignments(
+        List<Id> userIds
+    ) {
+        GovernorLimitPreemptException.assertCanQueryN(
+            1,
+            'Could not query SMS Magic Sender Id Assignments for deprovisioning - reached SOQL governor limit'
+        );
+
+        List<smagicinteract__SenderId_Profile_Map__c> allSmsProfileIdAssignments = [
+            SELECT
+                Id,
+                smagicinteract__User__c,
+                smagicinteract__senderid_lookup__c,
+                smagicinteract__senderid_lookup__r.Id,
+                smagicinteract__senderid_lookup__r.smagicinteract__label__c
+            FROM smagicinteract__SenderId_Profile_Map__c
+            WHERE smagicinteract__User__c IN :userIds
+        ];
+
+        Map<Id, List<smagicinteract__SenderId_Profile_Map__c>> userToSenderIdAssignments = new Map<Id, List<smagicinteract__SenderId_Profile_Map__c>>();
+
+        for (Id uId : userIds)
+            userToSenderIdAssignments.put(uId, new List<smagicinteract__SenderId_Profile_Map__c>());
+
+        for (smagicinteract__SenderId_Profile_Map__c smsProfileIdAssignment : allSmsProfileIdAssignments)
+            userToSenderIdAssignments.get(smsProfileIdAssignment.smagicinteract__User__c).add(smsProfileIdAssignment);
+
+        return userToSenderIdAssignments;
+    }
+
+    /** Get a list of all SMS License Assignments for each user */
+    public static Map<Id, List<smagicinteract__License__c>> getSMSMagicLicenses(List<Id> userIds) {
+        GovernorLimitPreemptException.assertCanQueryN(
+            1,
+            'Could not query SMS Magic licenses for deprovisioning - reached SOQL governor limit'
+        );
+
+        List<smagicinteract__License__c> allSmsLicenses = [
+            SELECT Id, smagicinteract__User__c
+            FROM smagicinteract__License__c
+            WHERE smagicinteract__User__c IN :userIds
+        ];
+
+        Map<Id, List<smagicinteract__License__c>> userToLicenses = new Map<Id, List<smagicinteract__License__c>>();
+
+        for (Id uId : userIds)
+            userToLicenses.put(uId, new List<smagicinteract__License__c>());
+
+        for (smagicinteract__License__c smsLicense : allSmsLicenses)
+            userToLicenses.get(smsLicense.smagicinteract__User__c).add(smsLicense);
+
+        return userToLicenses;
     }
 
     /**
@@ -442,13 +490,7 @@ public without sharing class UserDeprovisionOrganizer {
                     ex = e;
 
                 resultDescription.put('Status', 'Failure');
-
-                Map<String, String> errorDetails = new Map<String, String>{
-                    'errorType' => e.getTypeName(),
-                    'message' => e.getMessage(),
-                    'cause' => e.getCause().toString()
-                };
-                resultDescription.put('Error', JSON.serialize(errorDetails));
+                resultDescription.put('Error', e.getMessage());
 
                 // Add description to the user notes
                 if (!userIdToProcessingNotes.containsKey(userId))

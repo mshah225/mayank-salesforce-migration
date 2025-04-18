@@ -105,6 +105,24 @@ public class UserDeprovisionTest {
             update testUserLogin;
         }
 
+        // SMS License
+        // SMS SenderId
+        smagicinteract__SMS_SenderId__c smsSenderId = new smagicinteract__SMS_SenderId__c(
+            smagicinteract__label__c = 'NSP ' + testUser.FirstName + ' ' + testUser.LastName,
+            SenderIdUnit__c = 'New Student Programs',
+            smagicinteract__SenderId__c = '18003627463'
+        );
+        insert smsSenderId;
+        // Assign sender id to user
+        smagicinteract__SenderId_Profile_Map__c senderIdAssignment = new smagicinteract__SenderId_Profile_Map__c(
+            smagicinteract__User__c = testUser.Id,
+            smagicinteract__SenderId_Lookup__c = smsSenderId.Id
+        );
+        insert senderIdAssignment;
+        // Assign license
+        smagicinteract__License__c smsLicense = new smagicinteract__License__c(smagicinteract__User__c = testUser.Id);
+        insert smsLicense;
+
         // Cases
         List<Case> casesToAdd = new List<Case>();
         // the functional group
@@ -509,6 +527,88 @@ public class UserDeprovisionTest {
     }
 
     @isTest
+    public static void testUnassignSMSLicense() {
+        // Get test user
+        User testUser = [SELECT Id, FirstName, LastName FROM User WHERE Alias = 'testUsr1' LIMIT 1];
+
+        // Mark as needing to deprovision
+        testUser.Deprovision_User__c = true;
+
+        // Check they have an SMS license and sender id assignment
+        String likeClause = '%' + testUser.FirstName + ' ' + testUser.LastName;
+        List<smagicinteract__SMS_SenderId__c> senderIds = [
+            SELECT Id, smagicinteract__Label__c
+            FROM smagicinteract__SMS_SenderId__c
+            WHERE smagicinteract__Label__c LIKE :likeClause
+        ];
+        List<smagicinteract__SenderId_Profile_Map__c> senderIdAssignments = [
+            SELECT Id
+            FROM smagicinteract__SenderId_Profile_Map__c
+            WHERE smagicinteract__User__c = :testUser.Id
+        ];
+        List<smagicinteract__License__c> smsLicenses = [
+            SELECT Id
+            FROM smagicinteract__License__c
+            WHERE smagicinteract__User__c = :testUser.Id
+        ];
+
+        Assert.isFalse(senderIds.isEmpty(), 'The sender id label should contain the users name pre-deprovision');
+        Assert.isFalse(senderIdAssignments.isEmpty(), 'This user should be assigned to the sender id pre-deprovision');
+        Assert.isFalse(smsLicenses.isEmpty(), 'This user should have an SMS license pre-deprovision');
+
+        Integer senderIdCount = senderIdAssignments.size(), smsLicensesCount = smsLicenses.size();
+
+        // Do it
+        Test.startTest();
+        update testUser;
+        Test.stopTest();
+
+        // Get updated user
+        testUser = [SELECT Id, FirstName, LastName, Processing_Notes__c FROM User WHERE Id = :testUser.Id];
+
+        // Check sender id was renamed
+        senderIds = [
+            SELECT Id, smagicinteract__Label__c
+            FROM smagicinteract__SMS_SenderId__c
+            WHERE Id IN :new Map<Id, smagicinteract__SMS_SenderId__c>(senderIds).keySet()
+        ];
+        Assert.isFalse(senderIds.isEmpty(), 'Should NOT have deleted SMS Sender Ids');
+        for (smagicinteract__SMS_SenderId__c senderId : senderIds) {
+            Assert.isFalse(
+                senderId.smagicinteract__Label__c.contains(testUser.FirstName + ' ' + testUser.LastName),
+                'SMS Sender Id should have been renamed to remove user\'s name, but it was not'
+            );
+        }
+
+        // Check Sender Id assignment was deleted
+        senderIdAssignments = [
+            SELECT Id
+            FROM smagicinteract__SenderId_Profile_Map__c
+            WHERE Id IN :new Map<Id, smagicinteract__SenderId_Profile_Map__c>(senderIdAssignments).keySet()
+        ];
+        Assert.isTrue(senderIdAssignments.isEmpty(), 'Should have deleted user-sender id mappings');
+        // and processing notes indicate user was unassigned
+        Assert.isTrue(
+            testUser.Processing_Notes__c.contains('Unassigned ' + senderIdCount + ' Sender Ids'),
+            'Number of sender ids unassigned should be recorded on the user'
+        );
+
+        // License was deleted
+        smsLicenses = [
+            SELECT Id, Active__c
+            FROM smagicinteract__License__c
+            WHERE Id IN :new Map<Id, smagicinteract__License__c>(smsLicenses).keySet()
+        ];
+
+        Assert.isTrue(smsLicenses.isEmpty(), 'Should have deleted SMS licenses');
+        // and processing notes indicate user was unfrozen were removed
+        Assert.isTrue(
+            testUser.Processing_Notes__c.contains('Removed ' + smsLicensesCount + ' SMS Licenses'),
+            'Number of SMS licenses removed should be recorded on the user'
+        );
+    }
+
+    @isTest
     public static void testReassignCases() {
         // Get test user
         User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
@@ -688,18 +788,18 @@ public class UserDeprovisionTest {
         // Mark as needing to deprovision
         testUser.Deprovision_User__c = true;
 
-        // Delete the group memberships but pretend they weren't deleted
-        System.runAs(new User(Id = UserInfo.getUserId())) {
-            UserDeprovisionOrganizer.fakePublicGroupMemberships = UserDeprovisionOrganizer.getGroupMemberships(
-                    new List<Id>{ testUser.Id }
-                )
-                .get(testUser.Id);
-            delete UserDeprovisionOrganizer.fakePublicGroupMemberships;
-        }
+        UserDeprovisioner.FORCE_LOCK = true; // Prevent deprovisioners from refreshing data
 
         // Do it
         Test.startTest();
+
         update testUser;
+
+        // Delete data the deprovisioners rely on
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            delete UserDeprovisionOrganizer.getGroupMemberships(new List<Id>{ testUser.Id }).get(testUser.Id);
+        }
+
         Test.stopTest();
 
         // Get updated user
@@ -712,6 +812,14 @@ public class UserDeprovisionTest {
             ),
             'Should contain exception details on user'
         );
+
+        // Check for error logger case
+        List<Case> errorLoggerCase = [SELECT Id, Subject, Description FROM Case WHERE Subject LIKE 'Apex Exception:%'];
+        Assert.isFalse(errorLoggerCase.isEmpty(), 'Should have created error logger case, but did not');
+        Assert.isTrue(
+            errorLoggerCase[0].Description.contains('GroupMember'),
+            'Error logger description should indicate object type'
+        );
     }
 
     @isTest
@@ -722,18 +830,18 @@ public class UserDeprovisionTest {
         // Mark as needing to deprovision
         testUser.Deprovision_User__c = true;
 
-        // Delete the permission set assignments but pretend they weren't deleted
-        System.runAs(new User(Id = UserInfo.getUserId())) {
-            UserDeprovisionOrganizer.fakePermissionSetAssignments = UserDeprovisionOrganizer.getPermissionSetAssignments(
-                    new List<Id>{ testUser.Id }
-                )
-                .get(testUser.Id);
-            delete UserDeprovisionOrganizer.fakePermissionSetAssignments;
-        }
+        UserDeprovisioner.FORCE_LOCK = true; // Prevent deprovisioners from refreshing data
 
         // Do it
         Test.startTest();
+
         update testUser;
+
+        // Delete data the deprovisioners rely on
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            delete UserDeprovisionOrganizer.getPermissionSetAssignments(new List<Id>{ testUser.Id }).get(testUser.Id);
+        }
+
         Test.stopTest();
 
         // Get updated user
@@ -746,6 +854,14 @@ public class UserDeprovisionTest {
             ),
             'Should contain exception details on user'
         );
+
+        // Check for error logger case
+        List<Case> errorLoggerCase = [SELECT Id, Subject, Description FROM Case WHERE Subject LIKE 'Apex Exception:%'];
+        Assert.isFalse(errorLoggerCase.isEmpty(), 'Should have created error logger case, but did not');
+        Assert.isTrue(
+            errorLoggerCase[0].Description.contains('PermissionSetAssignment'),
+            'Error logger description should indicate object type'
+        );
     }
 
     @isTest
@@ -756,18 +872,18 @@ public class UserDeprovisionTest {
         // Mark as needing to deprovision
         testUser.Deprovision_User__c = true;
 
-        // Delete the user package licenses but pretend they weren't deleted
-        System.runAs(new User(Id = UserInfo.getUserId())) {
-            UserDeprovisionOrganizer.fakeUserPackageLicenses = UserDeprovisionOrganizer.getUserPackageLicenses(
-                    new List<Id>{ testUser.Id }
-                )
-                .get(testUser.Id);
-            delete UserDeprovisionOrganizer.fakeUserPackageLicenses;
-        }
+        UserDeprovisioner.FORCE_LOCK = true; // Prevent deprovisioners from refreshing data
 
         // Do it
         Test.startTest();
+
         update testUser;
+
+        // Delete data the deprovisioners rely on
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            delete UserDeprovisionOrganizer.getUserPackageLicenses(new List<Id>{ testUser.Id }).get(testUser.Id);
+        }
+
         Test.stopTest();
 
         // Get updated user
@@ -779,6 +895,202 @@ public class UserDeprovisionTest {
                 'Error while deleting the UserPackageLicense objects during user deprovisioning'
             ),
             'Should contain exception details on user'
+        );
+
+        // Check for error logger case
+        List<Case> errorLoggerCase = [SELECT Id, Subject, Description FROM Case WHERE Subject LIKE 'Apex Exception:%'];
+        Assert.isFalse(errorLoggerCase.isEmpty(), 'Should have created error logger case, but did not');
+        Assert.isTrue(
+            errorLoggerCase[0].Description.contains('UserPackageLicense'),
+            'Error logger description should indicate object type'
+        );
+    }
+
+    @isTest
+    public static void testErrorAbortingCronJobs() {
+        // Get test user
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
+
+        // Mark as needing to deprovision
+        testUser.Deprovision_User__c = true;
+
+        UserDeprovisioner.FORCE_LOCK = true; // Prevent deprovisioners from refreshing data
+
+        // Do it
+        Test.startTest();
+
+        update testUser;
+
+        // Abort the jobs early
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            for (
+                CronTrigger cronJob : UserDeprovisionOrganizer.getCronJobs(new List<Id>{ testUser.Id }).get(testUser.Id)
+            ) {
+                System.abortJob(cronJob.Id);
+            }
+        }
+
+        Test.stopTest();
+
+        // Get updated user
+        testUser = [SELECT Processing_Notes__c FROM User WHERE Id = :testUser.Id];
+
+        // Processing notes were updated to include error details
+        Assert.isTrue(
+            testUser.Processing_Notes__c.contains('Error while aborting the cron jobs during user deprovisioning'),
+            'Should contain exception details on user'
+        );
+
+        for (Integer i = 0; i < testUser.Processing_Notes__c.length(); i = i + 260) {
+            Integer iEffectiveEnd = (i + 260 > (testUser.Processing_Notes__c.length())
+                ? testUser.Processing_Notes__c.length()
+                : i + 260);
+            System.debug(testUser.Processing_Notes__c.substring(i, iEffectiveEnd));
+        }
+
+        // Check for error logger case
+        List<Case> errorLoggerCase = [SELECT Id, Subject, Description FROM Case WHERE Subject LIKE 'Apex Exception:%'];
+        Assert.isFalse(errorLoggerCase.isEmpty(), 'Should have created error logger case, but did not');
+        Assert.isTrue(
+            errorLoggerCase[0].Description.contains('Job does not exist or is already aborted'),
+            'Error logger description should indivate job was already aborted'
+        );
+    }
+
+    @isTest
+    public static void testErrorUnassigningSmsLicense1() {
+        // Get test user
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
+
+        // Mark as needing to deprovision
+        testUser.Deprovision_User__c = true;
+
+        UserDeprovisioner.FORCE_LOCK = true; // Prevent deprovisioners from refreshing data
+
+        // Do it
+        Test.startTest();
+
+        update testUser;
+
+        // Delete data the deprovisioners rely on
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            delete UserDeprovisionOrganizer.getSMSMagicSenderIdsAssignments(new List<Id>{ testUser.Id })
+                .get(testUser.Id);
+        }
+
+        Test.stopTest();
+
+        // Get updated user
+        testUser = [SELECT Processing_Notes__c FROM User WHERE Id = :testUser.Id];
+
+        // Processing notes were updated to include error details
+        Assert.isTrue(
+            testUser.Processing_Notes__c.contains(
+                'Error while deleting the smagicinteract__SenderId_Profile_Map__c objects during user deprovisioning'
+            ),
+            'Should contain exception details on user'
+        );
+
+        // Check for error logger case
+        List<Case> errorLoggerCase = [SELECT Id, Subject, Description FROM Case WHERE Subject LIKE 'Apex Exception:%'];
+        Assert.isFalse(errorLoggerCase.isEmpty(), 'Should have created error logger case, but did not');
+        Assert.isTrue(
+            errorLoggerCase[0].Description.contains('smagicinteract__SenderId_Profile_Map__c'),
+            'Error logger description should indicate object type'
+        );
+    }
+
+    @isTest
+    public static void testErrorUnassigningSmsLicense2() {
+        // Get test user
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
+
+        // Mark as needing to deprovision
+        testUser.Deprovision_User__c = true;
+
+        UserDeprovisioner.FORCE_LOCK = true; // Prevent deprovisioners from refreshing data
+
+        // Do it
+        Test.startTest();
+
+        update testUser;
+
+        // Delete data the deprovisioners rely on
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            List<smagicinteract__SenderId_Profile_Map__c> senderIdAssignments = UserDeprovisionOrganizer.getSMSMagicSenderIdsAssignments(
+                    new List<Id>{ testUser.Id }
+                )
+                .get(testUser.Id);
+
+            List<smagicinteract__SMS_SenderId__c> senderIds = new List<smagicinteract__SMS_SenderId__c>();
+            for (smagicinteract__SenderId_Profile_Map__c smsSenderIdAssignment : senderIdAssignments)
+                senderIds.add(smsSenderIdAssignment.smagicinteract__senderid_lookup__r);
+
+            delete senderIds;
+        }
+
+        Test.stopTest();
+
+        // Get updated user
+        testUser = [SELECT Processing_Notes__c FROM User WHERE Id = :testUser.Id];
+
+        // Processing notes were updated to include error details
+        Assert.isTrue(
+            testUser.Processing_Notes__c.contains(
+                'Error while updating the smagicinteract__SMS_SenderId__c objects during user deprovisioning'
+            ),
+            'Should contain exception details on user'
+        );
+
+        // Check for error logger case
+        List<Case> errorLoggerCase = [SELECT Id, Subject, Description FROM Case WHERE Subject LIKE 'Apex Exception:%'];
+        Assert.isFalse(errorLoggerCase.isEmpty(), 'Should have created error logger case, but did not');
+        Assert.isTrue(
+            errorLoggerCase[0].Description.contains('smagicinteract__SMS_SenderId__c'),
+            'Error logger description should indicate object type'
+        );
+    }
+
+    @isTest
+    public static void testErrorUnassigningSmsLicense3() {
+        // Get test user
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
+
+        // Mark as needing to deprovision
+        testUser.Deprovision_User__c = true;
+
+        UserDeprovisioner.FORCE_LOCK = true; // Prevent deprovisioners from refreshing data
+
+        // Do it
+        Test.startTest();
+
+        update testUser;
+
+        // Delete data the deprovisioners rely on
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            delete UserDeprovisionOrganizer.getSMSMagicLicenses(new List<Id>{ testUser.Id })
+                .get(testUser.Id);
+        }
+
+        Test.stopTest();
+
+        // Get updated user
+        testUser = [SELECT Processing_Notes__c FROM User WHERE Id = :testUser.Id];
+
+        // Processing notes were updated to include error details
+        Assert.isTrue(
+            testUser.Processing_Notes__c.contains(
+                'Error while deleting the smagicinteract__License__c objects during user deprovisioning'
+            ),
+            'Should contain exception details on user'
+        );
+
+        // Check for error logger case
+        List<Case> errorLoggerCase = [SELECT Id, Subject, Description FROM Case WHERE Subject LIKE 'Apex Exception:%'];
+        Assert.isFalse(errorLoggerCase.isEmpty(), 'Should have created error logger case, but did not');
+        Assert.isTrue(
+            errorLoggerCase[0].Description.contains('smagicinteract__License__c'),
+            'Error logger description should indicate object type'
         );
     }
 
@@ -819,6 +1131,14 @@ public class UserDeprovisionTest {
         Assert.isTrue(
             testUser.Processing_Notes__c.contains('Exception Thrown for case ID'),
             'Should contain exception details on user'
+        );
+
+        // Check for error logger case
+        List<Case> errorLoggerCase = [SELECT Id, Subject, Description FROM Case WHERE Subject LIKE 'Apex Exception:%'];
+        Assert.isFalse(errorLoggerCase.isEmpty(), 'Should have created error logger case, but did not');
+        Assert.isTrue(
+            errorLoggerCase[0].Description.contains('Exception Thrown for case ID'),
+            'Error logger description should indicate case ids'
         );
     }
 }

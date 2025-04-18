@@ -9,10 +9,8 @@
  * 3. Removing user package licenses (`UserPackageLicense`).
  * 4. Aborting cron jobs (`CronTrigger`).
  */
-public without sharing class UserDeprovisionerQueueSetupRecords implements Queueable {
+public without sharing class UserDeprovisionerQueueSetupRecords implements Queueable, Nextable {
     private List<UserDeprovisioner> userDeprovisioners;
-    private ErrorLogger.ErrorLoggerQueue errorLoggerQueueableChain = null;
-    UserDeprovisionCaseTransferBatch caseTransferBatch;
     Set<User> updatedUsers = new Set<User>();
 
     public UserDeprovisionerQueueSetupRecords(List<UserDeprovisioner> userDeprovisioners) {
@@ -49,9 +47,6 @@ public without sharing class UserDeprovisionerQueueSetupRecords implements Queue
                 if (userCronJobs != null)
                     cronJobs.addAll(userCronJobs);
             }
-
-            // Next stage is the case transfer batch
-            caseTransferBatch = new UserDeprovisionCaseTransferBatch(userDeprovisioners);
 
             // Remove group memberships and error log if any failures - to do this we build
             if (!groupMemberships.isEmpty()) {
@@ -91,7 +86,8 @@ public without sharing class UserDeprovisionerQueueSetupRecords implements Queue
                 update new List<User>(updatedUsers);
             }
 
-            launchNextStage();
+            enqueueNext(new UserDeprovisionCaseTransferBatch(userDeprovisioners));
+            launchNext();
         } catch (Exception ex) {
             List<String> vars = new List<String>();
             List<Id> userIds = new List<Id>();
@@ -151,12 +147,7 @@ public without sharing class UserDeprovisionerQueueSetupRecords implements Queue
 
         // Log any error
         if (resultWrapper.ex != null) {
-            ErrorLogger.logFuture(
-                resultWrapper.ex.getTypeName(),
-                resultWrapper.ex.getMessage(),
-                resultWrapper.ex.getStackTraceString(),
-                resultWrapper.vars
-            );
+            enqueueNext(new ErrorLogger.ErrorLoggerQueue(resultWrapper.ex, resultWrapper.vars, false));
         }
 
         // Add processing notes to user
@@ -167,10 +158,13 @@ public without sharing class UserDeprovisionerQueueSetupRecords implements Queue
     }
 
     /**
-     * Launch the next stage of the User Deprovisioning process
+     * Nextable implementation
      */
-    private void launchNextStage() {
-        // Otherwise directly enqueue case transfer batch
-        Database.executeBatch(caseTransferBatch, 200);
+    private NextableDefaultImplementation nextImpl = new NextableDefaultImplementation();
+    public void launchNext() {
+        nextImpl.launchNext();
+    }
+    public void enqueueNext(Nextable next) {
+        nextImpl.enqueueNext(next);
     }
 }

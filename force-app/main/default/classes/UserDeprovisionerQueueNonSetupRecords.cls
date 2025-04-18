@@ -6,8 +6,11 @@
  * This includes
  * 1. Removing chatter group memberships (`CollaborationGroupMember`).
  * 2. Unfreezing user login records (`UserLogin`)
+ * 3. SMS Sender Ids (`smagicinteract__SMS_SenderId__c`)
+ * 4. SMS Sender Ids Assignments (`smagicinteract__SenderId_Profile_Map__c`)
+ * 5. SMS Licenses (`smagicinteract__License__c`)
  */
-public without sharing class UserDeprovisionerQueueNonSetupRecords implements Queueable {
+public without sharing class UserDeprovisionerQueueNonSetupRecords implements Queueable, Nextable {
     private List<UserDeprovisioner> userDeprovisioners;
     Set<User> updatedUsers = new Set<User>();
 
@@ -23,6 +26,9 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
             Map<Id, UserDeprovisioner> userDeprovisionersMp = new Map<Id, UserDeprovisioner>();
             List<CollaborationGroupMember> chatterMemberships = new List<CollaborationGroupMember>();
             List<UserLogin> userLogins = new List<UserLogin>();
+            List<smagicinteract__SMS_SenderId__c> smsSenderIds = new List<smagicinteract__SMS_SenderId__c>();
+            List<smagicinteract__SenderId_Profile_Map__c> smsSenderIdAssignmnents = new List<smagicinteract__SenderId_Profile_Map__c>();
+            List<smagicinteract__License__c> smsLicenses = new List<smagicinteract__License__c>();
 
             // Collect all non-setup records that need to be removed or changed
             for (UserDeprovisioner userDeprovisioner : userDeprovisioners) {
@@ -35,6 +41,18 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
                 UserLogin userLogin = userDeprovisioner.getUserLogin();
                 if (userLogin != null)
                     userLogins.add(userLogin);
+
+                List<smagicinteract__SMS_SenderId__c> userSmsSenderIds = userDeprovisioner.getSmsSenderIds();
+                if (userSmsSenderIds != null)
+                    smsSenderIds.addAll(userSmsSenderIds);
+
+                List<smagicinteract__SenderId_Profile_Map__c> userSmsSenderIdAssignmnents = userDeprovisioner.getSmsSenderIdAssignments();
+                if (userSmsSenderIdAssignmnents != null)
+                    smsSenderIdAssignmnents.addAll(userSmsSenderIdAssignmnents);
+
+                List<smagicinteract__License__c> userSmsLicenses = userDeprovisioner.getSmsLicenses();
+                if (userSmsLicenses != null)
+                    smsLicenses.addAll(userSmsLicenses);
             }
 
             // Update chatter memberships and error log if any failures
@@ -55,11 +73,60 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
                 handleResponse(resultWrapper);
             }
 
-            // Lastly update users with any changed logs
-            if (!updatedUsers.isEmpty())
-                update new List<User>(updatedUsers);
+            // Update SMS Sender Id labels
+            if (!smsSenderIds.isEmpty()) {
+                UserDeprovisionOrganizer.ResultWrapper resultWrapper = UserDeprovisionOrganizer.updateSobjectRecords(
+                    'Id',
+                    smsSenderIds
+                );
 
-            launchNextStage();
+                // Since these don't look up directly to user resultWrapper.userIdToProcessingNotes actually point record Id -> notes rather than userId,
+                // We must fix this before passing to handleResponse
+                if (!resultWrapper.userIdToProcessingNotes.isEmpty()) {
+                    // Build map from sender id to user
+                    Map<Id, Id> senderIdToUserIdMp = new Map<Id, Id>();
+                    for (smagicinteract__SenderId_Profile_Map__c senderIdAssignment : smsSenderIdAssignmnents)
+                        senderIdToUserIdMp.put(
+                            senderIdAssignment.smagicinteract__senderid_lookup__c,
+                            senderIdAssignment.smagicinteract__User__c
+                        );
+
+                    // Build new processing notes mapping
+                    Map<Id, String> newProcessingNotes = new Map<Id, String>();
+                    for (Id senderId : resultWrapper.userIdToProcessingNotes.keySet())
+                        newProcessingNotes.put(
+                            senderIdToUserIdMp.get(senderId),
+                            resultWrapper.userIdToProcessingNotes.get(senderId)
+                        );
+
+                    resultWrapper.userIdToProcessingNotes = newProcessingNotes;
+                }
+
+                handleResponse(resultWrapper);
+            }
+
+            // Remove SMS Sender Id assignments
+            if (!smsSenderIdAssignmnents.isEmpty()) {
+                UserDeprovisionOrganizer.ResultWrapper resultWrapper = UserDeprovisionOrganizer.deleteSobjectRecords(
+                    'smagicinteract__User__c',
+                    smsSenderIdAssignmnents
+                );
+                handleResponse(resultWrapper);
+            }
+
+            if (!smsLicenses.isEmpty()) {
+                UserDeprovisionOrganizer.ResultWrapper resultWrapper = UserDeprovisionOrganizer.deleteSobjectRecords(
+                    'smagicinteract__User__c',
+                    smsLicenses
+                );
+                handleResponse(resultWrapper);
+            }
+
+            // Launch next stage of user deprovisioning
+            if (!updatedUsers.isEmpty())
+                enqueueNext(new UpdateUsersQueueable(new List<User>(updatedUsers)));
+            enqueueNext(new UserDeprovisionerQueueSetupRecords(userDeprovisioners));
+            launchNext();
         } catch (Exception ex) {
             List<String> vars = new List<String>();
             List<Id> userIds = new List<Id>();
@@ -87,6 +154,12 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
             userIds
         );
         Map<Id, UserLogin> userLoginPerUser = UserDeprovisionOrganizer.getUserLogins(userIds);
+        Map<Id, List<smagicinteract__SenderId_Profile_Map__c>> smsSenderIdAssignmentsPerUser = UserDeprovisionOrganizer.getSMSMagicSenderIdsAssignments(
+            userIds
+        );
+        Map<Id, List<smagicinteract__License__c>> smsMagicLicensesPerUser = UserDeprovisionOrganizer.getSMSMagicLicenses(
+            userIds
+        );
 
         // Refresh details in user deprovisioners
         for (UserDeprovisioner userDeprovisioner : userDeprovisioners) {
@@ -95,6 +168,10 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
                 userDeprovisioner.setChatterGroupMemberships(chatterGroupsPerUser.get(userId));
             if (userLoginPerUser.containsKey(userId))
                 userDeprovisioner.setUserLogin(userLoginPerUser.get(userId));
+            if (smsSenderIdAssignmentsPerUser.containsKey(userId))
+                userDeprovisioner.setSmsSenderIdAssignments(smsSenderIdAssignmentsPerUser.get(userId));
+            if (smsMagicLicensesPerUser.containsKey(userId))
+                userDeprovisioner.setSmsLicenses(smsMagicLicensesPerUser.get(userId));
         }
     }
 
@@ -124,18 +201,55 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
     }
 
     /**
-     * Launch the next stage of the User Deprovisioning process
+     * Nextable implementation
      */
-    private void launchNextStage() {
-        // Now enqueue a job to do the next stage
-        GovernorLimitPreemptException.assertCanEnqueueJobs(
-            1,
-            'Could not enqueue stage 3 of user deprovisioning - reached queueable limit'
-        );
-        GovernorLimitPreemptException.assertCanEnqueueJobsDepth(
-            1,
-            'Could not enqueue stage 3 of user deprovisioning - reached stack depth limit'
-        );
-        System.enqueueJob(new UserDeprovisionerQueueSetupRecords(userDeprovisioners));
+    private NextableDefaultImplementation nextImpl = new NextableDefaultImplementation();
+    public void launchNext() {
+        nextImpl.launchNext();
+    }
+    public void enqueueNext(Nextable next) {
+        nextImpl.enqueueNext(next);
+    }
+
+    /**
+     * Users are a setup object so this needs to be updated separately
+     */
+    private class UpdateUsersQueueable implements Queueable, Nextable {
+        private List<User> users;
+        public UpdateUsersQueueable(List<User> users) {
+            this.users = users;
+        }
+
+        public void execute(QueueableContext context) {
+            try {
+                if (!users.isEmpty())
+                    update users;
+            } catch (Exception ex) {
+                List<String> vars = new List<String>();
+                vars.add(
+                    ErrorLogger.convertStringToJSON('message', 'Failed to update users\' processing notes after error')
+                );
+
+                Set<Id> userIds;
+                if (users != null)
+                    userIds = new Map<Id, User>(users).keySet();
+                vars.add(ErrorLogger.convertSetToJSON('userIds', userIds));
+
+                ErrorLogger.log(ex, vars, false);
+            }
+
+            launchNext();
+        }
+
+        /**
+         * Nextable implementation
+         */
+        private NextableDefaultImplementation nextImpl = new NextableDefaultImplementation();
+        public void launchNext() {
+            nextImpl.launchNext();
+        }
+        public void enqueueNext(Nextable next) {
+            nextImpl.enqueueNext(next);
+        }
     }
 }

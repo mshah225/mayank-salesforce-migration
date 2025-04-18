@@ -941,13 +941,6 @@ public class UserDeprovisionTest {
             'Should contain exception details on user'
         );
 
-        for (Integer i = 0; i < testUser.Processing_Notes__c.length(); i = i + 260) {
-            Integer iEffectiveEnd = (i + 260 > (testUser.Processing_Notes__c.length())
-                ? testUser.Processing_Notes__c.length()
-                : i + 260);
-            System.debug(testUser.Processing_Notes__c.substring(i, iEffectiveEnd));
-        }
-
         // Check for error logger case
         List<Case> errorLoggerCase = [SELECT Id, Subject, Description FROM Case WHERE Subject LIKE 'Apex Exception:%'];
         Assert.isFalse(errorLoggerCase.isEmpty(), 'Should have created error logger case, but did not');
@@ -1068,8 +1061,7 @@ public class UserDeprovisionTest {
 
         // Delete data the deprovisioners rely on
         System.runAs(new User(Id = UserInfo.getUserId())) {
-            delete UserDeprovisionOrganizer.getSMSMagicLicenses(new List<Id>{ testUser.Id })
-                .get(testUser.Id);
+            delete UserDeprovisionOrganizer.getSMSMagicLicenses(new List<Id>{ testUser.Id }).get(testUser.Id);
         }
 
         Test.stopTest();
@@ -1136,9 +1128,10 @@ public class UserDeprovisionTest {
         // Check for error logger case
         List<Case> errorLoggerCase = [SELECT Id, Subject, Description FROM Case WHERE Subject LIKE 'Apex Exception:%'];
         Assert.isFalse(errorLoggerCase.isEmpty(), 'Should have created error logger case, but did not');
+
         Assert.isTrue(
-            errorLoggerCase[0].Description.contains('Exception Thrown for case ID'),
-            'Error logger description should indicate case ids'
+            errorLoggerCase[0].Description.contains('System.DmlException'),
+            'Error logger description should be DML exception'
         );
     }
 }

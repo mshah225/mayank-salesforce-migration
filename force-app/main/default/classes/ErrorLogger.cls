@@ -509,7 +509,7 @@ public without sharing class ErrorLogger {
         return '{' + varName + ':{' + String.valueOf(value) + '}}';
     }
 
-    public without sharing class ErrorLoggerQueue implements Queueable {
+    public without sharing class ErrorLoggerQueue implements Queueable, Nextable {
         Exception error;
         List<String> variables;
         Boolean debug;
@@ -546,6 +546,18 @@ public without sharing class ErrorLogger {
 
         public void execute(QueueableContext context) {
             ErrorLogger.log(error, variables, debug, allowRepeats);
+            launchNext();
+        }
+
+        /**
+         * Nextable implementation
+         */
+        private NextableDefaultImplementation nextImpl = new NextableDefaultImplementation();
+        public void launchNext() {
+            nextImpl.launchNext();
+        }
+        public void enqueueNext(Nextable next) {
+            nextImpl.enqueueNext(next);
         }
     }
 }

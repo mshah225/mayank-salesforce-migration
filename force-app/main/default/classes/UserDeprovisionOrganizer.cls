@@ -13,7 +13,27 @@
  * each stage runs asynchronously and the records could change from one stage to another.
  */
 public without sharing class UserDeprovisionOrganizer {
-    private static Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration = Deprovision_User_Configuration__c.getAll();
+    private static Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration {
+        get {
+            if (deprovisionUserConfiguration == null) {
+                deprovisionUserConfiguration = Deprovision_User_Configuration__c.getAll();
+            }
+            return deprovisionUserConfiguration;
+        }
+        set;
+    }
+
+    @TestVisible
+    private static Map<String, Deprovision_User_Campaign_Reassignment__mdt> deprovisionUserReassignmentMetadata {
+        get {
+            if (deprovisionUserReassignmentMetadata == null) {
+                deprovisionUserReassignmentMetadata = Deprovision_User_Campaign_Reassignment__mdt.getAll();
+            }
+            return deprovisionUserReassignmentMetadata;
+        }
+        set;
+    }
+
     public static Boolean isDeprovisoning = false;
 
     /**
@@ -56,13 +76,18 @@ public without sharing class UserDeprovisionOrganizer {
             Map<Id, List<smagicinteract__License__c>> smsMagicLicensesPerUser = getSMSMagicLicenses(
                 potentialDeprovisionUserIds
             );
+            Map<Id, List<Campaign>> campaignsPerUser = getCampaigns(potentialDeprovisionUserIds);
 
             List<UserDeprovisioner> userDeprovisioners = new List<UserDeprovisioner>();
             List<User> updatedUsers = new List<User>();
 
             for (User deproUser : usersToDeprovision.values()) {
                 Id userId = deproUser.Id;
-                UserDeprovisioner userDeprovisioner = new UserDeprovisioner(deproUser);
+                UserDeprovisioner userDeprovisioner = new UserDeprovisioner(
+                    deproUser,
+                    deprovisionUserConfiguration,
+                    deprovisionUserReassignmentMetadata
+                );
                 userDeprovisioner.setGroupMemberships(groupMembershipPerUser.get(userId));
                 userDeprovisioner.setPermissionSetAssignments(psasPerUser.get(userId));
                 userDeprovisioner.setUserPackageLicenses(uplsPerUser.get(userId));
@@ -71,6 +96,7 @@ public without sharing class UserDeprovisionOrganizer {
                 userDeprovisioner.setUserLogin(userLoginPerUser.get(userId));
                 userDeprovisioner.setSmsSenderIdAssignments(smsSenderIdAssignmentsPerUser.get(userId));
                 userDeprovisioner.setSmsLicenses(smsMagicLicensesPerUser.get(userId));
+                userDeprovisioner.setCampaigns(campaignsPerUser.get(userId));
 
                 // Figure out what we need to do for each user and mark it on the user
                 // If user is meant to deprovision enqueue for further actions
@@ -138,7 +164,7 @@ public without sharing class UserDeprovisionOrganizer {
         );
 
         List<PermissionSetAssignment> allUserPermissionSetAssignments = [
-            SELECT AssigneeId, PermissionSet.Name
+            SELECT AssigneeId, PermissionSetId, PermissionSet.Name
             FROM PermissionSetAssignment
             WHERE AssigneeId IN :userIds AND PermissionSet.IsOwnedByProfile = FALSE
         ];
@@ -309,6 +335,31 @@ public without sharing class UserDeprovisionOrganizer {
             userToLicenses.get(smsLicense.smagicinteract__User__c).add(smsLicense);
 
         return userToLicenses;
+    }
+
+    /** Get a list of all campaigns for each user */
+    public static Map<Id, List<Campaign>> getCampaigns(List<Id> userIds) {
+        GovernorLimitPreemptException.assertCanQueryN(
+            1,
+            'Could not query campaigns for deprovisioning - reached SOQL governor limit'
+        );
+
+        // Get records and map to each user
+        List<Campaign> allCampaigns = [
+            SELECT Id, OwnerId
+            FROM Campaign
+            WHERE OwnerId IN :userIds
+        ];
+
+        Map<Id, List<Campaign>> userToCampaigns = new Map<Id, List<Campaign>>();
+
+        for (Id uId : userIds)
+            userToCampaigns.put(uId, new List<Campaign>());
+
+        for (Campaign cam : allCampaigns)
+            userToCampaigns.get(cam.OwnerId).add(cam);
+
+        return userToCampaigns;
     }
 
     /**

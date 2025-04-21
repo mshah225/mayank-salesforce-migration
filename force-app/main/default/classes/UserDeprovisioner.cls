@@ -9,15 +9,18 @@
  *
  * For the deprovisioning process, these records are created initially in the UserTrigger context, where it launches the deprovisioning
  * process and logs all necessary changes on the user. Then it is passed along to each Queueable and Batch apex instance in order to keep
- * track of the record throughout the process.
+ * track of the record throughout the process. d
  */
 public without sharing class UserDeprovisioner {
-    // Global custom setting
-    private static Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration = Deprovision_User_Configuration__c.getAll();
-
     // The user to deprovision
     private User deprovisionUser;
     private User updatedUser; // updated version with changes since this is launched from after trigger context
+
+    // Metadata used to determine how to deprovision users
+    private Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration;
+    private Map<String, Deprovision_User_Campaign_Reassignment__mdt> deprovisionUserReassignmentMetadata;
+
+    // Flag indicating is deprovisioning has been called yet or not
     private Boolean doDeprovision = false;
 
     // All related records
@@ -30,15 +33,23 @@ public without sharing class UserDeprovisioner {
     private List<smagicinteract__SMS_SenderId__c> smsSenderIds;
     private List<smagicinteract__SenderId_Profile_Map__c> smsSenderIdAssignments;
     private List<smagicinteract__License__c> smsLicenses;
+    private List<Campaign> campaigns;
 
     // Flag to lock records objects after initial deprovisioning - this allows us to force errors to check what happens during DML error
     @TestVisible
     private static Boolean FORCE_LOCK = false;
     private Boolean locked = false;
 
-    public UserDeprovisioner(User deprovisionUser) {
+    public UserDeprovisioner(
+        User deprovisionUser,
+        Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration,
+        Map<String, Deprovision_User_Campaign_Reassignment__mdt> deprovisionUserReassignmentMetadata
+    ) {
         this.deprovisionUser = deprovisionUser;
         this.updatedUser = new User(Id = deprovisionUser.Id);
+
+        this.deprovisionUserConfiguration = deprovisionUserConfiguration;
+        this.deprovisionUserReassignmentMetadata = deprovisionUserReassignmentMetadata;
     }
 
     // Wraps together all the logic
@@ -79,6 +90,7 @@ public without sharing class UserDeprovisioner {
             updateSmsSenderIds(true);
             removeSmsSenderIdAssignments(true);
             removeSmsLicenses(true);
+            reassignCampaigns(true);
             updatedUser.Deprovision_User__c = false;
             updatedUser.IsActive = false;
             doDeprovision = true;
@@ -281,6 +293,40 @@ public without sharing class UserDeprovisioner {
         }
     }
 
+    // Reassign campaigns
+    private void reassignCampaigns(Boolean logIt) {
+        // Find relevant metadatum for this user's role
+        Deprovision_User_Campaign_Reassignment__mdt reassignmentRuleForUser;
+        for (Deprovision_User_Campaign_Reassignment__mdt metadatum : deprovisionUserReassignmentMetadata.values()) {
+            if (metadatum.Role_Id__c == deprovisionUser.UserRoleId) {
+                reassignmentRuleForUser = metadatum;
+                break;
+            }
+        }
+
+        // Reassign campaigns
+        if (campaigns != null && !campaigns.isEmpty() && reassignmentRuleForUser != null) {
+            for (Campaign cam : campaigns) {
+                cam.OwnerId = reassignmentRuleForUser.Default_Owner__c;
+            }
+
+            // Log changes
+            if (logIt) {
+                List<String> campaignIds = new List<String>();
+                for (Campaign cam : campaigns)
+                    campaignIds.add(cam.Id);
+                addToProcessingNotes(
+                    'Reassigned campaigns: ' +
+                        String.join(campaignIds, ', ') +
+                        ' to ' +
+                        reassignmentRuleForUser.Default_Owner__c
+                );
+            }
+        } else {
+            campaigns = null;
+        }
+    }
+
     // Helper functionality
     @TestVisible
     private String whichSettingDetailIsResponsible(String errorMessage) {
@@ -471,6 +517,14 @@ public without sharing class UserDeprovisioner {
         if (doDeprovision)
             removeSmsLicenses(false);
     }
+    public void setCampaigns(List<Campaign> campaigns) {
+        if (locked)
+            return;
+        this.campaigns = campaigns;
+
+        if (doDeprovision)
+            reassignCampaigns(false);
+    }
 
     // Get lists of modified records after deprovisioning
     public User getUser() {
@@ -502,6 +556,9 @@ public without sharing class UserDeprovisioner {
     }
     public List<smagicinteract__License__c> getSmsLicenses() {
         return smsLicenses;
+    }
+    public List<Campaign> getCampaigns() {
+        return campaigns;
     }
 
     public class DeprovisionUserException extends Exception {

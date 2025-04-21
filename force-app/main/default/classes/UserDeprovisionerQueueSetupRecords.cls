@@ -87,15 +87,16 @@ public without sharing class UserDeprovisionerQueueSetupRecords implements Queue
             }
 
             enqueueNext(new UserDeprovisionCaseTransferBatch(userDeprovisioners));
-            launchNext();
         } catch (Exception ex) {
             List<String> vars = new List<String>();
             List<Id> userIds = new List<Id>();
             for (UserDeprovisioner userDeprovisioner : userDeprovisioners)
                 userIds.add(userDeprovisioner.getUser().Id);
             vars.add(ErrorLogger.convertListToJSON('userIds', userIds));
-            System.enqueueJob(new ErrorLogger.ErrorLoggerQueue(ex, vars, false));
+
+            enqueueNext(new ErrorLogger.ErrorLoggerQueue(ex, vars, false));
         }
+        launchNext();
         UserDeprovisionOrganizer.isDeprovisoning = false;
     }
 

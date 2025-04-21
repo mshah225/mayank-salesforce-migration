@@ -6,6 +6,11 @@ public class UserDeprovisionTest {
 
     @TestSetup
     private static void setupTestData() {
+        UserRole testRole = new UserRole(Name = 'TestRole');
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert testRole;
+        }
+
         // Test user
         User testUser = new User(
             FirstName = 'Test User Deprovision User',
@@ -15,6 +20,7 @@ public class UserDeprovisionTest {
             Alias = 'testUsr1',
             CommunityNickname = 'user.deprovision',
             TimeZoneSidKey = 'America/Phoenix',
+            UserRoleId = testRole.Id,
             LocaleSidKey = 'en_US',
             EmailEncodingKey = 'ISO-8859-1',
             ProfileId = RecordIdHelper.getProfileId('Standard User'),
@@ -123,6 +129,13 @@ public class UserDeprovisionTest {
         smagicinteract__License__c smsLicense = new smagicinteract__License__c(smagicinteract__User__c = testUser.Id);
         insert smsLicense;
 
+        // Campaigns
+        List<Campaign> campaigns = new List<Campaign>();
+        for (Integer i = 0; i < 5; i++) {
+            campaigns.add(new Campaign(Name = 'Test Campaign #' + (i + 1), OwnerId = testUser.Id));
+        }
+        insert campaigns;
+
         // Cases
         List<Case> casesToAdd = new List<Case>();
         // the functional group
@@ -186,9 +199,21 @@ public class UserDeprovisionTest {
             insert deproivisionConfigurations;
         }
     }
+    private static void setupCustomMetadata() {
+        UserRole testRole = [SELECT Id, Name FROM UserRole WHERE Name = 'TestRole' LIMIT 1];
+
+        UserDeprovisionOrganizer.deprovisionUserReassignmentMetadata = new Map<String, Deprovision_User_Campaign_Reassignment__mdt>{
+            'Reassign_TestRole' => new Deprovision_User_Campaign_Reassignment__mdt(
+                Role_Id__c = testRole.Id,
+                Role_Name__c = testRole.Name,
+                Default_Owner__c = UserInfo.getUserId()
+            )
+        };
+    }
 
     @isTest
     public static void testUserFields() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [
             SELECT
@@ -250,6 +275,7 @@ public class UserDeprovisionTest {
 
     @isTest
     public static void testRemoveFromGroups() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
 
@@ -296,6 +322,7 @@ public class UserDeprovisionTest {
 
     @isTest
     public static void testRemoveFromPermissionSets() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
 
@@ -349,6 +376,7 @@ public class UserDeprovisionTest {
 
     @isTest
     public static void testRemoveLicenses() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
 
@@ -399,6 +427,7 @@ public class UserDeprovisionTest {
 
     @isTest
     public static void testAbortCronJobs() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
 
@@ -441,6 +470,7 @@ public class UserDeprovisionTest {
 
     @isTest
     public static void testRemoveFromChatterGroups() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
 
@@ -490,6 +520,7 @@ public class UserDeprovisionTest {
 
     @isTest
     public static void testUnfreezeUserLogin() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
 
@@ -528,6 +559,7 @@ public class UserDeprovisionTest {
 
     @isTest
     public static void testUnassignSMSLicense() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [SELECT Id, FirstName, LastName FROM User WHERE Alias = 'testUsr1' LIMIT 1];
 
@@ -601,7 +633,7 @@ public class UserDeprovisionTest {
         ];
 
         Assert.isTrue(smsLicenses.isEmpty(), 'Should have deleted SMS licenses');
-        // and processing notes indicate user was unfrozen were removed
+        // and processing notes indicate SMS licenses were removed
         Assert.isTrue(
             testUser.Processing_Notes__c.contains('Removed ' + smsLicensesCount + ' SMS Licenses'),
             'Number of SMS licenses removed should be recorded on the user'
@@ -609,7 +641,55 @@ public class UserDeprovisionTest {
     }
 
     @isTest
+    public static void testReassignCampaigns() {
+        setupCustomMetadata();
+        // Get test user
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
+
+        // Mark as needing to deprovision
+        testUser.Deprovision_User__c = true;
+
+        // Check they have campaigns assigned
+        List<Campaign> campaigns = [
+            SELECT Id
+            FROM Campaign
+            WHERE OwnerId = :testUser.Id
+        ];
+
+        Assert.isFalse(campaigns.isEmpty(), 'This user should have some campaigns pre-deprovision');
+
+        // Do it
+        Test.startTest();
+        update testUser;
+        Test.stopTest();
+
+        // Get updated user
+        testUser = [SELECT Id, Processing_Notes__c FROM User WHERE Id = :testUser.Id];
+
+        // Check sender id was renamed
+        campaigns = [
+            SELECT Id, OwnerId
+            FROM Campaign
+            WHERE Id IN :new Map<Id, Campaign>(campaigns).keySet()
+        ];
+        Assert.isFalse(campaigns.isEmpty(), 'Should NOT have deleted Campaigns');
+        for (Campaign cam : campaigns) {
+            Assert.areNotEqual(testUser.Id, cam.OwnerId, 'Campaigns should have been reassigned');
+            Assert.areEqual(UserInfo.getUserId(), cam.OwnerId, 'Campaigns should have been reassigned');
+
+            Assert.isTrue(testUser.Processing_Notes__c.contains(cam.Id), 'Campaign ID should be recorded on user');
+        }
+
+        // and processing notes indicate Campaigns were reassigned
+        Assert.isTrue(
+            testUser.Processing_Notes__c.contains('Reassigned campaigns: '),
+            'Reassigned campaigns should be recorded on the user'
+        );
+    }
+
+    @isTest
     public static void testReassignCases() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
 
@@ -644,7 +724,7 @@ public class UserDeprovisionTest {
             );
         }
 
-        // and processing notes indicate user was unfrozen were removed
+        // and processing notes indicate cases were reassigned
         Assert.isTrue(
             testUser.Processing_Notes__c.contains('Successfully transferred ' + caseCount + ' private cases to queue'),
             'Case transfers should have been recorded on the user'
@@ -652,7 +732,52 @@ public class UserDeprovisionTest {
     }
 
     @isTest
+    public static void testEmptyUser() {
+        setupCustomMetadata();
+
+        // Test user no records
+        User testUser = new User(
+            FirstName = 'Test User Deprovision User NO RECORDS',
+            LastName = 'Test',
+            Username = 'user.deprovision.no.records@test.test',
+            Email = 'user.deprovision.no.records@test.test',
+            Alias = 'testUsr2',
+            CommunityNickname = 'user.deprovision.no.records',
+            TimeZoneSidKey = 'America/Phoenix',
+            LocaleSidKey = 'en_US',
+            EmailEncodingKey = 'ISO-8859-1',
+            ProfileId = RecordIdHelper.getProfileId('Standard User'),
+            AboutMe = 'Some text field',
+            Sandbox_DEV__c = true,
+            LanguageLocaleKey = 'en_US'
+        );
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert testUser;
+        }
+
+        // Mark as needing to deprovision
+        testUser.Deprovision_User__c = true;
+
+        // Do it
+        Test.startTest();
+        update testUser;
+        Test.stopTest();
+
+        // Get updated user
+        testUser = [
+            SELECT Id, IsActive, Deprovision_User__c
+            FROM User
+            WHERE Id = :testUser.Id
+        ];
+
+        // Check set to inactive
+        Assert.areEqual(false, testUser.IsActive);
+        Assert.areEqual(false, testUser.Deprovision_User__c);
+    }
+
+    @isTest
     public static void testRejectByProfile() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [SELECT Id, ProfileId, Profile.Name FROM User WHERE Alias = 'testUsr1' LIMIT 1];
         String profileId = testUser.ProfileId, profileName = testUser.Profile.Name;
@@ -661,11 +786,13 @@ public class UserDeprovisionTest {
         testUser.Deprovision_User__c = true;
 
         // Add custom setting to reject based on profile
-        insert new Deprovision_User_Configuration__c(
-            Name = 'ProfileToIgnore_1',
-            Id__c = profileId,
-            Name__c = profileName
-        );
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert new Deprovision_User_Configuration__c(
+                Name = 'ProfileToIgnore_1',
+                Id__c = profileId,
+                Name__c = profileName
+            );
+        }
 
         // Do it
         Test.startTest();
@@ -686,24 +813,27 @@ public class UserDeprovisionTest {
 
     @isTest
     public static void testRejectByPermSet() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
         PermissionSetAssignment psa = [
             SELECT PermissionSetId, PermissionSet.Name
             FROM PermissionSetAssignment
-            WHERE AssigneeId = :testUser.Id
+            WHERE AssigneeId = :testUser.Id AND PermissionSet.Name LIKE 'Test_PS_%'
             LIMIT 1
         ];
 
         // Mark as needing to deprovision
         testUser.Deprovision_User__c = true;
 
-        // Add custom setting to reject based on profile
-        insert new Deprovision_User_Configuration__c(
-            Name = 'PermissionSetToIgnore_1',
-            Id__c = psa.PermissionSetId,
-            Name__c = psa.PermissionSet.Name
-        );
+        // Add custom setting to reject based on perm set
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            insert new Deprovision_User_Configuration__c(
+                Name = 'PermissionSetToIgnore_1',
+                Id__c = psa.PermissionSetId,
+                Name__c = psa.PermissionSet.Name
+            );
+        }
 
         // Do it
         Test.startTest();
@@ -726,6 +856,7 @@ public class UserDeprovisionTest {
 
     @isTest
     public static void testRejectByAdminDevRole() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [SELECT Id, Role_Administrator_Developer__c FROM User WHERE Alias = 'testUsr1' LIMIT 1];
         testUser.Role_Administrator_Developer__c = true;
@@ -755,6 +886,7 @@ public class UserDeprovisionTest {
 
     @isTest
     public static void testRejectByDelegratedAdmin() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [SELECT Id, Sandbox_Delagated_Administrator__c FROM User WHERE Alias = 'testUsr1' LIMIT 1];
         testUser.Sandbox_Delagated_Administrator__c = true;
@@ -782,6 +914,7 @@ public class UserDeprovisionTest {
 
     @isTest
     public static void testErrorRemovingFromGroups() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
 
@@ -824,6 +957,7 @@ public class UserDeprovisionTest {
 
     @isTest
     public static void testErrorRemovingFromPermissionSets() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
 
@@ -866,6 +1000,7 @@ public class UserDeprovisionTest {
 
     @isTest
     public static void testErrorRemovingLicenses() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
 
@@ -908,6 +1043,7 @@ public class UserDeprovisionTest {
 
     @isTest
     public static void testErrorAbortingCronJobs() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
 
@@ -952,6 +1088,7 @@ public class UserDeprovisionTest {
 
     @isTest
     public static void testErrorUnassigningSmsLicense1() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
 
@@ -995,6 +1132,7 @@ public class UserDeprovisionTest {
 
     @isTest
     public static void testErrorUnassigningSmsLicense2() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
 
@@ -1046,6 +1184,7 @@ public class UserDeprovisionTest {
 
     @isTest
     public static void testErrorUnassigningSmsLicense3() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
 
@@ -1087,7 +1226,51 @@ public class UserDeprovisionTest {
     }
 
     @isTest
+    public static void testErrorReassigningCampaigns() {
+        setupCustomMetadata();
+        // Get test user
+        User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
+
+        // Mark as needing to deprovision
+        testUser.Deprovision_User__c = true;
+
+        UserDeprovisioner.FORCE_LOCK = true; // Prevent deprovisioners from refreshing data
+
+        // Do it
+        Test.startTest();
+
+        update testUser;
+
+        // Delete data the deprovisioners rely on
+        System.runAs(new User(Id = UserInfo.getUserId())) {
+            delete UserDeprovisionOrganizer.getCampaigns(new List<Id>{ testUser.Id }).get(testUser.Id);
+        }
+
+        Test.stopTest();
+
+        // Get updated user
+        testUser = [SELECT Processing_Notes__c FROM User WHERE Id = :testUser.Id];
+
+        // Processing notes were updated to include error details
+        Assert.isTrue(
+            testUser.Processing_Notes__c.contains(
+                'Error while updating the Campaign objects during user deprovisioning'
+            ),
+            'Should contain exception details on user'
+        );
+
+        // Check for error logger case
+        List<Case> errorLoggerCase = [SELECT Id, Subject, Description FROM Case WHERE Subject LIKE 'Apex Exception:%'];
+        Assert.isFalse(errorLoggerCase.isEmpty(), 'Should have created error logger case, but did not');
+        Assert.isTrue(
+            errorLoggerCase[0].Description.contains('Campaign'),
+            'Error logger description should indicate object type'
+        );
+    }
+
+    @isTest
     public static void testErrorWhenReassignCases() {
+        setupCustomMetadata();
         // Get test user
         User testUser = [SELECT Id FROM User WHERE Alias = 'testUsr1' LIMIT 1];
 

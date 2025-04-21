@@ -29,6 +29,7 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
             List<smagicinteract__SMS_SenderId__c> smsSenderIds = new List<smagicinteract__SMS_SenderId__c>();
             List<smagicinteract__SenderId_Profile_Map__c> smsSenderIdAssignmnents = new List<smagicinteract__SenderId_Profile_Map__c>();
             List<smagicinteract__License__c> smsLicenses = new List<smagicinteract__License__c>();
+            List<Campaign> campaigns = new List<Campaign>();
 
             // Collect all non-setup records that need to be removed or changed
             for (UserDeprovisioner userDeprovisioner : userDeprovisioners) {
@@ -53,6 +54,10 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
                 List<smagicinteract__License__c> userSmsLicenses = userDeprovisioner.getSmsLicenses();
                 if (userSmsLicenses != null)
                     smsLicenses.addAll(userSmsLicenses);
+
+                List<Campaign> userCampaigns = userDeprovisioner.getCampaigns();
+                if (userCampaigns != null)
+                    campaigns.addAll(userCampaigns);
             }
 
             // Update chatter memberships and error log if any failures
@@ -85,11 +90,13 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
                 if (!resultWrapper.userIdToProcessingNotes.isEmpty()) {
                     // Build map from sender id to user
                     Map<Id, Id> senderIdToUserIdMp = new Map<Id, Id>();
-                    for (smagicinteract__SenderId_Profile_Map__c senderIdAssignment : smsSenderIdAssignmnents)
-                        senderIdToUserIdMp.put(
-                            senderIdAssignment.smagicinteract__senderid_lookup__c,
-                            senderIdAssignment.smagicinteract__User__c
-                        );
+                    for (UserDeprovisioner userDeprovisioner : userDeprovisioners) {
+                        Id userId = userDeprovisioner.getUser().Id;
+                        List<smagicinteract__SMS_SenderId__c> userSmsSenderIds = userDeprovisioner.getSmsSenderIds();
+                        if (userSmsSenderIds != null)
+                            for (smagicinteract__SMS_SenderId__c senderId : userSmsSenderIds)
+                                senderIdToUserIdMp.put(senderId.Id, userId);
+                    }
 
                     // Build new processing notes mapping
                     Map<Id, String> newProcessingNotes = new Map<Id, String>();
@@ -114,6 +121,7 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
                 handleResponse(resultWrapper);
             }
 
+            // Remove SMS Licenses
             if (!smsLicenses.isEmpty()) {
                 UserDeprovisionOrganizer.ResultWrapper resultWrapper = UserDeprovisionOrganizer.deleteSobjectRecords(
                     'smagicinteract__User__c',
@@ -122,11 +130,44 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
                 handleResponse(resultWrapper);
             }
 
+            // Reassign campaigns
+            if (!campaigns.isEmpty()) {
+                UserDeprovisionOrganizer.ResultWrapper resultWrapper = UserDeprovisionOrganizer.updateSobjectRecords(
+                    'Id',
+                    campaigns
+                );
+
+                // Since these are being updated to reassign the owner, we can't use OwnerId map Campaign to
+                // relevant user, instead we need to take record id and cross reference it to get corresponding
+                // user
+                if (!resultWrapper.userIdToProcessingNotes.isEmpty()) {
+                    // Build map from campaign id to user id
+                    Map<Id, Id> campaignIdToUserIdMp = new Map<Id, Id>();
+                    for (UserDeprovisioner userDeprovisioner : userDeprovisioners) {
+                        Id userId = userDeprovisioner.getUser().Id;
+                        List<Campaign> userCampaigns = userDeprovisioner.getCampaigns();
+                        if (userCampaigns != null)
+                            for (Campaign cam : userCampaigns)
+                                campaignIdToUserIdMp.put(cam.Id, userId);
+                    }
+
+                    // Build new processing notes mapping
+                    Map<Id, String> newProcessingNotes = new Map<Id, String>();
+                    for (Id campaignId : resultWrapper.userIdToProcessingNotes.keySet())
+                        newProcessingNotes.put(
+                            campaignIdToUserIdMp.get(campaignId),
+                            resultWrapper.userIdToProcessingNotes.get(campaignId)
+                        );
+                    resultWrapper.userIdToProcessingNotes = newProcessingNotes;
+                }
+
+                handleResponse(resultWrapper);
+            }
+
             // Launch next stage of user deprovisioning
             if (!updatedUsers.isEmpty())
                 enqueueNext(new UpdateUsersQueueable(new List<User>(updatedUsers)));
             enqueueNext(new UserDeprovisionerQueueSetupRecords(userDeprovisioners));
-            launchNext();
         } catch (Exception ex) {
             List<String> vars = new List<String>();
             List<Id> userIds = new List<Id>();
@@ -135,6 +176,7 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
             vars.add(ErrorLogger.convertListToJSON('userIds', userIds));
             ErrorLogger.log(ex, vars, false);
         }
+        launchNext();
         UserDeprovisionOrganizer.isDeprovisoning = false;
     }
 
@@ -160,6 +202,7 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
         Map<Id, List<smagicinteract__License__c>> smsMagicLicensesPerUser = UserDeprovisionOrganizer.getSMSMagicLicenses(
             userIds
         );
+        Map<Id, List<Campaign>> campaignsPerUser = UserDeprovisionOrganizer.getCampaigns(userIds);
 
         // Refresh details in user deprovisioners
         for (UserDeprovisioner userDeprovisioner : userDeprovisioners) {
@@ -172,6 +215,8 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
                 userDeprovisioner.setSmsSenderIdAssignments(smsSenderIdAssignmentsPerUser.get(userId));
             if (smsMagicLicensesPerUser.containsKey(userId))
                 userDeprovisioner.setSmsLicenses(smsMagicLicensesPerUser.get(userId));
+            if (campaignsPerUser.containsKey(userId))
+                userDeprovisioner.setCampaigns(campaignsPerUser.get(userId));
         }
     }
 

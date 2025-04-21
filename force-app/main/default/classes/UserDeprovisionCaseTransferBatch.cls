@@ -87,13 +87,12 @@ public class UserDeprovisionCaseTransferBatch implements Database.Batchable<SObj
                 modifiedUsers.add(userDeprovisioner.getUser());
             }
             update modifiedUsers;
-            launchNext();
         } catch (Exception e) {
             List<String> vars = new List<String>();
             ErrorLogger.log(e, vars, false);
         }
+        launchNext();
         UserDeprovisionOrganizer.isDeprovisoning = false;
-
     }
 
     /**

@@ -15,6 +15,7 @@ public without sharing class FilterSetConversionBatch implements Database.Batcha
             List<Success_Resource__c> allSuccessResources = [
                 SELECT Id, Resource__c, Default_Filter__c
                 FROM Success_Resource__c
+                WHERE IsActive__c = TRUE
             ];
 
             Set<Id> hasDefaultFilterIds = new Set<Id>();

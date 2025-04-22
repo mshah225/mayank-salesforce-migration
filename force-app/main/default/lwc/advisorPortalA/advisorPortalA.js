@@ -1176,7 +1176,28 @@ export default class AdvisorPortalA extends LightningElement {
                     if (this.applyingFilterSetCounter === 0) this.applyingFilterSet = false; // clear applying whenever no fields actually need to reload
 
                     // Apply filters is apply is true (rather than just viewing filter values)
-                    if (result?.action?.apply === true) this.applyFilters();
+                    if (result?.action?.apply === true) {
+                        this.applyFilters()
+                            .then(() => {
+                                this.dispatchEvent(
+                                    new ShowToastEvent({
+                                        title: 'Success',
+                                        message: 'Filter set applied',
+                                        variant: 'success',
+                                    })
+                                );
+                            })
+                            .catch((e) => {
+                                this.dispatchEvent(
+                                    new ShowToastEvent({
+                                        title: 'Unable to apply filter set',
+                                        message: extractErrorMessages(e)[0],
+                                        variant: 'error',
+                                        mode: 'sticky',
+                                    })
+                                );
+                            });
+                    }
                 }
             })
             .catch((error) => {

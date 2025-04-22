@@ -1395,25 +1395,40 @@ export default class AdvisorPortalA extends LightningElement {
                         fields,
                     };
 
-                    return createRecord(recordInput)
-                        .then((recordOutput) => {
-                            this.appliedFilterSetId = recordOutput.id;
-                            this.hasChangedFields = false;
-                            this.hideAllToasts(); // close existing to prevent toasts from overlapping
-                            this.refs.hasSavedFilterSetToast.show();
-                            this.lastFilterSetName = undefined;
+                    if (filterSetName !== '') {
+                        return createRecord(recordInput)
+                            .then((recordOutput) => {
+                                this.appliedFilterSetId = recordOutput.id;
+                                this.hasChangedFields = false;
+                                this.hideAllToasts(); // close existing to prevent toasts from overlapping
+                                this.refs.hasSavedFilterSetToast.show();
+                                this.lastFilterSetName = undefined;
+                            })
+                            .catch((e) => {
+                                this.dispatchEvent(
+                                    new ShowToastEvent({
+                                        title: 'Unable to save filter set',
+                                        message: extractErrorMessages(e)[0],
+                                        variant: 'error',
+                                        mode: 'sticky',
+                                    })
+                                );
+                                this.saveFilterSet();
+                            });
+                    }
+
+                    this.dispatchEvent(
+                        new ShowToastEvent({
+                            title: 'Unable to save filter set',
+                            message: 'You must enter a name for this filter set',
+                            variant: 'error',
+                            mode: 'sticky',
                         })
-                        .catch((e) => {
-                            this.dispatchEvent(
-                                new ShowToastEvent({
-                                    title: 'Unable to save filter set',
-                                    message: extractErrorMessages(e)[0],
-                                    variant: 'error',
-                                    mode: 'sticky',
-                                })
-                            );
-                            this.saveFilterSet();
-                        });
+                    );
+
+                    this.saveFilterSet();
+
+                    return Promise.resolve();
                 }
                 return Promise.resolve();
             })

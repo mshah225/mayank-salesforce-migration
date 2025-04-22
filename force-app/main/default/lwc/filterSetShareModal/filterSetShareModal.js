@@ -89,7 +89,7 @@ export default class FilterSetShareModal extends LightningModal {
         // Add any that we are already sharing with
         for (const fsua of this.filterSet?.Filter_Set_User_Associations__r ?? []) {
             allShareOptions.push({
-                label: [fsua.User__r.Name, fsua.User__r.Alias].filter((v) => !!v).join(' - '),
+                label: [fsua.User__r?.Name, fsua.User__r?.Alias].filter((v) => !!v).join(' - ') || '???',
                 value: fsua.User__c,
             });
         }

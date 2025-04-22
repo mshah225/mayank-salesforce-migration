@@ -99,7 +99,7 @@ export default class FilterSetsModal extends LightningModal {
                                         value
                                     }
 
-                                    Filter_Set_User_Associations__r(first: 2000) {
+                                    Filter_Set_User_Associations__r(first: 2000, upperBound: 2000) {
                                         edges {
                                             node {
                                                 Id

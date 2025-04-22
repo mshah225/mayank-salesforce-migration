@@ -3,7 +3,7 @@
     <lightning-modal-body>
         <c-lightning-error-or-retry message={errorMessage} has-error={hasError} retry-enabled="false">
             <c-lightning-await-load-block loading={isLoading} has-content="true">
-                <div class="slds-text-heading_medium slds-var-m-bottom_small">Share "<b>{filterName}</b>"</div>
+                <div class="slds-text-heading_small slds-var-m-bottom_small">Share "<b>{filterName}</b>"</div>
 
                 <div class="slds-var-m-bottom_small">
                     <!-- It is important that value is defined BEFORE options so that when handling change 

@@ -45,7 +45,7 @@ describe('c-advisor-portal feedback', () => {
         // Fake a response
         LightningPrompt.open = jest.fn().mockResolvedValueOnce();
 
-        // Click the save as button
+        // Click the feedback button
         element.shadowRoot.querySelector('.feedbackWrapper button').click();
 
         // Did open prompt
@@ -62,7 +62,7 @@ describe('c-advisor-portal feedback', () => {
         // Fake a response
         LightningPrompt.open = jest.fn().mockResolvedValueOnce('I keep getting errors when loading');
 
-        // Click the save as button
+        // Click the feedback button
         element.shadowRoot.querySelector('.feedbackWrapper button').click();
 
         // Wait for successful mock response from prompt
@@ -93,7 +93,7 @@ describe('c-advisor-portal feedback', () => {
         LightningPrompt.open = jest.fn().mockResolvedValueOnce('I keep getting errors when loading');
         submitFeedback.mockResolvedValueOnce(true);
 
-        // Click the save as button
+        // Click the feedback button
         element.shadowRoot.querySelector('.feedbackWrapper button').click();
 
         await flushPromises(); // Wait for promise from opening prompt
@@ -121,7 +121,7 @@ describe('c-advisor-portal feedback', () => {
         LightningPrompt.open = jest.fn().mockResolvedValueOnce('I keep getting errors when loading');
         submitFeedback.mockRejectedValueOnce('ERROR');
 
-        // Click the save as button
+        // Click the feedback button
         element.shadowRoot.querySelector('.feedbackWrapper button').click();
 
         await flushPromises(); // Wait for promise from opening prompt
@@ -141,7 +141,7 @@ describe('c-advisor-portal feedback', () => {
         // Fake a response
         LightningPrompt.open = jest.fn().mockResolvedValueOnce();
 
-        // Click the save as button
+        // Click the feedback button
         element.shadowRoot.querySelector('.feedbackWrapper button').click();
 
         // Did open prompt
@@ -158,7 +158,7 @@ describe('c-advisor-portal feedback', () => {
         // Fake a response
         LightningPrompt.open = jest.fn().mockResolvedValueOnce('I keep getting errors when loading');
 
-        // Click the save as button
+        // Click the feedback button
         element.shadowRoot.querySelector('.feedbackWrapper button').click();
 
         // Wait for successful mock response from prompt
@@ -192,7 +192,7 @@ describe('c-advisor-portal feedback', () => {
         LightningPrompt.open = jest.fn().mockResolvedValueOnce('I keep getting errors when loading');
         createTicket.mockResolvedValueOnce(true);
 
-        // Click the save as button
+        // Click the feedback button
         element.shadowRoot.querySelector('.feedbackWrapper button').click();
 
         await flushPromises(); // Wait for promise from opening prompt
@@ -220,7 +220,7 @@ describe('c-advisor-portal feedback', () => {
         LightningPrompt.open = jest.fn().mockResolvedValueOnce('I keep getting errors when loading');
         createTicket.mockRejectedValueOnce('ERROR');
 
-        // Click the save as button
+        // Click the feedback button
         element.shadowRoot.querySelector('.feedbackWrapper button').click();
 
         await flushPromises(); // Wait for promise from opening prompt

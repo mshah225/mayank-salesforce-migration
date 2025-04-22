@@ -16,7 +16,7 @@ describe('c-advisor-portal Save filter set', () => {
         jest.clearAllMocks();
     });
 
-    test('Save as button opens input prompt', () => {
+    test('Save filteres button opens input prompt', () => {
         const element = createElement('c-advisor-portal', {
             is: AdvisorPortalTest,
         });
@@ -25,8 +25,10 @@ describe('c-advisor-portal Save filter set', () => {
         // Fake a response
         LightningPrompt.open = jest.fn().mockResolvedValueOnce();
 
-        // Click the save as button
-        [...element.shadowRoot.querySelectorAll('lightning-button')].filter((v) => v.label === 'Save As')[0].click();
+        // Click the save filters button
+        [...element.shadowRoot.querySelectorAll('lightning-button')]
+            .filter((v) => v.label === 'Save Filters')[0]
+            .click();
 
         // Did open prompt
         expect(LightningPrompt.open).toHaveBeenCalled();
@@ -41,8 +43,10 @@ describe('c-advisor-portal Save filter set', () => {
         // Fake a response
         LightningPrompt.open = jest.fn().mockResolvedValueOnce();
 
-        // Click the save as button
-        [...element.shadowRoot.querySelectorAll('lightning-button')].filter((v) => v.label === 'Save As')[0].click();
+        // Click the save filters button
+        [...element.shadowRoot.querySelectorAll('lightning-button')]
+            .filter((v) => v.label === 'Save Filters')[0]
+            .click();
 
         // Did open prompt
         expect(LightningPrompt.open).toHaveBeenCalledWith({
@@ -64,8 +68,10 @@ describe('c-advisor-portal Save filter set', () => {
         // Fake a response
         LightningPrompt.open = jest.fn().mockResolvedValueOnce();
 
-        // Click the save as button
-        [...element.shadowRoot.querySelectorAll('lightning-button')].filter((v) => v.label === 'Save As')[0].click();
+        // Click the save filters button
+        [...element.shadowRoot.querySelectorAll('lightning-button')]
+            .filter((v) => v.label === 'Save Filters')[0]
+            .click();
 
         // Did open prompt
         expect(LightningPrompt.open).toHaveBeenCalledWith({
@@ -85,8 +91,10 @@ describe('c-advisor-portal Save filter set', () => {
         // Mock responding with
         LightningPrompt.open = jest.fn().mockResolvedValue('Ba Sing Se');
 
-        // Click the save as button
-        [...element.shadowRoot.querySelectorAll('lightning-button')].filter((v) => v.label === 'Save As')[0].click();
+        // Click the save filters button
+        [...element.shadowRoot.querySelectorAll('lightning-button')]
+            .filter((v) => v.label === 'Save Filters')[0]
+            .click();
 
         // await prompt to close with success and createRecord to enqueue
         await flushPromises();
@@ -122,8 +130,10 @@ describe('c-advisor-portal Save filter set', () => {
         // Mock responding with
         LightningPrompt.open = jest.fn().mockResolvedValue('Ba Sing Se');
 
-        // Click the save as button
-        [...element.shadowRoot.querySelectorAll('lightning-button')].filter((v) => v.label === 'Save As')[0].click();
+        // Click the save filters button
+        [...element.shadowRoot.querySelectorAll('lightning-button')]
+            .filter((v) => v.label === 'Save Filters')[0]
+            .click();
 
         // await prompt to close with success and createRecord to enqueue
         await flushPromises();
@@ -158,8 +168,10 @@ describe('c-advisor-portal Save filter set', () => {
         // Mock responding with
         LightningPrompt.open = jest.fn().mockResolvedValue('Ba Sing Se');
 
-        // Click the save as button
-        [...element.shadowRoot.querySelectorAll('lightning-button')].filter((v) => v.label === 'Save As')[0].click();
+        // Click the save filters button
+        [...element.shadowRoot.querySelectorAll('lightning-button')]
+            .filter((v) => v.label === 'Save Filters')[0]
+            .click();
 
         // await prompt to close with success and createRecord to enqueue
         await flushPromises();
@@ -200,8 +212,10 @@ describe('c-advisor-portal Save filter set', () => {
         // Mock responding with
         LightningPrompt.open = jest.fn().mockResolvedValue('Ba Sing Se');
 
-        // Click the save as button
-        [...element.shadowRoot.querySelectorAll('lightning-button')].filter((v) => v.label === 'Save As')[0].click();
+        // Click the save filters button
+        [...element.shadowRoot.querySelectorAll('lightning-button')]
+            .filter((v) => v.label === 'Save Filters')[0]
+            .click();
 
         // Mock createRecord failing
         createRecord.mockRejectedValueOnce('Duplicate name');
@@ -244,8 +258,10 @@ describe('c-advisor-portal Save filter set', () => {
         // Mock responding with
         LightningPrompt.open = jest.fn().mockResolvedValue('Ba Sing Se');
 
-        // Click the save as button
-        [...element.shadowRoot.querySelectorAll('lightning-button')].filter((v) => v.label === 'Save As')[0].click();
+        // Click the save filters button
+        [...element.shadowRoot.querySelectorAll('lightning-button')]
+            .filter((v) => v.label === 'Save Filters')[0]
+            .click();
 
         // Mock createRecord failing
         let mockAttempt = 0;

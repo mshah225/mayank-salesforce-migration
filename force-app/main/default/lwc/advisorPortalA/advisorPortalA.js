@@ -1355,8 +1355,8 @@ export default class AdvisorPortalA extends LightningElement {
         return this.appliedFilterSet != null && this.hasChangedFields;
     }
 
-    /** Can save as if no filter set OR filter set and changed fields OR filter set and not owner */
-    get disableSaveAsButton() {
+    /** Can save filters if no filter set OR filter set and changed fields OR filter set and not owner */
+    get disableSaveFiltersButton() {
         return !(
             this.appliedFilterSet == null ||
             (this.appliedFilterSet != null && this.hasChangedFields) ||

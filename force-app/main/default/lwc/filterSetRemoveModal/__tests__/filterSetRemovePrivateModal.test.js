@@ -27,7 +27,7 @@ describe('c-filter-set-remove-modal', () => {
         await flushPromises();
 
         expect(element.shadowRoot.querySelector('lightning-modal-body').textContent).toContain(
-            `You are removing ${filterSetPrivate.Name} from the System`
+            `You are removing ${filterSetPrivate.Name} from the system`
         );
     });
 

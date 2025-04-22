@@ -131,6 +131,42 @@ describe('c-filter-set-element', () => {
         expect(pinHandler).toHaveBeenCalledTimes(1);
     });
 
+    test('Show share button if is owner', async () => {
+        const element = createElement('c-filter-set-element', {
+            is: FilterSetElementTest,
+        });
+        element.filterSet = sharedByMeFilterSet;
+        element.allowedToShare = true;
+        document.body.appendChild(element);
+
+        await flushPromises(); // Await render
+
+        // Yes share button
+        expect(
+            [...element.shadowRoot.querySelectorAll('c-lightning-button-dropdown-item')].filter(
+                (v) => v.name === 'share'
+            )[0]
+        ).toBeTruthy();
+    });
+
+    test('Hide share button if not owner', async () => {
+        const element = createElement('c-filter-set-element', {
+            is: FilterSetElementTest,
+        });
+        element.filterSet = sharedWithMeFilterSet;
+        element.allowedToShare = true;
+        document.body.appendChild(element);
+
+        await flushPromises(); // Await render
+
+        // No share button
+        expect(
+            [...element.shadowRoot.querySelectorAll('c-lightning-button-dropdown-item')].filter(
+                (v) => v.name === 'share'
+            )[0]
+        ).toBeFalsy();
+    });
+
     test('Raises proper event when pressing share', () => {
         const element = createElement('c-filter-set-element', {
             is: FilterSetElementTest,

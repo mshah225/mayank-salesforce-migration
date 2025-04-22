@@ -23,7 +23,7 @@ import Id from '@salesforce/user/Id';
  */
 export default class FilterSetElement extends LightningElement {
     @api filterSet;
-    @api canShare = false;
+    @api allowedToShare = false;
 
     get filterName() {
         return this.filterSet?.Name || '';
@@ -54,6 +54,10 @@ export default class FilterSetElement extends LightningElement {
 
     get userOwnsFilterSet() {
         return this.filterSet?.OwnerId === Id;
+    }
+
+    get canShare() {
+        return this.allowedToShare && this.userOwnsFilterSet;
     }
 
     get cannotEditName() {

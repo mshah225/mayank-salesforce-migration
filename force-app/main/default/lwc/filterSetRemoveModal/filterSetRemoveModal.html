@@ -2,12 +2,15 @@
     <lightning-modal-header label="Remove filter set"></lightning-modal-header>
     <lightning-modal-body>
         <template lwc:if={isPrivateFilter}>
-            <div class="slds-var-m-vertical_small">You are removing {filterSetName} from the system</div>
+            <div class="slds-var-m-vertical_small">
+                Removing this private filter will permanently delete it. Are you sure you want to remove this private
+                filter?
+            </div>
         </template>
         <template lwc:elseif={sharedWithMe}>
             <div class="slds-var-m-vertical_small">
-                You are removing {filterSetName} from your list. Deleting this shared filter will only remove it for
-                you, not the other users this filter is shared with.
+                Removing this shared filter will hide it from your list, but the owner and other users the owner has
+                shared with will still be able to see it. Are you sure you want to remove this shared filter?
             </div>
         </template>
         <template lwc:elseif={sharedByMe}>

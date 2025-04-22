@@ -77,19 +77,18 @@ export default class AdvisorPortalUserSelect extends LightningElement {
 
     // Selections handling
     selectAll() {
-        this.ownerIds = this.userAndPodOptions
-            .filter((v) => !v.isLabel)
-            .map((v) => v.value)
-            .join(';');
-        this.sendChangeEvent();
+        this.sendChangeEvent(
+            this.userAndPodOptions
+                .filter((v) => !v.isLabel)
+                .map((v) => v.value)
+                .join(';')
+        );
     }
     selectMyQueue() {
-        this.ownerIds = this.myQueueId;
-        this.sendChangeEvent();
+        this.sendChangeEvent(this.myQueueId);
     }
     clearSelection() {
-        this.ownerIds = '';
-        this.sendChangeEvent();
+        this.sendChangeEvent('');
     }
 
     /**
@@ -100,9 +99,7 @@ export default class AdvisorPortalUserSelect extends LightningElement {
         e.stopImmediatePropagation();
         e.preventDefault();
 
-        const value = e.detail.value;
-        this.ownerIds = value;
-        this.sendChangeEvent();
+        this.sendChangeEvent(e.detail.value);
     }
 
     /**
@@ -110,8 +107,7 @@ export default class AdvisorPortalUserSelect extends LightningElement {
      */
     removeHandler(e) {
         const removeVal = e.detail.item.name;
-        this.ownerIds = this.ownerIdsArr.filter((v) => v !== removeVal).join(';');
-        this.sendChangeEvent();
+        this.sendChangeEvent(this.ownerIdsArr.filter((v) => v !== removeVal).join(';'));
     }
 
     // Raise changeusers event
@@ -119,7 +115,7 @@ export default class AdvisorPortalUserSelect extends LightningElement {
         this.dispatchEvent(new CustomEvent('commitusers', {detail: {value: this.ownerIds}}));
     }
 
-    sendChangeEvent() {
-        this.dispatchEvent(new CustomEvent('changeusers', {detail: {value: this.ownerIds}}));
+    sendChangeEvent(newValue) {
+        this.dispatchEvent(new CustomEvent('changeusers', {detail: {value: newValue}}));
     }
 }

@@ -1253,7 +1253,9 @@ export default class AdvisorPortalA extends LightningElement {
                 this.dispatchEvent(
                     new ShowToastEvent({
                         title: 'Success',
-                        message: newPinValue ? 'Filter set pinned' : 'Filter set unpinned',
+                        message: newPinValue
+                            ? 'Filter set has been pinned to the top of the Filter set list'
+                            : 'Filter set unpinned',
                         variant: 'success',
                     })
                 );

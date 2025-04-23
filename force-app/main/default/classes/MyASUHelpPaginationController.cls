@@ -12,6 +12,8 @@ public with sharing class MyASUHelpPaginationController {
     public String mostRecentSearchText { get; set; }
     public String articleCategoryGroupName { get; set; }
     public String articleCategoryName { get; set; }
+    @TestVisible
+    private static Boolean isTestMode = false;
 
     /**
      * Gets or sets the text to search.
@@ -163,13 +165,18 @@ public with sharing class MyASUHelpPaginationController {
     private void setResultCount() {
         if (isTextSearchQuery && !isCategorySearchQuery) {
             String queryString = String.escapeSingleQuotes(textToSearch);
+            String soslObjectType = isTestMode ? 'FAQ__kav' : OBJECT_TYPE;
+
             Search.SearchResults kavResults = Search.find(
                 'FIND \'' +
                     queryString +
-                    '*\'' +
-                    'IN ALL FIELDS RETURNING FAQ__kav(Id, KnowledgeArticleId, Title, LastModifiedDate WHERE PublishStatus = \'Online\' AND Language = \'en_US\')'
+                    '*\' IN ALL FIELDS RETURNING ' +
+                    soslObjectType +
+                    '(Id, KnowledgeArticleId, Title, LastModifiedDate WHERE PublishStatus = \'Online\' AND Language = \'en_US\')'
             );
-            resultCount = kavResults.get(OBJECT_TYPE).size();
+
+            List<Search.SearchResult> results = kavResults.get(soslObjectType);
+            resultCount = (results != null) ? results.size() : 0;
         } else if (
             !isTextSearchQuery &&
             isCategorySearchQuery &&

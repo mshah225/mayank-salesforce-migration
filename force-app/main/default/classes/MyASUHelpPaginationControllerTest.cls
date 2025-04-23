@@ -44,7 +44,7 @@ private class MyASUHelpPaginationControllerTest {
      * Set fixed search results for testing
      */
     private static void setFixedSearchResults() {
-        List<FAQ__kav> allKAVs = [SELECT Id FROM FAQ__kav];
+        List<FAQ__kav> allKAVs = [SELECT Id FROM FAQ__kav WHERE PublishStatus = 'Online'];
         List<Id> fixedResultIds = new List<Id>();
         for (FAQ__kav kav : allKAVs) {
             fixedResultIds.add(kav.Id);
@@ -57,6 +57,7 @@ private class MyASUHelpPaginationControllerTest {
      */
     @isTest
     private static void testAutofillSearchText() {
+        MyASUHelpPaginationController.isTestMode = true;
         setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
         ApexPages.currentPage().getParameters().put('q', 'Test');
@@ -75,6 +76,7 @@ private class MyASUHelpPaginationControllerTest {
      */
     @isTest
     private static void testNextPrevPage() {
+        MyASUHelpPaginationController.isTestMode = true;
         setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
         ApexPages.currentPage().getParameters().put('q', 'Test');
@@ -106,7 +108,8 @@ private class MyASUHelpPaginationControllerTest {
      */
     @isTest
     private static void testWhenOnlyOnePage() {
-        List<FAQ__kav> allKAVs = [SELECT Id FROM FAQ__kav LIMIT 5];
+        MyASUHelpPaginationController.isTestMode = true;
+        List<FAQ__kav> allKAVs = [SELECT Id FROM FAQ__kav WHERE PublishStatus = 'Online' LIMIT 5];
         List<Id> fixedResultIds = new List<Id>();
         for (FAQ__kav kav : allKAVs) {
             fixedResultIds.add(kav.Id);
@@ -128,6 +131,7 @@ private class MyASUHelpPaginationControllerTest {
      */
     @isTest
     private static void testNoSearchTerm() {
+        MyASUHelpPaginationController.isTestMode = true;
         setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
         ApexPages.currentPage().getParameters().put('q', '');
@@ -146,6 +150,7 @@ private class MyASUHelpPaginationControllerTest {
      */
     @isTest
     private static void testChangeSearchTerm() {
+        MyASUHelpPaginationController.isTestMode = true;
         setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
         ApexPages.currentPage().getParameters().put('q', 'Cats');
@@ -165,6 +170,7 @@ private class MyASUHelpPaginationControllerTest {
      */
     @isTest
     private static void testViewAllResultsRef() {
+        MyASUHelpPaginationController.isTestMode = true;
         setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
         ApexPages.currentPage().getParameters().put('q', 'Test');
@@ -182,6 +188,8 @@ private class MyASUHelpPaginationControllerTest {
      */
     @isTest
     private static void testMyASUHelpControllerConstructor() {
+        MyASUHelpPaginationController.isTestMode = true;
+
         // Need contact for MyASUHelpController constructor
         Contact testContact = new Contact(FirstName = 'John', LastName = 'McTesterson');
         insert testContact;

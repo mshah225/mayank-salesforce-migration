@@ -875,7 +875,6 @@ export default class AdvisorPortalA extends LightningElement {
         {label: 'Cintana Students', value: 'cintana students'},
         {label: 'Concurrent Enrollment', value: 'concurrent enrollment'},
         {label: 'Format Students', value: 'format students'},
-        {label: 'Personalized Graduate Admissions', value: 'personalized graduate admissions'},
         {label: 'Mayo Students', value: 'mayo students'},
         {label: 'Personalized Graduate Admissions', value: 'personalized graduate admissions'},
         {label: 'Provisional Admits, not met yet', value: 'provivisional admits, not met yet'},

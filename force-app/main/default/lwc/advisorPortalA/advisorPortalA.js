@@ -1026,7 +1026,22 @@ export default class AdvisorPortalA extends LightningElement {
     // loading has completed
     set applyingFilterSetCounter(v) {
         this._applyingFilterSetCounter = v;
-        if (this.applyingFilterSet && v === 0) this.applyingFilterSet = false; // unset apply flag if counter has reached 0
+
+        // Done applying?
+        if (this.applyingFilterSet && v === 0) {
+            // Reset applying flag
+            this.applyingFilterSet = false;
+
+            // Reset change fields flag if it was set
+            this.hasChangedFields = false;
+
+            // Reset owner id based on valid options this user has access to
+            let validOptions = (this.allUsersAndPods ?? []).map((opt) => opt.value);
+            this.ownerIds = (this.ownerIds ?? [])
+                .split(';')
+                .filter((id) => validOptions.includes(id))
+                .join(';');
+        }
     }
     get applyingFilterSetCounter() {
         return this._applyingFilterSetCounter;
@@ -1169,11 +1184,7 @@ export default class AdvisorPortalA extends LightningElement {
                     }
 
                     this.appliedFilterSetId = result.action.filterSetId;
-                    this.applyingFilterSet = true; // currently applying
-                    // Set filter from saved filter set
-                    this.currentFilter = JSON.parse(result.action.filterSet.Value__c);
-                    this.hasChangedFields = false; // Clear has changed flag
-                    if (this.applyingFilterSetCounter === 0) this.applyingFilterSet = false; // clear applying whenever no fields actually need to reload
+                    this.applyFilterSet(JSON.parse(result.action.filterSet.Value__c));
 
                     // Apply filters is apply is true (rather than just viewing filter values)
                     if (result?.action?.apply === true) {
@@ -1352,7 +1363,7 @@ export default class AdvisorPortalA extends LightningElement {
             });
     }
 
-    /** Has applied a filter set and is editting it */
+    /** Has applied a filter set and is editing it */
     get showEditWarning() {
         return this.appliedFilterSet != null && this.hasChangedFields;
     }
@@ -1491,9 +1502,24 @@ export default class AdvisorPortalA extends LightningElement {
      * Undo any changes and revert to values of the applied filter set
      */
     resetFilterSet() {
-        this.currentFilter = JSON.parse(this.appliedFilterSet.Value__c);
-        this.hasChangedFields = false;
+        this.applyFilterSet(JSON.parse(this.appliedFilterSet.Value__c));
         this.applyFilters();
+    }
+
+    applyFilterSet(filterSet) {
+        this.applyingFilterSet = true; // currently applying
+        this.currentFilter = filterSet; // Set filter set
+
+        // Reset owner id based on valid options this user has access to
+        let validOptions = (this.allUsersAndPods ?? []).map((opt) => opt.value);
+        this.ownerIds = (this.ownerIds ?? '')
+            .split(';')
+            .filter((id) => validOptions.includes(id))
+            .join(';');
+
+        this.hasChangedFields = false; // Clear has changed flag
+
+        if (this.applyingFilterSetCounter === 0) this.applyingFilterSet = false; // clear applying whenever no fields actually need to reload
     }
 
     /**

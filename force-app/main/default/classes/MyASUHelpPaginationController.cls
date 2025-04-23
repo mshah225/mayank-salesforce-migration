@@ -2,7 +2,7 @@
  * Controller for handling pagination of My ASU Help articles.
  */
 public with sharing class MyASUHelpPaginationController {
-    private final String OBJECT_TYPE = 'FAQ__kav';
+    private final String OBJECT_TYPE = 'KnowledgeArticleVersion';
     public Integer pageSize { get; set; }
     public Integer currentPage { get; set; }
     public Integer lastPage { get; set; }
@@ -186,7 +186,7 @@ public with sharing class MyASUHelpPaginationController {
         ) {
             String kavResults =
                 'SELECT COUNT() ' +
-                'FROM FAQ__kav ' +
+                'FROM KnowledgeArticleVersion ' +
                 'WHERE PublishStatus=\'Online\' ' +
                 'AND Language =\'' +
                 articleLanguage +

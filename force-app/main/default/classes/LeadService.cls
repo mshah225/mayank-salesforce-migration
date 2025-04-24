@@ -314,6 +314,19 @@ public class LeadService {
         }
     }
 
+    public static void enforceLeadSourceSubtype(List<Lead> newList, Map<Id, Lead> oldMap) {
+        DependentPicklistManager dependentPicklistManager = new DependentPicklistManager(Lead.Lead_Source_Subtype__c);
+
+        for (Lead ld : newList) {
+            Lead oldLd = oldMap != null ? oldMap.get(ld.Id) : null;
+            if (oldLd == null || ld.LeadSource != oldLd.LeadSource) {
+                if (!dependentPicklistManager.isValid(ld.LeadSource, ld.Lead_Source_Subtype__c)) {
+                    ld.Lead_Source_Subtype__c = '';
+                }
+            }
+        }
+    }
+
     public static void queueHashIdAssignment(Map<Id, Lead> updatedLeadsMap) {
         setHashId(updatedLeadsMap.keySet());
     }

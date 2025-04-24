@@ -268,6 +268,21 @@ public class OpportunityService {
         }
     }
 
+    public static void enforceLeadSourceSubtype(List<Opportunity> newList, Map<Id, Opportunity> oldMap) {
+        DependentPicklistManager dependentPicklistManager = new DependentPicklistManager(
+            Opportunity.Lead_Source_Subtype__c
+        );
+
+        for (Opportunity opp : newList) {
+            Opportunity oldOpp = oldMap != null ? oldMap.get(opp.Id) : null;
+            if (oldOpp == null || opp.LeadSource != oldOpp.LeadSource) {
+                if (!dependentPicklistManager.isValid(opp.LeadSource, opp.Lead_Source_Subtype__c)) {
+                    opp.Lead_Source_Subtype__c = '';
+                }
+            }
+        }
+    }
+
     public static void assignTerritory(List<Opportunity> newOpportunities, Map<Id, Opportunity> oldOpportunitiesMap) {
         Set<Id> contactIdSet = new Set<Id>();
         List<Contact> contactList = new List<Contact>();
@@ -912,9 +927,11 @@ public class OpportunityService {
     }
 
     private static Boolean meetsMasterTrackerConditions(Opportunity opp) {
-        return opp.Interview_Status__c == 'Complete' && opp.Plan_Code__c == 'BAFULLMBA' && 
-        opp.Round__c != null && opp.Interview_Date__c <= Date.today() &&
-        opp.Graduate_Master_Tracker__c == null;
+        return opp.Interview_Status__c == 'Complete' &&
+            opp.Plan_Code__c == 'BAFULLMBA' &&
+            opp.Round__c != null &&
+            opp.Interview_Date__c <= Date.today() &&
+            opp.Graduate_Master_Tracker__c == null;
     }
 
     public static void disableSyncingForMasterTracker(Map<Id, Opportunity> newOpps, Map<Id, Opportunity> oldOpps) {

@@ -165,7 +165,7 @@
                 </div>
             </div>
 
-            <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
+            <div id="ASUBrandFooterWrapper" class="no-slds-scope" style="display: none;"></div>
 
             <!-- Google Analytics Tracking based on page type -->
             <apex:outputPanel rendered="{!NOT(viewingArticle)}">
@@ -231,7 +231,16 @@
                         {title, baseUrl, navTreeStr, stationary: true,},
                         'ASUBrandHeaderWrapper'
                     );
-                    $Lightning.createComponent('c:asuBrandFooter', {}, 'ASUBrandFooterWrapper');
+                    $Lightning.createComponent('c:asuBrandFooter', {}, 'ASUBrandFooterWrapper', function(cmp) {
+                        // Footer is now rendered - adjust the height
+                        setTimeout(function () {
+                            jQuery('.pkb-scope .pkb-articlebody-container').height(
+                                jQuery('.knowledgeTOCRendererContent .sectionContent').outerHeight(true) + 75
+                            );
+                            // Show the footer after height is adjusted to prevent layout shift
+                            jQuery('#ASUBrandFooterWrapper').show();
+                        }, 100);
+                    });
 
                     // Hide errors that appear randomly from LWC
                     const observer = new MutationObserver(function (mutations) {
@@ -250,9 +259,6 @@
                 });
 
                 jQuery.noConflict();
-                jQuery(document).ready(function() {
-                    jQuery('.pkb-scope .pkb-articlebody-container').height(jQuery('.knowledgeTOCRendererContent .sectionContent').outerHeight(true) + 75);
-                });
             </script>
 
         </body>

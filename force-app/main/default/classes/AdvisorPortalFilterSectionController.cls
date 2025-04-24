@@ -1,36 +1,38 @@
 public class AdvisorPortalFilterSectionController {
-    /**
-     * Check if the current user has permission to access UGRAD advisor portal
-     */
     @AuraEnabled(cacheable=true)
-    public static Boolean hasUgradAccess() {
-        try {
-            Boolean hasPermSet = PermissionSetHelper.currentUserHasPermissionSet(
-                'Role_Academic_Advisor_Portal_Service_Users'
-            );
-            Boolean isSysAdmin = ProfileHelper.currentUserHasProfile('System Administrator');
+    public static List<String> getAccessModes() {
+        Boolean isSysAdmin = ProfileHelper.currentUserHasProfile('System Administrator');
+        List<String> accessList = new List<String>();
 
-            return hasPermSet || isSysAdmin;
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
+        // Has Undergraduate Advisor Portal access
+        if (PermissionSetHelper.currentUserHasPermissionSet('Role_Academic_Advisor_Portal_Service_Users') || isSysAdmin)
+            accessList.add('UGRD');
+
+        // Has Graduate Advisor Portal access
+        if (
+            PermissionSetHelper.currentUserHasPermissionSet('Role_Graduate_Academic_Advisor_Portal_Service_Users') ||
+            isSysAdmin
+        ) {
+            accessList.add('GRD');
         }
+
+        return accessList;
     }
 
-    /**
-     * Check if the current user has permission to access GRAD advisor portal
-     */
     @AuraEnabled(cacheable=true)
-    public static Boolean hasGradAccess() {
-        try {
-            Boolean hasPermSet = PermissionSetHelper.currentUserHasPermissionSet(
-                'Role_Graduate_Academic_Advisor_Portal_Service_Users'
-            );
-            Boolean isSysAdmin = ProfileHelper.currentUserHasProfile('System Administrator');
+    public static List<LabelValue> getUsersAndPods(String filterJSON) {
+        Boolean gradMode = false;
+        AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterJSON);
 
-            return hasPermSet || isSysAdmin;
-        } catch (Exception e) {
-            throw new AuraHandledException(e.getMessage());
-        }
+        if (filter != null && filter.career == 'GRD')
+            gradMode = true;
+
+        List<LabelValue> options = AdvisorCaseTransferService.getTransferToOptionsByUser(
+            UserInfo.getUserId(),
+            gradMode
+        );
+
+        return options;
     }
 
     /**
@@ -39,11 +41,18 @@ public class AdvisorPortalFilterSectionController {
      * @param objectName, the name of the Object the picklist lives on.
      * @param fieldName, the name of the field to grab values from.
      *
-     * @return picklistValuesByLabel, a Map of picklist values by their labels.
+     * @return A list of LabelValues
      */
     @AuraEnabled(cacheable=true)
-    public static Map<String, String> getPicklistValues(String objectName, String fieldName) {
-        return ObjectService.getPicklistChoicesMap(objectName, fieldName);
+    public static List<LabelValue> getPicklistValues(String objectName, String fieldName) {
+        List<SelectOption> selectOptions = ObjectService.getPicklistChoicesSelectList(objectName, fieldName);
+        List<LabelValue> labelValues = new List<LabelValue>();
+
+        for (SelectOption selOpt : selectOptions) {
+            labelValues.add(new LabelValue(selOpt));
+        }
+
+        return labelValues;
     }
 
     /**
@@ -105,7 +114,7 @@ public class AdvisorPortalFilterSectionController {
      * @return caseSubjectValuesByLabel, a Map of Case Subjects.
      */
     @AuraEnabled(cacheable=true)
-    public static List<LabelValue> getCaseSubjectPicklistValues(String filterJSON, List<Id> viewAsOptions) {
+    public static List<LabelValue> getCaseSubjectPicklistValues(String filterJSON) {
         List<LabelValue> caseSubjectValuesByLabel = new List<LabelValue>();
         List<String> recordTypeIds = new List<String>();
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterJSON);
@@ -121,7 +130,11 @@ public class AdvisorPortalFilterSectionController {
         for (AggregateResult result : [
             SELECT Subject
             FROM Case
-            WHERE IsClosed = FALSE AND RecordTypeId IN :recordTypeIds AND Subject != NULL AND OwnerId IN :viewAsOptions
+            WHERE
+                IsClosed = FALSE
+                AND RecordTypeId IN :recordTypeIds
+                AND Subject != NULL
+                AND OwnerId IN :filter.getOwnerIds()
             GROUP BY Subject
             ORDER BY Subject ASC
             LIMIT 2000
@@ -143,11 +156,12 @@ public class AdvisorPortalFilterSectionController {
      * @return caseClassificationValuesByLabel, a Map of Case Subjects.
      */
     @AuraEnabled(cacheable=true)
-    public static List<LabelValue> getCaseClassificationPicklistValues(String filterJSON, List<Id> viewAsOptions) {
+    public static List<LabelValue> getCaseClassificationPicklistValues(String filterJSON) {
         List<LabelValue> caseClassificationValuesByLabel = new List<LabelValue>();
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterJSON);
 
         Boolean gradMode = filter != null && filter.career == 'GRD';
+        List<Id> userIds = filter.getOwnerIds();
 
         if (gradMode) {
             /**
@@ -182,7 +196,7 @@ public class AdvisorPortalFilterSectionController {
                     IsClosed = FALSE
                     AND RecordTypeId = :undergradRecordType
                     AND CC_Category__c != NULL
-                    AND OwnerId IN :viewAsOptions
+                    AND OwnerId IN :filter.getOwnerIds()
                 GROUP BY CC_Category__r.Name
                 ORDER BY CC_Category__r.Name ASC
                 LIMIT 2000
@@ -206,7 +220,7 @@ public class AdvisorPortalFilterSectionController {
      * @return caseSubClassificationValuesByLabel, a Map of Case Subclassifications.
      */
     @AuraEnabled(cacheable=true)
-    public static List<LabelValue> getCaseSubClassificationPicklistValues(String filterJSON, List<Id> viewAsOptions) {
+    public static List<LabelValue> getCaseSubClassificationPicklistValues(String filterJSON) {
         List<LabelValue> caseSubClassificationValuesByLabel = new List<LabelValue>();
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterJSON);
 
@@ -257,7 +271,7 @@ public class AdvisorPortalFilterSectionController {
                 .restrictNotEqual('CC_Sub_Category__c', new DynamicSoqlBuilderRestriction.Keyword('NULL'))
                 .restrictEqual('IsClosed', false)
                 .restrictEqual('RecordTypeId', ugradAdvisorCasesRecType)
-                .restrictIn('OwnerId', viewAsOptions)
+                .restrictIn('OwnerId', filter.getOwnerIds())
                 .setGroupBy('CC_Sub_Category__r.Name')
                 .setLimit(2000);
 
@@ -484,23 +498,15 @@ public class AdvisorPortalFilterSectionController {
     }
 
     @AuraEnabled
-    public static List<AdvisorPortalContact> getFilteredCases(List<Id> viewAsOptions, String filterJSON) {
+    public static List<AdvisorPortalContact> getFilteredCases(String filterJSON) {
         AdvisorPortalFilter filter = AdvisorPortalFilter.deserialize(filterJSON);
 
         List<AdvisorPortalContact> results = new List<AdvisorPortalContact>();
         if (filter.caseTypeState == 'AllCasesState') {
-            results = new AdvisorPortalFilterQueryMaker(
-                    viewAsOptions,
-                    filter,
-                    AdvisorPortalFilterQueryMaker.QueryWith.WITH_CONTACT
-                )
+            results = new AdvisorPortalFilterQueryMaker(filter, AdvisorPortalFilterQueryMaker.QueryWith.WITH_CONTACT)
                 .query();
         } else {
-            results = new AdvisorPortalFilterQueryMaker(
-                    viewAsOptions,
-                    filter,
-                    AdvisorPortalFilterQueryMaker.QueryWith.WITH_CASE
-                )
+            results = new AdvisorPortalFilterQueryMaker(filter, AdvisorPortalFilterQueryMaker.QueryWith.WITH_CASE)
                 .query();
         }
 

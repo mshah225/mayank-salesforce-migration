@@ -16,13 +16,13 @@ export default class LightningCaseTransferModalConsole extends LightningElement 
             description: 'Transfer Case',
             massTransfer: false,
             caseIds: this.caseIds,
-            loadingCb: (e) => {
+            onloading: (e) => {
                 this.handleLoading(e);
             },
-            toastCb: (e) => {
+            onlightning__showtoast: (e) => {
                 this.handleToast(e);
             },
-            navCb: (e) => {
+            onnavigate: (e) => {
                 this.navigate(e);
             },
         });

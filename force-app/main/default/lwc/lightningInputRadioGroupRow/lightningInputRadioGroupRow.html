@@ -1,0 +1,14 @@
+<template>
+    <span class="slds-form-element__label">{label}</span>
+    <template for:each={options} for:item="opt">
+        <span
+            key={opt.value}
+            class="option slds-var-m-right_small clickable"
+            data-value={opt.value}
+            onclick={changeValue}
+        >
+            <input name="option" type="radio" class="slds-var-m-right_x-small clickable" />
+            <label class="clickable">{opt.label}</label>
+        </span>
+    </template>
+</template>

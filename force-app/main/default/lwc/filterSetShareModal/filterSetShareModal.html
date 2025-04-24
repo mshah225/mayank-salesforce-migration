@@ -1,0 +1,54 @@
+<template>
+    <lightning-modal-header label="Share Filter Set"></lightning-modal-header>
+    <lightning-modal-body>
+        <c-lightning-error-or-retry message={errorMessage} has-error={hasError} retry-enabled="false">
+            <c-lightning-await-load-block loading={isLoading} has-content="true">
+                <div class="slds-text-heading_small slds-var-m-bottom_small">Share "<b>{filterName}</b>"</div>
+
+                <div class="slds-var-m-bottom_small">
+                    <!-- It is important that value is defined BEFORE options so that when handling change 
+                     events the change to the value is handled before the options list is reordered -->
+                    <c-lightning-combo-box
+                        value={sharedWithStr}
+                        options={shareOptionList}
+                        onchange={handleChange}
+                        searchable="true"
+                        dynamic-dropdown="true"
+                        multi-select="true"
+                    ></c-lightning-combo-box>
+                </div>
+
+                <div class="slds-var-m-bottom_small">
+                    <template for:each={pillList} for:item="shareUser">
+                        <lightning-pill
+                            key={shareUser.Id}
+                            class="slds-var-m-right_x-small"
+                            data-userid={shareUser.Id}
+                            label={shareUser.Name}
+                            onremove={handleRemove}
+                        >
+                            <lightning-icon icon-name="standard:user" alternative-text="User"></lightning-icon>
+                        </lightning-pill>
+                    </template>
+                </div>
+
+                <div>
+                    <lightning-button label="Select all users" variant="base" onclick={selectAll}></lightning-button>
+                </div>
+
+                <div>
+                    <lightning-button label="Clear selection" variant="base" onclick={removeAll}></lightning-button>
+                </div>
+            </c-lightning-await-load-block>
+        </c-lightning-error-or-retry>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <lightning-button label="Cancel" variant="neutral" onclick={closeModal}></lightning-button>
+        <lightning-button
+            label="Save"
+            variant="brand"
+            onclick={saveChanges}
+            style="margin-left: 1rem"
+        ></lightning-button>
+    </lightning-modal-footer>
+</template>

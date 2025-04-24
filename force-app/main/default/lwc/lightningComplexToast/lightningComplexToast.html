@@ -1,0 +1,41 @@
+<template>
+    <template lwc:if={isOpen}>
+        <div class="slds-notify_container slds-is-fixed">
+            <div class={sldsNotifyClasses} role="status">
+                <span class="slds-assistive-text">{variant}</span>
+                <span class="slds-icon_container slds-icon-utility-info slds-m-right_small slds-no-flex slds-align-top">
+                    <lightning-icon
+                        icon-name={icon}
+                        variant="inverse"
+                        alternative-text={variant}
+                        size="large"
+                        title={variant}
+                        data-testid="variant-icon"
+                    ></lightning-icon>
+                </span>
+                <div class="slds-notify__content">
+                    <h2 class="slds-text-heading_small">
+                        <slot name="header"></slot>
+                    </h2>
+                    <p>
+                        <slot name="body"></slot>
+                    </p>
+                </div>
+                <div class="slds-notify__close">
+                    <template lwc:if={showCloseButton}>
+                        <label class="slds-assistive-text">Close</label>
+                        <lightning-button-icon
+                            icon-name="utility:close"
+                            variant="bare-inverse"
+                            alternative-text="Close"
+                            size="large"
+                            title="Close"
+                            onclick={hideToast}
+                        >
+                        </lightning-button-icon>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </template>
+</template>

@@ -6,8 +6,9 @@ export default class Combobox extends LightningElement {
     }
 
     @api label;
-    @api placeholder;
-    @api value;
     @api options;
+    @api placeholder;
     @api required;
+    @api value;
+    @api variant;
 }

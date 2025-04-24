@@ -1,14 +1,13 @@
 import {api, wire} from 'lwc';
-import fetchUser from '@salesforce/apex/AdvisorPortalMassEmailModalController.fetchUser';
-import createPortalEmailsStr from '@salesforce/apex/AdvisorPortalMassEmailModalController.createPortalEmailsStr';
-import {falseWireRun} from 'c/helperFunctions';
+import {getRecord} from 'lightning/uiRecordApi';
 import LightningModal from 'lightning/modal';
+import {ShowToastEvent} from 'lightning/platformShowToastEvent';
+import createPortalEmailsStr from '@salesforce/apex/AdvisorPortalMassEmailModalController.createPortalEmailsStr';
+import USER_ID from '@salesforce/user/Id';
+import USER_NAME_FIELD from '@salesforce/schema/User.Name';
 
 export default class AdvisorPortalModalMassEmail extends LightningModal {
     @api selectedContactWrappers = [];
-    @api loadingCb;
-    @api toastCb;
-    @api navCb;
 
     // What is the user's name?
     myname = '%Your Name%';
@@ -20,14 +19,13 @@ export default class AdvisorPortalModalMassEmail extends LightningModal {
     isSubmitting = false;
 
     // Retrieve the current user and update the questions with the user's name
-    @wire(fetchUser, {})
-    fetchedUser(result) {
-        if (falseWireRun(result)) return;
-
-        let {data, error} = result;
-        if (data != null) {
-            this.myname = data.Name;
-        } else if (error != null) {
+    @wire(getRecord, {
+        recordId: USER_ID,
+        fields: [USER_NAME_FIELD],
+    })
+    gotUserDetail({error, data}) {
+        if (data !== undefined) {
+            this.myname = data.fields.Name.value;
         }
     }
 
@@ -91,6 +89,7 @@ export default class AdvisorPortalModalMassEmail extends LightningModal {
         this.sendLoadingEvent(true);
         this.disableClose = true;
         this.isSubmitting = true;
+
         createPortalEmailsStr({
             contactWrappersListJSON: JSON.stringify(contactWrappers),
             subject: this.subject,
@@ -135,37 +134,17 @@ export default class AdvisorPortalModalMassEmail extends LightningModal {
         return count;
     }
 
-    // Call the loadingCb
     sendLoadingEvent(loadMore) {
-        if (this.loadingCb != null) this.loadingCb(new CustomEvent('loading', {detail: loadMore}));
+        this.dispatchEvent(new CustomEvent('loading', {detail: loadMore}));
     }
 
-    // Call the toastCb
     makeToast(type, title, body) {
-        if (this.toastCb != null)
-            this.toastCb(
-                new CustomEvent('showtoast', {
-                    detail: {
-                        title: title,
-                        message: body,
-                        type: type,
-                        duration: 5000,
-                    },
-                })
-            );
-    }
-
-    // Call the navCb
-    navigate(location, params) {
-        if (this.navCb != null) {
-            this.navCb(
-                new CustomEvent('navigate', {
-                    detail: {
-                        location: location,
-                        params: params,
-                    },
-                })
-            );
-        }
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: title,
+                message: body,
+                variant: type,
+            })
+        );
     }
 }

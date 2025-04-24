@@ -1,0 +1,7 @@
+:host .bold-text {
+    font-weight: bold;
+}
+
+:host .search-suggestion-list {
+    list-style: initial;
+}

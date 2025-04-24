@@ -19,4 +19,8 @@ public class LabelValue {
         label = l;
         value = v;
     }
+    public LabelValue(SelectOption so) {
+        label = so.getLabel();
+        value = so.getValue();
+    }
 }

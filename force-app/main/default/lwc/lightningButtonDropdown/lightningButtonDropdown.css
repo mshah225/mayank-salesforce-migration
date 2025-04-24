@@ -1,0 +1,134 @@
+:host {
+    display: inline-block;
+    position: relative;
+
+    --dynamicDropdownOffsetTop: 0px;
+}
+
+:host .primary-buttons {
+    display: flex;
+    gap: 1px; /* Adjust spacing between buttons */
+}
+
+/**
+ * Unset defaults for buttons
+ */
+:host button {
+    background-color: var(--slds-c-button-color-background, var(--sds-c-button-color-background, transparent));
+    border: unset;
+}
+
+/**
+ * Main buttons
+ */
+:host .primary-buttons button {
+    /** text color */
+    color: var(
+        --slds-c-button-text-color,
+        var(--sds-c-button-text-color, var(--lwc-brandAccessible, rgb(255, 255, 255)))
+    );
+
+    /** don't wrap text */
+    white-space: nowrap;
+
+    display: block;
+}
+
+:host .primary-action {
+    /** Rounded edges */
+    border-top-left-radius: var(--lwc-borderRadiusMedium, 0.25rem);
+    border-bottom-left-radius: var(--lwc-borderRadiusMedium, 0.25rem);
+
+    /** Padding */
+    padding: 0.25rem 1rem 0.25rem 1rem;
+}
+
+:host .dropdown-button {
+    /** Rounded edges */
+    border-top-right-radius: var(--lwc-borderRadiusMedium, 0.25rem);
+    border-bottom-right-radius: var(--lwc-borderRadiusMedium, 0.25rem);
+
+    /** Padding */
+    padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+}
+
+/**
+ * Button color on hover
+ */
+:host .primary-buttons button:hover,
+:host .primary-buttons button.hover {
+    --slds-c-button-color-border: var(--slds-c-button-color-border-hover);
+    --slds-c-button-color-background: var(--slds-c-button-color-background-hover);
+    color: var(
+        --slds-c-button-text-color-hover,
+        var(--sds-c-button-text-color-hover, var(--lwc-brandAccessibleActive, rgb(1, 68, 134)))
+    );
+}
+
+/**
+ * Dropdown menu
+ */
+:host .dropdown-menu {
+    position: absolute;
+    top: 100%; /* Move to under the dropdown */
+    right: 0; /* Right aligned */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    overflow: scroll;
+    z-index: var(--z-index-dropdown, 7000);
+
+    /** Align left of dropdown with left of dropdown button (which has width:32px) */
+    transform: translateX(calc(100% - 32px));
+
+    /** Colors */
+    border: var(--lwc-borderWidthThin, 1px) solid
+        var(--slds-g-color-border-base-4, var(--lwc-colorBorder, rgb(201, 201, 201)));
+    border-radius: var(--lwc-borderRadiusMedium, 0.25rem);
+    background: var(--slds-g-color-neutral-base-100, var(--lwc-colorBackgroundAlt, rgb(255, 255, 255)));
+    color: var(--slds-g-color-neutral-base-10, var(--lwc-colorTextDefault, rgb(3, 45, 96)));
+
+    /** default is hidden */
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+:host .dropdown-menu.dropdown-open {
+    visibility: visible;
+    opacity: 1;
+}
+
+:host .dropdown-menu button:first-of-type {
+    border-top-left-radius: var(--lwc-borderRadiusMedium, 0.25rem);
+    border-top-right-radius: var(--lwc-borderRadiusMedium, 0.25rem);
+}
+
+:host .dropdown-menu button:last-of-type {
+    border-bottom-left-radius: var(--lwc-borderRadiusMedium, 0.25rem);
+    border-bottom-right-radius: var(--lwc-borderRadiusMedium, 0.25rem);
+}
+
+/**
+ * Dropdown buttons
+ */
+
+:host .dropdown-menu button {
+    text-align: left;
+    display: inline-flex;
+    gap: 5px;
+    width: 100%;
+    padding: 0.25rem 0.5rem 0.25rem 0.5rem;
+}
+
+:host .dropdown-menu button:hover,
+:host .dropdown-menu button.hover {
+    background-color: #f1f1f1;
+}
+
+/* For fixed-location dropdown that expands outside of modals */
+.dynamic-dropdown {
+    position: fixed !important;
+    top: var(--dynamicDropdownOffsetTop) !important;
+    z-index: 9102 !important;
+    transform: translateX(0px) !important;
+}

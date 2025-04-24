@@ -1,0 +1,8 @@
+{
+    "uiapi": {
+        "query": {
+            "Filter_Set__c": {"edges": []},
+            "User_Filter_Set_Preference__c": {"edges": []}
+        }
+    }
+}

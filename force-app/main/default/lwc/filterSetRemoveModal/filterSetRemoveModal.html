@@ -1,0 +1,81 @@
+<template>
+    <lightning-modal-header label="Remove filter set"></lightning-modal-header>
+    <lightning-modal-body>
+        <template lwc:if={isPrivateFilter}>
+            <div class="slds-var-m-vertical_small">
+                Removing this private filter will permanently delete it. Are you sure you want to remove this private
+                filter?
+            </div>
+        </template>
+        <template lwc:elseif={sharedWithMe}>
+            <div class="slds-var-m-vertical_small">
+                Removing this shared filter will hide it from your list, but the owner and other users the owner has
+                shared with will still be able to see it. Are you sure you want to remove this shared filter?
+            </div>
+        </template>
+        <template lwc:elseif={sharedByMe}>
+            <div class="slds-text-heading_small slds-var-m-bottom_small">
+                Are you sure you want to remove this shared filter?
+            </div>
+
+            <div class="slds-var-m-bottom_small">
+                Removing this shared filter will permanently delete it for you and any users you have shared it with. Do
+                you want to remove {filterSetName} from system or unshare it from selected users?
+            </div>
+
+            <lightning-radio-group
+                label="Mode Selection"
+                variant="label-hidden"
+                options={modeOptions}
+                value={modeValue}
+                onchange={modeSelect}
+            >
+            </lightning-radio-group>
+
+            <template lwc:if={isUnshareMode}>
+                <div class="slds-var-m-top_small slds-var-m-bottom_small">
+                    <c-lightning-combo-box
+                        value={sharedWithStr}
+                        options={userOptions}
+                        onchange={handleChange}
+                        searchable="true"
+                        dynamic-dropdown="true"
+                        multi-select="true"
+                    ></c-lightning-combo-box>
+                </div>
+
+                <div class="slds-var-m-bottom_small">
+                    <template for:each={pillList} for:item="shareUser">
+                        <lightning-pill
+                            key={shareUser.Id}
+                            class="slds-var-m-right_x-small"
+                            data-userid={shareUser.Id}
+                            label={shareUser.Name}
+                            onremove={handleRemove}
+                        >
+                            <lightning-icon icon-name="standard:user" alternative-text="User"></lightning-icon>
+                        </lightning-pill>
+                    </template>
+                </div>
+
+                <div>
+                    <lightning-button label="Clear selection" variant="base" onclick={removeAll}></lightning-button>
+                </div>
+            </template>
+            <template lwc:else>
+                <div class="slds-var-m-top_small slds-var-m-bottom_small">
+                    Deleting this filter will remove it for all the users you shared it with.
+                </div>
+            </template>
+        </template>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <lightning-button label="Cancel" variant="neutral" onclick={closeModal}></lightning-button>
+        <lightning-button
+            label="Remove"
+            variant="brand"
+            onclick={commitChanges}
+            style="margin-left: 1rem"
+        ></lightning-button>
+    </lightning-modal-footer>
+</template>

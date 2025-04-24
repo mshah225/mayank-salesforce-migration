@@ -1,8 +1,8 @@
-import { LightningElement, wire } from 'lwc';
-import { NavigationMixin, CurrentPageReference } from 'lightning/navigation';
+import {LightningElement, wire} from 'lwc';
+import {NavigationMixin, CurrentPageReference} from 'lightning/navigation';
 import searchArticles from '@salesforce/apex/GlobalKnowledgeSearchController.searchArticles';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { IsConsoleNavigation, getFocusedTabInfo, setTabLabel, setTabIcon } from 'lightning/platformWorkspaceApi';
+import {ShowToastEvent} from 'lightning/platformShowToastEvent';
+import {IsConsoleNavigation, getFocusedTabInfo, setTabLabel, setTabIcon} from 'lightning/platformWorkspaceApi';
 
 // Constants
 const TAB_LABEL = 'Knowledge Search';
@@ -31,11 +31,11 @@ export default class KnowledgeSearch extends NavigationMixin(LightningElement) {
 
     // Dropdown filter options for category groups
     filterOptions = [
-        { label: 'All Category Groups', value: '*' },
-        { label: 'Academics', value: 'Academics' },
-        { label: 'Campus Services', value: 'Campus_Services' },
-        { label: 'Finances', value: 'Finances' },
-        { label: 'Internal Knowledge', value: 'Internal_Knowledge' },
+        {label: 'All Category Groups', value: '*'},
+        {label: 'Academics', value: 'Academics'},
+        {label: 'Campus Services', value: 'Campus_Services'},
+        {label: 'Finances', value: 'Finances'},
+        {label: 'Internal Knowledge', value: 'Internal_Knowledge'},
     ];
 
     @wire(CurrentPageReference)
@@ -51,7 +51,7 @@ export default class KnowledgeSearch extends NavigationMixin(LightningElement) {
         if (!this.isConsoleNavigation) {
             return;
         }
-        const { tabId } = await getFocusedTabInfo();
+        const {tabId} = await getFocusedTabInfo();
         setTabLabel(tabId, TAB_LABEL);
     }
 
@@ -62,7 +62,7 @@ export default class KnowledgeSearch extends NavigationMixin(LightningElement) {
         if (!this.isConsoleNavigation) {
             return;
         }
-        const { tabId } = await getFocusedTabInfo();
+        const {tabId} = await getFocusedTabInfo();
         setTabIcon(tabId, TAB_ICON, {
             iconAlt: TAB_LABEL,
         });
@@ -82,7 +82,7 @@ export default class KnowledgeSearch extends NavigationMixin(LightningElement) {
      */
     handleFilterChange(event) {
         this.desiredFilter = event.target.value;
-    
+
         if (this.hasSearched) {
             this.selectedFilter = this.desiredFilter;
             this.currentPage = 1;
@@ -128,43 +128,41 @@ export default class KnowledgeSearch extends NavigationMixin(LightningElement) {
      */
     fetchArticles() {
         this.isLoading = true;
-    
+
         searchArticles({
             searchTerm: this.selectedSearchTerm,
             pageSize: PAGE_SIZE,
             pageNumber: this.currentPage,
-            categoryFilter: this.selectedFilter
+            categoryFilter: this.selectedFilter,
         })
             .then((result) => {
-                this.articles = result.articles.map(article => {
+                this.articles = result.articles.map((article) => {
                     // Strip HTML tags
-                    const cleanAnswer = article.Answer
-                        ? article.Answer.replace(/<[^>]*>/g, '')
-                        : '';
-                
+                    const cleanAnswer = article.Answer ? article.Answer.replace(/<[^>]*>/g, '') : '';
+
                     // Truncate to 150 chars, without cutting a word
                     let truncatedAnswer = cleanAnswer;
                     if (cleanAnswer.length > 150) {
                         const cutPoint = cleanAnswer.lastIndexOf(' ', 150);
                         truncatedAnswer = cleanAnswer.substring(0, cutPoint !== -1 ? cutPoint : 150) + '...';
                     }
-                
+
                     return {
                         ...article,
                         Category: article.FunctionalGroup,
                         LastPublishedDate: this.formatDate(article.LastPublishedDate),
-                        AnswerPreview: truncatedAnswer
+                        AnswerPreview: truncatedAnswer,
                     };
                 });
-    
+
                 this.nextPageAvailable = result.hasNextPage;
                 this.previousPageAvailable = result.hasPreviousPage;
                 this.currentPage = result.currentPage;
-    
+
                 this.filteredArticles = [...this.articles];
                 this.noResults = this.articles.length === 0;
                 this.error = null;
-    
+
                 // Log metadata to console
                 this.debugSearchResult(result);
             })
@@ -179,7 +177,7 @@ export default class KnowledgeSearch extends NavigationMixin(LightningElement) {
             .finally(() => {
                 this.isLoading = false;
             });
-    }    
+    }
 
     /**
      * @description Filters articles based on the selected data category group name.
@@ -188,8 +186,8 @@ export default class KnowledgeSearch extends NavigationMixin(LightningElement) {
         if (this.selectedFilter === '*') {
             this.filteredArticles = [...this.articles];
         } else {
-            this.filteredArticles = this.articles.filter(article =>
-                article.Categories?.some(cat => cat.startsWith(this.selectedFilter + ':'))
+            this.filteredArticles = this.articles.filter((article) =>
+                article.Categories?.some((cat) => cat.startsWith(this.selectedFilter + ':'))
             );
         }
 
@@ -301,5 +299,5 @@ export default class KnowledgeSearch extends NavigationMixin(LightningElement) {
         console.log('  • Current Page:', result.currentPage);
         console.log('  • Page Size:', PAGE_SIZE);
         console.log(JSON.stringify(this.articles, null, 2));
-    }    
+    }
 }

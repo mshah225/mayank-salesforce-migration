@@ -1,34 +1,66 @@
-:host .light-blue-background {
-    background-color: rgba(0, 112, 210, 0.1);
-}
-
 :host {
     background: white;
     padding: 1rem;
     display: block;
 }
 
-:host .mr-2 {
-    margin-right: 0.8rem;
+/** Light blue background of some components */
+:host .light-blue-background {
+    background-color: var(--slds-g-color-brand-base-90, #d6e6ff);
 }
 
-:host .d-none {
-    display: none;
+:host .clickable {
+    cursor: pointer;
+}
+:host .inline {
+    display: inline;
 }
 
-:host .advanced-filter-button {
-    /** cheaty way to align at bottom of div but still have spacing above when vertical layout */
-    padding-top: 1rem;
-    margin-top: auto;
-}
-
+/** Spinner blocks everything */
 :host lightning-spinner {
     position: fixed;
 }
 
-@media (max-width: 64em) {
-    :host .slds-max-large-wrap {
-        flex-wrap: wrap;
-        align-items: flex-start;
-    }
+/** Feedback button */
+:host .feedbackWrapper button {
+    border: none;
+    background: none;
+}
+
+:host .feedbackWrapper button lightning-icon {
+    display: inline;
+    margin-right: 5px;
+    filter: invert(51%) sepia(11%) saturate(5749%) hue-rotate(179deg) brightness(79%) contrast(75%);
+}
+
+:host .feedbackWrapper button:hover lightning-icon {
+    filter: invert(72%) sepia(11%) saturate(4787%) hue-rotate(173deg) brightness(85%) contrast(83%);
+}
+
+:host .feedbackWrapper * {
+    cursor: pointer;
+}
+
+/** Styling for edit alert */
+:host .filterSetEditAlert {
+    --slds-c-alert-color-background: var(--slds-g-color-palette-yellow-80, #fcc003);
+}
+
+/** Input tooltips */
+:host .tooltip {
+   border: var(--lwc-borderWidthThin, 1px) solid var(--lwc-colorTextLabel,rgb(116, 116, 116));
+    background: var(--lwc-colorBackgroundInputActive,white);
+    color: var(--lwc-colorTextLabel,rgb(116, 116, 116));
+    font-weight: bold;
+    padding: var(--lwc-varSpacingXSmall, 0.5rem);
+    z-index: 40;
+    display: none;
+    border-radius: var(--lwc-borderRadiusMedium,0.25rem);
+}
+
+:host .tooltip-enabled-field:focus-within + .tooltip:not(.tooltip-escaped), /* Initial open when focus the related field */
+:host .tooltip-enabled-field:hover + .tooltip:not(.tooltip-escaped), /* Initial open when hover over the related field */
+:host .tooltip:hover:not(.tooltip-escaped) /* Stay open when hovering above note */
+{ 
+    display: block;
 }

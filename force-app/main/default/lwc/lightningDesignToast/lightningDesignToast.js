@@ -1,5 +1,20 @@
 import {LightningElement, api} from 'lwc';
 
+/**
+ * @deprecated
+ *
+ * This LWC is no longer needed.  This intially existed as a standard way for implementing Salesforce Lightning Design System (SLDS)
+ * toasts in non-Lightning environments.  For example, when working with a LWC embedded on a Visualforce page.
+ *
+ * More recent Salesforce developments have made this obsolete, and when embedding a LWC on a Visualforce page you should instead use
+ * [lightning/toastContainer](https://developer.salesforce.com/docs/component-library/bundle/lightning-toast-container/documentation)
+ *
+ * As long as you have the toast container created in the top-level LWC, child components should be able to successfully use Toast.show
+ * and ShowToastEvent
+ *
+ * In cases where you need to construct one-off more complicated toasts, I recommend using the new c-lightning-complex-toast which allows
+ * you to pass slots for the header and body of the toast (allowing you to embed buttons and the like)
+ */
 export default class LightningDesignToast extends LightningElement {
     /**
      * @param {"info"|"success"|"warning"|"error"|"loading"} val The type of message this is

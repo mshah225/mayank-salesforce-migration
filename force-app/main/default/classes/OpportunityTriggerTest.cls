@@ -1225,7 +1225,7 @@ public with sharing class OpportunityTriggerTest {
             AccountId = c.AccountId,
             StageName = 'Prospect',
             CloseDate = nowPlus3Months,
-            LeadSource = 'Email',
+            LeadSource = 'Walk-in',
             Lead_Source_Subtype__c = 'GRE'
         );
         insert testOpp;
@@ -1233,7 +1233,7 @@ public with sharing class OpportunityTriggerTest {
 
         testOpp = [SELECT Id, LeadSource, Lead_Source_Subtype__c FROM Opportunity WHERE Id = :testOpp.Id];
 
-        Assert.areEqual('Email', testOpp.LeadSource);
+        Assert.areEqual('Walk-in', testOpp.LeadSource);
         Assert.areEqual(null, testOpp.Lead_Source_Subtype__c);
     }
 
@@ -1262,13 +1262,13 @@ public with sharing class OpportunityTriggerTest {
         Assert.areEqual('GRE', testOpp.Lead_Source_Subtype__c);
 
         Test.startTest();
-        testOpp.LeadSource = 'Email';
+        testOpp.LeadSource = 'Walk-in';
         update testOpp;
         Test.stopTest();
 
         testOpp = [SELECT Id, LeadSource, Lead_Source_Subtype__c FROM Opportunity WHERE Id = :testOpp.Id];
 
-        Assert.areEqual('Email', testOpp.LeadSource);
+        Assert.areEqual('Walk-in', testOpp.LeadSource);
         Assert.areEqual(null, testOpp.Lead_Source_Subtype__c);
     }
 }

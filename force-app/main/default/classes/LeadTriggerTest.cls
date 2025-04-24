@@ -524,7 +524,7 @@ public with sharing class LeadTriggerTest {
             FirstName = 'Tester',
             LastName = 'Lead',
             Company = 'Tester Company',
-            LeadSource = 'Email',
+            LeadSource = 'Walk-in',
             Lead_Source_Subtype__c = 'GRE'
         );
         insert testLead;
@@ -532,7 +532,7 @@ public with sharing class LeadTriggerTest {
 
         testLead = [SELECT Id, LeadSource, Lead_Source_Subtype__c FROM Lead WHERE Id = :testLead.Id];
 
-        Assert.areEqual('Email', testLead.LeadSource);
+        Assert.areEqual('Walk-in', testLead.LeadSource);
         Assert.areEqual(null, testLead.Lead_Source_Subtype__c);
     }
 
@@ -553,13 +553,13 @@ public with sharing class LeadTriggerTest {
         Assert.areEqual('GRE', testLead.Lead_Source_Subtype__c);
 
         Test.startTest();
-        testLead.LeadSource = 'Email';
+        testLead.LeadSource = 'Walk-in';
         update testLead;
         Test.stopTest();
 
         testLead = [SELECT Id, LeadSource, Lead_Source_Subtype__c FROM Lead WHERE Id = :testLead.Id];
 
-        Assert.areEqual('Email', testLead.LeadSource);
+        Assert.areEqual('Walk-in', testLead.LeadSource);
         Assert.areEqual(null, testLead.Lead_Source_Subtype__c);
     }
 }

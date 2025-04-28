@@ -1,0 +1,29 @@
+<template>
+    <fieldset class="slds-form-element slds-form-element_compound">
+        <label class="slds-form-element__label">{label}</label>
+        <div class="slds-form-element__control">
+            <div class="slds-form-element__row">
+                <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                    <lightning-input
+                        type="date"
+                        label="From"
+                        onchange={changeLowerBound}
+                        value={fromValue}
+                        max={toValue}
+                        message-when-range-overflow="Must be before the to date"
+                    ></lightning-input>
+                </div>
+                <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                    <lightning-input
+                        type="date"
+                        label="To"
+                        onchange={changeUpperBound}
+                        value={toValue}
+                        min={fromValue}
+                        message-when-range-underflow="Must be after the from date"
+                    ></lightning-input>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</template>

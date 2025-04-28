@@ -1,0 +1,7 @@
+:host  {
+    display: inline-block;
+}
+
+:host .input-field {
+    display: inline-block;
+}

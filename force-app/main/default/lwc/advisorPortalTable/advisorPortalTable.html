@@ -1,6 +1,7 @@
 <template>
-    <template if:false={allResultsIsEmpty}>
-        <div class="slds-var-p-vertical_x-small">
+    <div><b>Case Results</b></div>
+    <div class="slds-grid slds-var-m-bottom_small">
+        <div class="slds-col">
             <div class="slds-var-p-bottom_small">
                 <lightning-icon
                     class="outreach-icn"
@@ -11,7 +12,8 @@
                 = Indicates a case that needs attention because it has the status Outreach Required or Customer Replied.
 
                 <template if:true={showPersistenceLegend}>
-                    <br /><img
+                    <br />
+                    <img
                         src={persistenceIconVeryLow}
                         alt="very low"
                         title="Very Low"
@@ -53,51 +55,79 @@
                     type="checkbox"
                     label="Select All"
                     checked={selectedAll}
-                    class="top-level-select"
                     onchange={updateSelectedAll}
                 ></lightning-input>
                 <lightning-input
                     type="checkbox"
                     label="Expand All"
                     checked={expandedAll}
-                    class="top-level-select"
                     onchange={updateExpandedAll}
                 ></lightning-input>
             </div>
         </div>
-
-        <div class="light-gray-background px-2 py-1">
-            <c-lightning-pagination-navigator
-                results-count={sizeOfResults}
-                page-size={pageSize}
-                current-page={currentPage}
-                item-type="Contacts"
-                onchangepage={changePage}
-            ></c-lightning-pagination-navigator>
+        <div class="slds-col slds-grow-none">
+            <div><b>Mass Actions</b></div>
+            <div class="slds-text-align_right">
+                <template lwc:if={allowedToUseMassTransfer}>
+                    <lightning-button
+                        label="Mass Transfer"
+                        onclick={sendMassTransferEvent}
+                        class="slds-var-m-right_small"
+                    ></lightning-button>
+                </template>
+                <lightning-button
+                    label="Mass Email"
+                    onclick={sendMassEmailEvent}
+                    class="slds-var-m-right_small"
+                ></lightning-button>
+                <lightning-button
+                    label="Mass Close"
+                    onclick={sentMassCloseEvent}
+                    class="slds-var-m-right_small"
+                ></lightning-button>
+                <lightning-button-icon
+                    icon-name="utility:refresh"
+                    size="medium"
+                    variant="brand"
+                    onclick={sendRefreshEvent}
+                >
+                    <label class="slds-hide">Refresh Results</label>
+                </lightning-button-icon>
+            </div>
         </div>
+    </div>
 
-        <ul class="slds-accordion">
-            <template for:each={shownContactWrappers} for:item="contactWrapper">
-                <c-advisor-portal-table-contact
-                    key={contactWrapper.portalContact.Id}
-                    contact-wrapper={contactWrapper}
-                    onnavigate={bubbleEvent}
-                    onchangeselected={updateSelected}
-                    onchangeopentoggle={updateToggleAccordian}
-                ></c-advisor-portal-table-contact>
-            </template>
-        </ul>
+    <div class="light-gray-background px-2 py-1">
+        <c-lightning-pagination-navigator
+            results-count={sizeOfResults}
+            page-size={pageSize}
+            current-page={currentPage}
+            item-type="Contacts"
+            onchangepage={changePage}
+        ></c-lightning-pagination-navigator>
+    </div>
 
-        <div class="light-gray-background px-2 py-1 mt-1">
-            <c-lightning-pagination-navigator
-                results-count={sizeOfResults}
-                page-size={pageSize}
-                item-type="Contacts"
-                current-page={currentPage}
-                onchangepage={changePage}
-                onchangepagesize={changePageSize}
-                extended="true"
-            ></c-lightning-pagination-navigator>
-        </div>
-    </template>
+    <ul class="slds-accordion">
+        <template for:each={shownContactWrappers} for:item="contactWrapper">
+            <c-advisor-portal-table-contact
+                key={contactWrapper.portalContact.Id}
+                contact-wrapper={contactWrapper}
+                onnavigate={bubbleEvent}
+                onchangeselected={updateSelected}
+                onchangeopentoggle={updateToggleAccordian}
+            ></c-advisor-portal-table-contact>
+        </template>
+    </ul>
+
+    <div class="light-gray-background px-2 py-1 mt-1">
+        <c-lightning-pagination-navigator
+            results-count={sizeOfResults}
+            page-size={pageSize}
+            item-type="Contacts"
+            current-page={currentPage}
+            onchangepage={changePage}
+            onchangepagesize={changePageSize}
+            extended="true"
+        ></c-lightning-pagination-navigator>
+    </div>
 </template>

@@ -7,12 +7,6 @@
 public class AdvisorPortalMassEmailModalController {
     private static final Id ADVISOR_PORTAL_EMAIL_RTID = RecordIdHelper.getRecordTypeId('Portal_Email__c', 'Advisor');
 
-    @AuraEnabled(cacheable=true)
-    public static User fetchUser() {
-        User userDetail = [SELECT Name FROM User WHERE id = :UserInfo.getUserId()];
-        return userDetail;
-    }
-
     @AuraEnabled
     public static void createPortalEmailsStr(String contactWrappersListJSON, String subject, String body) {
         List<AdvisorPortalContact> contactWrappersList = (List<AdvisorPortalContact>) JSON.deserialize(

@@ -2,11 +2,11 @@
 <ApexTestSuite xmlns="http://soap.sforce.com/2006/04/metadata">
     <testClassName>AdvisorPortalCaseTest</testClassName>
     <testClassName>AdvisorPortalContactTest</testClassName>
-    <testClassName>AdvisorPortalFilterSavingServiceTest</testClassName>
     <testClassName>AdvisorPortalFilterSectionControllerTest</testClassName>
     <testClassName>AdvisorPortalFilterTest</testClassName>
     <testClassName>AdvisorPortalMassEmailControllerTest</testClassName>
     <testClassName>AdvisorPortalMassTransferControllerTest</testClassName>
-    <testClassName>AdvisorPortalTopLevelFilterTest</testClassName>
     <testClassName>DynamicSoqlBuilderTest</testClassName>
+    <testClassName>FilterSetControllerTest</testClassName>
+    <testClassName>FilterSetTriggerTest</testClassName>
 </ApexTestSuite>

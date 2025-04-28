@@ -1,13 +1,9 @@
 import {api} from 'lwc';
 import LightningModal from 'lightning/modal';
 import {parseBoolean} from 'c/helperFunctions';
+import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 
 export default class LightningCaseTransferModal extends LightningModal {
-    // Callbacks for things that would be events if it were not a modal
-    @api loadingCb;
-    @api toastCb;
-    @api navCb;
-
     // Support both mass transfer mode, and (when false) single transfer mode
     @api set massTransfer(val) {
         this._massTransfer = parseBoolean(val);
@@ -64,37 +60,28 @@ export default class LightningCaseTransferModal extends LightningModal {
             });
     }
 
-    // Call the loadingCb
     sendLoadingEvent(loadMore) {
-        if (this.loadingCb != null) this.loadingCb(new CustomEvent('loading', {detail: loadMore}));
+        this.dispatchEvent(new CustomEvent('loading', {detail: loadMore}));
     }
 
-    // Call the toastCb
     sendToast(type, title, body) {
-        if (this.toastCb != null)
-            this.toastCb(
-                new CustomEvent('showtoast', {
-                    detail: {
-                        title: title,
-                        message: body,
-                        type: type,
-                        duration: 5000,
-                    },
-                })
-            );
+        this.dispatchEvent(
+            new ShowToastEvent({
+                title: title,
+                message: body,
+                variant: type,
+            })
+        );
     }
 
-    // Call the navCb
     navigate(location, params) {
-        if (this.navCb != null) {
-            this.navCb(
-                new CustomEvent('navigate', {
-                    detail: {
-                        location: location,
-                        params: params,
-                    },
-                })
-            );
-        }
+        this.dispatchEvent(
+            new CustomEvent('navigate', {
+                detail: {
+                    location: location,
+                    params: params,
+                },
+            })
+        );
     }
 }

@@ -1,0 +1,7 @@
+:host .slds-notify_container {
+    pointer-events: none;
+}
+
+:host .slds-notify {
+    pointer-events: auto;
+}

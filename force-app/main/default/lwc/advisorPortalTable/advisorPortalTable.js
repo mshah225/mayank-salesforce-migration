@@ -1,8 +1,8 @@
-/* eslint-disable no-undef */
-/* eslint-disable @salesforce/aura/ecma-intrinsics */
-import {LightningElement, api} from 'lwc';
+import {LightningElement, api, wire} from 'lwc';
+import checkIfAllowedToUseMassTransfer from '@salesforce/apex/AdvisorPortalMassTransferController.checkIfAllowedToUse';
 import persistenceChart from '@salesforce/resourceUrl/PersistenceChart';
-import {cloneObj} from 'c/helperFunctions';
+import {ShowToastEvent} from 'lightning/platformShowToastEvent';
+import {cloneObj, extractErrorMessages} from 'c/helperFunctions';
 
 export default class AdvisorPortalTable extends LightningElement {
     @api currentFilter = null;
@@ -13,6 +13,25 @@ export default class AdvisorPortalTable extends LightningElement {
         return this._allResults;
     }
     _allResults = null;
+
+    /**
+     * Check if should show mass transfer or not
+     */
+    @wire(checkIfAllowedToUseMassTransfer, {})
+    checkedIfAllowedToUseMassTransfer({data, error}) {
+        if (data !== undefined) {
+            this.allowedToUseMassTransfer = data;
+        } else if (error !== undefined) {
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error checking if user can user mass transfer',
+                    message: extractErrorMessages(error)[0],
+                    variant: 'error',
+                })
+            );
+        }
+    }
+    allowedToUseMassTransfer = false;
 
     currentPage = 0;
     pageSize = 20;
@@ -75,7 +94,7 @@ export default class AdvisorPortalTable extends LightningElement {
     get contactWrappers() {
         const rows = [];
 
-        const allResults = cloneObj(this.allResults); // cloning here ensures rendered detects change
+        const allResults = cloneObj(this.allResults ?? []); // cloning here ensures rendered detects change
         for (const c of allResults) {
             // Mark as selected
             c.isSelected = this.selectOverrides[c.portalContact.Id] ?? this.selectedAll;
@@ -99,6 +118,7 @@ export default class AdvisorPortalTable extends LightningElement {
          *
          * Whenever these change calculate the list of selected ids, and raise event if it has changed
          */
+        // eslint-disable-next-line no-undef
         const newSelectedIds = new Set();
         for (const c of rows) {
             if (c.isSelected) newSelectedIds.add(c.portalContact.Id);
@@ -109,14 +129,15 @@ export default class AdvisorPortalTable extends LightningElement {
         // Either a differing number of ids, or some ids in new list are not in old list
         if (
             newSelectedIds.size !== this.prevSelectedIds.size ||
+            // eslint-disable-next-line @salesforce/aura/ecma-intrinsics
             Array.from(newSelectedIds).filter((id) => !this.prevSelectedIds.has(id)).length > 0
         ) {
             this.prevSelectedIds = newSelectedIds;
-            this.sendSelectedEvent();
         }
 
         return rows;
     }
+    // eslint-disable-next-line no-undef
     prevSelectedIds = new Set();
 
     /**
@@ -168,6 +189,37 @@ export default class AdvisorPortalTable extends LightningElement {
         this.expandOverrides = cloneObj(this.expandOverrides);
     }
 
+    sendMassTransferEvent() {
+        this.dispatchEvent(
+            new CustomEvent('transfer', {
+                detail: {
+                    value: this.getSelectedWrappers(),
+                },
+            })
+        );
+    }
+    sendMassEmailEvent() {
+        this.dispatchEvent(
+            new CustomEvent('email', {
+                detail: {
+                    value: this.getSelectedWrappers(),
+                },
+            })
+        );
+    }
+    sentMassCloseEvent() {
+        this.dispatchEvent(
+            new CustomEvent('close', {
+                detail: {
+                    value: this.getSelectedWrappers(),
+                },
+            })
+        );
+    }
+    sendRefreshEvent() {
+        this.dispatchEvent(new CustomEvent('refresh', {}));
+    }
+
     bubbleEvent(e) {
         this.dispatchEvent(
             new CustomEvent(e.type, {
@@ -176,7 +228,7 @@ export default class AdvisorPortalTable extends LightningElement {
         );
     }
 
-    sendSelectedEvent() {
+    getSelectedWrappers() {
         // Make a list of all contacts and cases that are selected
         const selectedContactCaseWrappers = [];
         for (const res of this.contactWrappers) {
@@ -195,7 +247,6 @@ export default class AdvisorPortalTable extends LightningElement {
             if (somethingSelected) selectedContactCaseWrappers.push(wrapper);
         }
 
-        // Send it
-        this.dispatchEvent(new CustomEvent('setselected', {detail: selectedContactCaseWrappers}));
+        return selectedContactCaseWrappers;
     }
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Pinned__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Has this user pinned this filter set?</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Has this user pinned this filter set?</inlineHelpText>
+    <label>Pinned</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

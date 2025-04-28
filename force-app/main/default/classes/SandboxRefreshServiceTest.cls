@@ -94,7 +94,7 @@ private class SandboxRefreshServiceTest {
     }
 
     @isTest
-    private static void scrambleBirthay() {
+    private static void scrambleBirthday() {
         Date originalDate = System.today();
         Date scrambledDate = SandboxRefreshService.scrambleBirthday(originalDate);
         System.assert(verifyDateIsWithinThirtyDays(originalDate, scrambledDate));
@@ -115,7 +115,7 @@ private class SandboxRefreshServiceTest {
         Boolean withinThirtyDayRange = false;
         Date upperRange = oldDate.addDays(30);
         Date lowerRange = oldDate.addDays(-30);
-        if (newDate < upperRange && newDate > lowerRange) {
+        if (newDate <= upperRange && newDate >= lowerRange) {
             withinThirtyDayRange = true;
         }
         return withinThirtyDayRange;

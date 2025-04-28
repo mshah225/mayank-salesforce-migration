@@ -1,100 +1,93 @@
 <template>
     <div class="slds-form-element">
-        <template if:true={label}>
+        <template lwc:if={label}>
             <template if:true={required}>
-                <span data-testid="required-flag" style="color: red">*&nbsp;</span>
+                <span class="required-flag">*&nbsp;</span>
             </template>
-            <label class="slds-form-element__label" for="combobox-id" id="combobox-label" data-testid="combobox-label">
-                {label}
-            </label>
+            <label class="slds-form-element__label" for="combobox">{label}</label>
         </template>
-        <div class="slds-combobox_container">
-            <div class={comboboxClasses} aria-expanded="true" aria-haspopup="listbox" role="combobox">
-                <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                    <div class="inputBox slds-form-element" onclick={toggleDropdown} onmousedown={preventDefault}>
-                        <label class="slds-form-element__label slds-no-flex slds-assistive-text"></label>
-                        <div class="slds-form-element__control slds-grow">
-                            <div
-                                role="button"
-                                class="slds-input slds-combobox__input slds-input_faux"
-                                id="combobox-id"
-                                aria-labelledby="combobox-label"
-                                aria-controls="listbox-id"
-                                aria-expanded={ariaBoxIsExpanded}
-                                aria-haspopup="listbox"
-                            >
-                                <span class="slds-truncate"><label>{placard}</label></span>
-                            </div>
-                        </div>
-                    </div>
-                    <lightning-icon
-                        class="slds-input__icon"
-                        icon-name="utility:chevrondown"
-                        size="x-small"
-                        alternative-text="search"
-                    ></lightning-icon>
+        <div class="slds-form-element__control">
+            <div class="slds-combobox_container">
+                <div class={sldsComboboxClasses} aria-expanded={airaExpanded} aria-haspopup="listbox" role="combobox">
                     <div
-                        class="focusCapture"
-                        onfocus={handleFocusEvent}
-                        onblur={handleBlurEvent}
-                        onkeydown={keyboardController}
-                        tabindex="0"
-                    ></div>
-                </div>
-                <!-- Dropdown List -->
-                <div id="listbox-id" class={dropdownClasses} role="listbox" onkeydown={keyboardController}>
-                    <ul class="slds-listbox slds-listbox_vertical recordListBox" role="presentation">
-                        <template for:each={options} for:item="option">
-                            <template if:true={option.isLabel}>
-                                <li
-                                    key={option.index}
-                                    data-index={option.index}
-                                    role="presentation"
-                                    class="slds-listbox__item"
-                                    data-testid="dropdown-label"
-                                >
-                                    <div
-                                        class="slds-listbox__option_plain slds-listbox__option-header"
+                        lwc:ref="primaryInputFormElement"
+                        class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right"
+                        role="none"
+                        onmousedown={toggleDropdown}
+                        onkeydown={inputKeyDownHandler}
+                    >
+                        <input
+                            lwc:ref="primaryInput"
+                            type="text"
+                            class="slds-input slds-combobox__input"
+                            id="combobox"
+                            aria-controls="slds-dropdown"
+                            aria-disabled={ariaDisabled}
+                            role="textbox"
+                            placeholder={placard}
+                            oninput={filterDropdown}
+                            value={searchText}
+                            tabindex={inputTabIndex}
+                        />
+                        <span class="slds-icon_container slds-input__icon slds-input__icon_right">
+                            <template lwc:if={spinnerActive}>
+                                <lightning-spinner alternative-text="Loading" size="x-small"></lightning-spinner>
+                            </template>
+                            <template lwc:else>
+                                <lightning-icon icon-name={dropdownIconName} size="x-small"></lightning-icon>
+                            </template>
+                        </span>
+                    </div>
+                    <div lwc:ref="attachRef" lwc:dom="manual"></div>
+                    <div id="slds-dropdown" class={sldsDropdownClasses} role="listbox" tabindex="-1">
+                        <ul lwc:ref="list" class="slds-listbox slds-listbox_vertical">
+                            <template for:each={shownDropdownOptions} for:item="opt">
+                                <template lwc:if={opt.isHeader}>
+                                    <li key={opt.value} role="presentation" class="slds-listbox__item">
+                                        <div
+                                            class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                            role="presentation"
+                                        >
+                                            <h3 class="slds-listbox__option-header" role="presentation">{opt.label}</h3>
+                                        </div>
+                                    </li>
+                                </template>
+                                <template lwc:else>
+                                    <li
+                                        key={opt.value}
                                         role="presentation"
+                                        class="slds-listbox__item"
+                                        onclick={toggleOption}
+                                        onkeydown={listKeyDownHandler}
+                                        data-key={opt.value}
+                                        tabindex="0"
                                     >
-                                        <span class="slds-media__body">
-                                            <h3 class="slds-truncate" title={option.label}>{option.label}</h3>
-                                        </span>
-                                    </div>
-                                </li>
+                                        <div
+                                            class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                            role="option"
+                                        >
+                                            <span class="slds-media__figure slds-listbox__option-icon">
+                                                <template lwc:if={opt.isSelected}>
+                                                    <lightning-icon
+                                                        icon-name="utility:check"
+                                                        size="x-small"
+                                                    ></lightning-icon>
+                                                </template>
+                                            </span>
+                                            <span class="slds-media__body">
+                                                <span class="slds-truncate" title={opt.label}>{opt.label}</span>
+                                            </span>
+                                        </div>
+                                    </li>
+                                </template>
                             </template>
-                            <template if:false={option.isLabel}>
-                                <li
-                                    key={option.index}
-                                    data-id={option.value}
-                                    data-index={option.index}
-                                    data-hover={option.isHovered}
-                                    data-testid="dropdown-option"
-                                    onmousemove={hoverElement}
-                                    onmousedown={toggleItem}
-                                    class="slds-listbox__item"
-                                >
-                                    <span class="slds-media__figure slds-listbox__option-icon">
-                                        <template if:true={option.isSelected}>
-                                            <lightning-icon
-                                                icon-name="utility:check"
-                                                size="x-small"
-                                                alternative-text="icon"
-                                            ></lightning-icon>
-                                        </template>
-                                    </span>
-                                    <span class="slds-media slds-listbox__option_entity verticalAlign slds-truncate">
-                                        {option.label}
-                                    </span>
-                                </li>
-                            </template>
-                        </template>
-                    </ul>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
         <template if:true={hasError}>
-            <div data-testid="error-warning" class="slds-form-element__help" role="alert">Complete this field.</div>
+            <div class="slds-form-element__help slds-text-color_error" role="alert">Complete this field.</div>
         </template>
     </div>
 </template>

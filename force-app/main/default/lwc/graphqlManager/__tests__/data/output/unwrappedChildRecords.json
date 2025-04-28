@@ -1,0 +1,162 @@
+{
+    "Filter_Set__c": [
+        {
+            "Id": "a4H000000000000001",
+            "Name": "All Freshmen (UGRAD)",
+            "OwnerId": "005000000000000001",
+            "Owner": {
+                "Name": "Hornet"
+            },
+            "Value__c": "{\"academicLevel\":\"Freshman\",\"campus\":\"\",\"career\":\"UGRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}",
+            "Is_Shared__c": false,
+            "CreatedDate": "2025-03-17T23:55:01.000Z",
+            "Filter_Set_User_Associations__r": [
+                {
+                    "Id": "a4I000000000000001",
+                    "User__c": "005000000000000001",
+                    "User__r": {
+                        "Name": "Hornet"
+                    },
+                    "Pinned__c": true
+                }
+            ]
+        },
+        {
+            "Id": "a4H000000000000002",
+            "Name": "All Sophmores (UGRAD)",
+            "OwnerId": "005000000000000002",
+            "Owner": {
+                "Name": "Tuk"
+            },
+            "Value__c": "{\"academicLevel\":\"Sophmore\",\"campus\":\"\",\"career\":\"UGRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}",
+            "Is_Shared__c": false,
+            "CreatedDate": "2025-03-17T23:55:02.000Z",
+            "Filter_Set_User_Associations__r": [
+                {
+                    "Id": "a4I000000000000002",
+                    "User__c": "005000000000000002",
+                    "User__r": {
+                        "Name": "Tuk"
+                    },
+                    "Pinned__c": false
+                }
+            ]
+        },
+        {
+            "Id": "a4H000000000000003",
+            "Name": "All Juniors (UGRAD)",
+            "OwnerId": "005000000000000002",
+            "Owner": {
+                "Name": "Tuk"
+            },
+            "Value__c": "{\"academicLevel\":\"Junior\",\"campus\":\"\",\"career\":\"UGRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}",
+            "Is_Shared__c": false,
+            "CreatedDate": "2025-03-17T23:55:02.000Z",
+            "Filter_Set_User_Associations__r": [
+                {
+                    "Id": "a4I000000000000003",
+                    "User__c": "005000000000000002",
+                    "User__r": {
+                        "Name": "Tuk"
+                    },
+                    "Pinned__c": false
+                },
+                {
+                    "Id": "a4I000000000000004",
+                    "User__c": "005000000000000001",
+                    "User__r": {
+                        "Name": "Hornet"
+                    },
+                    "Pinned__c": false
+                }
+            ]
+        },
+        {
+            "Id": "a4H000000000000004",
+            "Name": "All Seniors (UGRAD)",
+            "OwnerId": "005000000000000003",
+            "Owner": {
+                "Name": "Millibelle the Banker"
+            },
+            "Value__c": "{\"academicLevel\":\"Senior\",\"campus\":\"\",\"career\":\"UGRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}",
+            "Is_Shared__c": false,
+            "CreatedDate": "2025-03-17T23:55:02.000Z",
+            "Filter_Set_User_Associations__r": [
+                {
+                    "Id": "a4I000000000000005",
+                    "User__c": "005000000000000003",
+                    "User__r": {
+                        "Name": "Millibelle the Banker"
+                    },
+                    "Pinned__c": false
+                }
+            ]
+        },
+        {
+            "Id": "a4H000000000000005",
+            "Name": "Masters Degrees (GRAD)",
+            "OwnerId": "005000000000000004",
+            "Owner": {
+                "Name": "Relic Seeker Lemm"
+            },
+            "Value__c": "{\"academicLevel\":\"\",\"campus\":\"\",\"career\":\"GRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"masters\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}",
+            "Is_Shared__c": false,
+            "CreatedDate": "2025-03-17T23:55:02.000Z",
+            "Filter_Set_User_Associations__r": [
+                {
+                    "Id": "a4I000000000000006",
+                    "User__c": "005000000000000004",
+                    "User__r": {
+                        "Name": "Relic Seeker Lemm"
+                    },
+                    "Pinned__c": false
+                }
+            ]
+        },
+        {
+            "Id": "a4H000000000000006",
+            "Name": "Online Students (GRAD)",
+            "OwnerId": "005000000000000004",
+            "Owner": {
+                "Name": "Relic Seeker Lemm"
+            },
+            "Value__c": "{\"academicLevel\":\"\",\"campus\":\"ONLNE\",\"career\":\"GRD\",\"caseSubject\":\"\",\"caseTypeState\":\"ProactiveCasesState\",\"degreeLevel\":\"\",\"outlookChange\":\"\",\"outlookScore\":\"\",\"version\":\"v2\",\"studentString\":\"\",\"caseCategory\":\"\",\"caseSubCategory\":\"\",\"caseStatus\":\"\",\"caseCount\":\"\",\"createdFromDate\":\"\",\"createdToDate\":\"\",\"followUpFromDate\":\"\",\"followUpToDate\":\"\",\"persistenceFromDate\":\"\",\"persistenceToDate\":\"\",\"studentGroupCode\":\"\",\"major\":\"\",\"residency\":\"\",\"advisor\":\"\",\"academicProgram\":\"\",\"schoolDepartment\":\"\",\"academicPlan\":\"\",\"admitTermFrom\":\"\",\"admitTermTo\":\"\",\"specialPopulation\":\"\"}",
+            "Is_Shared__c": false,
+            "CreatedDate": "2025-03-17T23:55:02.000Z",
+            "Filter_Set_User_Associations__r": [
+                {
+                    "Id": "a4I000000000000007",
+                    "User__c": "005000000000000004",
+                    "User__r": {
+                        "Name": "Relic Seeker Lemm"
+                    },
+                    "Pinned__c": false
+                },
+                {
+                    "Id": "a4I000000000000008",
+                    "User__c": "005000000000000003",
+                    "User__r": {
+                        "Name": "Millibelle the Banker"
+                    },
+                    "Pinned__c": false
+                },
+                {
+                    "Id": "a4I000000000000009",
+                    "User__c": "005000000000000002",
+                    "User__r": {
+                        "Name": "Tuk"
+                    },
+                    "Pinned__c": false
+                },
+                {
+                    "Id": "a4I00000000000000A",
+                    "User__c": "005000000000000001",
+                    "User__r": {
+                        "Name": "Hornet"
+                    },
+                    "Pinned__c": false
+                }
+            ]
+        }
+    ]
+}

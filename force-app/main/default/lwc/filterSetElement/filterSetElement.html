@@ -1,0 +1,53 @@
+<template>
+    <div class="slds-grid">
+        <div class="slds-col">
+            <span class="slds-text-heading_small slds-var-m-right_small">
+                <c-lightning-text-editable
+                    value={filterName}
+                    button-variant="bare"
+                    hide-edit={cannotEditName}
+                    onchange={handleRename}
+                ></c-lightning-text-editable>
+            </span>
+
+            <span>{shareType}</span>
+            <span class="slds-var-m-horizontal_xx-small">&middot;</span>
+            <span class="slds-var-m-right_large">{ownerName}</span>
+
+            <span class="slds-text-color_weak">
+                (<lightning-formatted-date-time value={createdDate}></lightning-formatted-date-time>)
+            </span>
+        </div>
+        <div class="slds-col slds-grow-none">
+            <c-lightning-button-dropdown
+                label="Apply filter set"
+                onclick={applyFilterSet}
+                onselect={handleSelect}
+                dynamic-dropdown="true"
+            >
+                <c-lightning-button-dropdown-item
+                    label={pinLabel}
+                    icon-name="utility:pin"
+                    name="pin"
+                ></c-lightning-button-dropdown-item>
+                <template lwc:if={canShare}>
+                    <c-lightning-button-dropdown-item
+                        label="Share"
+                        icon-name="utility:share"
+                        name="share"
+                    ></c-lightning-button-dropdown-item>
+                </template>
+                <c-lightning-button-dropdown-item
+                    label="View"
+                    icon-name="utility:preview"
+                    name="view"
+                ></c-lightning-button-dropdown-item>
+                <c-lightning-button-dropdown-item
+                    label="Remove"
+                    icon-name="utility:delete"
+                    name="remove"
+                ></c-lightning-button-dropdown-item>
+            </c-lightning-button-dropdown>
+        </div>
+    </div>
+</template>

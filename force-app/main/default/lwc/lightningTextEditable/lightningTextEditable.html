@@ -1,0 +1,52 @@
+<template>
+    <span class="slds-grid slds-grid_vertical-align-center">
+        <template lwc:if={editMode}>
+            <lightning-input
+                variant="label-hidden"
+                value={displayValue}
+                onchange={changeHandler}
+                onkeydown={keydownHandler}
+                class="input-field"
+                lwc:ref="inputField"
+            ></lightning-input>
+        </template>
+        <template lwc:else> {displayValue} </template>
+
+        <template lwc:if={showEditButton}>
+            <span class="slds-var-m-left_x-small">
+                <template lwc:if={editMode}>
+                    <label class="slds-assistive-text">Save</label>
+                    <lightning-button-icon
+                        icon-name="utility:check"
+                        variant={buttonVariant}
+                        size={buttonSize}
+                        alternative-text="Save changes"
+                        class="slds-var-m-right_xx-small"
+                        title="Save changes"
+                        onclick={saveChanges}
+                    ></lightning-button-icon>
+                    <label class="slds-assistive-text">Cancel</label>
+                    <lightning-button-icon
+                        icon-name="utility:close"
+                        variant={buttonVariant}
+                        size={buttonSize}
+                        alternative-text="Revert changes"
+                        title="Revert changes"
+                        onclick={cancelChanges}
+                    ></lightning-button-icon>
+                </template>
+                <template lwc:else>
+                    <label class="slds-assistive-text">Edit</label>
+                    <lightning-button-icon
+                        icon-name="utility:edit"
+                        variant={buttonVariant}
+                        size={buttonSize}
+                        alternative-text="Edit"
+                        title="Edit"
+                        onclick={editHandler}
+                    ></lightning-button-icon>
+                </template>
+            </span>
+        </template>
+    </span>
+</template>

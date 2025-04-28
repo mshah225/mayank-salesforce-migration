@@ -1,158 +1,499 @@
 <template>
-    <template if:true={isLoading}>
-        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
-    </template>
+    <c-lightning-error-or-retry message={errorMessage} retry-enabled="false" has-error={hasError}>
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </template>
 
-    <c-lightning-design-toast></c-lightning-design-toast>
+        <c-lightning-complex-toast lwc:ref="hasSavedFilterSetToast" variant="success" duration="8200">
+            <span slot="header">New filter set has been saved!</span>
+            <span slot="body">
+                <a role="button" class="" onclick={viewFilterSets}>View saved filters</a>
+            </span>
+        </c-lightning-complex-toast>
 
-    <template if:true={showFauxView}>
-        <c-advisor-portal-faux-view></c-advisor-portal-faux-view>
-    </template>
-    <template if:false={showFauxView}>
-        <div>
-            <div class="slds-text-align_right slds-var-m-bottom_x-small">
-                <c-advisor-portal-feedback-button
-                    current-filter={currentFilter}
-                    onshowtoast={handleToast}
-                ></c-advisor-portal-feedback-button>
+        <template lwc:if={showEditWarning}>
+            <div
+                class="slds-notify slds-notify_alert slds-alert_warning slds-var-m-bottom_small filterSetEditAlert"
+                role="alert"
+            >
+                <span class="slds-icon_container slds-icon-utility-warning slds-var-m-right_x-small">
+                    <lightning-icon
+                        icon-name="utility:warning"
+                        variant="inverse"
+                        alternative-text="warning"
+                        size="small"
+                        title="warning"
+                    ></lightning-icon>
+                </span>
+                <h2>You're editing an existing Filter set.</h2>
             </div>
+        </template>
+
+        <div class="slds-text-align_right slds-var-m-bottom_x-small">
+            <template lwc:if={userIsBothGradAndUgrad}>
+                <c-lightning-input-radio-group-row
+                    label="View cases for"
+                    name="career"
+                    options={careerOptions}
+                    value={career}
+                    onchange={changeField}
+                ></c-lightning-input-radio-group-row>
+            </template>
+
+            <span class="feedbackWrapper">
+                <button onclick={feedbackHandler} class="slds-var-m-right_xx-small">
+                    <lightning-icon
+                        icon-name="utility:anywhere_chat"
+                        alternative-text="Provide Feedback"
+                        variant="inverse"
+                        size="xx-small"
+                    ></lightning-icon>
+                    <label>Feedback</label>
+                </button>
+            </span>
+
+            <lightning-button-icon
+                icon-name="utility:refresh"
+                variant="bare"
+                alternative-text="Reset page"
+                title="Reset page"
+                onclick={resetPageHandler}
+            ></lightning-button-icon>
         </div>
-
-        <div class="slds-grid slds-max-large-wrap slds-gutters_direct-x-small slds-var-m-bottom_x-small wrapWhenSmall">
-            <div class="slds-col slds-max-large-size_1-of-1">
-                <div class="slds-card slds-var-p-around_small light-blue-background">
-                    <c-advisor-portal-user-select
-                        my-queue-id={myQueueId}
-                        all-user-options={allUsers}
-                        onchangeusers={changeSelectedUsers}
-                        onloading={handleLoading}
-                    ></c-advisor-portal-user-select>
-                </div>
-            </div>
-            <div class="slds-col slds-shrink-none slds-grow-none slds-max-large-size_1-of-1">
-                <div class="slds-grid slds-grid_vertical">
-                    <div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
-                        <div class="slds-card slds-var-p-around_small">
-                            <c-advisor-portal-filter-select-career
-                                current-filter={currentFilter}
-                                onchange={updateFilter}
-                            ></c-advisor-portal-filter-select-career>
-                        </div>
-                    </div>
-                    <div class="slds-col slds-size_1-of-1 slds-var-m-bottom_x-small">
-                        <div class="slds-card slds-var-p-around_small">
-                            <c-advisor-portal-save-filters
-                                current-filter={currentFilter}
-                                onlightning__showtoast={handleLightningToast}
-                            ></c-advisor-portal-save-filters>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="slds-grid slds-wrap slds-gutters_direct-x-small slds-var-m-bottom_x-small">
+        <div class="slds-grid slds-var-m-bottom_small">
             <div class="slds-col">
-                <div class="slds-card slds-var-p-around_small">
-                    <div class="slds-grid slds-wrap slds-gutters">
-                        <div class="slds-col slds-grow-none slds-max-large-size_1-of-1">
-                            <c-advisor-portal-filter-select-type
-                                current-filter={currentFilter}
-                                onchange={updateFilter}
-                            ></c-advisor-portal-filter-select-type>
+                <template lwc:if={appliedFilterSet}>
+                    <div class="slds-text-title">{filterSetSharedType}</div>
+                    <div class="slds-grid slds-grid_vertical-align-center">
+                        <span class="slds-text-heading_small slds-var-m-right_xx-small">
+                            <c-lightning-text-editable
+                                name="filterSetName"
+                                value={filterSetName}
+                                hide-edit={cannotEditFilterSetName}
+                                onchange={handleRenameFilterSet}
+                            ></c-lightning-text-editable>
+                        </span>
+                        <lightning-button-icon-stateful
+                            icon-name="utility:pin"
+                            selected={filterSetIsPinned}
+                            onclick={handleTogglePinFilterSet}
+                            alternative-text={filterSetPinLabel}
+                            class="slds-var-m-right_xx-small"
+                        ></lightning-button-icon-stateful>
+                        <template lwc:if={userCanShareFilterSet}>
+                            <lightning-button-icon
+                                icon-name="utility:share"
+                                variant="base"
+                                alternative-text="Share filter set"
+                                class="slds-var-m-right_xx-small"
+                                title="Share filter set"
+                                onclick={handleShareFilterSet}
+                            ></lightning-button-icon>
+                        </template>
+                        <lightning-button-icon
+                            icon-name="utility:delete"
+                            variant="base"
+                            alternative-text="Delete filter set name"
+                            title="Delete filter set name"
+                            onclick={handleDeleteFilterSet}
+                            class="slds-var-m-right_xx-small"
+                        ></lightning-button-icon>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <span class="slds-text-heading_small"> Start a new filter</span>
+                </template>
+            </div>
+            <div
+                class="slds-col slds-grow-none slds-box slds-var-m-horizontal_small slds-grid slds-grid_vertical-align-center"
+            >
+                <div>
+                    <lightning-button
+                        variant="brand"
+                        label="Save Filters"
+                        title="Save Filters"
+                        icon-name="utility:save"
+                        onclick={saveFilterSet}
+                        disabled={disableSaveFiltersButton}
+                        class="slds-var-m-right_x-small"
+                    ></lightning-button>
+
+                    <lightning-button
+                        variant="brand"
+                        label="Overwrite"
+                        title="Overwrite"
+                        icon-name="utility:edit"
+                        onclick={overwriteFilterSet}
+                        disabled={disableOverwriteButton}
+                        class="slds-var-m-right_x-small"
+                    ></lightning-button>
+
+                    <lightning-button
+                        variant="brand"
+                        label="Reset"
+                        title="Reset"
+                        icon-name="utility:refresh"
+                        onclick={resetFilterSet}
+                        disabled={disableResetButton}
+                    ></lightning-button>
+                </div>
+            </div>
+            <div
+                class="slds-col slds-grow-none slds-box slds-grid slds-grid_vertical-align-center light-blue-background"
+            >
+                <lightning-button label="View Saved Filters" onclick={viewFilterSets}></lightning-button>
+            </div>
+        </div>
+        <div class="slds-box light-blue-background slds-var-m-bottom_small">
+            <c-advisor-portal-user-select
+                owner-ids={ownerIds}
+                user-and-pod-options={allUsersAndPods}
+                my-queue-id={myQueueId}
+                is-loading={loadingUsersAndPodOptions}
+                onchangeusers={changeSelectedUsers}
+                oncommitusers={commitSelectedUsers}
+            ></c-advisor-portal-user-select>
+        </div>
+        <div class="slds-box light-blue-background slds-grid slds-var-m-bottom_small">
+            <div class="slds-col">
+                <lightning-radio-group
+                    name="caseTypeState"
+                    data-name="caseTypeState"
+                    label="Show Results for"
+                    options={caseTypeStateOptions}
+                    value={caseTypeState}
+                    type="button"
+                    onchange={changeField}
+                ></lightning-radio-group>
+            </div>
+            <div class="slds-col slds-grow-none">
+                <lightning-button
+                    label={toggleAdditionalFiltersLabel}
+                    title={toggleAdditionalFiltersLabel}
+                    icon-name={toggleAdditionalFiltersIcon}
+                    icon-position="right"
+                    onclick={toggleAdditionalFilters}
+                ></lightning-button>
+            </div>
+        </div>
+        <template lwc:if={showAdditionalFilters}>
+            <div class="slds-box light-blue-background slds-var-m-bottom_small">
+                <div class="slds-grid slds-gutters slds-wrap">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                        <lightning-input
+                            label="Student †"
+                            type="text"
+                            name="studentString"
+                            data-name="studentString"
+                            oncommit={changeField}
+                            value={studentString}
+                            class="tooltip-enabled-field"
+                            aria-describedby="studentStringTooltip"
+                            onkeydown={closeTooltipOnEscape}
+                            onblur={resetTooltipState}
+                        >
+                        </lightning-input>
+                        <div
+                            class="slds-is-absolute slds-text-body_small tooltip"
+                            role="tooltip"
+                            id="studentStringTooltip"
+                        >
+                            <div class="slds-hide_medium">
+                                † Search by "FirstName LastName" (must search with full name, either preferred or
+                                legal), "ASURITE", or "EMPLID".
+                            </div>
+                            <div class="slds-show_medium">
+                                † Search by "FirstName LastName" (must search with full<br />name, either preferred or
+                                legal), "ASURITE", or "EMPLID".
+                            </div>
                         </div>
-                        <div class="slds-col slds-grow slds-max-large-size_1-of-1"></div>
-                        <div class="slds-col slds-max-medium-size_1-of-1">
-                            <!-- sldsValidatorIgnoreNextLine -->
-                            <fieldset>
-                                <!-- sldsValidatorIgnoreNextLine -->
-                                <legend class="slds-form-element__legend slds-form-element__label">Mass Actions</legend>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                        <c-lightning-combo-box
+                            label="Campus"
+                            name="campus"
+                            multi-select="true"
+                            value={campus}
+                            options={campusOptions}
+                            oncommit={changeField}
+                            spinner-active={loadingCampusOptions}
+                        ></c-lightning-combo-box>
+                    </div>
+
+                    <template lwc:if={gradMode}>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <c-lightning-combo-box
+                                label="Degree Level"
+                                name="degreeLevel"
+                                multi-select="true"
+                                options={degreeLevelOptions}
+                                value={degreeLevel}
+                                oncommit={changeField}
+                            ></c-lightning-combo-box>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <c-lightning-combo-box
+                                label="College"
+                                name="academicProgram"
+                                multi-select="true"
+                                options={academicProgramOptions}
+                                value={academicProgram}
+                                oncommit={changeField}
+                                spinner-active={loadingAcadProgramOptions}
+                            ></c-lightning-combo-box>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <c-lightning-combo-box
+                                label="School/Department"
+                                name="schoolDepartment"
+                                multi-select="true"
+                                options={schoolDepartmentOptions}
+                                value={schoolDepartment}
+                                oncommit={changeField}
+                                spinner-active={loadingSchoolDepartmentOptions}
+                            ></c-lightning-combo-box>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <c-lightning-combo-box
+                                label="Academic Plan"
+                                name="academicPlan"
+                                multi-select="true"
+                                options={academicPlanOptions}
+                                value={academicPlan}
+                                oncommit={changeField}
+                                spinner-active={loadingAcadPlanOptions}
+                            ></c-lightning-combo-box>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <fieldset class="slds-form-element slds-form-element_compound">
+                                <label class="slds-form-element__label">Admit Term</label>
                                 <div class="slds-form-element__control">
-                                    <template if:true={allowedToUseMassTransfer}>
-                                        <lightning-button
-                                            label="Mass Transfer"
-                                            onclick={openModalMassTransfer}
-                                            variant="brand"
-                                            class="mr-2"
-                                        ></lightning-button>
-                                    </template>
-                                    <lightning-button
-                                        label="Mass Email"
-                                        onclick={openModalMassEmail}
-                                        variant="brand"
-                                        class="mr-2"
-                                    ></lightning-button>
-                                    <lightning-button
-                                        label="Mass Close"
-                                        onclick={openModalMassClose}
-                                        variant="brand"
-                                        class="mr-2"
-                                    ></lightning-button>
-                                    <!-- sldsValidatorIgnoreNextLine -->
-                                    <lightning-button-icon
-                                        icon-name="utility:refresh"
-                                        variant="brand"
-                                        alternative-text="Refresh"
-                                        size="medium"
-                                        title="Refresh"
-                                        onclick={reloadContacts}
-                                    ></lightning-button-icon>
+                                    <div class="slds-form-element__row">
+                                        <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                                            <lightning-input
+                                                type="text"
+                                                label="From"
+                                                name="admitTermFrom"
+                                                data-name="admitTermFrom"
+                                                oncommit={changeField}
+                                                pattern="[0-2][0-9]{2}[1,4,7]"
+                                                title="First digit should be 1 or 2 to indicate century, next two digits indicate year, final digit indicates semester (1 for Spring, 4 for Summer, 7 for Fall) (example: 2217 is 2(0)21, fall semester)"
+                                                message-when-pattern-mismatch="Should be a valid Peoplesoft term code."
+                                                value={admitTermFrom}
+                                            ></lightning-input>
+                                        </div>
+                                        <div class="slds-size_1-of-2 slds-var-p-horizontal_xx-small">
+                                            <lightning-input
+                                                type="text"
+                                                label="To"
+                                                name="admitTermTo"
+                                                data-name="admitTermTo"
+                                                oncommit={changeField}
+                                                pattern="[0-2][0-9]{2}[1,4,7]"
+                                                title="First digit should be 1 or 2 to indicate century, next two digits indicate year, final digit indicates semester (1 for Spring, 4 for Summer, 7 for Fall) (example: 1984 is 1(9)98, summer semester)"
+                                                message-when-pattern-mismatch="Should be a valid Peoplesoft term code."
+                                                value={admitTermTo}
+                                            ></lightning-input>
+                                        </div>
+                                    </div>
                                 </div>
                             </fieldset>
                         </div>
-                        <div class="slds-col slds-grow-none slds-max-medium-size_1-of-1 advanced-filter-button">
-                            <lightning-button
-                                label="Advanced Filters"
-                                variant="brand"
-                                onclick={toggleFilterVisibility}
-                            ></lightning-button>
+                    </template>
+                    <template lwc:else>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <c-lightning-combo-box
+                                label="Academic Level"
+                                name="academicLevel"
+                                multi-select="true"
+                                options={academicLevelOptions}
+                                value={academicLevel}
+                                oncommit={changeField}
+                            ></c-lightning-combo-box>
                         </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <lightning-input
+                                type="text"
+                                label="Student Group"
+                                name="studentGroupCode"
+                                data-name="studentGroupCode"
+                                oncommit={changeField}
+                                value={studentGroupCode}
+                            ></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <lightning-input
+                                type="text"
+                                label="Major"
+                                name="major"
+                                data-name="major"
+                                oncommit={changeField}
+                                value={major}
+                            ></lightning-input>
+                        </div>
+                    </template>
+
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                        <c-lightning-combo-box
+                            label="Residency"
+                            name="residency"
+                            multi-select="true"
+                            options={residencyOptions}
+                            value={residency}
+                            oncommit={changeField}
+                            spinner-active={loadingResidencyOptions}
+                        ></c-lightning-combo-box>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                        <c-lightning-combo-box
+                            label="Case Status"
+                            name="caseStatus"
+                            multi-select="true"
+                            options={caseStatusOptions}
+                            value={caseStatus}
+                            oncommit={changeField}
+                            spinner-active={loadingCaseStatusOptions}
+                        ></c-lightning-combo-box>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                        <c-lightning-combo-box
+                            label="Case Category"
+                            name="caseCategory"
+                            multi-select="true"
+                            options={caseCategoryOptions}
+                            value={caseCategory}
+                            oncommit={changeField}
+                            spinner-active={loadingCaseCategoryOptions}
+                        ></c-lightning-combo-box>
+                    </div>
+
+                    <template lwc:if={gradMode}>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <c-lightning-combo-box
+                                label="Case Sub-Category"
+                                name="caseSubCategory"
+                                multi-select="true"
+                                options={caseSubCategoryOptions}
+                                value={caseSubCategory}
+                                oncommit={changeField}
+                                spinner-active={loadingCaseSubCategoryOptions}
+                            ></c-lightning-combo-box>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <c-lightning-combo-box
+                                label="Special Population"
+                                name="specialPopulation"
+                                multi-select="true"
+                                options={specialPopulationOptions}
+                                value={specialPopulation}
+                                oncommit={changeField}
+                            ></c-lightning-combo-box>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <c-lightning-combo-box
+                                label="Case Subject"
+                                name="caseSubject"
+                                multi-select="true"
+                                options={caseSubjectOptions}
+                                value={caseSubject}
+                                oncommit={changeField}
+                                spinner-active={loadingCaseSubjectOptions}
+                            ></c-lightning-combo-box>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <c-lightning-combo-box
+                                label="Outlook Score"
+                                name="outlookScore"
+                                multi-select="true"
+                                options={outlookScoreOptions}
+                                value={outlookScore}
+                                oncommit={changeField}
+                            ></c-lightning-combo-box>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                            <c-lightning-combo-box
+                                label="Outlook Change"
+                                name="outlookChange"
+                                multi-select="true"
+                                options={outlookChangeOptions}
+                                value={outlookChange}
+                                oncommit={changeField}
+                            ></c-lightning-combo-box>
+                        </div>
+                    </template>
+
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-4 slds-large-size_1-of-5">
+                        <lightning-input
+                            type="text"
+                            label="Case Count"
+                            name="caseCount"
+                            data-name="caseCount"
+                            oncommit={changeField}
+                            value={caseCount}
+                        ></lightning-input>
+                    </div>
+                </div>
+                <div class="slds-grid slds-gutters slds-var-m-bottom_small">
+                    <div class="slds-col slds-size_1-of-3">
+                        <c-lightning-input-date-range
+                            label="Created Date"
+                            name="createdDateRange"
+                            from-value={createdFromDate}
+                            to-value={createdToDate}
+                            onchange={changeField}
+                        ></c-lightning-input-date-range>
+                    </div>
+                    <div class="slds-col slds-size_1-of-3">
+                        <c-lightning-input-date-range
+                            label="Follow Up Date"
+                            name="followUpDateRange"
+                            from-value={followUpFromDate}
+                            to-value={followUpToDate}
+                            onchange={changeField}
+                        ></c-lightning-input-date-range>
+                    </div>
+                    <template lwc:if={ugradMode}>
+                        <div class="slds-col slds-size_1-of-3">
+                            <c-lightning-input-date-range
+                                label="Persistence Change Date"
+                                name="persistenceChangeDateRange"
+                                from-value={persistenceChangeFromDate}
+                                to-value={persistenceChangeToDate}
+                                onchange={changeField}
+                            ></c-lightning-input-date-range>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <div class="slds-col slds-size_1-of-1">
+                        <lightning-button
+                            label="Clear Selected Filters"
+                            title="Clear Selected Filters"
+                            onclick={clearFilters}
+                            class="slds-var-m-right_xx-small"
+                        ></lightning-button>
+                        <lightning-button
+                            variant="brand"
+                            label="Apply Selected Filters"
+                            title="Apply Selected Filters"
+                            onclick={applyFilters}
+                        ></lightning-button>
                     </div>
                 </div>
             </div>
+        </template>
+        <div class="slds-box slds-var-m-bottom_small">
+            <c-advisor-portal-table
+                current-filter={currentFilter}
+                all-results={allResults}
+                onnavigate={navigate}
+                onrefresh={reapplyFilters}
+                ontransfer={openMassTransferModal}
+                onemail={openMassEmailModal}
+                onclose={openMassCloseModal}
+            ></c-advisor-portal-table>
         </div>
-
-        <div class={filterSectionDivClasses}>
-            <div class="slds-col">
-                <div class="slds-card slds-var-p-around_small">
-                    <c-advisor-portal-filters-section
-                        current-filter={currentFilter}
-                        view-as-users={selectedUsers}
-                        loading-campus-values={loadingCampusValues}
-                        loading-school-department={loadingSchoolDepartment}
-                        loading-acad-plan={loadingAcadPlan}
-                        loading-case-status={loadingCaseStatus}
-                        loading-case-category={loadingCaseCategory}
-                        loading-case-sub-category={loadingCaseSubCategory}
-                        residency-picklist-values={residencyPicklistValues}
-                        case-status-picklist-values={caseStatusPicklistValues}
-                        campus-picklist-values={campusPicklistValues}
-                        case-subject-picklist-values={caseSubjectPicklistValues}
-                        case-category-picklist-values={caseCategoryPicklistValues}
-                        case-sub-category-picklist-values={caseSubCategoryPicklistValues}
-                        academic-program-options={academicProgramOptions}
-                        school-department-options={schoolDepartmentOptions}
-                        academic-plan-options={academicPlanOptions}
-                        onchange={updateFilter}
-                        onsubmit={getCases}
-                        onloading={handleLoading}
-                    ></c-advisor-portal-filters-section>
-                </div>
-            </div>
-        </div>
-
-        <div class="slds-grid slds-wrap slds-gutters_direct-x-small slds-var-m-bottom_x-small">
-            <div class="slds-col">
-                <div class="slds-card slds-var-p-around_small">
-                    <c-advisor-portal-table
-                        current-filter={currentFilter}
-                        all-results={allResults}
-                        onnavigate={navigate}
-                        onsetselected={updateSelectedResults}
-                        onloading={handleLoading}
-                    ></c-advisor-portal-table>
-                </div>
-            </div>
-        </div>
-    </template>
+    </c-lightning-error-or-retry>
 </template>

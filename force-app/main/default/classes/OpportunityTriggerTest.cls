@@ -1209,4 +1209,66 @@ public with sharing class OpportunityTriggerTest {
             'Did not correctly identify inactive User: ' + OppAfterInsert.Territory_Assignment_Last_Rule_Type__c
         );
     }
+
+    @isTest
+    public static void testCannotSetInvalidLeadSourceSubtype() {
+        Contact c = new Contact(FirstName = 'Mardolf', LastName = 'Orange');
+        insert c;
+        c = [SELECT Id, AccountId FROM Contact WHERE Id = :c.Id];
+
+        Date nowPlus3Months = System.today().addMonths(3);
+
+        Test.startTest();
+        Opportunity testOpp = new Opportunity(
+            Name = 'Test Opportunity',
+            Contact__c = c.Id,
+            AccountId = c.AccountId,
+            StageName = 'Prospect',
+            CloseDate = nowPlus3Months,
+            LeadSource = 'Walk-in',
+            Lead_Source_Subtype__c = 'GRE'
+        );
+        insert testOpp;
+        Test.stopTest();
+
+        testOpp = [SELECT Id, LeadSource, Lead_Source_Subtype__c FROM Opportunity WHERE Id = :testOpp.Id];
+
+        Assert.areEqual('Walk-in', testOpp.LeadSource);
+        Assert.areEqual(null, testOpp.Lead_Source_Subtype__c);
+    }
+
+    @isTest
+    public static void testClearLeadSourceSubtype() {
+        Contact c = new Contact(FirstName = 'Mardolf', LastName = 'Orange');
+        insert c;
+        c = [SELECT Id, AccountId FROM Contact WHERE Id = :c.Id];
+
+        Date nowPlus3Months = System.today().addMonths(3);
+
+        Opportunity testOpp = new Opportunity(
+            Name = 'Test Opportunity',
+            Contact__c = c.Id,
+            AccountId = c.AccountId,
+            StageName = 'Prospect',
+            CloseDate = nowPlus3Months,
+            LeadSource = 'Test Scores',
+            Lead_Source_Subtype__c = 'GRE'
+        );
+        insert testOpp;
+
+        testOpp = [SELECT Id, LeadSource, Lead_Source_Subtype__c FROM Opportunity WHERE Id = :testOpp.Id];
+
+        Assert.areEqual('Test Scores', testOpp.LeadSource);
+        Assert.areEqual('GRE', testOpp.Lead_Source_Subtype__c);
+
+        Test.startTest();
+        testOpp.LeadSource = 'Walk-in';
+        update testOpp;
+        Test.stopTest();
+
+        testOpp = [SELECT Id, LeadSource, Lead_Source_Subtype__c FROM Opportunity WHERE Id = :testOpp.Id];
+
+        Assert.areEqual('Walk-in', testOpp.LeadSource);
+        Assert.areEqual(null, testOpp.Lead_Source_Subtype__c);
+    }
 }

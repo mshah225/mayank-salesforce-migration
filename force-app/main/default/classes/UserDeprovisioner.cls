@@ -89,7 +89,7 @@ public without sharing class UserDeprovisioner {
             updateUserLogin(true);
             updateSmsSenderIds(true);
             removeSmsSenderIdAssignments(true);
-            removeSmsLicenses(true);
+            deactivateSmsLicenses(true);
             reassignCampaigns(true);
             updatedUser.Deprovision_User__c = false;
             updatedUser.IsActive = false;
@@ -283,8 +283,11 @@ public without sharing class UserDeprovisioner {
     }
 
     // Remove SMS licenses
-    private void removeSmsLicenses(Boolean logIt) {
+    private void deactivateSmsLicenses(Boolean logIt) {
         if (smsLicenses != null && !smsLicenses.isEmpty()) {
+            for (smagicinteract__License__c smsLicense : smsLicenses) {
+                smsLicense.smagicinteract__Status__c = false;
+            }
             if (logIt) {
                 addToProcessingNotes('Removed ' + smsLicenses.size() + ' SMS Licenses');
             }
@@ -515,7 +518,7 @@ public without sharing class UserDeprovisioner {
         this.smsLicenses = smsLicenses;
 
         if (doDeprovision)
-            removeSmsLicenses(false);
+            deactivateSmsLicenses(false);
     }
     public void setCampaigns(List<Campaign> campaigns) {
         if (locked)

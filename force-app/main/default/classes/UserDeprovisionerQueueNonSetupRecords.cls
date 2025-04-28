@@ -123,7 +123,7 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
 
             // Remove SMS Licenses
             if (!smsLicenses.isEmpty()) {
-                UserDeprovisionOrganizer.ResultWrapper resultWrapper = UserDeprovisionOrganizer.deleteSobjectRecords(
+                UserDeprovisionOrganizer.ResultWrapper resultWrapper = UserDeprovisionOrganizer.updateSobjectRecords(
                     'smagicinteract__User__c',
                     smsLicenses
                 );

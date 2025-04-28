@@ -625,14 +625,17 @@ public class UserDeprovisionTest {
             'Number of sender ids unassigned should be recorded on the user'
         );
 
-        // License was deleted
+        // License was deactivated
         smsLicenses = [
             SELECT Id, Active__c
             FROM smagicinteract__License__c
             WHERE Id IN :new Map<Id, smagicinteract__License__c>(smsLicenses).keySet()
         ];
 
-        Assert.isTrue(smsLicenses.isEmpty(), 'Should have deleted SMS licenses');
+        Assert.isFalse(smsLicenses.isEmpty(), 'Should NOT have deleted SMS licenses');
+        for (smagicinteract__License__c smsLicense : smsLicenses) {
+            Assert.isFalse(smsLicense.Active__c, 'License should have been deactivated but it was not');
+        }
         // and processing notes indicate SMS licenses were removed
         Assert.isTrue(
             testUser.Processing_Notes__c.contains('Removed ' + smsLicensesCount + ' SMS Licenses'),
@@ -1211,7 +1214,7 @@ public class UserDeprovisionTest {
         // Processing notes were updated to include error details
         Assert.isTrue(
             testUser.Processing_Notes__c.contains(
-                'Error while deleting the smagicinteract__License__c objects during user deprovisioning'
+                'Error while updating the smagicinteract__License__c objects during user deprovisioning'
             ),
             'Should contain exception details on user'
         );

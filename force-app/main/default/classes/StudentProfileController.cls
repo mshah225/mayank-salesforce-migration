@@ -81,7 +81,9 @@ global with sharing class StudentProfileController {
     public String futureTermName { get; set; }
     public String subPlanString { get; set; }
     public String eAdvisorStatus { get; set; }
-    public String ciIndex { get; set; }
+    public String ciScore { get; set; }
+    public String ciScoreUsed { get; set; }
+    public List<System.SelectOption> caseFunctionaGroupPicklist { get; set; }
     public String serviceIndicatorTerm { get; set; }
     public Decimal undergradGPA { get; set; }
     public Decimal gradGPA { get; set; }
@@ -253,11 +255,12 @@ global with sharing class StudentProfileController {
             setStudentGroups();
             setServiceIndicators();
             setStudentProgramsAndAdvisors();
+            setCaseFunctionalGroupPicklist();
             setTestScores();
             setFinancials();
             setMe3Results();
             setAdvisorStatus();
-            setCIIndex();
+            setCI();
             setFinancialAidIndicator();
             setContactEmailRecords();
             setCaseCommentHistory();
@@ -516,6 +519,10 @@ global with sharing class StudentProfileController {
         }
     }
 
+    private void setCaseFunctionalGroupPicklist() {
+        caseFunctionaGroupPicklist = getCaseFunctionalGroupPicklist();
+    }
+
     /**
      * Sets the open cases for the student.
      */
@@ -573,6 +580,7 @@ global with sharing class StudentProfileController {
                 Admission_Type_Description__c,
                 Appt_Dt__c,
                 Appt_Dt_Pending__c,
+                ASUPGA_Status__c,
                 Enrl_Deposit__c,
                 Enrl_Hrs__c,
                 Enrl_Hrs_Pending__c,
@@ -1160,23 +1168,28 @@ global with sharing class StudentProfileController {
     /**
      * Sets the CI Index for the student based on the opportunity records.
      */
-    private void setCIIndex() {
+    private void setCI() {
         List<Opportunity> studentOpp = [
-            SELECT CI_Score__c
+            SELECT CI_Score_Used__c, Current_CI_Score__c
             FROM Opportunity
             WHERE
                 Contact__r.EMPLID__c = :theContact.EMPLID__c
                 AND Career__c = 'Undergraduate'
                 AND Application_Number__c != ''
                 AND RecordType.Name = 'Undergraduate Application'
-            ORDER BY CreatedDate
+                AND CloseDate > TODAY
+            ORDER BY CreatedDate DESC
             LIMIT 1
         ];
 
-        if (studentOpp.size() > 0 && studentOpp[0].CI_Score__c != null) {
-            ciIndex = '' + studentOpp[0].CI_Score__c;
-        } else {
-            ciIndex = '--';
+        ciScore = '--';
+        ciScoreUsed = '--';
+
+        if (studentOpp.size() > 0) {
+            if (studentOpp[0].Current_CI_Score__c != null)
+                ciScore = '' + studentOpp[0].Current_CI_Score__c;
+            if (studentOpp[0].CI_Score_Used__c != null)
+                ciScoreUsed = '' + studentOpp[0].CI_Score_Used__c;
         }
     }
 
@@ -1880,9 +1893,7 @@ global with sharing class StudentProfileController {
     @RemoteAction
     global static Map<String, List<FinancialAidAwardWrapper.cls_term_awards>> getAwardStatusMap(String contactEmplid) {
         FinancialAidAwardWrapper awardWrapper = StudentProfileCallout.getAwards(contactEmplid);
-
         awardWrapper.aid_years.sort();
-
         Map<String, List<FinancialAidAwardWrapper.cls_term_awards>> aidYearToAward = new Map<String, List<FinancialAidAwardWrapper.cls_term_awards>>();
 
         if (awardWrapper == null) {
@@ -2009,7 +2020,6 @@ global with sharing class StudentProfileController {
     @RemoteAction
     global static Map<String, List<SAPWrapper.cls_sap>> getAcademicProgress(String contactEmplid) {
         SAPWrapper academicProgressWrapper = StudentProfileCallout.getAcademicProgress(contactEmplid);
-
         Map<String, List<SAPWrapper.cls_sap>> academicYearToSAP = new Map<String, List<SAPWrapper.cls_sap>>();
 
         if (academicProgressWrapper == null) {

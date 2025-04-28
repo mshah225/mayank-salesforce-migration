@@ -1,189 +1,247 @@
-<apex:page cache="false" standardStylesheets="false" showHeader="false" sidebar="false" standardController="KnowledgeArticle"
-    extensions="pkb_Controller" language="{!$CurrentPage.parameters.l}" applyBodyTag="false" applyHtmlTag="false">
+<!--
+    This Visualforce page renders a knowledge article from the Salesforce Knowledge base.
+    It includes metadata and script resources, as well as custom components for styling and functionality.
+    Additionally, it performs URL redirection based on specific conditions.
+
+    Page Attributes:
+    - cache: false (Disable caching)
+    - standardStylesheets: false (Disable standard Salesforce stylesheets)
+    - showHeader: false (Hide the Salesforce header)
+    - sidebar: false (Hide the Salesforce sidebar)
+    - standardController: FAQ__ka (Uses the standard controller for the FAQ__ka object)
+    - extensions: pkb_Controller (Extends functionality with pkb_Controller)
+    - language: Dynamically sets the language based on URL parameters
+    - applyBodyTag: false (Custom HTML <body> tag applied)
+    - applyHtmlTag: false (Custom HTML <html> tag applied)
+-->
+<apex:page cache="false"
+    standardStylesheets="false"
+    showHeader="false"
+    sidebar="false"
+    standardController="FAQ__ka"
+    extensions="pkb_Controller"
+    language="{!$CurrentPage.parameters.l}"
+    applyBodyTag="false"
+    applyHtmlTag="false"
+>
     <html>
+        <head>
+            <script>
+                // Redirect certain URLs to the FAQ section
+                var currentURL = window.location.href;
 
-    <head>
-        <script>
-            var currentURL = window.location.href;
+                if (currentURL.indexOf('/How_To/') > -1) {
+                    var goToURL = currentURL.replace('/How_To/', '/FAQ/');
+                    window.location.href = goToURL;
+                }
 
-            if (currentURL.indexOf('/How_To/') > -1) {
-                var goToURL = currentURL.replace('/How_To/', '/FAQ/');
+                if (currentURL.indexOf('/Informational/') > -1) {
+                    var goToURL = currentURL.replace('/Informational/', '/FAQ/');
+                    window.location.href = goToURL;
+                }
+            </script>
 
-                window.location.href = goToURL;
-            }
+            <title>{!pageTitle}</title>
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+            <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+            <meta
+                name="viewport"
+                content="width=device-width, initial-scale=0.5, minimum-scale=0.5, maximum-scale=0.5, target-densitydpi=device-dpi"
+            />
+            <meta name="apple-mobile-web-app-capable" content="yes" />
+            <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-            if (currentURL.indexOf('/Informational/') > -1) {
-                var goToURL = currentURL.replace('/Informational/', '/FAQ/');
+            <!-- Conditional metadata for when viewing an article -->
+            <apex:outputText rendered="{!viewingArticle}">
+                <!-- Define variables for article type and URL -->
+                <apex:variable var="typeName"
+                    value="{!SUBSTITUTE(pkbCon.theKad.articleTypeName, pkbCon.kavExtension, '')}"
+                />
+                <apex:variable var="articleURL"
+                    value="{!pkbCon.currentSiteUrl}articles{!pkbCon.selectedLanguageURL}{!typeName}/{!pkbCon.theKad.urlName}"
+                />
+                <!-- Open Graph metadata for social sharing -->
+                <meta property="og:title" content="{!pkbCon.theKad.title}" />
+                <meta property="og:type" content="article" />
+                <meta property="og:url" content="{!articleURL}" />
+                <meta property="og:site_name" content="{!SUBSTITUTE(pkbCon.siteName,'_',' ')}" />
+                <meta property="og:description" content="{!pkbCon.theKad.summary}" />
+                <meta property="description" content="{!pkbCon.theKad.summary}" />
+                <link rel="canonical" href="{!articleURL}" />
+            </apex:outputText>
 
-                window.location.href = goToURL;
-            }
-        </script>
+            <!-- Include jQuery script from static resource -->
+            <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
+            <!-- Include custom CSS and JS components -->
+            <c:pkb_css_asu />
+            <c:pkb_js pkbCon="{!pkbCon}" />
+            <c:pkb_remove_MyASU />
+            <link href="https://fonts.googleapis.com/css?family=Roboto:normal,medium" rel="stylesheet" type="text/css" />
+            <!-- Include Bootstrap script and favicon from static resource -->
+            <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/favicon/favicon.ico')}" />
+            <apex:includeScript value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/js/bootstrap.min.js')}" />
+        </head>
 
-        <title>{!pageTitle}</title>
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=.5, minimum-scale=.5, maximum-scale=.5, target-densitydpi=device-dpi"
-        />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <apex:outputText rendered="{!viewingArticle}">
-            <apex:variable var="typeName" value="{!SUBSTITUTE(pkbCon.theKad.articleTypeName, pkbCon.kavExtension,
-                                 '')}" />
-            <apex:variable var="articleURL" value="{!pkbCon.currentSiteUrl}articles{!pkbCon
-                               .selectedLanguageURL}{!typeName}/{!pkbCon.theKad.urlName}" />
-            <meta property="og:title" content="{!pkbCon.theKad.title}" />
-            <meta property="og:type" content="article" />
-            <meta property="og:url" content="{!articleURL}" />
-            <meta property="og:site_name" content="{!SUBSTITUTE(pkbCon.siteName,'_',' ')}" />
-            <meta property="og:description" content="{!pkbCon.theKad.summary}" />
-            <meta property="description" content="{!pkbCon.theKad.summary}" />
-            <link rel="canonical" href="{!articleURL}" />
-        </apex:outputText>
-        <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
-        <c:pkb_css_asu />
-        <c:pkb_js pkbCon="{!pkbCon}" />
-        <c:pkb_remove_MyASU />
-        <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/favicon/favicon.ico')}" />
-        <apex:includeScript value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/js/bootstrap.min.js')}" />
-    </head>
+        <body>
+            <!-- DEBUG DATA -->
+            <!--
+            SITE ADMIN: {!pkbCon.siteAdmin.Email}, {!pkbCon.siteAdmin.Name}<br/>
+            ALL PARAMS: {!allSearchParams}<br/>
+            SITE/PAGE URL: {!pkbCon.currentSiteUrl}<br/>
+            FEEDBACK? : {!displayFeedback}<br/>
+            SESSION: {!$Api.Session_ID}<br/>
+            RSS URL: {!$Page.pkb_RSS}<br/>
+            CATEGORIES: {!selectedCategory}<br/>
+            KNOWLEDGE ARTICLE ID: {!theKad.Id}<br/>
+            KNOWLEDGE ARTICLE ID (FROM CONTROLLER): {!FAQ__ka.Id}<br/>
+            -->
 
-    <body>
-        <!--
-    HELPFUL DEBUG DATA
+            <!-- HOME PAGE LAYOUT -->
+            <apex:includeLightning />
+            <c:SLDSRemoveGlobalStyles />
+            <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
 
-    SITE ADMIN: {!pkbCon.siteAdmin.Email}, {!pkbCon.siteAdmin.Name}<br/>
-    ALL PARAMS: {!allSearchParams}<br/>
-    SITE/PAGE URL: {!pkbCon.currentSiteUrl}<br/>
-    FEEDBACK? : {!displayFeedback}<br/>
-    SESSION: {!$Api.Session_ID}<br/>
-    RSS URL: {!$Page.pkb_RSS}<br/>
-    CATEGORIES: {!selectedCategory}<br/>
-    KNOWLEDGE ARTICLE ID: {!theKad.Id}<br/>
-    KNOWLEDGE ARTICLE ID (FROM CONTROLLER): {!KnowledgeArticle.Id}<br/>
-    -->
-
-        <!--  HOME PAGE LAYOUT -->
-        <apex:includeLightning />
-        <c:SLDSRemoveGlobalStyles />
-        <div id="ASUBrandHeaderWrapper" class="no-slds-scope"></div>
-
-        <div class="d-flex flex-row mx-4 my-1 border pkb-scope">
-            <div class="col-4 col-lg-3 py-2 bg-lighter border-right">
-                <div style="height: 110px">&nbsp;</div>
-                <apex:outputText rendered="{!displayContactUs}">
-                    <apex:outputText rendered="{!searchExecuted}">
-                        <div id="immediateHelp" class="font-weight-bold pt-1 text-right font-size-std">
-                            {!$Label.PKB2_Answers_Might_Help}
+            <div class="d-flex flex-row mx-4 my-1 border pkb-scope">
+                <div class="col-4 col-lg-3 py-2 bg-lighter border-right">
+                    <div style="height: 110px">&nbsp;</div>
+                    <!-- Conditional display for the contact us section -->
+                    <apex:outputText rendered="{!displayContactUs}">
+                        <apex:outputText rendered="{!searchExecuted}">
+                            <div id="immediateHelp" class="font-weight-bold pt-1 text-right font-size-std">
+                                {!$Label.PKB2_Answers_Might_Help}
+                            </div>
+                        </apex:outputText>
+                    </apex:outputText>
+                    <apex:outputText rendered="{!NOT(displayContactUs)}">
+                        <div>
+                            <apex:outputText rendered="{!viewingArticle}">
+                                <c:pkb_related pkbCon="{!pkbCon}" />
+                            </apex:outputText>
+                            <br />
+                            <apex:outputText rendered="true">
+                                <c:pkb_narrow pkbCon="{!pkbCon}" />
+                                <div class="font-size-sm text-muted">
+                                    {!$Label.PKB2_Contact_Us_Link_Prompt}
+                                    <br />
+                                    <apex:outputLink value="https://contact.asu.edu/">
+                                        {!$Label.PKB2_Contact_Us}
+                                    </apex:outputLink>
+                                </div>
+                            </apex:outputText>
                         </div>
                     </apex:outputText>
-                </apex:outputText>
-                <apex:outputText rendered="{!NOT(displayContactUs)}">
+                </div>
+
+                <div class="col-8 col-lg-9 py-2">
+                    <div class="mb-2">
+                        <c:pkb_search pkbCon="{!pkbCon}" />
+                    </div>
+
                     <div>
-                        <apex:outputText rendered="{!viewingArticle}">
-                            <c:pkb_related pkbCon="{!pkbCon}" />
+                        <!-- Conditional content for search results and articles -->
+                        <apex:outputText rendered="{!NOT(displayContactUs)}">
+                            <apex:outputText rendered="{!NOT(viewingArticle)}">
+                                <c:pkb_featured pkbCon="{!pkbCon}" rendered="{!NOT(searchExecuted)}" />
+
+                                <c:pkb_popular pkbCon="{!pkbCon}" rendered="{!NOT(searchExecuted)}" />
+
+                                <c:pkb_results pkbCon="{!pkbCon}" rendered="{!searchExecuted}" showHeaderInfo="true" />
+                            </apex:outputText>
+                            <apex:outputText rendered="{!viewingArticle}">
+                                <div>
+                                    <c:pkb_articleview pkbCon="{!pkbCon}"
+                                        showFeedbackYesNo="true"
+                                        showBackLinks="true"
+                                    />
+                                </div>
+                            </apex:outputText>
                         </apex:outputText>
-                        <br />
-                        <apex:outputText rendered="true">
-                            <c:pkb_narrow pkbCon="{!pkbCon}" />
-                            <div class="font-size-sm text-muted">
-                                {!$Label.PKB2_Contact_Us_Link_Prompt}
-                                <br />
-                                <apex:outputLink value="https://contact.asu.edu/">
-                                    {!$Label.PKB2_Contact_Us}
-                                </apex:outputLink>
-                            </div>
+
+                        <apex:outputText rendered="{!displayContactUs}">
+                            <c:pkb_results pkbCon="{!pkbCon}" rendered="{!searchExecuted}" showHeaderInfo="false" />
+                            <c:pkb_contactus_buttons_article pkbCon="{!pkbCon}" />
                         </apex:outputText>
                     </div>
-                </apex:outputText>
-            </div>
-
-            <div class="col-8 col-lg-9 py-2">
-                <div class="mb-2">
-                    <c:pkb_search pkbCon="{!pkbCon}" />
-                </div>
-
-                <div>
-                    <apex:outputText rendered="{!NOT(displayContactUs)}">
-                        <apex:outputText rendered="{!NOT(viewingArticle)}">
-                            <c:pkb_featured pkbCon="{!pkbCon}" rendered="{!NOT(searchExecuted)}" />
-
-                            <c:pkb_popular pkbCon="{!pkbCon}" rendered="{!NOT(searchExecuted)}" />
-
-                            <c:pkb_results pkbCon="{!pkbCon}" rendered="{!searchExecuted}" showHeaderInfo="true" />
-                        </apex:outputText>
-                        <apex:outputText rendered="{!viewingArticle}">
-                            <div>
-                                <c:pkb_articleview pkbCon="{!pkbCon}" showFeedbackYesNo="true" showBackLinks="true" />
-                            </div>
-                        </apex:outputText>
-                    </apex:outputText>
-
-                    <apex:outputText rendered="{!displayContactUs}">
-                        <c:pkb_results pkbCon="{!pkbCon}" rendered="{!searchExecuted}" showHeaderInfo="false" />
-                        <c:pkb_contactus_buttons_article pkbCon="{!pkbCon}" />
-                    </apex:outputText>
                 </div>
             </div>
-        </div>
 
-        <div id="ASUBrandFooterWrapper" class="no-slds-scope"></div>
+            <div id="ASUBrandFooterWrapper" class="no-slds-scope" style="display: none;"></div>
 
-        <apex:outputPanel rendered="{!NOT(viewingArticle)}">
-            <site:googleAnalyticsTracking />
-        </apex:outputPanel>
+            <!-- Google Analytics Tracking based on page type -->
+            <apex:outputPanel rendered="{!NOT(viewingArticle)}">
+                <site:googleAnalyticsTracking />
+            </apex:outputPanel>
 
-        <apex:outputPanel rendered="{!viewingArticle}">
+            <apex:outputPanel rendered="{!viewingArticle}">
+                <script>
+                    (function (i, s, o, g, r, a, m) {
+                        i['GoogleAnalyticsObject'] = r;
+                        (i[r] =
+                            i[r] ||
+                            function () {
+                                (i[r].q = i[r].q || []).push(arguments);
+                            }),
+                            (i[r].l = 1 * new Date());
+                        (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+                        a.async = 1;
+                        a.src = g;
+                        m.parentNode.insertBefore(a, m);
+                    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+                    ga('create', 'UA-47141114-1', 'auto');
+                    ga('set', 'dimension1', '{!funcGroup}');
+                    ga('set', 'dimension2', '{!artType}');
+                    ga('set', 'dimension3', '{!createdByName}');
+                    ga('send', 'pageview');
+                </script>
+            </apex:outputPanel>
+
+            <!-- Additional JavaScript for ASU brand header and footer -->
             <script>
-                (function (i, s, o, g, r, a, m) {
-                    i['GoogleAnalyticsObject'] = r;
-                    (i[r] =
-                        i[r] ||
-                        function () {
-                            (i[r].q = i[r].q || []).push(arguments);
-                        }),
-                        (i[r].l = 1 * new Date());
-                    (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
-                    a.async = 1;
-                    a.src = g;
-                    m.parentNode.insertBefore(a, m);
-                })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+                const urlParams = new URLSearchParams(window.location.search);
+                let navTreeStr =
+                    '{"navbarLinks" : [' +
+                    '{"text": "Home", "type": "icon-home", "class": "data-class", "href": "https://www.asu.edu/" },' +
+                    '{"text": "News and Events", "href": "https://www.asu.edu/news"},' +
+                    '{"text": "Academics", "href": "https://www.asu.edu/academics"},' +
+                    '{"text": "Admission", "href": "https://www.asu.edu/admission"},' +
+                    '{"text": "Research", "href": "https://www.asu.edu/research"},' +
+                    '{"text": "Athletics", "href": "https://www.asu.edu/athletics"},' +
+                    '{"text": "Alumni", "href": "https://www.asu.edu/alumni"},' +
+                    '{"text": "Giving", "href": "https://www.asu.edu/giving"},' +
+                    '{"text": "President", "href": "https://www.asu.edu/president"},' +
+                    '{"text": "About ASU", "href": "https://www.asu.edu/about"}]}';
+                
+                let title = 'Student Frequently Asked Questions';
+                let baseUrl = 'https://www.asu.edu/';
+                
+                if (urlParams.get('navTree') != null || urlParams.get('navbar') != null) {
+                    navTreeStr = undefined;
+                }
+                if (urlParams.get('title') != null) {
+                    title = undefined;
+                }
+                if (urlParams.get('baseUrl') != null) {
+                    baseUrl = undefined;
+                }
 
-                ga('create', 'UA-47141114-1', 'auto');
-                ga('set', 'dimension1', '{!funcGroup}');
-                ga('set', 'dimension2', '{!artType}');
-                ga('set', 'dimension3', '{!createdByName}');
-                ga('send', 'pageview');
-            </script>
-        </apex:outputPanel>
-
-        <script>
-            const urlParams = new URLSearchParams(window.location.search);
-            let navTreeStr = '{"navbarLinks" : []}';
-            let title = '';
-            let baseUrl = 'https://webapp4.asu.edu/myasu/student';
-            if (urlParams.get('navTree') != null || urlParams.get('navbar') != null) {
-                navTreeStr = undefined;
-            }
-            if (urlParams.get('title') != null) {
-                title = undefined;
-            }
-            if (urlParams.get('baseUrl') != null) {
-                baseUrl = undefined;
-            }
-
-            $Lightning.use(
-                "c:ASUBrandApp",
-                function () {
+                $Lightning.use('c:ASUBrandApp', function () {
                     $Lightning.createComponent(
-                        "c:asuBrandHeader",
-                        { title, baseUrl, navTreeStr },
-                        "ASUBrandHeaderWrapper"
+                        'c:asuBrandHeader',
+                        {title, baseUrl, navTreeStr, stationary: true,},
+                        'ASUBrandHeaderWrapper'
                     );
-                    $Lightning.createComponent(
-                        "c:asuBrandFooter",
-                        {},
-                        "ASUBrandFooterWrapper"
-                    );
+                    $Lightning.createComponent('c:asuBrandFooter', {}, 'ASUBrandFooterWrapper', function(cmp) {
+                        // Footer is now rendered - adjust the height
+                        setTimeout(function () {
+                            jQuery('.pkb-scope .pkb-articlebody-container').height(
+                                jQuery('.knowledgeTOCRendererContent .sectionContent').outerHeight(true) + 75
+                            );
+                            // Show the footer after height is adjusted to prevent layout shift
+                            jQuery('#ASUBrandFooterWrapper').show();
+                        }, 100);
+                    });
+
                     // Hide errors that appear randomly from LWC
                     const observer = new MutationObserver(function (mutations) {
                         const errorDiv = document.querySelector('#auraErrorMessage');
@@ -192,13 +250,18 @@
                             errorDiv.innerHTML = '';
                         }
                     });
-                    observer.observe(document, { attributes: false, childList: true, characterData: false, subtree: true });
+                    observer.observe(document, {
+                        attributes: false,
+                        childList: true,
+                        characterData: false,
+                        subtree: true,
+                    });
+                });
 
-                }
-            );
-        </script>
-    </body>
+                jQuery.noConflict();
+            </script>
 
+        </body>
     </html>
     <site:previewAsAdmin />
 </apex:page>

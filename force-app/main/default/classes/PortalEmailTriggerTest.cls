@@ -319,6 +319,107 @@ public class PortalEmailTriggerTest {
     }
 
     @isTest
+    private static void testSetAdvsiorDefaultTemplate() {
+        // Enable feature
+        FeatureFlagService.overrideTestDefault('Portal Email Trigger', 'Set From Address and Template, Advisors', true);
+
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+        Group testGroup = [SELECT Id FROM Group WHERE Name = :testGroupName];
+
+        Success_Student__c testSuccessStudent = [
+            SELECT Id, Success_Pod__c, Success_Pod__r.Primary_Email__c, Success_Pod__r.Email_Template__c
+            FROM Success_Student__c
+            LIMIT 1
+        ];
+        Success_Pod__c testPodOwnedByGroup = [
+            SELECT Primary_Email__c, Email_Template__c
+            FROM Success_Pod__c
+            WHERE OwnerId = :testGroup.Id
+        ];
+
+        Case testCase = [SELECT Id FROM Case WHERE OwnerId = :testGroup.Id LIMIT 1];
+
+        // Change owner of case to a user so you must look at most recent queue field
+        testCase.OwnerId = testUser.Id;
+        testCase.Most_Recent_Queue__c = null;
+        update testCase;
+
+        Portal_Email__c testPortalEmail = new Portal_Email__c(
+            Additional_Message_Text__c = 'Hello World',
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Portal_Email__c', 'Advisor'),
+            From_Address__c = 'abc123@test.com',
+            Case__c = testCase.Id
+        );
+
+        Test.startTest();
+        insert testPortalEmail;
+        Test.stopTest();
+
+        testPortalEmail = [
+            SELECT From_Address__c, Email_Template_Name__c
+            FROM Portal_Email__c
+            WHERE Id = :testPortalEmail.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals('Advisor Ad-hoc template', testPortalEmail.Email_Template_Name__c);
+
+        EmailMessage em = [SELECT Id, FromAddress FROM EmailMessage LIMIT 1];
+        System.assertEquals(testPortalEmail.From_Address__c, em.FromAddress);
+    }
+
+    @isTest
+    private static void testSetAdvsiorDontUseDefaultIfSpecifedTemplate() {
+        // Enable feature
+        FeatureFlagService.overrideTestDefault('Portal Email Trigger', 'Set From Address and Template, Advisors', true);
+
+        User testUser = [SELECT Id FROM User WHERE Alias = :testUserAlias];
+        Group testGroup = [SELECT Id FROM Group WHERE Name = :testGroupName];
+
+        Success_Student__c testSuccessStudent = [
+            SELECT Id, Success_Pod__c, Success_Pod__r.Primary_Email__c, Success_Pod__r.Email_Template__c
+            FROM Success_Student__c
+            LIMIT 1
+        ];
+        Success_Pod__c testPodOwnedByGroup = [
+            SELECT Primary_Email__c, Email_Template__c
+            FROM Success_Pod__c
+            WHERE OwnerId = :testGroup.Id
+        ];
+
+        Case testCase = [SELECT Id FROM Case WHERE OwnerId = :testGroup.Id LIMIT 1];
+
+        // Change owner of case to a user so you must look at most recent queue field
+        testCase.OwnerId = testUser.Id;
+        testCase.Most_Recent_Queue__c = null;
+        update testCase;
+
+        Portal_Email__c testPortalEmail = new Portal_Email__c(
+            Additional_Message_Text__c = 'Hello World',
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Portal_Email__c', 'Advisor'),
+            From_Address__c = 'abc123@test.com',
+            Case__c = testCase.Id,
+            Email_Template_Name__c = 'Specified template'
+        );
+
+        Test.startTest();
+        insert testPortalEmail;
+        Test.stopTest();
+
+        testPortalEmail = [
+            SELECT From_Address__c, Email_Template_Name__c
+            FROM Portal_Email__c
+            WHERE Id = :testPortalEmail.Id
+            LIMIT 1
+        ];
+
+        System.assertEquals('Specified template', testPortalEmail.Email_Template_Name__c);
+
+        EmailMessage em = [SELECT Id, FromAddress FROM EmailMessage LIMIT 1];
+        System.assertEquals(testPortalEmail.From_Address__c, em.FromAddress);
+    }
+
+    @isTest
     private static void testSetFromAddressCoach() {
         // Enable feature
         FeatureFlagService.overrideTestDefault('Portal Email Trigger', 'Set From Address, Coaches', true);

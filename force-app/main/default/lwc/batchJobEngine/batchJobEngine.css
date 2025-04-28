@@ -1,0 +1,65 @@
+@import 'c/asuBrandColorPalette';
+
+:host {
+    /* Destructive Button Variants */
+    --slds-c-button-destructive-color-background: var(--asu-copper); /* ASU Error for destructive */
+    --slds-c-button-destructive-color-background-active: var(--asu-orange); /* Darker error for active */
+    --slds-c-button-destructive-color-background-hover: var(--asu-orange);
+    --slds-c-button-destructive-color-border: var(--asu-copper);
+    --slds-c-button-destructive-color-border-active: var(--asu-orange);
+    --slds-c-button-destructive-color-border-hover: var(--asu-orange);
+    --slds-c-button-destructive-text-color: var(--asu-white);
+    --slds-c-button-destructive-text-color-active: var(--asu-white);
+    --slds-c-button-destructive-text-color-hover: var(--asu-white);
+
+    --slds-c-button-text-destructive-color-background: var(--asu-turquoise);
+    --slds-c-button-text-destructive-color-background-active: var(--asu-blue);
+    --slds-c-button-text-destructive-color-background-hover: var(--asu-blue);
+    --slds-c-button-text-destructive-color-border: var(--asu-turquoise);
+    --slds-c-button-text-destructive-color-border-active: var(--asu-blue);
+    --slds-c-button-text-destructive-color-border-hover: var(--asu-blue);
+    --slds-c-button-text-destructive-text-color: var(--asu-white);
+    --slds-c-button-text-destructive-text-color-active: var(--asu-white);
+    --slds-c-button-text-destructive-text-color-hover: var(--asu-white);
+    --sds-c-button-text-destructive-text-color-hover: var(--asu-white);
+
+    --slds-c-button-text-color: var(--asu-white);
+    --slds-c-button-text-color-active: var(--asu-white);
+    --slds-c-button-text-color-hover: var(--asu-white);
+
+    /* Disabled Button Styles */
+    --slds-c-button-destructive-disabled-color-background: var(--asu-gray); /* ASU Gray for disabled background */
+    --slds-c-button-destructive-disabled-text-color: var(--asu-black); /* ASU Black for disabled text */
+
+    /* Button Radius */
+    --slds-c-button-radius-border: 1rem;
+    --lwc-buttonBorderRadius: 1rem;
+
+    /* Slider Thumb Colors */
+    --slds-c-slider-thumb-color-foreground: var(--asu-turquoise); /* ASU Blue for thumb */
+    --slds-c-slider-thumb-color-foreground-active: var(--asu-blue); /* Lighter ASU Blue for active thumb */
+    --slds-c-slider-thumb-color-foreground-focus: var(--asu-blue);
+    --slds-c-slider-thumb-color-foreground-hover: var(--asu-blue);
+
+    /* Slider Track Color */
+    --slds-c-slider-track-color-background: var(--asu-copper); /* Light gray background for contrast */
+}
+
+.main-container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 45%;
+}
+
+.first-row-container,
+.second-row-container {
+    font-weight: bold;
+}
+
+.modal-body {
+    text-align: center;
+}
+
+.modal-footer {
+    font-weight: bold;
+}

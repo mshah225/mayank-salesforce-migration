@@ -306,16 +306,25 @@ public class ContactService {
         Set<Id> contactIdsToUpdateRelatedUsers = new Set<Id>();
         Map<Id, User> contactIdToUserMap = new Map<Id, User>();
 
-        // Get a set of contact ids to search user
+        // For External Mastered records, if name changes we need to propagate that
+        // change to the User record
         for (Contact newCon : contacts) {
-            Contact oldCon = oldContactsMap.get(newCon.Id);
+            Contact oldCon = (Contact) RecordHelper.getOldRecord(newCon.Id);
             if (
                 newCon.RecordTypeId == extMasteredContactRecTypeId &&
-                (newCon.FirstName != oldCon.FirstName ||
-                newCon.LastName != oldCon.LastName)
-            )
+                RecordHelper.hasNewOrChangedFields(
+                    newCon,
+                    oldCon,
+                    new List<Schema.SObjectField>{ Contact.FirstName, Contact.LastName }
+                )
+            ) {
                 contactIdsToUpdateRelatedUsers.add(newCon.Id);
+            }
         }
+
+        // No changes to synced fields
+        if (contactIdsToUpdateRelatedUsers.isEmpty())
+            return;
 
         // Map each contact id to its associated user
         List<User> usersToUpdate = [
@@ -343,8 +352,8 @@ public class ContactService {
     }
 
     /**
-     * The first half of the account sync process.  Handles setting the Bizcard_Account__c lookup when needed
-     * and creating a new account if needed.  Should be run in the before trigger since it'll set the AccountId
+     * The first half of the account sync process. This creates the account records and saves their IDs on
+     * the associated contact record. Should be run in the before trigger since it'll set the AccountId
      * lookup on the Contact
      *
      * @param contacts The new list of contacts
@@ -352,19 +361,10 @@ public class ContactService {
     public static void beforeTriggerSyncAccounts(List<Contact> contacts) {
         Map<Contact, Account> contactToNewAccountMap = new Map<Contact, Account>(); // Map of new accounts
 
-        // Get the Id for the old bucket Account to check against
-        Id bucketAccountId = null;
-        List<Account> bucketAccountList = [SELECT Id FROM Account WHERE Name = 'Arizona State University' LIMIT 1];
-        if (!bucketAccountList.isEmpty())
-            bucketAccountId = bucketAccountList[0].Id;
-
-        /** Preparation complete - now let's do the sync */
-
-        for (Contact con : contacts) {
-            // Make a new account if needed
-            if (con.AccountId == null || con.AccountId == bucketAccountId)
+        // Make a new account if needed
+        for (Contact con : contacts)
+            if (con.AccountId == null)
                 contactToNewAccountMap.put(con, createAccount(con)); // Create an Account for the Contact
-        }
 
         // Insert new contacts
         if (!contactToNewAccountMap.isEmpty())
@@ -377,58 +377,35 @@ public class ContactService {
     }
 
     /**
-     * The second half of the account sync process.  Handles setting the Bizcard_Account__c lookup when needed
-     * and creating a new account if needed. Should be run in the after trigger since the Contacts need to have
-     * their Ids set so that we can update the Accounts' Contact__c lookups
+     * The second half of the account sync process.  Handles setting fields on the account, sets name,
+     * owner, record type, and Contact__c lookup
      *
      * @param contacts The new list of contacts
      */
-    public static void afterTriggerSyncAccounts(List<Contact> contacts) {
-        // Ids for all the Contact's accounts.  At this point AccountId  must lookup to the 1-to-1 contact's account
-        Set<Id> accountIds = new Set<Id>();
-        Map<Id, Id> contactIdToAccountIdMap = new Map<Id, Id>();
-        for (Contact con : contacts) {
-            accountIds.add(con.AccountId);
-            contactIdToAccountIdMap.put(con.Id, con.AccountId);
-        }
-
-        // Get all the accounts for these contacts
-        List<Account> accountList = [
-            SELECT Id, Name, OwnerId, RecordTypeId, Contact__c
-            FROM Account
-            WHERE Id IN :accountIds
-        ];
-
-        // Map contact id to its associated account
-        Map<Id, Account> accountMap = new Map<Id, Account>();
-        for (Account acc : accountList)
-            accountMap.put(acc.Id, acc);
-
-        // And now modify each account if it has fallen out of sync
+    public static void afterTriggerSyncAccounts(List<Contact> contacts, Map<Id, Contact> oldContactsMap) {
         List<Account> accountsToUpdate = new List<Account>();
-        for (Contact con : contacts) {
-            // If this contact has an account
-            if (contactIdToAccountIdMap.containsKey(con.Id)) {
-                Id accountId = contactIdToAccountIdMap.get(con.Id);
-                // and we got the Account's details
-                if (accountMap.containsKey(accountId)) {
-                    Account acc = accountMap.get(accountId);
-                    // Check if the Account disagrees with the Contact - if so bring Account into alignment
-                    if (
-                        acc != null &&
-                        (acc.Name != con.FirstName + ' ' + con.LastName ||
-                        acc.OwnerId != con.OwnerId ||
-                        acc.RecordTypeId != getAccountRecordTypeForContactRecordType(con.RecordTypeID) ||
-                        acc.Contact__c != con.Id)
-                    ) {
-                        acc.Name = con.FirstName + ' ' + con.LastName;
-                        acc.OwnerId = con.OwnerId;
-                        acc.RecordTypeId = getAccountRecordTypeForContactRecordType(con.RecordTypeID);
-                        acc.Contact__c = con.Id;
 
-                        accountsToUpdate.add(acc);
+        // If any synced field changes, we will need to update the corresponding fields on the Account record
+        for (Contact con : contacts) {
+            Contact oldCon = (Contact) RecordHelper.getOldRecord(con.Id);
+            if (
+                RecordHelper.hasNewOrChangedFields(
+                    con,
+                    oldCon,
+                    new List<Schema.SObjectField>{
+                        Contact.FirstName,
+                        Contact.LastName,
+                        Contact.OwnerId,
+                        Contact.RecordTypeId,
+                        Contact.AccountId
                     }
-                }
+                )
+            ) {
+                Account accountForCon = createAccount(con);
+                accountForCon.Id = con.AccountId; // update existing account
+                accountForCon.Contact__c = con.Id; // always make sure contact id is set
+
+                accountsToUpdate.add(accountForCon);
             }
         }
 

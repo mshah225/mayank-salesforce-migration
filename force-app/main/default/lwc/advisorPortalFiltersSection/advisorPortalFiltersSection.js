@@ -135,6 +135,7 @@ export default class AdvisorPortalFiltersSection extends LightningElement {
         {label: 'Concurrent Enrollment', value: 'concurrent enrollment'},
         {label: 'Format Students', value: 'format students'},
         {label: 'Mayo Students', value: 'mayo students'},
+        {label: 'Personalized Graduate Admissions', value: 'personalized graduate admissions'},
         {label: 'Provisional Admits, not met yet', value: 'provivisional admits, not met yet'},
         {label: 'Research Assistants', value: 'research assistants'},
         {label: 'Teaching Assistants', value: 'teaching assistants'},

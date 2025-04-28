@@ -9,25 +9,6 @@ public with sharing class NonAuthenticatedLiveAgentControllerTest {
 
     @TestSetup
     private static void setup() {
-        String buttonName = [
-            SELECT DeveloperName
-            FROM LiveChatButton
-            WHERE DeveloperName != NULL
-            ORDER BY DeveloperName ASC
-            LIMIT 1
-        ]
-        .DeveloperName;
-
-        Live_Agent_Button__c liveAgentBtn = new Live_Agent_Button__c(
-            Name = buttonName,
-            Chat_Button_Id__c = liveAgentBtnChatButtonId,
-            Chat_Deployment__c = liveAgentBtnChatDeployment,
-            Chat_Endpoint__c = liveAgentBtnChatEndpoint,
-            Display_Name__c = liveAgentBtnDisplayName,
-            Org_Id__c = liveAgentBtnOrgId
-        );
-        insert liveAgentBtn;
-
         Case_Classification__c functionalGroup = new Case_Classification__c(
             Name = 'TestFunctionalGroup',
             Active__c = true,
@@ -73,9 +54,16 @@ public with sharing class NonAuthenticatedLiveAgentControllerTest {
 
     @isTest
     private static void testBasicFields() {
+        setupButtonConfig();
+        LiveChatButton chatButton = [
+            SELECT Id, DeveloperName
+            FROM LiveChatButton
+            WHERE DeveloperName != NULL
+            ORDER BY DeveloperName ASC
+            LIMIT 1
+        ];
+
         String testCaseDescription = 'any desc';
-        String buttonName = [SELECT Name FROM Live_Agent_Button__c LIMIT 1].Name;
-        Id buttonParamId = [SELECT Id FROM LiveChatButton WHERE DeveloperName = :buttonName LIMIT 1].Id;
         Id functionalGroupId = [
             SELECT Id
             FROM Case_Classification__c
@@ -113,21 +101,21 @@ public with sharing class NonAuthenticatedLiveAgentControllerTest {
             CC_Sub_Category__c = subCategoryId,
             Queue_ID__c = u.Id.to15(),
             OwnerId = u.Id,
-            Email_Address__c = buttonName + '@asu.edu'
+            Email_Address__c = chatButton.DeveloperName + '@asu.edu'
         );
         insert car;
 
         PageReference pageRef = Page.NonAuthenticatedLiveAgent;
         // Start with 3D in button_id because parsing relies on equal sign being represented as %3D but
         // using .getParameters().put(...) uses a equal sign, = (1 character instead of the needed 3)
-        pageRef.getParameters().put('button_id', '3D' + buttonParamId.to15());
+        pageRef.getParameters().put('button_id', '3D' + chatButton.Id.to15());
         Test.setCurrentPage(pageRef);
         Test.startTest();
         NonAuthenticatedLiveAgentController controller = new NonAuthenticatedLiveAgentController();
         controller.caseDescription = testCaseDescription;
         Test.stopTest();
 
-        System.assertEquals(buttonName, controller.buttonPressed);
+        System.assertEquals(chatButton.DeveloperName, controller.buttonPressed);
         System.assertEquals(liveAgentBtnChatButtonId, controller.chatButtonId);
         System.assertEquals(liveAgentBtnChatDeployment, controller.chatDeploymentId);
         System.assertEquals(liveAgentBtnChatEndpoint, controller.chatEndpoint);
@@ -145,8 +133,15 @@ public with sharing class NonAuthenticatedLiveAgentControllerTest {
 
     @isTest
     private static void testWithUserOwner() {
-        String buttonName = [SELECT Name FROM Live_Agent_Button__c LIMIT 1].Name;
-        Id buttonParamId = [SELECT Id FROM LiveChatButton WHERE DeveloperName = :buttonName LIMIT 1].Id;
+        setupButtonConfig();
+        LiveChatButton chatButton = [
+            SELECT Id, DeveloperName
+            FROM LiveChatButton
+            WHERE DeveloperName != NULL
+            ORDER BY DeveloperName ASC
+            LIMIT 1
+        ];
+
         Id functionalGroupId = [
             SELECT Id
             FROM Case_Classification__c
@@ -178,14 +173,14 @@ public with sharing class NonAuthenticatedLiveAgentControllerTest {
             CC_Sub_Category__c = subCategoryId,
             Queue_ID__c = u.Id.to15(),
             OwnerId = u.Id,
-            Email_Address__c = buttonName + '@asu.edu'
+            Email_Address__c = chatButton.DeveloperName + '@asu.edu'
         );
         insert car;
 
         PageReference pageRef = Page.NonAuthenticatedLiveAgent;
         // Start with 3D in button_id because parsing relies on equal sign being represented as %3D but
         // using .getParameters().put(...) uses a equal sign, = (1 character instead of the needed 3)
-        pageRef.getParameters().put('button_id', '3D' + buttonParamId.to15());
+        pageRef.getParameters().put('button_id', '3D' + chatButton.Id.to15());
         Test.setCurrentPage(pageRef);
         Test.startTest();
         NonAuthenticatedLiveAgentController controller = new NonAuthenticatedLiveAgentController();
@@ -197,8 +192,15 @@ public with sharing class NonAuthenticatedLiveAgentControllerTest {
 
     @isTest
     private static void testWithGroupOwner() {
-        String buttonName = [SELECT Name FROM Live_Agent_Button__c LIMIT 1].Name;
-        Id buttonParamId = [SELECT Id FROM LiveChatButton WHERE DeveloperName = :buttonName LIMIT 1].Id;
+        setupButtonConfig();
+        LiveChatButton chatButton = [
+            SELECT Id, DeveloperName
+            FROM LiveChatButton
+            WHERE DeveloperName != NULL
+            ORDER BY DeveloperName ASC
+            LIMIT 1
+        ];
+
         Id functionalGroupId = [
             SELECT Id
             FROM Case_Classification__c
@@ -231,14 +233,14 @@ public with sharing class NonAuthenticatedLiveAgentControllerTest {
             CC_Sub_Category__c = subCategoryId,
             Queue_ID__c = g.Id.to15(),
             OwnerId = u.Id,
-            Email_Address__c = buttonName + '@asu.edu'
+            Email_Address__c = chatButton.DeveloperName + '@asu.edu'
         );
         insert car;
 
         PageReference pageRef = Page.NonAuthenticatedLiveAgent;
         // Start with 3D in button_id because parsing relies on equal sign being represented as %3D but
         // using .getParameters().put(...) uses a equal sign, = (1 character instead of the needed 3)
-        pageRef.getParameters().put('button_id', '3D' + buttonParamId.to15());
+        pageRef.getParameters().put('button_id', '3D' + chatButton.Id.to15());
         Test.setCurrentPage(pageRef);
         Test.startTest();
         NonAuthenticatedLiveAgentController controller = new NonAuthenticatedLiveAgentController();
@@ -246,5 +248,27 @@ public with sharing class NonAuthenticatedLiveAgentControllerTest {
 
         System.assertEquals(g.Id, controller.caseOwnerId);
         System.assertEquals(g.Name + ' Live Chat', controller.caseSubject);
+    }
+
+    // We cannot insert test custom metadata, and cannot override static variables for all tests using @TestSetup,
+    // so we must manually do this in each test function
+    private static void setupButtonConfig() {
+        String buttonName = [
+            SELECT DeveloperName
+            FROM LiveChatButton
+            WHERE DeveloperName != NULL
+            ORDER BY DeveloperName ASC
+            LIMIT 1
+        ]
+        .DeveloperName;
+
+        NonAuthenticatedLiveAgentController.TEST_BUTTON_CONFIG = new Live_Agent_Button_Setting__mdt(
+            Label = liveAgentBtnDisplayName,
+            DeveloperName = buttonName,
+            Chat_Button_Id__c = liveAgentBtnChatButtonId,
+            Chat_Deployment__c = liveAgentBtnChatDeployment,
+            Chat_Endpoint__c = liveAgentBtnChatEndpoint,
+            Org_Id__c = liveAgentBtnOrgId
+        );
     }
 }

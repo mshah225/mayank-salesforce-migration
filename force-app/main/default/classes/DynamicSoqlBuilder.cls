@@ -590,13 +590,16 @@ public inherited sharing class DynamicSoqlBuilder {
      * Perform the query using a specific access level
      */
     public List<SObject> query(System.AccessLevel accessLevel) {
+        // Logging
         LogSuite.logUntuncated('query', 'DynamicSoqlBuilder QUERY STRING');
         LogSuite.logUntuncated('query', toString());
         LogSuite.logUntuncated('query', 'DynamicSoqlBuilder BIND MAP');
         LogSuite.logUntuncated('query', bindMap.toString());
         LogSuite.logUntuncated('query', 'DynamicSoqlBuilder ACCESS LEVEL');
         LogSuite.logUntuncated('query', accessLevel.toString());
-
+        // Not already at governor limit
+        GovernorLimitPreemptException.assertCanQueryN(1, 'Cannot run query `' + toString() + '`');
+        // Run query
         return Database.queryWithBinds(toString(), bindMap, accessLevel);
     }
 
@@ -606,7 +609,9 @@ public inherited sharing class DynamicSoqlBuilder {
     public override String toString() {
         List<String> fieldStrs = new List<String>();
         for (Object fld : fields) {
-            fieldStrs.add(fld.toString());
+            String fldStr = fld.toString();
+            if (!fieldStrs.contains(fldStr))
+                fieldStrs.add(fldStr);
         }
 
         String queryStr =

@@ -2,16 +2,21 @@
 private class AllPublishedArticlesControllerTest {
     @testSetup
     private static void createArticles() {
-        KnowledgeArticleFactory.FAQKnowledgeArticle faq = new KnowledgeArticleFactory.FAQKnowledgeArticle();
-        List<FAQ__kav> faqList = faq.create(1);
-        insert faqList;
+        FAQ__kav article = new FAQ__kav(
+            Title = 'Test Article',
+            Summary = 'Testing From Apex',
+            Answer__c = 'This is a Test',
+            URLName = 'FAQURL0',
+            IsVisibleInPkb = true
+        );
+        insert article;
 
-        FAQ__kav insertedTestFaq = [
+        article = [
             SELECT Title, PublishStatus, KnowledgeArticleId
             FROM FAQ__kav
-            WHERE ID = :faqList[0].Id
+            WHERE ID = :article.Id
         ];
-        KbManagement.PublishingService.publishArticle(insertedTestFaq.KnowledgeArticleId, true);
+        KbManagement.PublishingService.publishArticle(article.KnowledgeArticleId, true);
     }
 
     @isTest
@@ -23,7 +28,12 @@ private class AllPublishedArticlesControllerTest {
 
         System.assertEquals(1, completeListOfArticles.size());
 
-        String expectedURL = 'https://asu.secure.force.com/kb/articles/FAQ/FAQURL0';
+        Id knowledgeBaseSiteId = [SELECT Id FROM Site WHERE Name = 'kb']?.Id;
+        String expectedURL =
+            (knowledgeBaseSiteId != null
+                ? [SELECT SecureUrl FROM SiteDetail WHERE DurableId = :knowledgeBaseSiteId]?.SecureUrl + '/articles/'
+                : '/') + 'FAQ/FAQURL0';
+
         System.assertEquals(expectedURL, completeListOfArticles[0].url);
     }
 }

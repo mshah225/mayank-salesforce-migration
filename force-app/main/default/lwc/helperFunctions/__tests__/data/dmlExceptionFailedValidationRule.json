@@ -1,0 +1,17 @@
+{
+    "status": 500,
+    "body": {
+        "fieldErrors": {
+            "Recommended_Actions__c": [
+                {"statusCode": "FIELD_CUSTOM_VALIDATION_EXCEPTION", "message": "Recommended Action(s) is required."}
+            ]
+        },
+        "pageErrors": [],
+        "index": null,
+        "duplicateResults": []
+    },
+    "headers": {},
+    "ok": false,
+    "statusText": "Server Error",
+    "errorType": "fetchResponse"
+}

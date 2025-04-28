@@ -1,0 +1,6 @@
+<table border="0" cellpadding="5" width="550" cellspacing="5" height="400" >
+<tr valign="top" height="400" >
+<td tEditID="c1r1" style=" background-color:#FFFFFF; color:#000000; bEditID:r3st1; bLabel:main; font-size:12pt; font-family:arial;" aEditID="c1r1" locked="0" >
+<![CDATA[<div style="background-color: rgb(255, 255, 255);">An article you created cannot be published due to errors.&nbsp; Please edit your article and resubmit.&nbsp; Please contact Student Success Innovations if you have questions or need more guidance.&nbsp;</div><div style="background-color: rgb(255, 255, 255);"><font face="arial"><br></font></div><div style="background-color: rgb(255, 255, 255);"><font face="arial">View article:<br>{!FAQ__kav.Link}{!01Id0000001Ppji.Link}{!01Id0000001Ppjg.Link}</font></div><div style="background-color: rgb(255, 255, 255);"><font face="arial"><br></font></div><div style="background-color: rgb(255, 255, 255);"><div><font face="arial">Comments:</font></div><div><font face="arial">{!ApprovalRequest.Comments} &nbsp;</font></div></div><div style="background-color: rgb(255, 255, 255);"><br></div>]]></td>
+</tr>
+</table>

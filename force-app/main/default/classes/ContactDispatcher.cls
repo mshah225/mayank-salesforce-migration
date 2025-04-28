@@ -25,16 +25,16 @@ public without sharing class ContactDispatcher implements TriggerDispatcherInter
     public void beforeUpdate() {
         ContactService.setRecordTypes(newList);
         ContactService.beforeTriggerSyncAccounts(newList);
-        ContactService.syncUsers(newList, oldMap);
     }
     public void beforeDelete() {
     }
     public void afterInsert() {
-        ContactService.afterTriggerSyncAccounts(newList);
+        ContactService.afterTriggerSyncAccounts(newList, oldMap);
         ContactService.setHashIds(newList);
     }
     public void afterUpdate() {
-        ContactService.afterTriggerSyncAccounts(newList);
+        ContactService.afterTriggerSyncAccounts(newList, oldMap);
+        ContactService.syncUsers(newList, oldMap);
         ContactService.assignTerritory(newList, oldMap);
     }
     public void afterDelete() {

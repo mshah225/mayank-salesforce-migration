@@ -1,4 +1,6 @@
 <apex:page id="alius-format1137">
-    <meta http-equiv="refresh" content="0; url=https://myasu.force.com/" />
-    <a href="https://myasu.force.com/">Return to the My ASU Service Center</a>
+    <!-- CAN WE DELETE THIS AND Visualforce Tab Service Center? -->
+
+    <meta http-equiv="refresh" content="0; url=https://asu.my.site.com/" />
+    <a href="https://asu.my.site.com/">Return to My ASU Help</a>
 </apex:page>

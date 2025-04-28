@@ -3,7 +3,7 @@
         <div class="border myasu-help-scope">
             <h2 class="c-p9rem border-bottom font-weight-bold m-0 p-1 pl-2 bg-f5f5f5">My Requests</h2>
 
-            <div class="p-2">
+            <div class="p-2 myasu-my-requests">
                 <p class="mb-4 {!IF(myCases.size > 0 || closedCases.size > 0, 'd-block', 'd-none')}">Here are some of your recent requests to ASU. You might have made these requests by email, chat, phone, or
                     through a webform.</p>
                 <apex:form styleClass="mb-4">
@@ -11,7 +11,7 @@
                     <apex:pageBlock mode="maindetail">
                         <apex:pageBlockTable headerClass="bg-f5f5f5" rowClasses="border-top bg-white" styleClass="border" rendered="{!myCases.size > 0}"
                             value="{!myCases}" var="case">
-                            <apex:column headerValue="Subject" width="60%" headerClass="p-1" styleClass="p-1" value="{!case.Subject}" />
+                            <apex:column headerValue="Subject" width="60%" headerClass="p-1" styleClass="p-1 wordWrapAnywhere" value="{!case.Subject}" />
                             <apex:column headerValue="Status" width="30%" headerClass="p-1" styleClass="p-1" value="{!case.Status}" />
                             <apex:column headerClass="p-1" styleClass="p-1" width="10%">
                                 <apex:commandLink value="View" styleClass="btn btn-light btn-md text-dark" action="{!viewCase}">
@@ -31,7 +31,7 @@
                     <apex:pageBlock mode="maindetail">
                         <apex:pageBlockTable headerClass="bg-f5f5f5 border-bottom" rowClasses="border-top bg-white" styleClass="border" rendered="{!closedCases.size > 0}"
                             value="{!closedCases}" var="case">
-                            <apex:column headerValue="Subject" width="60%" headerClass="p-1" styleClass="p-1" value="{!case.Subject}" />
+                            <apex:column headerValue="Subject" width="60%" headerClass="p-1" styleClass="p-1 wordWrapAnywhere" value="{!case.Subject}" />
                             <apex:column headerValue="Status" width="30%" headerClass="p-1" styleClass="p-1" value="{!case.Status}" />
                             <apex:column headerClass="p-1" styleClass="p-1" width="10%">
                                 <apex:commandLink value="View" styleClass="btn btn-light btn-md text-dark" action="{!viewCase}">

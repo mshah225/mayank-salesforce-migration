@@ -67,4 +67,54 @@ private class AccountTriggerTest {
             'Account Geomarket Code did not match by ZIP code'
         );
     }
+
+    @isTest
+    private static void testOrgOrPerson() {
+        String rtIdOrgExtMastered = RecordIdHelper.getRecordTypeId('Account', 'External_Mastered_Org');
+        String rtIdOrgSFMastered = RecordIdHelper.getRecordTypeId('Account', 'SF_Mastered_Org');
+        String rtIdPersonExtMastered = RecordIdHelper.getRecordTypeId('Account', 'External_Mastered_Contact');
+        String rtIdPersonSFMastered = RecordIdHelper.getRecordTypeId('Account', 'SF_Mastered_Contact');
+
+        Account accOrgExtMastered = new Account(Name = 'Test Ext Mst Org', RecordTypeId = rtIdOrgExtMastered);
+        Account accOrgSFMastered = new Account(Name = 'Test SF Mst Org', RecordTypeId = rtIdOrgSFMastered);
+        Account accPersonExtMastered = new Account(Name = 'Test Ext Mst Person', RecordTypeId = rtIdPersonExtMastered);
+        Account accPersonSFMastered = new Account(Name = 'Test SF Mst Person', RecordTypeId = rtIdPersonSFMastered);
+
+        FeatureFlagService.overrideTestDefault('Account Trigger', 'Organization or Person', true);
+
+        Test.startTest();
+        insert new List<Account>{ accOrgExtMastered, accOrgSFMastered, accPersonExtMastered, accPersonSFMastered };
+        Test.stopTest();
+
+        Map<Id, Account> testAccountMp = new Map<Id, Account>([SELECT Id, Organization_or_Person__c FROM Account]);
+        accOrgExtMastered = testAccountMp.get(accOrgExtMastered.Id);
+        accOrgSFMastered = testAccountMp.get(accOrgSFMastered.Id);
+        accPersonExtMastered = testAccountMp.get(accPersonExtMastered.Id);
+        accPersonSFMastered = testAccountMp.get(accPersonSFMastered.Id);
+
+        Assert.areEqual('Organization', accOrgExtMastered.Organization_or_Person__c);
+        Assert.areEqual('Organization', accOrgSFMastered.Organization_or_Person__c);
+        Assert.areEqual('Person', accPersonExtMastered.Organization_or_Person__c);
+        Assert.areEqual('Person', accPersonSFMastered.Organization_or_Person__c);
+    }
+
+    @isTest
+    private static void testOrgOrPersonChangeRecordType() {
+        String rtIdOrgSFMastered = RecordIdHelper.getRecordTypeId('Account', 'SF_Mastered_Org');
+        String rtIdPersonSFMastered = RecordIdHelper.getRecordTypeId('Account', 'SF_Mastered_Contact');
+
+        Account testAcc = new Account(Name = 'Test Ext Mst Org', RecordTypeId = rtIdOrgSFMastered);
+
+        FeatureFlagService.overrideTestDefault('Account Trigger', 'Organization or Person', true);
+
+        Test.startTest();
+        insert testAcc;
+        testAcc.RecordTypeId = rtIdPersonSFMastered;
+        update testAcc;
+        Test.stopTest();
+
+        testAcc = [SELECT Id, Organization_or_Person__c FROM Account WHERE Id = :testAcc.Id];
+
+        Assert.areEqual('Person', testAcc.Organization_or_Person__c);
+    }
 }

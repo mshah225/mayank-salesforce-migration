@@ -29,15 +29,21 @@ public without sharing class AutomatedReportProcessing implements Queueable, Dat
             if (!reportService.nextAvailableReport()) {
                 reportService.closeJob();
                 return;
-            }            
+            }
+            
+            if (reportService.report.RecordType.Name == 'Department List Pulls') {
+                reportService.recreateRowsFromReport();
 
-            reportService.recreateRowsFromReport();
+                reportService.createBulkContent();
 
-            reportService.createBulkContent();
+                reportService.sendBatchAndRefreshCsv();
 
-            reportService.sendBatchAndRefreshCsv();
-
-            reportService.sendEmail();
+                reportService.sendEmail();                
+            } else {
+                if (reportService.checkReportResultsExceedThreshold()) {
+                    reportService.sendEmail();
+                }
+            }
 
             reportService.updateRunComplete();
 

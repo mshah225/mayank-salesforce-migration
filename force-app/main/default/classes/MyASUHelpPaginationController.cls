@@ -1,3 +1,6 @@
+/**
+ * Controller for handling pagination of My ASU Help articles.
+ */
 public with sharing class MyASUHelpPaginationController {
     private final String OBJECT_TYPE = 'KnowledgeArticleVersion';
     public Integer pageSize { get; set; }
@@ -7,10 +10,13 @@ public with sharing class MyASUHelpPaginationController {
     public Boolean onLastPage { get; set; }
     public Integer resultCount { get; set; }
     public String mostRecentSearchText { get; set; }
-
     public String articleCategoryGroupName { get; set; }
     public String articleCategoryName { get; set; }
+    @TestVisible private static Boolean isTestMode = false;
 
+    /**
+     * Gets or sets the text to search.
+     */
     public String textToSearch {
         get {
             if (String.isBlank(textToSearch)) {
@@ -21,6 +27,9 @@ public with sharing class MyASUHelpPaginationController {
         set;
     }
 
+    /**
+     * Gets or sets the article category.
+     */
     public String articleCategory {
         get {
             if (articleCategory == null) {
@@ -30,6 +39,10 @@ public with sharing class MyASUHelpPaginationController {
         }
         set;
     }
+
+    /**
+     * Gets or sets the article category label.
+     */
     public String articleCategoryLabel {
         get {
             if (articleCategoryLabel == null) {
@@ -54,6 +67,10 @@ public with sharing class MyASUHelpPaginationController {
         }
         set;
     }
+
+    /**
+     * Gets or sets the article language.
+     */
     public String articleLanguage {
         get {
             if (String.isBlank(articleLanguage)) {
@@ -63,6 +80,10 @@ public with sharing class MyASUHelpPaginationController {
         }
         set;
     }
+
+    /**
+     * Gets or sets the text search query status.
+     */
     public Boolean isTextSearchQuery {
         get {
             if (String.isBlank(textToSearch)) {
@@ -75,6 +96,10 @@ public with sharing class MyASUHelpPaginationController {
         }
         set;
     }
+
+    /**
+     * Gets or sets the category search query status.
+     */
     public Boolean isCategorySearchQuery {
         get {
             if (isTextSearchQuery || String.isBlank(articleCategory) || String.isBlank(articleCategoryLabel)) {
@@ -88,19 +113,33 @@ public with sharing class MyASUHelpPaginationController {
         set;
     }
 
+    /**
+     * Default constructor for MyASUHelpPaginationController.
+     */
     public MyASUHelpPaginationController() {
         setupPagination();
     }
+
+    /**
+     * Constructor for MyASUHelpPaginationController with a MyASUHelpController parameter.
+     * @param controller An instance of MyASUHelpController
+     */
     public MyASUHelpPaginationController(MyASUHelpController controller) {
         setupPagination();
     }
 
+    /**
+     * Sets up pagination by initializing variables and setting page results.
+     */
     public void setupPagination() {
         initializeVariables();
         checkUrlParameters();
         setPageResults();
     }
 
+    /**
+     * Initializes pagination variables.
+     */
     private void initializeVariables() {
         pageSize = 10;
         onFirstPage = true;
@@ -110,22 +149,34 @@ public with sharing class MyASUHelpPaginationController {
         resultCount = 0;
     }
 
+    /**
+     * Sets the page results, result count, and first and last page statuses.
+     */
     private void setPageResults() {
         setResultCount();
         setLastPageNumber();
         setFirstAndLastPageStatuses();
     }
 
+    /**
+     * Sets the result count based on the search query or category.
+     */
     private void setResultCount() {
         if (isTextSearchQuery && !isCategorySearchQuery) {
             String queryString = String.escapeSingleQuotes(textToSearch);
+            String soslObjectType = isTestMode ? 'FAQ__kav' : OBJECT_TYPE;
+    
             Search.SearchResults kavResults = Search.find(
                 'FIND \'' +
                     queryString +
-                    '*\'' +
-                    'IN ALL FIELDS RETURNING KnowledgeArticleVersion(Id, KnowledgeArticleId, Title, LastModifiedDate WHERE PublishStatus = \'Online\' AND Language = \'en_US\')'
+                    '*\' IN ALL FIELDS RETURNING ' +
+                    soslObjectType +
+                    '(Id, KnowledgeArticleId, Title, LastModifiedDate WHERE PublishStatus = \'Online\' AND Language = \'en_US\')'
             );
-            resultCount = kavResults.get(OBJECT_TYPE).size();
+    
+            List<Search.SearchResult> results = kavResults.get(soslObjectType);
+            resultCount = (results != null) ? results.size() : 0;
+    
         } else if (
             !isTextSearchQuery &&
             isCategorySearchQuery &&
@@ -152,9 +203,12 @@ public with sharing class MyASUHelpPaginationController {
         }
     }
 
+    /**
+     * Sets the last page number based on the result count and page size.
+     */
     private void setLastPageNumber() {
         if (resultCount > 0) {
-            if (Math.Mod(resultCount, pageSize) > 0) {
+            if (Math.mod(resultCount, pageSize) > 0) {
                 lastPage = (resultCount / pageSize) + 1;
             } else {
                 lastPage = (resultCount / pageSize);
@@ -164,6 +218,9 @@ public with sharing class MyASUHelpPaginationController {
         }
     }
 
+    /**
+     * Sets the statuses of the first and last pages.
+     */
     private void setFirstAndLastPageStatuses() {
         if (currentPage == 1) {
             onFirstPage = true;
@@ -182,6 +239,9 @@ public with sharing class MyASUHelpPaginationController {
         }
     }
 
+    /**
+     * Checks URL parameters for search terms and sets the query type accordingly.
+     */
     private void checkUrlParameters() {
         String q = ApexPages.currentPage().getParameters().get('q');
         String l = ApexPages.currentPage().getParameters().get('l');
@@ -207,26 +267,42 @@ public with sharing class MyASUHelpPaginationController {
         }
     }
 
-    // Force pagination value recalculation with {!refreshPagination}
+    /**
+     * Forces pagination value recalculation.
+     * @return The current time as a string
+     */
     public String getRefreshPagination() {
         setPageResults();
         return System.now().format('HH:mm:ss');
     }
 
+    /**
+     * Placeholder method to be deleted after getRefreshPagination() goes to prod.
+     */
     public void getForceRecalculatePaginationValues() {
         // DELETE THIS METHOD AFTER getRefreshPagination() GOES TO PROD
     }
 
+    /**
+     * Placeholder method to be deleted after lastPage {get; set;} goes to prod.
+     */
     public void getLastPageNumber() {
         // DELETE THIS METHOD AFTER lastPage {get; set;} GOES TO PROD
     }
 
+    /**
+     * Gets the current page number after determining if the search text has changed.
+     * @return The current page number
+     */
     public Decimal getCurrentPageNumber() {
         determineIfSearchTextHasChanged();
         setPageResults();
         return currentPage;
     }
 
+    /**
+     * Determines if the search text has changed and updates the current page accordingly.
+     */
     private void determineIfSearchTextHasChanged() {
         if (String.isBlank(mostRecentSearchText)) {
             mostRecentSearchText = textToSearch;
@@ -237,18 +313,28 @@ public with sharing class MyASUHelpPaginationController {
         }
     }
 
+    /**
+     * Advances to the next page if possible.
+     */
     public void next() {
         if (currentPage < lastPage) {
             currentPage = currentPage + 1;
         }
     }
 
+    /**
+     * Goes to the previous page if possible.
+     */
     public void previous() {
         if (currentPage > 1) {
             currentPage = currentPage - 1;
         }
     }
 
+    /**
+     * Navigates to the view all results page with search parameters.
+     * @return A PageReference to the view all results page
+     */
     public PageReference viewAllResults() {
         PageReference viewAllArticles = new PageReference('/viewAllArticles');
         if (String.isNotBlank(textToSearch)) {

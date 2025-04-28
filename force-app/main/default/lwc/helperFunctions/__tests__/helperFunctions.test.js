@@ -7,9 +7,14 @@ import {
     parseBoolean,
     niceLog,
     getFixedYOffset,
+    extractErrorMessages,
 } from 'c/helperFunctions';
 
 describe('Test Helper Functions', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
     test('Throw Back A Render Cycle', async () => {
         jest.useFakeTimers();
         let x = 0;
@@ -220,6 +225,39 @@ describe('Test Helper Functions', () => {
         // Doesn't get called again, since it has already been calculated once
         expect(div.appendChild).toBeCalledTimes(1);
         expect(div.removeChild).toBeCalledTimes(1);
+    });
+
+    test('Error Extract - Dev, missing @AuraEnabled', () => {
+        const error = require('./data/apexErrorMissingAuraEnabled.json');
+
+        const consoleDebugSaved = console.debug;
+        console.debug = jest.fn();
+
+        const expectedMessage = error.statusText;
+        const actualMessage = extractErrorMessages(error)[0];
+
+        expect(actualMessage).toContain(expectedMessage);
+        expect(console.debug).toHaveBeenCalled();
+
+        console.debug = consoleDebugSaved;
+    });
+
+    test('Error Extract - Dev, missing cacheable=true', () => {
+        const error = require('./data/apexErrorMissingCacheable.json');
+
+        const expectedMessage = error.body.message;
+        const actualMessage = extractErrorMessages(error)[0];
+
+        expect(actualMessage).toEqual(expectedMessage);
+    });
+
+    test('Error Extract - DmlException, failed validation rule', () => {
+        const error = require('./data/dmlExceptionFailedValidationRule.json');
+
+        const expectedMessage = error.body.fieldErrors.Recommended_Actions__c[0].message;
+        const actualMessage = extractErrorMessages(error)[0];
+
+        expect(actualMessage).toEqual(expectedMessage);
     });
 });
 

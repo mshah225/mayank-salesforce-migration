@@ -214,7 +214,7 @@ public class CustomPermissionHelperTest {
      * We CANNOT use an already existing permission set.
      *
      */
-    private static void activateCustomPerm(String userId, String permissionName) {
+    public static void activateCustomPerm(String userId, String permissionName) {
         PermissionSet ps = new PermissionSet(
             Name = permissionName + '_Enabled_' + permSetIndx,
             Label = permissionName + ' Enabled ' + permSetIndx

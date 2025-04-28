@@ -160,6 +160,9 @@ public with sharing class MasterTrackerService {
             trackerRecord.Interview_1_Score__c = 0;
             trackerRecord.Interview_2_Score__c = 0;
             trackerRecord.Interview_Total_Score__c = 0;
+        } else if (evalScores.size() == 1) {
+            trackerRecord.Interview_1_Score__c = evalScores[0].Total_Score__c;
+            trackerRecord.Interview_Total_Score__c = evalScores[0].Total_Score__c;
         } else {
             trackerRecord.Interview_1_Score__c = evalScores[0].Total_Score__c;
             trackerRecord.Interview_2_Score__c = evalScores[1].Total_Score__c;

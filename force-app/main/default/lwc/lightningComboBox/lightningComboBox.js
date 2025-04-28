@@ -1,5 +1,5 @@
 /**
- * Author: Created by Robert Nordman
+ * Author: Created by Tommy Nordman
  * Date: 10/17/2022
  * Description:
  *   A Lightning Design styled combobox.  Has multiple flags to enable/disable functionality.
@@ -18,8 +18,9 @@
  *  @function reportValidity() Reports if the field is valid (error shown if not valid)
  *  @function checkValidity() Check if the field is valid (i.e. if it is required, then it must have a value selected)
  */
-import {LightningElement, api} from 'lwc';
-import {cloneObj, parseBoolean, throwBackARenderCycle, getFixedYOffset} from 'c/helperFunctions';
+import {LightningElement, api, track} from 'lwc';
+import {parseBoolean, getFixedYOffset} from 'c/helperFunctions';
+import {KeyboardController} from 'c/keyboardController';
 
 export default class LightningComboBox extends LightningElement {
     @api name;
@@ -61,68 +62,104 @@ export default class LightningComboBox extends LightningElement {
 
     @api set value(val) {
         this._value = val;
-        this.forceSelectedStatesToMatchValue();
+        this.initialValueOptionsSelect();
     }
     get value() {
-        let selectedOptions = [];
-        for (let i = 0; i < this._options.length; i++) {
-            const opt = this._options[i];
-            if (opt.isSelected) {
-                selectedOptions.push(opt.value);
-            }
-        }
-        return selectedOptions.join(';');
+        return this.selectedValues.join(';');
     }
-    _value = '';
+    _value = null;
+    @track
+    selectedValues = [];
 
     /**
      * option: { label: "John", value: "c-01", isLabel: false }
      * @param {List<option>} val
      *
      * @warning the value should not be a Proxy object of a Proxy object.  More than one layer of Proxies makes JSON.stringify unusably slow
+     * @warning this.options should be used rarely, try using this._options instead where possible since this getter is pretty expensive
+     *          when there are lots of options in the list
      */
     @api set options(val) {
-        if (val === undefined) return;
-        const optionsClone = cloneObj(val);
-
-        // add extra attributes
-        for (let i = 0; i < optionsClone.length; i++) {
-            const opt = optionsClone[i];
-            if (opt.isSelected == null) opt.isSelected = false;
-            if (opt.isLabel == null) opt.isLabel = false;
-            if (opt.isHovered == null) opt.isHovered = false;
-            opt.index = i;
-        }
-
-        this._options = optionsClone;
-        this.forceSelectedStatesToMatchValue();
+        this._options = val;
+        this.initialValueOptionsSelect();
     }
     get options() {
-        return this._options;
-    }
-    _options = [];
+        const hoveredIndex = this.hoveredIndex;
+        // eslint-disable-next-line no-undef
+        const selectedSet = new Set(this.selectedValues);
 
-    placard = '';
+        return (this._options ?? []).map((opt, indx) => {
+            return {
+                label: opt.label,
+                value: opt.value,
+                isLabel: opt.isLabel ?? false,
+                isSelected: selectedSet.has(opt.value),
+                isHovered: indx === hoveredIndex,
+                index: indx,
+            };
+        });
+    }
+    _options = null;
+
+    /**
+     * Determine what to display on closed combo box
+     * If nothing is selected, show the placeholder
+     * If multiselect combobox, show number of options selected
+     * If singleselect combobox, show the label that is selected
+     */
+    get placard() {
+        let _placard = this.placeholder;
+
+        const numberSelected = this.selectedValues.length;
+
+        if (numberSelected === 0) {
+            _placard = this.placeholder;
+        } else if (numberSelected === 1) {
+            if (this.multiSelect) {
+                _placard = '1 Option Selected';
+            } else {
+                _placard = this._options?.filter((opt) => opt.value === this.value)?.at(0)?.label ?? '????????';
+            }
+        } else {
+            _placard = numberSelected + ' Options Selected';
+        }
+
+        return _placard;
+    }
+
+    /**
+     * Show the dropdown right now?
+     */
     showDropdown = false;
 
+    /**
+     * Index of which index is currently being hovered over
+     */
+    hoveredIndex = -1;
+
+    /**
+     * Combobox class list
+     */
     get comboboxClasses() {
         let classes = ['slds-combobox', 'slds-dropdown-trigger', 'slds-dropdown-trigger_click '];
         if (this.showDropdown) classes.push('slds-is-open');
         return classes.join(' ');
     }
 
+    /**
+     * Dropdown class list
+     */
     get dropdownClasses() {
         let classes = ['slds-dropdown', 'slds-dropdown_length-5', 'slds-dropdown_fluid'];
         if (this.dynamicDropdown) classes.push('dynamic-dropdown');
         return classes.join(' ');
     }
 
+    /**
+     * Text version of show dropdown, used for ARIA stuff
+     */
     get ariaBoxIsExpanded() {
         return this.showDropdown ? 'true' : 'false';
-    }
-
-    connectedCallback() {
-        this.placard = this.placeholder;
     }
 
     hasRendered = false;
@@ -138,22 +175,21 @@ export default class LightningComboBox extends LightningElement {
         if (this.dynamicDropdown) this.regenerateDropdownAlignmentCss();
     }
 
+    /**
+     * When the dropdown is within a modal we need to do some magic to make sure the dropdown can drop outside the modal
+     */
     regenerateDropdownAlignmentCss() {
         let css = this.template.host.style;
+        const inputBox = this.template.querySelector('.inputBox');
 
-        const comboboxElem = this.template.querySelector('.slds-combobox');
+        const cTop = inputBox.getBoundingClientRect().top;
+        const cHeight = inputBox.getBoundingClientRect().height;
+        const cWidth = inputBox.getBoundingClientRect().width;
 
-        const cTop = comboboxElem.getBoundingClientRect().top;
-        const cHeight = comboboxElem.getBoundingClientRect().height;
-        const cWidth = comboboxElem.getBoundingClientRect().width;
+        const zeroedYOffset = getFixedYOffset(inputBox);
 
-        const zeroedYOffset = getFixedYOffset(comboboxElem);
-
-        let comboboxContainerOffsetTop = cTop + cHeight - zeroedYOffset + 'px';
-        let comboboxContainerWidth = cWidth + 'px';
-
-        css.setProperty('--dynamicDropdownOffsetTop', comboboxContainerOffsetTop);
-        css.setProperty('--dynamicDropdownWidth', comboboxContainerWidth);
+        css.setProperty('--dynamicDropdownOffsetTop', `${cTop + cHeight - zeroedYOffset}px`);
+        css.setProperty('--dynamicDropdownWidth', `${cWidth}px`);
     }
 
     /**
@@ -176,6 +212,7 @@ export default class LightningComboBox extends LightningElement {
 
     /**
      * Give focus to the .focusCapture element
+     * this triggers opening the dropdown and allows us to detect onblur/handle keyboard controls
      */
     @api focus() {
         this.template.querySelector('.focusCapture').focus();
@@ -219,21 +256,37 @@ export default class LightningComboBox extends LightningElement {
      * @param {int} indx
      */
     toggleItemByIndex(indx) {
-        let options = cloneObj(this._options);
+        if (this._options[indx].isLabel) return; // refuse to select a label element
 
-        for (let i = 0; i < options.length; i++) {
-            const opt = options[i];
-            if (i === indx) {
-                opt.isSelected = !opt.isSelected;
+        let itemValue = this._options[indx].value;
+
+        // eslint-disable-next-line no-undef
+        let newSelectedSet = new Set(this.selectedValues);
+
+        if (this.multiSelect) {
+            // Select or deselect in multiselect mode
+            if (newSelectedSet.has(itemValue)) {
+                newSelectedSet.delete(itemValue);
             } else {
-                if (!this.multiSelect) opt.isSelected = false;
+                newSelectedSet.add(itemValue);
+            }
+        } else {
+            // Only allow one selected at a time in singleselect mode
+            if (newSelectedSet.has(itemValue)) {
+                newSelectedSet.delete(itemValue);
+            } else {
+                newSelectedSet.clear(); // remove existing before selecting new
+                newSelectedSet.add(itemValue);
             }
         }
+        this.selectedValues = [...newSelectedSet];
 
-        this._options = options;
-        this.updatePlacard();
         this.sendChangeEvent();
-        if (!this.multiSelect) this.closeDropdown();
+
+        // In single select mode, close automatically upon selecting an option
+        if (!this.multiSelect) {
+            this.closeDropdown();
+        }
     }
 
     /**
@@ -245,7 +298,7 @@ export default class LightningComboBox extends LightningElement {
             this.closeDropdown();
         } else {
             this.openDropdown();
-            this.focus();
+            this.focus(); // also force the element to get focus so we can do keyboard controls
         }
         e.stopPropagation();
     }
@@ -254,7 +307,6 @@ export default class LightningComboBox extends LightningElement {
      */
     closeDropdown() {
         this.hoveredIndex = -1;
-        this.updatePlacard();
         this.updateErrorState();
         this.showDropdown = false;
         this.template.querySelector('.inputBox').classList.remove('active');
@@ -269,20 +321,20 @@ export default class LightningComboBox extends LightningElement {
         this.hoveredIndex = -1;
         this.showDropdown = true;
         this.template.querySelector('.inputBox').classList.add('active');
+        this.sendFocusEvent();
     }
 
     /**
      * When the .focusCapture element receives focus (usually via tab), open the dropdown
+     * @param {Event} e
      */
     handleFocusEvent() {
-        if (this.disabled) return;
-
-        this.template.querySelector('.inputBox').classList.add('active');
-        this.sendFocusEvent();
         this.openDropdown();
     }
+
     /**
      * When the .focusCapture element loses focus (usually by clicking outside the element), close the dropdown
+     * @param {Event} e
      */
     handleBlurEvent() {
         this.sendBlurEvent();
@@ -294,185 +346,159 @@ export default class LightningComboBox extends LightningElement {
      * @param {Event} e
      */
     keyboardController(e) {
-        if (this.isSelectionKey(e.which)) {
+        if (KeyboardController.isSelectionKey(e.which)) {
             if (this.hoveredIndex === -1) this.toggleDropdown(e);
             else this.toggleItemByIndex(this.hoveredIndex);
             e.preventDefault();
-        } else if (this.isDownKey(e.which)) {
-            this.moveWithinDropdown(1);
-            e.preventDefault();
-        } else if (this.isUpKey(e.which)) {
-            this.moveWithinDropdown(-1);
-            e.preventDefault();
-        } else if (this.isCloseKey(e.which)) {
+            e.stopPropagation();
+        } else if (KeyboardController.isDownKey(e.which)) {
+            if (this.showDropdown) {
+                this.moveWithinDropdown(1);
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        } else if (KeyboardController.isUpKey(e.which)) {
+            if (this.showDropdown) {
+                this.moveWithinDropdown(-1);
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        } else if (KeyboardController.isCloseKey(e.which)) {
+            if (this.showDropdown) {
+                this.closeDropdown();
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        } else if (KeyboardController.isTabKey(e.which)) {
+            // We need to manually handle tab so we close the dropdown (if we don't then we end up focusing on an element in the dropdown)
+            // which then causes the tab-cursor to reset to top of page when it closes the dropdown
             this.closeDropdown();
-            e.preventDefault();
+        } else if (KeyboardController.isHomeKey(e.which)) {
+            if (this.showDropdown) {
+                this.moveWithinDropdown(-1 * this._options.length);
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        } else if (KeyboardController.isEndKey(e.which)) {
+            if (this.showDropdown) {
+                this.moveWithinDropdown(this._options.length);
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        } else if (KeyboardController.isPageUpKey(e.which)) {
+            if (this.showDropdown) {
+                this.moveWithinDropdown(-6);
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        } else if (KeyboardController.isPageDownKey(e.which)) {
+            if (this.showDropdown) {
+                this.moveWithinDropdown(6);
+                e.preventDefault();
+                e.stopPropagation();
+            }
         }
     }
 
     /**
      * Move the simulated cursor inside the dropdown, scroll as needed
-     * @param {-1 | 1} direction
+     * @param {Number} direction How many to scroll, either up (negative) or down (positive)
      * @returns
      */
     moveWithinDropdown(direction) {
-        if (direction !== 1 && direction !== -1) return; // only supports moving one item at a time
+        if (typeof direction !== 'number') return; // only moves using numbers
         if (!this.showDropdown) return; // cannot move within if dropdown is closed
 
-        const unPerSlot = this.template.querySelector('.eachItem').clientHeight;
-        const currentTopOfViewport = this.template.querySelector('.slds-dropdown').scrollTop;
-        const hieghtOfViewport = this.template.querySelector('.slds-dropdown').clientHeight;
-        const currentBottomOfViewport = currentTopOfViewport + hieghtOfViewport;
-
+        // Where are we moving to?
         const prevHoverIndex = this.hoveredIndex;
         this.hoveredIndex += direction;
 
-        if (this.hoveredIndex < -1) this.hoveredIndex = -1;
-        if (this.hoveredIndex >= this.options.length) this.hoveredIndex = this.options.length - 1;
+        // cap both ends
+        if (this.hoveredIndex < 0) this.hoveredIndex = 0;
+        if (this.hoveredIndex >= this._options.length) this.hoveredIndex = this._options.length - 1;
+        // unless we were already at the top, then allow moving even further to get outside selections
+        if (prevHoverIndex <= 0 && direction < 0) this.hoveredIndex = -1;
+
+        // At index -1 we have selected the dropbox itself and don't need to do anything more
+        if (this.hoveredIndex === -1) return;
+        // otherwise we need to scroll to get the current option into the viewport
+
+        const currentTopOfViewport = this.template.querySelector('.slds-dropdown').scrollTop;
+        const heightOfViewport = this.template.querySelector('.slds-dropdown').getBoundingClientRect().height;
+        const currentBottomOfViewport = currentTopOfViewport + heightOfViewport;
+        const hoveredElement = this.template.querySelector(`li[data-index="${this.hoveredIndex}"]`);
+
+        // Calculate how far down the top of the dropdown the current hovered element is
+        let positionOfTopOfElement = 0;
+        for (let child of hoveredElement.parentElement.children) {
+            if (child === hoveredElement) break;
+            positionOfTopOfElement += child.getBoundingClientRect().height;
+        }
+        let positonOfBottomOfElement = positionOfTopOfElement + hoveredElement.getBoundingClientRect().height;
 
         if (prevHoverIndex !== this.hoveredIndex) {
-            const locationOfItem = this.hoveredIndex * unPerSlot;
-            if (currentTopOfViewport < locationOfItem && locationOfItem < currentBottomOfViewport - unPerSlot) {
+            if (positonOfBottomOfElement > currentBottomOfViewport) {
+                // If next element's bottom is lower than the current viewport bottom, scroll it down
+                this.template.querySelector('.slds-dropdown').scrollTop = Math.floor(
+                    positonOfBottomOfElement - heightOfViewport
+                );
+            } else if (positionOfTopOfElement < currentTopOfViewport) {
+                // If next element's bottom is lower than the current viewport bottom, scroll it down
+                this.template.querySelector('.slds-dropdown').scrollTop = Math.floor(positionOfTopOfElement);
+            } else {
                 // within current viewport
-            } else if (locationOfItem > currentBottomOfViewport - unPerSlot) {
-                this.template.querySelector('.slds-dropdown').scrollTop += unPerSlot;
-            } else if (locationOfItem < currentTopOfViewport) {
-                this.template.querySelector('.slds-dropdown').scrollTop -= unPerSlot;
             }
-            this.updateHoverStates();
         }
     }
-    hoveredIndex = -1;
     /**
      * Keep track of which index is currently being hovered above
      * @param {mouseenterevent} e
      */
     hoverElement(e) {
-        const prevHoverIndex = this.hoveredIndex;
-        let hoveredIndex = e.currentTarget.dataset.index;
-        this.hoveredIndex = parseInt(hoveredIndex, 10);
-        if (this.hoveredIndex !== prevHoverIndex) this.updateHoverStates();
+        this.hoveredIndex = parseInt(e.currentTarget.dataset.index, 10);
     }
 
     /**
-     * Update hover data attributes
+     * When both the options and value are both set by the parent and neither is null/undefined
+     * We need to make sure the selected value matchs only options that actually exist in options
      */
-    updateHoverStates() {
-        const options = cloneObj(this._options);
-        for (let i = 0; i < options.length; i++) {
-            const opt = options[i];
-            if (this.hoveredIndex === opt.index) opt.isHovered = true;
-            else opt.isHovered = false;
-        }
-        this._options = options;
-    }
-
-    /**
-     * Update the options array to ensure selection matches the value set by the parent element
-     * and make sure the value only contains values from the options
-     */
-    forceSelectedStatesToMatchValue() {
+    initialValueOptionsSelect() {
         // can't continue if either is null
         if (this._options == null || this._value == null) return;
 
+        // Calculate all elements the parent wants us to select
         const parentDeclaredValues = this._value.split(';');
-        const options = cloneObj(this._options);
-        const newValues = [];
-        let madeAChange = false;
+        const options = this._options;
 
-        // Iterate over the picklist options and select any values
-        // that the value indicates should be selected - if this causes
-        // us to select or unselect any options, than change has happened
-        let foundOne = false;
-        for (let i = 0; i < options.length; i++) {
-            const opt = options[i];
-            if (parentDeclaredValues.includes(opt.value) && (this.multiSelect || !foundOne)) {
-                if (!opt.isSelected) madeAChange = true;
-                opt.isSelected = true;
-                foundOne = true;
-                newValues.push(opt.value);
-            } else {
-                if (opt.isSelected) madeAChange = true;
-                opt.isSelected = false;
+        // eslint-disable-next-line no-undef
+        let newSelectedSet = new Set();
+
+        for (let opt of options) {
+            // Select each option the parent declared
+            if (parentDeclaredValues.includes(opt.value)) {
+                newSelectedSet.add(opt.value);
+
+                // Quit after first selection if multiselect is off
+                if (!this.multiSelect) break;
             }
         }
 
-        // Find any declared values that match none of the options in the picklist
-        // if any such exist, than change has happened to remove that selected value
-        let validValues = options.map((o) => o.value);
-        for (const declVal of parentDeclaredValues) if (!validValues.includes(declVal)) madeAChange = true;
+        // Save selected values to state variable
+        this.selectedValues = [...newSelectedSet];
 
-        this._options = options;
-
-        if (madeAChange) {
-            this._value = newValues.join(';');
+        // If any of the parentDeclaredValues are not in the selectedValues that means the parent
+        // declard a value that did not exist and we need to raise a change event
+        if (
+            !parentDeclaredValues.reduce((prev, cur) => {
+                return prev && newSelectedSet.has(cur);
+            }, true)
+        ) {
             if (this.hasRendered) {
                 this.sendCommitEvent();
             } else {
                 this.queueCommitEvent();
             }
         }
-
-        this.updatePlacard();
-
-        // must throwback update one cycle sometimes - seems to be related to conditionally rendering fields (degree level, academic program, etc.)
-        throwBackARenderCycle(() => {
-            this.updatePlacard();
-        });
-    }
-
-    /**
-     * Is this keycode associated with a up type action (e.g. <up>)
-     * @param {int} code
-     * @returns
-     */
-    isDownKey(code) {
-        return code === 40; // down
-    }
-    /**
-     * Is this keycode associated with a down type action (e.g. <down>)
-     * @param {int} code
-     * @returns
-     */
-    isUpKey(code) {
-        return code === 38; // up
-    }
-    /**
-     * Is this keycode associated with a select type action (e.g. <enter> or <space>)
-     * @param {int} code
-     * @returns
-     */
-    isSelectionKey(code) {
-        return code === 13 /*enter*/ || code === 32 /*space*/;
-    }
-    /**
-     * Is this keycode associated with a closing type action (e.g. <esc>)
-     * @param {int} code
-     * @returns
-     */
-    isCloseKey(code) {
-        return code === 27; // esc
-    }
-
-    /**
-     * Update the placard being displayed
-     */
-    updatePlacard() {
-        let numberSelected = 0;
-
-        let selectedObj = {};
-        for (let i = 0; i < this._options.length; i++) {
-            if (this._options[i].isSelected) {
-                numberSelected++;
-                selectedObj = this._options[i];
-            }
-        }
-
-        if (numberSelected === 0) this.placard = this.placeholder;
-        else if (numberSelected === 1)
-            if (this.multiSelect) this.placard = '1 Option Selected';
-            else this.placard = selectedObj.label;
-        else this.placard = numberSelected + ' Options Selected';
     }
 
     /**

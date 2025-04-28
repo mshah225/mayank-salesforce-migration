@@ -1,12 +1,18 @@
 @isTest
 private class MyASUHelpPaginationControllerTest {
-    // Helper method to publish articles
+    /**
+     * Helper method to publish articles
+     * @param articleIds List of article IDs to be published
+     */
     private static void publishArticles(List<Id> articleIds) {
         for (FAQ__kav faqArticle : [SELECT KnowledgeArticleId FROM FAQ__kav WHERE Id IN :articleIds]) {
             KbManagement.PublishingService.publishArticle(faqArticle.KnowledgeArticleId, true);
         }
     }
 
+    /**
+     * Test setup method to create and publish test FAQ articles
+     */
     @TestSetup
     private static void setup() {
         List<FAQ__kav> faqArticles = new List<FAQ__kav>();
@@ -34,17 +40,24 @@ private class MyASUHelpPaginationControllerTest {
         publishArticles(faqArticleIds);
     }
 
+    /**
+     * Set fixed search results for testing
+     */
     private static void setFixedSearchResults() {
-        List<KnowledgeArticleVersion> allKAVs = [SELECT Id FROM KnowledgeArticleVersion];
+        List<FAQ__kav> allKAVs = [SELECT Id FROM FAQ__kav WHERE PublishStatus = 'Online'];
         List<Id> fixedResultIds = new List<Id>();
-        for (KnowledgeArticleVersion kav : allKAVs) {
+        for (FAQ__kav kav : allKAVs) {
             fixedResultIds.add(kav.Id);
         }
         Test.setFixedSearchResults(fixedResultIds);
     }
 
+    /**
+     * Test to verify autofill search text functionality
+     */
     @isTest
     private static void testAutofillSearchText() {
+        MyASUHelpPaginationController.isTestMode = true;
         setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
         ApexPages.currentPage().getParameters().put('q', 'Test');
@@ -58,8 +71,12 @@ private class MyASUHelpPaginationControllerTest {
         System.assertEquals(30, vf.resultCount);
     }
 
+    /**
+     * Test to verify next and previous page functionality
+     */
     @isTest
     private static void testNextPrevPage() {
+        MyASUHelpPaginationController.isTestMode = true;
         setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
         ApexPages.currentPage().getParameters().put('q', 'Test');
@@ -86,11 +103,15 @@ private class MyASUHelpPaginationControllerTest {
         System.assertEquals(2, pageNum5);
     }
 
+    /**
+     * Test to verify behavior when only one page of results is present
+     */
     @isTest
     private static void testWhenOnlyOnePage() {
-        List<KnowledgeArticleVersion> allKAVs = [SELECT Id FROM KnowledgeArticleVersion LIMIT 5];
+        MyASUHelpPaginationController.isTestMode = true;
+        List<FAQ__kav> allKAVs = [SELECT Id FROM FAQ__kav WHERE PublishStatus = 'Online' LIMIT 5];
         List<Id> fixedResultIds = new List<Id>();
-        for (KnowledgeArticleVersion kav : allKAVs) {
+        for (FAQ__kav kav : allKAVs) {
             fixedResultIds.add(kav.Id);
         }
         Test.setFixedSearchResults(fixedResultIds);
@@ -105,8 +126,12 @@ private class MyASUHelpPaginationControllerTest {
         System.assertEquals(true, vf.onLastPage);
     }
 
+    /**
+     * Test to verify behavior when no search term is provided
+     */
     @isTest
     private static void testNoSearchTerm() {
+        MyASUHelpPaginationController.isTestMode = true;
         setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
         ApexPages.currentPage().getParameters().put('q', '');
@@ -120,8 +145,12 @@ private class MyASUHelpPaginationControllerTest {
         System.assertEquals(true, vf.onLastPage);
     }
 
+    /**
+     * Test to verify behavior when the search term is changed
+     */
     @isTest
     private static void testChangeSearchTerm() {
+        MyASUHelpPaginationController.isTestMode = true;
         setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
         ApexPages.currentPage().getParameters().put('q', 'Cats');
@@ -136,8 +165,12 @@ private class MyASUHelpPaginationControllerTest {
         System.assertEquals(30, vf.resultCount);
     }
 
+    /**
+     * Test to verify view all results reference functionality
+     */
     @isTest
     private static void testViewAllResultsRef() {
+        MyASUHelpPaginationController.isTestMode = true;
         setFixedSearchResults();
         Test.setCurrentPage(Page.viewAllArticles);
         ApexPages.currentPage().getParameters().put('q', 'Test');
@@ -150,29 +183,12 @@ private class MyASUHelpPaginationControllerTest {
         System.assertEquals('/viewAllArticles?q=Test', actualPageRefUrl);
     }
 
+    /**
+     * Test to verify MyASUHelpController constructor functionality
+     */
     @isTest
     private static void testMyASUHelpControllerConstructor() {
-        // Need buttons for MyASUHelpController constructor
-        List<Live_Agent_Button__c> buttonsToInsert = new List<Live_Agent_Button__c>();
-        buttonsToInsert.add(
-            new Live_Agent_Button__c(
-                Name = 'Finances_Live_Chat',
-                Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat'
-            )
-        );
-        buttonsToInsert.add(
-            new Live_Agent_Button__c(
-                Name = 'ASU_Services_Live_Chat',
-                Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat'
-            )
-        );
-        buttonsToInsert.add(
-            new Live_Agent_Button__c(
-                Name = 'Technical_Support_Live_Chat',
-                Chat_Endpoint__c = 'https://d.la4-c1cs-phx.salesforceliveagent.com/chat'
-            )
-        );
-        insert buttonsToInsert;
+        MyASUHelpPaginationController.isTestMode = true;
 
         // Need contact for MyASUHelpController constructor
         Contact testContact = new Contact(FirstName = 'John', LastName = 'McTesterson');

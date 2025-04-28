@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <knowledgePublishes>
+        <fullName>Publish_Article</fullName>
+        <action>PublishAsNew</action>
+        <description>Action publishes FAQ articles.</description>
+        <label>Publish Article</label>
+        <language>en_US</language>
+        <protected>false</protected>
+    </knowledgePublishes>
+    <alerts>
+        <fullName>Email_Article_Creator_Article_Published</fullName>
+        <description>Email Article Creator: Article Published</description>
+        <protected>false</protected>
+        <recipients>
+            <type>creator</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>Knowledge_Templates/Knowledge_Published_Creator_Notification</template>
+    </alerts>
+    <alerts>
+        <fullName>Email_Article_Creator_Article_Rejected</fullName>
+        <description>Email Article Creator: Article Rejected</description>
+        <protected>false</protected>
+        <recipients>
+            <type>creator</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>Knowledge_Templates/Knowledge_Rejected_Creator_Notification</template>
+    </alerts>
+    <fieldUpdates>
+        <fullName>Set_Expiration_Date_to_Today_180</fullName>
+        <field>Article_Expiration_Date__c</field>
+        <formula>TODAY() + 180</formula>
+        <name>Set Expiration Date to Today + 180</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Set_validation_status_to_Approved</fullName>
+        <field>ValidationStatus</field>
+        <literalValue>Approved</literalValue>
+        <name>Set validation status to Approved</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Set_validation_status_to_Content_Review</fullName>
+        <field>ValidationStatus</field>
+        <literalValue>Content Review</literalValue>
+        <name>Set validation status to Content Review</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Set_validation_status_to_Draft</fullName>
+        <field>ValidationStatus</field>
+        <literalValue>Draft</literalValue>
+        <name>Set validation status to Draft</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Set_validation_status_to_Published</fullName>
+        <field>ValidationStatus</field>
+        <literalValue>Published</literalValue>
+        <name>Set validation status to Published</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Set_validation_status_to_Rejected</fullName>
+        <field>ValidationStatus</field>
+        <literalValue>Rejected</literalValue>
+        <name>Set validation status to Rejected</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+</Workflow>

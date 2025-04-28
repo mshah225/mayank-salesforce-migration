@@ -136,9 +136,6 @@ public with sharing class CaseInboundEmailHandlerTest {
             LIMIT 1
         ]
         .Id;
-        rmmCar2.Functional_Group__c = 'Test RMM Group 2';
-        rmmCar2.Category__c = 'Test RMM Category 2';
-        rmmCar2.Sub_Category__c = 'Test RMM Subcategory 2';
         rmmCar2.Priority__c = 997;
 
         insert rmmCar2;
@@ -274,7 +271,7 @@ public with sharing class CaseInboundEmailHandlerTest {
         System.assert(createdContact.Email == 'user@acme.com.test');
 
         Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c
+            SELECT Id, Subject, Description, Status
             FROM Case
             WHERE ContactId = :createdContact.Id
             LIMIT 1
@@ -334,7 +331,7 @@ public with sharing class CaseInboundEmailHandlerTest {
         System.assertEquals('user@acme.com.test', createdContact.Email);
 
         Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c
+            SELECT Id, Subject, Description, Status
             FROM Case
             WHERE ContactId = :createdContact.Id
             LIMIT 1
@@ -480,7 +477,7 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         // Verify that the case status was updated
         Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c
+            SELECT Id, Subject, Description, Status
             FROM Case
             WHERE ContactId IN (:c1.Id, :c2.Id)
             LIMIT 1
@@ -527,7 +524,7 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         // Verify that the case status was updated
         Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c
+            SELECT Id, Subject, Description, Status
             FROM Case
             WHERE ContactId = :c1.Id
             LIMIT 1
@@ -814,7 +811,7 @@ public with sharing class CaseInboundEmailHandlerTest {
         Test.stopTest();
 
         // Verify that the case status was updated
-        Case createdCase = [SELECT Status, Functional_Group__c FROM Case WHERE ContactId = :c.Id LIMIT 1];
+        Case createdCase = [SELECT Status FROM Case WHERE ContactId = :c.Id LIMIT 1];
 
         System.assertEquals('New', createdCase.Status);
 
@@ -951,7 +948,7 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         // Verify that the case status was updated
         Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c
+            SELECT Id, Subject, Description, Status
             FROM Case
             WHERE ContactId = :c.Id
             LIMIT 1
@@ -996,7 +993,7 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         // Verify that the case status was updated
         Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c
+            SELECT Id, Subject, Description, Status
             FROM Case
             WHERE ContactId = :c.Id
             LIMIT 1
@@ -1043,7 +1040,7 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         // Verify that the case status was updated
         Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c
+            SELECT Id, Subject, Description, Status
             FROM Case
             WHERE ContactId = :c.Id
             LIMIT 1
@@ -1094,7 +1091,7 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         // Verify that the case status was updated
         Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c
+            SELECT Id, Subject, Description, Status
             FROM Case
             WHERE ContactId = :c.Id
             LIMIT 1
@@ -1146,7 +1143,7 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         // Verify that the case status was updated
         Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c
+            SELECT Id, Subject, Description, Status
             FROM Case
             WHERE ContactId = :c.Id
             LIMIT 1
@@ -1204,7 +1201,7 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         // Verify that the case status was updated
         Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c, Intended_Recipient__c
+            SELECT Id, Subject, Description, Status, Intended_Recipient__c
             FROM Case
             WHERE ContactId = :c.Id
             LIMIT 1
@@ -1261,7 +1258,7 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         // Verify that the case status was updated
         Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c, Intended_Recipient__c
+            SELECT Id, Subject, Description, Status, Intended_Recipient__c
             FROM Case
             WHERE ContactId = :c.Id
             LIMIT 1
@@ -1304,7 +1301,7 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         // Verify that the case status was updated
         Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c, Intended_Recipient__c
+            SELECT Id, Subject, Description, Status, Intended_Recipient__c
             FROM Case
             WHERE ContactId = :c.Id
             LIMIT 1
@@ -1583,7 +1580,7 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         // Verify that the case status was updated
         Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c
+            SELECT Id, Subject, Description, Status
             FROM Case
             WHERE ContactId = :c.Id
             LIMIT 1
@@ -1622,7 +1619,7 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         // Associated with contact 1
         Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c
+            SELECT Id, Subject, Description, Status
             FROM Case
             WHERE ContactId = :c1.Id
             LIMIT 1
@@ -1660,7 +1657,7 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         // Associated with contact 2
         Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c
+            SELECT Id, Subject, Description, Status
             FROM Case
             WHERE ContactId = :c2.Id
             LIMIT 1
@@ -1698,7 +1695,7 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         // Associated with contact 3
         Case createdCase = [
-            SELECT Id, Subject, Description, Status, Functional_Group__c
+            SELECT Id, Subject, Description, Status
             FROM Case
             WHERE ContactId = :c3.Id
             LIMIT 1

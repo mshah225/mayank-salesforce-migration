@@ -204,9 +204,10 @@ public class UserDeprovisionTest {
 
         UserDeprovisionOrganizer.deprovisionUserReassignmentMetadata = new Map<String, Deprovision_User_Campaign_Reassignment__mdt>{
             'Reassign_TestRole' => new Deprovision_User_Campaign_Reassignment__mdt(
-                Role_Id__c = testRole.Id,
-                Role_Name__c = testRole.Name,
-                Default_Owner__c = UserInfo.getUserId()
+                Target_Role_Id__c = testRole.Id,
+                Target_Role_Name__c = testRole.Name,
+                New_Default_Owner_Id__c = UserInfo.getUserId(),
+                New_Default_Name__c = '[New Campaign Owner Name]'
             )
         };
     }
@@ -684,8 +685,11 @@ public class UserDeprovisionTest {
         }
 
         // and processing notes indicate Campaigns were reassigned
+
         Assert.isTrue(
-            testUser.Processing_Notes__c.contains('Reassigned campaigns: '),
+            testUser.Processing_Notes__c.contains(
+                'Reassigned ' + campaigns.size() + ' campaigns to [New Campaign Owner Name]'
+            ),
             'Reassigned campaigns should be recorded on the user'
         );
     }

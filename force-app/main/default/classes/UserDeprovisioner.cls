@@ -314,7 +314,7 @@ public without sharing class UserDeprovisioner {
         // Find relevant metadatum for this user's role
         Deprovision_User_Campaign_Reassignment__mdt reassignmentRuleForUser;
         for (Deprovision_User_Campaign_Reassignment__mdt metadatum : deprovisionUserReassignmentMetadata.values()) {
-            if (metadatum.Role_Id__c == deprovisionUser.UserRoleId) {
+            if (metadatum.Target_Role_Id__c == deprovisionUser.UserRoleId) {
                 reassignmentRuleForUser = metadatum;
                 break;
             }
@@ -323,19 +323,16 @@ public without sharing class UserDeprovisioner {
         // Reassign campaigns
         if (campaigns != null && !campaigns.isEmpty() && reassignmentRuleForUser != null) {
             for (Campaign cam : campaigns) {
-                cam.OwnerId = reassignmentRuleForUser.Default_Owner__c;
+                cam.OwnerId = reassignmentRuleForUser.New_Default_Owner_Id__c;
             }
 
             // Log changes
             if (logIt) {
-                List<String> campaignIds = new List<String>();
-                for (Campaign cam : campaigns)
-                    campaignIds.add(cam.Id);
                 addToProcessingNotes(
-                    'Reassigned campaigns: ' +
-                        String.join(campaignIds, ', ') +
-                        ' to ' +
-                        reassignmentRuleForUser.Default_Owner__c
+                    'Reassigned ' +
+                        campaigns.size() +
+                        'campaigns to ' +
+                        reassignmentRuleForUser.New_Default_Owner_Name__c
                 );
             }
         } else {

@@ -207,7 +207,7 @@ public class UserDeprovisionTest {
                 Target_Role_Id__c = testRole.Id,
                 Target_Role_Name__c = testRole.Name,
                 New_Default_Owner_Id__c = UserInfo.getUserId(),
-                New_Default_Name__c = '[New Campaign Owner Name]'
+                New_Default_Owner_Name__c = '[New Campaign Owner Name]'
             )
         };
     }

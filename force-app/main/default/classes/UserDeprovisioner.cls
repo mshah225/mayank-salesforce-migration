@@ -279,7 +279,7 @@ public without sharing class UserDeprovisioner {
             if (logIt) {
                 addToProcessingNotes('Unassigned ' + smsSenderIdAssignments.size() + ' Sender Ids');
 
-                Set<String> senderIds = new Set<String>();
+                List<String> senderIds = new List<String>();
                 for (smagicinteract__SenderId_Profile_Map__c smsSenderIdAssignment : smsSenderIdAssignments) {
                     String senderId = smsSenderIdAssignment.smagicinteract__senderid_lookup__r.smagicinteract__senderId__c;
                     if (String.isNotBlank(senderId)) {

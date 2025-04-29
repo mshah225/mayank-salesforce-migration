@@ -301,7 +301,8 @@ public without sharing class UserDeprovisionOrganizer {
                 smagicinteract__User__c,
                 smagicinteract__senderid_lookup__c,
                 smagicinteract__senderid_lookup__r.Id,
-                smagicinteract__senderid_lookup__r.smagicinteract__label__c
+                smagicinteract__senderid_lookup__r.smagicinteract__label__c,
+                smagicinteract__senderid_lookup__r.smagicinteract__senderId__c
             FROM smagicinteract__SenderId_Profile_Map__c
             WHERE smagicinteract__User__c IN :userIds
         ];

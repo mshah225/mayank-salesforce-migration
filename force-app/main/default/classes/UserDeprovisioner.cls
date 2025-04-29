@@ -278,6 +278,19 @@ public without sharing class UserDeprovisioner {
         if (smsSenderIdAssignments != null && !smsSenderIdAssignments.isEmpty()) {
             if (logIt) {
                 addToProcessingNotes('Unassigned ' + smsSenderIdAssignments.size() + ' Sender Ids');
+
+                Set<String> senderIds = new Set<String>();
+                for (smagicinteract__SenderId_Profile_Map__c smsSenderIdAssignment : smsSenderIdAssignments) {
+                    String senderId = smsSenderIdAssignment.smagicinteract__senderid_lookup__r.smagicinteract__senderId__c;
+                    if (String.isNotBlank(senderId)) {
+                        senderIds.add(senderId);
+                    }
+                }
+
+                // Truncate to first 3 in list
+                if (senderIds.size() > 3)
+                    senderIds = new List<String>{ senderIds[0], senderIds[1], senderIds[2], 'etc.' };
+                addToProcessingNotes('Unassigned Numbers: ' + String.join(senderIds, ', '));
             }
         } else {
             smsSenderIdAssignments = null;

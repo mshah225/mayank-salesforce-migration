@@ -125,6 +125,12 @@ public class UserDeprovisionTest {
             smagicinteract__SenderId_Lookup__c = smsSenderId.Id
         );
         insert senderIdAssignment;
+        // Assign visibilities
+        smagicinteract__Sender_Visibility__c senderVisibility = new smagicinteract__Sender_Visibility__c(
+            smagicinteract__User__c = testUser.Id,
+            smagicinteract__Sender_Id__c = smsSenderId.Id
+        );
+        insert senderVisibility;
         // Assign license
         smagicinteract__License__c smsLicense = new smagicinteract__License__c(smagicinteract__User__c = testUser.Id);
         insert smsLicense;
@@ -579,6 +585,11 @@ public class UserDeprovisionTest {
             FROM smagicinteract__SenderId_Profile_Map__c
             WHERE smagicinteract__User__c = :testUser.Id
         ];
+        List<smagicinteract__Sender_Visibility__c> senderVisibilities = [
+            SELECT Id
+            FROM smagicinteract__Sender_Visibility__c
+            WHERE smagicinteract__User__c = :testUser.Id
+        ];
         List<smagicinteract__License__c> smsLicenses = [
             SELECT Id
             FROM smagicinteract__License__c
@@ -587,9 +598,10 @@ public class UserDeprovisionTest {
 
         Assert.isFalse(senderIds.isEmpty(), 'The sender id label should contain the users name pre-deprovision');
         Assert.isFalse(senderIdAssignments.isEmpty(), 'This user should be assigned to the sender id pre-deprovision');
+        Assert.isFalse(senderVisibilities.isEmpty(), 'This user should have some sender visibilities pre-deprovision');
         Assert.isFalse(smsLicenses.isEmpty(), 'This user should have an SMS license pre-deprovision');
 
-        Integer senderIdCount = senderIdAssignments.size(), smsLicensesCount = smsLicenses.size();
+        Integer senderIdCount = senderIdAssignments.size(), senderVisibilityCount = senderVisibilities.size();
 
         // Do it
         Test.startTest();
@@ -615,7 +627,7 @@ public class UserDeprovisionTest {
 
         // Check Sender Id assignment was deleted
         senderIdAssignments = [
-            SELECT Id
+            SELECT Id, smagicinteract__senderid_lookup__r.smagicinteract__senderId__c
             FROM smagicinteract__SenderId_Profile_Map__c
             WHERE Id IN :new Map<Id, smagicinteract__SenderId_Profile_Map__c>(senderIdAssignments).keySet()
         ];
@@ -624,6 +636,28 @@ public class UserDeprovisionTest {
         Assert.isTrue(
             testUser.Processing_Notes__c.contains('Unassigned ' + senderIdCount + ' Sender Ids'),
             'Number of sender ids unassigned should be recorded on the user'
+        );
+        // Includes each phone number
+        for (smagicinteract__SenderId_Profile_Map__c senderIdAssignment : senderIdAssignments) {
+            Assert.isTrue(
+                testUser.Processing_Notes__c.contains(
+                    senderIdAssignment.smagicinteract__senderid_lookup__r.smagicinteract__senderId__c
+                ),
+                'Should contain phone numbers for sender ids that were removed, but is missing this one'
+            );
+        }
+
+        // Removed sender visbilities
+        senderVisibilities = [
+            SELECT Id
+            FROM smagicinteract__Sender_Visibility__c
+            WHERE Id IN :new Map<Id, smagicinteract__Sender_Visibility__c>(senderVisibilities).keySet()
+        ];
+        Assert.isTrue(senderIdAssignments.isEmpty(), 'Should have deleted user-sender id mappings');
+        // and processing notes indicate SMS licenses were removed
+        Assert.isTrue(
+            testUser.Processing_Notes__c.contains('Removed ' + senderVisibilityCount + ' Sender Visibilities'),
+            'Number of Sender Visibilities removed should be recorded on the user'
         );
 
         // License was deactivated
@@ -639,7 +673,7 @@ public class UserDeprovisionTest {
         }
         // and processing notes indicate SMS licenses were removed
         Assert.isTrue(
-            testUser.Processing_Notes__c.contains('Removed ' + smsLicensesCount + ' SMS Licenses'),
+            testUser.Processing_Notes__c.contains('Removed ' + smsLicenses.size() + ' SMS Licenses'),
             'Number of SMS licenses removed should be recorded on the user'
         );
     }

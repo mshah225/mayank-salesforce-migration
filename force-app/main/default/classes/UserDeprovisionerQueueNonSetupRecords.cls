@@ -28,6 +28,7 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
             List<UserLogin> userLogins = new List<UserLogin>();
             List<smagicinteract__SMS_SenderId__c> smsSenderIds = new List<smagicinteract__SMS_SenderId__c>();
             List<smagicinteract__SenderId_Profile_Map__c> smsSenderIdAssignmnents = new List<smagicinteract__SenderId_Profile_Map__c>();
+            List<smagicinteract__Sender_Visibility__c> smsSenderVisibilities = new List<smagicinteract__Sender_Visibility__c>();
             List<smagicinteract__License__c> smsLicenses = new List<smagicinteract__License__c>();
             List<Campaign> campaigns = new List<Campaign>();
 
@@ -50,6 +51,10 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
                 List<smagicinteract__SenderId_Profile_Map__c> userSmsSenderIdAssignmnents = userDeprovisioner.getSmsSenderIdAssignments();
                 if (userSmsSenderIdAssignmnents != null)
                     smsSenderIdAssignmnents.addAll(userSmsSenderIdAssignmnents);
+
+                List<smagicinteract__Sender_Visibility__c> userSmsSenderVisibilities = userDeprovisioner.getSmsSenderVisbilities();
+                if (userSmsSenderVisibilities != null)
+                    smsSenderVisibilities.addAll(userSmsSenderVisibilities);
 
                 List<smagicinteract__License__c> userSmsLicenses = userDeprovisioner.getSmsLicenses();
                 if (userSmsLicenses != null)
@@ -117,6 +122,15 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
                 UserDeprovisionOrganizer.ResultWrapper resultWrapper = UserDeprovisionOrganizer.deleteSobjectRecords(
                     'smagicinteract__User__c',
                     smsSenderIdAssignmnents
+                );
+                handleResponse(resultWrapper);
+            }
+
+            // Remove SMS Sender Visbilities
+            if (!smsSenderVisibilities.isEmpty()) {
+                UserDeprovisionOrganizer.ResultWrapper resultWrapper = UserDeprovisionOrganizer.deleteSobjectRecords(
+                    'smagicinteract__User__c',
+                    smsSenderVisibilities
                 );
                 handleResponse(resultWrapper);
             }
@@ -199,6 +213,9 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
         Map<Id, List<smagicinteract__SenderId_Profile_Map__c>> smsSenderIdAssignmentsPerUser = UserDeprovisionOrganizer.getSMSMagicSenderIdsAssignments(
             userIds
         );
+        Map<Id, List<smagicinteract__Sender_Visibility__c>> smsSenderVisbilitiesPerUser = UserDeprovisionOrganizer.getSMSMagicSenderVisbilities(
+            userIds
+        );
         Map<Id, List<smagicinteract__License__c>> smsMagicLicensesPerUser = UserDeprovisionOrganizer.getSMSMagicLicenses(
             userIds
         );
@@ -213,6 +230,8 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
                 userDeprovisioner.setUserLogin(userLoginPerUser.get(userId));
             if (smsSenderIdAssignmentsPerUser.containsKey(userId))
                 userDeprovisioner.setSmsSenderIdAssignments(smsSenderIdAssignmentsPerUser.get(userId));
+            if (smsSenderVisbilitiesPerUser.containsKey(userId))
+                userDeprovisioner.setSmsSenderVisibilities(smsSenderVisbilitiesPerUser.get(userId));
             if (smsMagicLicensesPerUser.containsKey(userId))
                 userDeprovisioner.setSmsLicenses(smsMagicLicensesPerUser.get(userId));
             if (campaignsPerUser.containsKey(userId))

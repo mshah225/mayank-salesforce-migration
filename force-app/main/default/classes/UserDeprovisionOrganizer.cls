@@ -73,6 +73,9 @@ public without sharing class UserDeprovisionOrganizer {
             Map<Id, List<smagicinteract__SenderId_Profile_Map__c>> smsSenderIdAssignmentsPerUser = getSMSMagicSenderIdsAssignments(
                 potentialDeprovisionUserIds
             );
+            Map<Id, List<smagicinteract__Sender_Visibility__c>> smsSenderVisbilitiesPerUser = getSMSMagicSenderVisbilities(
+                potentialDeprovisionUserIds
+            );
             Map<Id, List<smagicinteract__License__c>> smsMagicLicensesPerUser = getSMSMagicLicenses(
                 potentialDeprovisionUserIds
             );
@@ -95,6 +98,7 @@ public without sharing class UserDeprovisionOrganizer {
                 userDeprovisioner.setChatterGroupMemberships(chatterGroupsPerUser.get(userId));
                 userDeprovisioner.setUserLogin(userLoginPerUser.get(userId));
                 userDeprovisioner.setSmsSenderIdAssignments(smsSenderIdAssignmentsPerUser.get(userId));
+                userDeprovisioner.setSmsSenderVisibilities(smsSenderVisbilitiesPerUser.get(userId));
                 userDeprovisioner.setSmsLicenses(smsMagicLicensesPerUser.get(userId));
                 userDeprovisioner.setCampaigns(campaignsPerUser.get(userId));
 
@@ -311,6 +315,30 @@ public without sharing class UserDeprovisionOrganizer {
             userToSenderIdAssignments.get(smsProfileIdAssignment.smagicinteract__User__c).add(smsProfileIdAssignment);
 
         return userToSenderIdAssignments;
+    }
+
+    /** Get a list of all SMS Magic Sender Visbilities for each user */
+    public static Map<Id, List<smagicinteract__Sender_Visibility__c>> getSMSMagicSenderVisbilities(List<Id> userIds) {
+        GovernorLimitPreemptException.assertCanQueryN(
+            1,
+            'Could not query SMS Sender Visibilities for deprovisioning - reached SOQL governor limit'
+        );
+
+        List<smagicinteract__Sender_Visibility__c> allSenderVisibilities = [
+            SELECT Id, smagicinteract__User__c
+            FROM smagicinteract__Sender_Visibility__c
+            WHERE smagicinteract__User__c IN :userIds
+        ];
+
+        Map<Id, List<smagicinteract__Sender_Visibility__c>> userToSenderVisibilities = new Map<Id, List<smagicinteract__Sender_Visibility__c>>();
+
+        for (Id uId : userIds)
+            userToSenderVisibilities.put(uId, new List<smagicinteract__Sender_Visibility__c>());
+
+        for (smagicinteract__Sender_Visibility__c senderVisibility : allSenderVisibilities)
+            userToSenderVisibilities.get(senderVisibility.smagicinteract__User__c).add(senderVisibility);
+
+        return userToSenderVisibilities;
     }
 
     /** Get a list of all SMS License Assignments for each user */

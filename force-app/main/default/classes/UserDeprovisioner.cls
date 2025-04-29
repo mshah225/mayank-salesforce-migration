@@ -32,6 +32,7 @@ public without sharing class UserDeprovisioner {
     private UserLogin userLogin;
     private List<smagicinteract__SMS_SenderId__c> smsSenderIds;
     private List<smagicinteract__SenderId_Profile_Map__c> smsSenderIdAssignments;
+    private List<smagicinteract__Sender_Visibility__c> smsSenderVisbilities;
     private List<smagicinteract__License__c> smsLicenses;
     private List<Campaign> campaigns;
 
@@ -89,6 +90,7 @@ public without sharing class UserDeprovisioner {
             updateUserLogin(true);
             updateSmsSenderIds(true);
             removeSmsSenderIdAssignments(true);
+            removeSmsSenderVisbilities(true);
             deactivateSmsLicenses(true);
             reassignCampaigns(true);
             updatedUser.Deprovision_User__c = false;
@@ -279,6 +281,17 @@ public without sharing class UserDeprovisioner {
             }
         } else {
             smsSenderIdAssignments = null;
+        }
+    }
+
+    // Remove SMS Sender Visbility
+    private void removeSmsSenderVisbilities(Boolean logIt) {
+        if (smsSenderVisbilities != null && !smsSenderVisbilities.isEmpty()) {
+            if (logIt) {
+                addToProcessingNotes('Removed ' + smsSenderVisbilities.size() + ' Sender Visibilities');
+            }
+        } else {
+            smsSenderVisbilities = null;
         }
     }
 
@@ -512,6 +525,13 @@ public without sharing class UserDeprovisioner {
             removeSmsSenderIdAssignments(false);
         }
     }
+    public void setSmsSenderVisibilities(List<smagicinteract__Sender_Visibility__c> smsSenderVisbilities) {
+        if (locked)
+            return;
+        this.smsSenderVisbilities = smsSenderVisbilities;
+        if (doDeprovision)
+            removeSmsSenderVisbilities(false);
+    }
     public void setSmsLicenses(List<smagicinteract__License__c> smsLicenses) {
         if (locked)
             return;
@@ -553,6 +573,9 @@ public without sharing class UserDeprovisioner {
     }
     public List<smagicinteract__SMS_SenderId__c> getSmsSenderIds() {
         return smsSenderIds;
+    }
+    public List<smagicinteract__Sender_Visibility__c> getSmsSenderVisbilities() {
+        return smsSenderVisbilities;
     }
     public List<smagicinteract__SenderId_Profile_Map__c> getSmsSenderIdAssignments() {
         return smsSenderIdAssignments;

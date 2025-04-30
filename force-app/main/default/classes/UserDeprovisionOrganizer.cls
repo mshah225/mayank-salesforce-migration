@@ -13,6 +13,7 @@
  * each stage runs asynchronously and the records could change from one stage to another.
  */
 public without sharing class UserDeprovisionOrganizer {
+    @TestVisible
     private static Map<String, Deprovision_User_Configuration__c> deprovisionUserConfiguration {
         get {
             if (deprovisionUserConfiguration == null) {

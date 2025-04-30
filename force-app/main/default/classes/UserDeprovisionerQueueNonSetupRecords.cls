@@ -8,7 +8,9 @@
  * 2. Unfreezing user login records (`UserLogin`)
  * 3. SMS Sender Ids (`smagicinteract__SMS_SenderId__c`)
  * 4. SMS Sender Ids Assignments (`smagicinteract__SenderId_Profile_Map__c`)
- * 5. SMS Licenses (`smagicinteract__License__c`)
+ * 5. SMS Sender Visibilities (`smagicinteract__Sender_Visibility__c`)
+ * 6. SMS Licenses (`smagicinteract__License__c`)
+ * 7. Campaigns (`Campaign`)
  */
 public without sharing class UserDeprovisionerQueueNonSetupRecords implements Queueable, Nextable {
     private List<UserDeprovisioner> userDeprovisioners;
@@ -285,6 +287,7 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
         }
 
         public void execute(QueueableContext context) {
+            UserDeprovisionOrganizer.isDeprovisoning = true;
             try {
                 if (!users.isEmpty())
                     update users;
@@ -301,8 +304,8 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
 
                 ErrorLogger.log(ex, vars, false);
             }
-
             launchNext();
+            UserDeprovisionOrganizer.isDeprovisoning = false;
         }
 
         /**

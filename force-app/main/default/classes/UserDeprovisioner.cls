@@ -344,7 +344,7 @@ public without sharing class UserDeprovisioner {
                 addToProcessingNotes(
                     'Reassigned ' +
                         campaigns.size() +
-                        'campaigns to ' +
+                        ' campaigns to ' +
                         reassignmentRuleForUser.New_Default_Owner_Name__c
                 );
             }

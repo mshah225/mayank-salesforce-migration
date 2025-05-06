@@ -7307,25 +7307,6 @@
                                         b.INCIDENT_DATE.localeCompare(a.INCIDENT_DATE)
                                 );
 
-                                let recentConductMarkup =
-                                    '<div class="judicial-data-redacted-conduct-message" style="font-weight:bold;margin-bottom:1em;">' +
-                                    'For the following incident(s), please reach out to the Office of the Dean of Students at ' +
-                                    '<a href="mailto:deanofstudents@asu.edu">deanofstudents@asu.edu</a> ' +
-                                    'for additional details.' +
-                                    '</div>';
-
-                                recentConductMarkup +=
-                                    '' +
-                                    "<div class='table-responsive'>" +
-                                    "<table id='judicial_data_redacted_conduct_table' class='table table-striped table-bordered'> " +
-                                    '<thead>' +
-                                    '<tr style="cursor:pointer">' +
-                                    '<th scope="col">File ID</th>' +
-                                    '<th scope="col">Date/Time</th>' +
-                                    '</tr>' +
-                                    '</thead>' +
-                                    '<tbody>';
-
                                 let recentConductMarkup = '';
                                 for (let i = 0; i < recentConductIncidents.length; i++) {
                                     let recentConductIncidentFileId =

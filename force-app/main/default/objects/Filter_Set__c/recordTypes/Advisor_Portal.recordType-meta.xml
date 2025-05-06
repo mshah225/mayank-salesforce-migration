@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Advisor_Portal</fullName>
-    <active>true</active>
-    <description>Filter Sets meant to be used in Advisor Portal</description>
-    <label>Advisor Portal</label>
-</RecordType>

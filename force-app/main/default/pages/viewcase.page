@@ -1,5 +1,4 @@
-<apex:page
-    docType="html-5.0"
+<apex:page docType="html-5.0"
     showHeader="false"
     standardStylesheets="false"
     sidebar="false"
@@ -77,8 +76,7 @@
             }
         </script>
 
-        <c:MyASUHelpBomgarService
-            asurite="{!asurite}"
+        <c:MyASUHelpBomgarService asurite="{!asurite}"
             firstName="{!firstName}"
             lastName="{!lastName}"
             emplId="{!emplId}"
@@ -171,23 +169,20 @@
                                             <apex:outputField value="{!caseDetails.Status}" />
                                             <apex:outputField value="{!caseDetails.Subject}" />
                                             <apex:outputField value="{!caseDetails.Description}" />
-                                            <apex:outputField
-                                                value="{!caseDetails.CC_Functional_Group__r.Name}"
+                                            <apex:outputField value="{!caseDetails.CC_Functional_Group__r.Name}"
                                                 label="Department"
                                                 rendered="{!IF(caseDetails.CC_Functional_Group__c != null,true,false)}"
                                             />
                                             <apex:outputText value="{0}" label="Date Opened">
                                                 <apex:param value="{!formattedCreatedDate}" />
                                             </apex:outputText>
-                                            <apex:outputText
-                                                value="{0}"
+                                            <apex:outputText value="{0}"
                                                 label="Date Closed"
                                                 rendered="{!IF(CONTAINS(caseDetails.Status,'Closed'),true,false)}"
                                             >
                                                 <apex:param value="{!formattedClosedDate}" />
                                             </apex:outputText>
-                                            <apex:outputText
-                                                rendered="{!IF((caseDetails.Status == 'Closed: Resolved')
+                                            <apex:outputText rendered="{!IF((caseDetails.Status == 'Closed: Resolved')
                                                 && (caseDetails.Feedback_Link__c != ''),true,false)}"
                                                 value="{!caseDetails.Feedback_Link__c}"
                                                 escape="false"
@@ -226,8 +221,7 @@
                                                     <apex:repeat value="{!EmailMessagesWithFormattedDateTime}" var="EM">
                                                         <div class="panel panel-default pb-2 pt-2 border-bottom">
                                                             <div class="panel-body">
-                                                                <apex:outputPanel
-                                                                    rendered="{!IF(EM.FromAddress != null,true,false)}"
+                                                                <apex:outputPanel rendered="{!IF(EM.FromAddress != null,true,false)}"
                                                                 >
                                                                     <apex:outputLabel for="fromAddress" value="From:" />
                                                                     <apex:outputText id="fromAddress">
@@ -240,31 +234,26 @@
                                                                     <apex:param value="{!EM.MessageDate}" />
                                                                 </apex:outputText>
                                                                 <br />
-                                                                <apex:outputPanel
-                                                                    rendered="{!IF(EM.ToAddress != null,true,false)}"
+                                                                <apex:outputPanel rendered="{!IF(EM.ToAddress != null,true,false)}"
                                                                 >
                                                                     <apex:outputLabel for="toAddress" value="To:" />
                                                                     &nbsp;
-                                                                    <apex:outputText
-                                                                        id="toAddress"
+                                                                    <apex:outputText id="toAddress"
                                                                         value="{!EM.ToAddress}"
                                                                     />
                                                                     <br />
                                                                 </apex:outputPanel>
-                                                                <apex:outputPanel
-                                                                    rendered="{!IF(EM.CCAddress != null,true,false)}"
+                                                                <apex:outputPanel rendered="{!IF(EM.CCAddress != null,true,false)}"
                                                                 >
                                                                     <apex:outputLabel for="ccAddress" value="Cc:" />
                                                                     &nbsp;
-                                                                    <apex:outputText
-                                                                        id="ccAddress"
+                                                                    <apex:outputText id="ccAddress"
                                                                         value="{!EM.CCAddress}"
                                                                     />
                                                                     <br />
                                                                 </apex:outputPanel>
                                                                 <br />
-                                                                <apex:outputText
-                                                                    id="emailMore"
+                                                                <apex:outputText id="emailMore"
                                                                     value="{!EM.TextBody}"
                                                                     style="
                                                                         word-wrap: break-word !important;
@@ -306,8 +295,7 @@
                                             data-parent="#accordion-case-details"
                                         >
                                             <div class="panel-body">
-                                                <apex:inputTextarea
-                                                    value="{!caseReply}"
+                                                <apex:inputTextarea value="{!caseReply}"
                                                     id="replyText"
                                                     required="true"
                                                     rows="5"
@@ -315,15 +303,13 @@
                                                     style="max-width: 100%; max-height: 100%"
                                                 />
                                                 <span> Upload New Attachments (max size 25MB) </span>
-                                                <apex:inputFile
-                                                    fileName="{!replyCaseAttachment.name}"
+                                                <apex:inputFile fileName="{!replyCaseAttachment.name}"
                                                     styleClass="d-block"
                                                     id="replyFile"
                                                     value="{!replyCaseAttachment.Body}"
                                                 />
                                                 <div class="mt-2">
-                                                    <apex:commandButton
-                                                        onclick="return validateReply();"
+                                                    <apex:commandButton onclick="return validateReply();"
                                                         action="{!submitReply}"
                                                         value="Submit"
                                                         styleClass="btn btn-maroon btn-md"
@@ -361,26 +347,21 @@
                                             <div class="panel-body">
                                                 <apex:outputPanel rendered="{!showCaseAttachments}">
                                                     <apex:pageBlock id="alius-format1191">
-                                                        <apex:pageBlockTable
-                                                            styleClass="border w-100"
+                                                        <apex:pageBlockTable styleClass="border w-100"
                                                             value="{!allCaseAttachmentsFormattedTime}"
                                                             var="eachAttachment"
                                                             columns="2"
                                                         >
-                                                            <apex:column
-                                                                headerValue="Name"
+                                                            <apex:column headerValue="Name"
                                                                 headerClass="bg-f5f5f5 border-bottom p-1"
                                                                 styleClass="p-1"
                                                             >
-                                                                <apex:outputLink
-                                                                    value="{!URLFOR($Action.Attachment.Download, eachAttachment.id)}"
+                                                                <apex:outputLink value="{!URLFOR($Action.Attachment.Download, eachAttachment.id)}"
                                                                     style="color: #990033"
                                                                     target="_blank"
-                                                                    >{!eachAttachment.Name}</apex:outputLink
-                                                                >
+                                                                    >{!eachAttachment.Name}</apex:outputLink>
                                                             </apex:column>
-                                                            <apex:column
-                                                                headerValue="Created Date"
+                                                            <apex:column headerValue="Created Date"
                                                                 headerClass="bg-f5f5f5 border-bottom p-1"
                                                                 styleClass="p-1"
                                                             >
@@ -432,13 +413,11 @@
                                                         <div class="panel panel-default">
                                                             <div class="panel-body">
                                                                 <div class="chatUserInfo">
-                                                                    <apex:outputText
-                                                                        id="chatUserInfo"
+                                                                    <apex:outputText id="chatUserInfo"
                                                                         value="{!message.performedBy}"
                                                                     />
                                                                 </div>
-                                                                <apex:outputText
-                                                                    styleClass="chat-history"
+                                                                <apex:outputText styleClass="chat-history"
                                                                     value="{!message.text}"
                                                                     escape="false"
                                                                 />
@@ -463,8 +442,7 @@
                     </div>
                 </div>
                 <div class="col-lg-5">
-                    <c:MyASUHelpContactUs
-                        HelpBox="{!HelpBox}"
+                    <c:MyASUHelpContactUs HelpBox="{!HelpBox}"
                         NormalPhone="{!NormalPhone}"
                         RoverPhone="{!RoverPhone}"
                     />

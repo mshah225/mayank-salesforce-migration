@@ -1,76 +1,55 @@
-<!--
-    This Visualforce page generates an RSS feed for Salesforce Knowledge articles.
-    It includes two render options: one for search results and another for a single article.
+<apex:page cache="false"
+  contentType="text/xml"
+  standardStylesheets="false"
+  showHeader="false"
+  sidebar="false"
+  standardController="KnowledgeArticle"
+  extensions="pkb_Controller"
+  action="{!prepareSearchRSS}">
+<rss version="2.0">
 
-    Page Attributes:
-    - cache: false (Disable caching)
-    - contentType: text/xml (Set content type to XML for RSS feed)
-    - standardStylesheets: false (Disable standard Salesforce stylesheets)
-    - showHeader: false (Hide the Salesforce header)
-    - sidebar: false (Hide the Salesforce sidebar)
-    - standardController: FAQ__ka (Uses the standard controller for the FAQ__ka object)
-    - extensions: pkb_Controller (Extends functionality with pkb_Controller)
-    - action: prepareSearchRSS (Apex method to prepare the RSS feed)
+<!-- first render is for search results rss -->
+<apex:outputText rendered="{!NOT(pkbCon.viewingArticle) && pkbCon.searchExecuted}" escape="false">
+<apex:variable var="searchURL" value="{!$Site.CurrentSiteUrl+ '?' +SUBSTITUTE(pkbCon.allSearchParams, '&', '&amp;')}" />
+<channel>
+  <title>{!HTMLENCODE(SUBSTITUTE($Site.Name, '_', ' '))}</title>  
+  <link>{!searchURL}</link>
+  <lastBuildDate>{!NOW()}</lastBuildDate>
+  <pubDate>{!NOW()}</pubDate>  
+  <apex:repeat var="k" value="{!pkbCon.rssKads}">
+	  <apex:variable var="typeName" value="{!SUBSTITUTE(k.articleTypeName, pkbCon.kavExtension, '')}" />
+	  <apex:variable var="articleURL" value="{!$Site.CurrentSiteUrl}articles{!HTMLENCODE(pkbCon.selectedLanguageURL)}{!HTMLENCODE(typeName)}/{!k.urlName}" />
+	  <item>
+	   <title>{!HTMLENCODE(k.title)}</title>
+	   <description>{!HTMLENCODE(k.summary)}</description>
+	   <link>{!articleURL}</link>
+	   <guid>{!HTMLENCODE(k.urlName)}</guid>
+	   <pubDate>{!k.lastPublishedDate}</pubDate>
+	  </item>
+  </apex:repeat>
+</channel>
+</apex:outputText>
 
-    The page renders an RSS feed with two possible outputs:
-    1. RSS feed for search results
-    2. RSS feed for a single article
--->
-<apex:page 
-    cache="false" 
-    contentType="text/xml" 
-    standardStylesheets="false" 
-    showHeader="false" 
-    sidebar="false" 
-    standardController="FAQ__ka"
-    extensions="pkb_Controller" 
-    action="{!prepareSearchRSS}">
+<!--  second render is for single article rss -->
+<apex:outputText rendered="{!pkbCon.viewingArticle}">
+<apex:variable var="typeName" value="{!HTMLENCODE(SUBSTITUTE(pkbCon.theKad.articleTypeName, pkbCon.kavExtension, ''))}" />
+<apex:variable var="articleURL" value="{!$Site.CurrentSiteUrl}articles{!HTMLENCODE(pkbCon.selectedLanguageURL)}{!HTMLENCODE(typeName)}/{!theKad.urlName}" />
 
-    <rss version="2.0">
-        <!-- Render for search results RSS -->
-        <apex:outputText rendered="{!NOT(pkbCon.viewingArticle) && pkbCon.searchExecuted}" escape="false">
-            <!-- Generate search URL -->
-            <apex:variable var="searchURL" value="{!$Site.CurrentSiteUrl + '?' + SUBSTITUTE(pkbCon.allSearchParams, '&', '&amp;')}" />
-            <channel>
-                <title>{!HTMLENCODE(SUBSTITUTE($Site.Name, '_', ' '))}</title>
-                <link>{!searchURL}</link>
-                <lastBuildDate>{!NOW()}</lastBuildDate>
-                <pubDate>{!NOW()}</pubDate>
-                
-                <!-- Repeat for each knowledge article in search results -->
-                <apex:repeat var="k" value="{!pkbCon.rssKads}">
-                    <!-- Generate article type and URL -->
-                    <apex:variable var="typeName" value="{!SUBSTITUTE(k.articleTypeName, pkbCon.kavExtension, '')}" />
-                    <apex:variable var="articleURL" value="{!$Site.CurrentSiteUrl}articles{!HTMLENCODE(pkbCon.selectedLanguageURL)}{!HTMLENCODE(typeName)}/{!k.urlName}" />
-                    <item>
-                        <title>{!HTMLENCODE(k.title)}</title>
-                        <description>{!HTMLENCODE(k.summary)}</description>
-                        <link>{!articleURL}</link>
-                        <guid>{!HTMLENCODE(k.urlName)}</guid>
-                        <pubDate>{!k.lastPublishedDate}</pubDate>
-                    </item>
-                </apex:repeat>
-            </channel>
-        </apex:outputText>
+<channel>
+	<title>{!HTMLENCODE(pkbCon.theKad.title)}</title>  
+  <link>{!articleURL}</link>
+	<lastBuildDate>{!NOW()}</lastBuildDate>
+	<pubDate>{!NOW()}</pubDate>  
+  <item>
+		<title>{!HTMLENCODE(pkbCon.theKad.title)}</title>
+		<description>{!HTMLENCODE(pkbCon.theKad.summary)}</description>
+		<link>{!articleURL}</link>
+		<guid>{!pkbCon.theKad.urlName}</guid>
+		<pubDate>{!pkbCon.theKad.LastPublishedDate}</pubDate>
+  </item>
+</channel>
 
-        <!-- Render for single article RSS -->
-        <apex:outputText rendered="{!pkbCon.viewingArticle}">
-            <!-- Generate article type and URL -->
-            <apex:variable var="typeName" value="{!HTMLENCODE(SUBSTITUTE(pkbCon.theKad.articleTypeName, pkbCon.kavExtension, ''))}" />
-            <apex:variable var="articleURL" value="{!$Site.CurrentSiteUrl}articles{!HTMLENCODE(pkbCon.selectedLanguageURL)}{!HTMLENCODE(typeName)}/{!theKad.urlName}" />
-            <channel>
-                <title>{!HTMLENCODE(pkbCon.theKad.title)}</title>
-                <link>{!articleURL}</link>
-                <lastBuildDate>{!NOW()}</lastBuildDate>
-                <pubDate>{!NOW()}</pubDate>
-                <item>
-                    <title>{!HTMLENCODE(pkbCon.theKad.title)}</title>
-                    <description>{!HTMLENCODE(pkbCon.theKad.summary)}</description>
-                    <link>{!articleURL}</link>
-                    <guid>{!pkbCon.theKad.urlName}</guid>
-                    <pubDate>{!pkbCon.theKad.LastPublishedDate}</pubDate>
-                </item>
-            </channel>
-        </apex:outputText>
-    </rss>
+</apex:outputText>
+
+</rss>
 </apex:page>

@@ -18,12 +18,12 @@ public class OpportunityDispatcher implements TriggerDispatcherInterface {
 
     public void beforeInsert() {
         OpportunityService.populateNullContactsFromAccounts(newList);
+        OpportunityService.setDefaultProspectCampaign(newList);
         OpportunityService.setAssignmentNumbers(newList);
         OpportunityService.insertCollegePlan(newList);
         OpportunityService.assignTerritory(newList, oldMap);
         OpportunityService.updateOpportunityTypeForGrads(newList);
         OpportunityService.checkAndCreateMasterTracker(newList);
-
     }
     public void beforeUpdate() {
         OpportunityService.updateCollegeIfPlanChanged(newList, oldMap);

@@ -202,6 +202,34 @@ public class OpportunityService {
         }
     }
 
+    public static void setDefaultProspectCampaign(List<Opportunity> newOpportunities) {
+        New_Prospect_Default__mdt defaultProspectCampaign = New_Prospect_Default__mdt.getInstance(
+            'Case_Prospect_Campaign'
+        );
+        List<String> prospectRecordTypes = new List<String>{
+            RecordIdHelper.getRecordTypeId('Opportunity', 'Undergraduate_Prospect'),
+            RecordIdHelper.getRecordTypeId('Opportunity', 'Graduate_Prospect')
+        };
+
+        // When running tests grab default prospect campaign from static variable
+        if (Test.isRunningTest())
+            defaultProspectCampaign = TEST_DEFAULT_PROSPECT_CAMPAIGN;
+
+        // For each opportunity that came from new prospect Quick Action (which have either lead source="Quick Action" or lead source subtype="Manual Entry")
+        for (Opportunity opp : newOpportunities)
+            if (
+                // Has not set the prospect campaign
+                String.isBlank(opp.Prospect_Campaign__c) &&
+                // Is a prospect Opportunity
+                prospectRecordTypes.contains(opp.RecordTypeId) &&
+                // Not an API user
+                !CustomPermissionHelper.currentUserHasCustomPermission('APIUser')
+            )
+                opp.Prospect_Campaign__c = defaultProspectCampaign?.Value__c;
+    }
+    @TestVisible
+    private static New_Prospect_Default__mdt TEST_DEFAULT_PROSPECT_CAMPAIGN = null;
+
     public static void setAssignmentNumbers(List<Opportunity> newOpportunities) {
         for (Opportunity opp : newOpportunities)
             opp.Opportunity_Assignment_Number_Rand__c = generateOpportunityAssignmentNumber();
@@ -912,9 +940,11 @@ public class OpportunityService {
     }
 
     private static Boolean meetsMasterTrackerConditions(Opportunity opp) {
-        return opp.Interview_Status__c == 'Complete' && opp.Plan_Code__c == 'BAFULLMBA' && 
-        opp.Round__c != null && opp.Interview_Date__c <= Date.today() &&
-        opp.Graduate_Master_Tracker__c == null;
+        return opp.Interview_Status__c == 'Complete' &&
+            opp.Plan_Code__c == 'BAFULLMBA' &&
+            opp.Round__c != null &&
+            opp.Interview_Date__c <= Date.today() &&
+            opp.Graduate_Master_Tracker__c == null;
     }
 
     public static void disableSyncingForMasterTracker(Map<Id, Opportunity> newOpps, Map<Id, Opportunity> oldOpps) {

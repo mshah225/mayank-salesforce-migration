@@ -1209,4 +1209,102 @@ public with sharing class OpportunityTriggerTest {
             'Did not correctly identify inactive User: ' + OppAfterInsert.Territory_Assignment_Last_Rule_Type__c
         );
     }
+
+    @isTest
+    private static void testDefaultSourceCampaignForProspects() {
+        User testUser = [SELECT Id FROM User WHERE Username = 'test.user.Emperor.Of.Byzantium@test.example.com0'];
+
+        Contact con = new Contact(FirstName = 'Test', LastName = 'Opportunity Trigger');
+        insert con;
+
+        con = [SELECT Id, AccountId FROM Contact WHERE Id = :con.Id];
+
+        Campaign testDefaultCampaign = new Campaign(
+            Name = 'Default case prospect campaign',
+            IsActive = true,
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Campaign', 'Other_Source')
+        );
+        insert testDefaultCampaign;
+
+        OpportunityService.TEST_DEFAULT_PROSPECT_CAMPAIGN = new New_Prospect_Default__mdt(
+            Value__c = testDefaultCampaign.Id
+        );
+        String expectedCampaign = testDefaultCampaign.Id;
+
+        Opportunity testUGradProspect = new Opportunity(
+            Name = 'Test opp',
+            StageName = 'Prospect',
+            Career__c = 'Undergraduate',
+            CloseDate = date.today() + 365,
+            Contact__c = con.Id,
+            AccountId = con.AccountId,
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Opportunity', 'Undergraduate_Prospect')
+        );
+        Opportunity testUGradApplicant = new Opportunity(
+            Name = 'Test opp',
+            StageName = 'Prospect',
+            Career__c = 'Undergraduate',
+            CloseDate = date.today() + 365,
+            Contact__c = con.Id,
+            AccountId = con.AccountId,
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Opportunity', 'Undergraduate_Application')
+        );
+        Opportunity testGradProspect = new Opportunity(
+            Name = 'Test opp',
+            StageName = 'Prospect',
+            Career__c = 'Undergraduate',
+            CloseDate = date.today() + 365,
+            Contact__c = con.Id,
+            AccountId = con.AccountId,
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Opportunity', 'Graduate_Prospect')
+        );
+        Opportunity testGradApplicant = new Opportunity(
+            Name = 'Test opp',
+            StageName = 'Prospect',
+            Career__c = 'Undergraduate',
+            CloseDate = date.today() + 365,
+            Contact__c = con.Id,
+            AccountId = con.AccountId,
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Opportunity', 'Graduate_Application')
+        );
+
+        System.runAs(testUser) {
+            insert new List<Opportunity>{ testUGradProspect, testUGradApplicant, testGradProspect, testGradApplicant };
+        }
+
+        Map<Id, Opportunity> createdOpportunities = new Map<Id, Opportunity>(
+            [
+                SELECT Id, Prospect_Campaign__c
+                FROM Opportunity
+                WHERE
+                    Id IN :new List<Id>{
+                        testUGradProspect.Id,
+                        testUGradApplicant.Id,
+                        testGradProspect.Id,
+                        testGradApplicant.Id
+                    }
+            ]
+        );
+
+        Assert.areEqual(
+            expectedCampaign,
+            createdOpportunities.get(testUGradProspect.Id).Prospect_Campaign__c,
+            'Should have set ugrad prospect opportunity\'s campaign'
+        );
+        Assert.areEqual(
+            null,
+            createdOpportunities.get(testUGradApplicant.Id).Prospect_Campaign__c,
+            'Should NOT have set ugrad applicant opportunity\'s campaign'
+        );
+        Assert.areEqual(
+            expectedCampaign,
+            createdOpportunities.get(testGradProspect.Id).Prospect_Campaign__c,
+            'Should have set grad prospect opportunity\'s campaign'
+        );
+        Assert.areEqual(
+            null,
+            createdOpportunities.get(testGradApplicant.Id).Prospect_Campaign__c,
+            'Should NOT have set grad applicant opportunity\'s campaign'
+        );
+    }
 }

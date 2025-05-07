@@ -254,22 +254,14 @@
                 font-weight: 600;
             }
 
-            .judicial-data-recent-care-row-1-container,
             .judicial-data-recent-conduct-row-1-container {
                 margin-bottom: 0.5em;
             }
 
-            .judicial-data-recent-care-row-2-container,
             .judicial-data-recent-conduct-row-2-container {
                 margin-bottom: 1em;
             }
 
-            .judicial-data-recent-care-file-id-label,
-            .judicial-data-recent-care-status-label,
-            .judicial-data-recent-care-date-time-label,
-            .judicial-data-recent-care-location-label,
-            .judicial-data-recent-care-role-label,
-            .judicial-data-recent-care-summary-label,
             .judicial-data-recent-conduct-file-id-label,
             .judicial-data-recent-conduct-status-label,
             .judicial-data-recent-conduct-date-time-label,
@@ -278,12 +270,6 @@
             .judicial-data-recent-conduct-summary-label {
                 font-weight: bold;
             }
-
-            .judicial-data-recent-care-file-id-value,
-            .judicial-data-recent-care-status-value,
-            .judicial-data-recent-care-date-time-value,
-            .judicial-data-recent-care-location-value,
-            .judicial-data-recent-care-role-value,
             .judicial-data-recent-conduct-file-id-value,
             .judicial-data-recent-conduct-status-value,
             .judicial-data-recent-conduct-date-time-value,
@@ -292,12 +278,10 @@
                 margin-right: 2em;
             }
 
-            .judicial-data-recent-care-summary-label,
             .judicial-data-recent-conduct-summary-label {
                 margin-bottom: 0.25em;
             }
 
-            .judicial-data-recent-care-summary-value,
             .judicial-data-recent-conduct-summary-value {
                 white-space: pre-wrap;
                 height: 70px;
@@ -3472,8 +3456,6 @@
                                     </div>
 
                                     <div style="overflow: auto; max-height: 400px">
-                                        <div id="judicial-data-recent-care-container" style="display: none"></div>
-                                        <div id="judicial-data-recent-care-errors"></div>
                                         <div id="judicial-data-redacted-care-container" style="display: none"></div>
                                         <div id="judicial-data-redacted-care-errors"></div>
                                     </div>
@@ -7093,8 +7075,6 @@
         function getJudicialData() {
             if (judicialData) return;
 
-            document.getElementById('judicial-data-recent-care-errors').innerHTML =
-                "<i class='fa fa-circle-o-notch fa-pulse fa-2x fa-fw margin-bottom'></i>";
             document.getElementById('judicial-data-recent-conduct-errors').innerHTML =
                 "<i class='fa fa-circle-o-notch fa-pulse fa-2x fa-fw margin-bottom'></i>";
 
@@ -7106,12 +7086,10 @@
                         judicialData = result;
 
                         if (judicialData?.length > 0) {
-                            document.getElementById('judicial-data-recent-care-errors').innerHTML = '';
                             document.getElementById('judicial-data-redacted-care-errors').innerHTML = '';
                             document.getElementById('judicial-data-recent-conduct-errors').innerHTML = '';
                             document.getElementById('judicial-data-redacted-conduct-errors').innerHTML = '';
 
-                            let recentCareIncidents = [];
                             let redactedCareIncidents = [];
                             let recentConductIncidents = [];
                             let redactedConductIncidents = [];
@@ -7126,90 +7104,13 @@
                                 const isConductIncident = hasConductIncidentType(incidentType);
                                 const isTitleIXIncident = hasTitleIXIncidentType(incidentType);
 
-                                if (isRecentIncident && isCareIncident) {
-                                    recentCareIncidents.push(incident);
-                                } else if (!isRecentIncident && isCareIncident) {
+                                if (isCareIncident) {
                                     redactedCareIncidents.push(incident);
                                 } else if (isRecentIncident && isConductIncident) {
                                     recentConductIncidents.push(incident);
                                 } else if ((!isRecentIncident && isConductIncident) || isTitleIXIncident) {
                                     redactedConductIncidents.push(incident);
                                 }
-                            }
-
-                            if (recentCareIncidents?.length > 0) {
-                                recentCareIncidents.sort((a, b) => b.INCIDENT_DATE.localeCompare(a.INCIDENT_DATE));
-
-                                let recentCareMarkup =
-                                    '<div class="judicial-data-redacted-care-message" style="font-weight:bold;margin-bottom:1em;">' +
-                                    'For the following incident(s), please reach out to the Office of the Dean of Students at ' +
-                                    '<a href="mailto:deanofstudents@asu.edu">deanofstudents@asu.edu</a> ' +
-                                    'for additional details.' +
-                                    '</div>';
-
-                                recentCareMarkup +=
-                                    "<div class='table-responsive'>" +
-                                    "<table id='judicial_data_recent_care_table' class='table table-striped table-bordered'> " +
-                                    '<thead>' +
-                                    '<tr style="cursor:pointer">' +
-                                    '<th scope="col">File ID</th>' +
-                                    '<th scope="col">Date/Time</th>' +
-                                    '</tr>' +
-                                    '</thead>' +
-                                    '<tbody>';
-
-                                for (let i = 0; i < recentCareIncidents.length; i++) {
-                                    let recentCareIncidentFileId =
-                                        recentCareIncidents[i]?.FILE_ID !== undefined
-                                            ? recentCareIncidents[i].FILE_ID
-                                            : '--';
-
-                                    let recentCareIncidentDate;
-                                    if (recentCareIncidents[i]?.INCIDENT_DATE !== undefined) {
-                                        recentCareIncidentDate = new Date(recentCareIncidents[i].INCIDENT_DATE);
-                                        recentCareIncidentDate.setDate(recentCareIncidentDate.getDate() + 1);
-                                        recentCareIncidentDate = recentCareIncidentDate.toLocaleDateString(undefined, {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric',
-                                        });
-                                    } else {
-                                        recentCareIncidentDate = '--';
-                                    }
-
-                                    let recentCareIncidentTime =
-                                        recentCareIncidents[i]?.INCIDENT_TIME !== undefined
-                                            ? recentCareIncidents[i].INCIDENT_TIME
-                                            : '--';
-
-                                    let recentCareIncidentDateTime;
-                                    if (hasFieldData(recentCareIncidentDate) && hasFieldData(recentCareIncidentTime)) {
-                                        recentCareIncidentDateTime =
-                                            recentCareIncidentDate + ' ' + recentCareIncidentTime;
-                                    } else if (!hasFieldData(recentCareIncidentDate)) {
-                                        recentCareIncidentDateTime = '--';
-                                    } else if (!hasFieldData(recentCareIncidentTime)) {
-                                        recentCareIncidentDateTime = recentCareIncidentDate;
-                                    }
-
-                                    recentCareMarkup +=
-                                        '<tr>' +
-                                        '<td data-header="File ID">' +
-                                        recentCareIncidentFileId +
-                                        '</td>' +
-                                        '<td data-header="Date/Time">' +
-                                        recentCareIncidentDateTime +
-                                        '</td>' +
-                                        '</tr>';
-                                }
-
-                                recentCareMarkup += '</tbody></table></div>';
-
-                                document.getElementById('judicial-data-recent-care-container').style.display =
-                                    'initial';
-                                document.getElementById('judicial-data-recent-care-container').innerHTML =
-                                    recentCareMarkup;
-                                cleanUndefinedFields('judicial-data-recent-care-container');
                             }
 
                             if (redactedCareIncidents?.length > 0) {
@@ -7293,10 +7194,9 @@
                                 cleanUndefinedFields('judicial-data-redacted-care-container');
                             }
 
-                            if (recentCareIncidents?.length === 0 && redactedCareIncidents?.length === 0) {
-                                document.getElementById('judicial-data-recent-care-errors').innerHTML =
+                            if (redactedCareIncidents?.length === 0) {
+                                document.getElementById('judicial-data-redacted-care-errors').innerHTML =
                                     'No care data found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}, as the system retrieved no matching records.';
-                                document.getElementById('judicial-data-redacted-care-errors').innerHTML = '';
                             }
 
                             if (recentConductIncidents?.length > 0) {
@@ -7516,16 +7416,15 @@
                                 document.getElementById('judicial-data-redacted-conduct-errors').innerHTML = '';
                             }
                         } else {
-                            document.getElementById('judicial-data-recent-care-errors').innerHTML =
+                            document.getElementById('judicial-data-redacted-care-errors').innerHTML =
                                 'No care data found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}, as the system retrieved no matching records.';
-                            document.getElementById('judicial-data-redacted-care-errors').innerHTML = '';
                             document.getElementById('judicial-data-recent-conduct-errors').innerHTML =
                                 'No conduct data found for {!JSINHTMLENCODE(theContact.Preferred_First_Name__c)}, as the system retrieved no matching records.';
                             document.getElementById('judicial-data-redacted-conduct-errors').innerHTML = '';
                         }
                     } else {
                         document.getElementById(
-                            'judicial-data-recent-care-errors'
+                            'judicial-data-redacted-care-errors'
                         ).innerHTML = `<i class="fa fa-plug" aria-hidden="true"></i> <strong><i>We're having trouble retrieving the requested information from the external source. Please try again shortly.</i></strong>`;
                         document.getElementById(
                             'judicial-data-recent-conduct-errors'

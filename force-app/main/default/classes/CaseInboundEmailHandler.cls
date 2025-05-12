@@ -834,13 +834,18 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         }
         String htmlAttachments = failedAttachments.replace('\n', '<br />');
         String subject = et.Subject;
-        subject = subject.replace('{{{Case.CaseNumber}}}', emailCase.CaseNumber);
+        subject = subject.replace('{!Case.CaseNumber}', emailCase.CaseNumber)
+            .replace('{{{Case.CaseNumber}}}', emailCase.CaseNumber);
 
         String htmlBody = et.HtmlValue;
-        htmlBody = htmlBody.replace('{{{Recipient.Preferred_First_Name__c}}}', emailContact.Preferred_First_Name__c);
-        htmlBody = htmlBody.replace('{{{Recipient.LastName}}}', emailContact.LastName);
-        htmlBody = htmlBody.replace('{{{Case.Thread_Id}}}', emailCase.Thread_Id__c);
-        htmlBody = htmlBody.replace('{{{failedAttachmentsList}}}', htmlAttachments);
+        htmlBody = htmlBody.replace('{!Contact.Preferred_First_Name__c}', emailContact.Preferred_First_Name__c)
+            .replace('{{{Recipient.Preferred_First_Name__c}}}', emailContact.Preferred_First_Name__c);
+        htmlBody = htmlBody.replace('{!Contact.LastName}', emailContact.LastName)
+            .replace('{{{Recipient.LastName}}}', emailContact.LastName);
+        htmlBody = htmlBody.replace('{!Case.Thread_Id}', emailCase.Thread_Id__c)
+            .replace('{{{Case.Thread_Id}}}', emailCase.Thread_Id__c);
+        htmlBody = htmlBody.replace('{!failedAttachmentsList}', htmlAttachments)
+            .replace('{{{failedAttachmentsList}}}', htmlAttachments);
 
         mail.setTargetObjectId(emailContact.Id);
         mail.setSubject(subject);

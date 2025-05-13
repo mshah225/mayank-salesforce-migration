@@ -22,8 +22,9 @@ public with sharing class UserDispatcher implements TriggerDispatcherInterface {
         UserChatterGroupHandler.handleChatterGroups(newList);
     }
     public void afterUpdate() {
-        UserChatterGroupHandler.handleChatterGroups(newList);
-        new UserDeprovisionOrganizer(oldMap, newList).deprovisionUsersAfterUpdate();
+        if (!UserDeprovisionOrganizer.isDeprovisoning)
+            UserChatterGroupHandler.handleChatterGroups(newList);
+        UserDeprovisionOrganizer.handleDeprovisioning(newList, oldMap);
     }
     public void afterDelete() {
         UserChatterGroupHandler.handleChatterGroups(newList);

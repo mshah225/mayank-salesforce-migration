@@ -66,6 +66,11 @@ public class SuccessStudentService {
         }
 
         for (Success_Student__c successStudent : studentsRequiringOutreach) {
+
+            if (successStudent.Success_Resource__r == null || successStudent.Success_Resource__r.Resource__c == null) {
+                continue;
+            }
+
             Case newCase = new Case(
                 CC_Functional_Group__c = asuCoachOutreachGroup,
                 CC_Category__c = adHocCategory,

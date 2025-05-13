@@ -18,87 +18,113 @@ global class TopFiveArticleControllerAKB {
     }
 
     /**
-     * Retrieves the top five knowledge articles based on view statistics or data category for a given list name.
+     * This has to return void and instead manually modify the RestContext.response object because we want to be able to send
+     * error payloads without aborting the transaction (since we need to error log them).
+     *
+     * On happy path we set the payload of RestContext.response to be a List<ArticleInfo>, and on error path
+     * we manually construct a payload identical to what Salesforce would generate if we just used `throw ex`
      *
      * @param listName The name of the list or data category to filter articles.
      * @return A list of the top five articles, each represented by an instance of the ArticleInfo class.
+     * @throws {Exception} Response statusCode=500 and has error payload if anything went wrong
      */
     @HttpPost
-    global static List<ArticleInfo> getTopFiveArticles(String listName) {
-        List<ArticleInfo> articles = new List<ArticleInfo>();
-        Integer articleRank = 0;
-        List<Id> kavIds = new List<Id>();
-        List<Id> articleIds = new List<Id>();
+    global static void getTopFiveArticles(String listName) {
+        try {
+            List<ArticleInfo> articles = new List<ArticleInfo>();
+            Integer articleRank = 0;
+            List<Id> kavIds = new List<Id>();
+            List<Id> articleIds = new List<Id>();
 
-        String kavQuery =
-            'SELECT Id, KnowledgeArticleId ' +
-            'FROM FAQ__kav ' +
-            'WHERE PublishStatus=\'Online\' ' +
-            'AND Language =\'en_US\' ' +
-            'AND IsVisibleInPkb = true';
-        String dataCategory;
-        String dataCategoryGroup;
+            String kavQuery =
+                'SELECT Id, KnowledgeArticleId ' +
+                'FROM FAQ__kav ' +
+                'WHERE PublishStatus=\'Online\' ' +
+                'AND Language =\'en_US\' ' +
+                'AND IsVisibleInPkb = true';
+            String dataCategory;
+            String dataCategoryGroup;
 
-        // Determine data category and data category group based on listName
-        if (listName.indexOf('\\') > 0 && listName.indexOf('\\') < listName.length()) {
-            dataCategoryGroup = listName.substring(0, listName.indexOf('\\'));
-            dataCategory = listName.substring(listName.indexOf('\\') + 1);
-        } else {
-            if (String.isNotBlank(listName)) {
-                ObjectHelper.DataCategoryWrapper dataCategoryInfo = ObjectHelper.getDataCategoryNameAndGroupByLabel(
-                    'FAQ__kav',
-                    'My ASU ' + listName
-                );
-                dataCategoryGroup = dataCategoryInfo?.parentGroup;
-                dataCategory = dataCategoryInfo?.name;
+            // Determine data category and data category group based on listName
+            if (listName.indexOf('\\') > 0 && listName.indexOf('\\') < listName.length()) {
+                dataCategoryGroup = listName.substring(0, listName.indexOf('\\'));
+                dataCategory = listName.substring(listName.indexOf('\\') + 1);
+            } else {
+                if (String.isNotBlank(listName)) {
+                    ObjectHelper.DataCategoryWrapper dataCategoryInfo = ObjectHelper.getDataCategoryNameAndGroupByLabel(
+                        'KnowledgeArticleVersion', // must use KnowledgeArticleVersion rather than FAQ__kav to get data category
+                        'My ASU ' + listName
+                    );
+                    dataCategoryGroup = dataCategoryInfo?.parentGroup;
+                    dataCategory = dataCategoryInfo?.name;
+                }
             }
-        }
 
-        // Append data category to query if available
-        if (String.isNotBlank(dataCategory)) {
-            kavQuery += ' WITH DATA CATEGORY ' + dataCategoryGroup + ' AT ' + dataCategory;
-        }
-
-        // Execute query to retrieve knowledge article versions
-        List<SObject> kavList = new List<SObject>(Database.query(kavQuery));
-        for (SObject so : kavList) {
-            FAQ__kav kav = (FAQ__kav) so;
-            kavIds.add(kav.KnowledgeArticleId);
-        }
-
-        // Retrieve the top five articles based on view count
-        for (FAQ__ViewStat kavs : [
-            SELECT Id, ParentId
-            FROM FAQ__ViewStat
-            WHERE ParentId IN :kavIds AND Channel = 'PKB'
-            ORDER BY ViewCount DESC
-            LIMIT 5
-        ]) {
-            articleIds.add(kavs.ParentId);
-        }
-
-        // Handle case where no articles have been viewed (e.g., in testing)
-        if (articleIds.size() == 0) {
-            for (Integer x = 0; x < Math.min(kavIds.size(), 5); x++) {
-                articleIds.add(kavIds.get(x));
+            // Append data category to query if available
+            if (String.isNotBlank(dataCategory)) {
+                kavQuery += ' WITH DATA CATEGORY ' + dataCategoryGroup + ' AT ' + dataCategory;
             }
-        }
 
-        // Populate article information and add to articles list
-        for (FAQ__kav kav : [
-            SELECT Id, Title, UrlName, KnowledgeArticleId, PublishStatus, Language
-            FROM FAQ__kav
-            WHERE PublishStatus = 'Online' AND Language = 'en_US' AND KnowledgeArticleId IN :articleIds
-        ]) {
-            articleRank++;
-            ArticleInfo ai = new ArticleInfo();
-            ai.rank = articleRank;
-            ai.title = kav.Title;
-            ai.url = getArticleUrl(kav);
-            ai.id = kav.KnowledgeArticleId;
-            articles.add(ai);
+            // Execute query to retrieve knowledge article versions
+            List<SObject> kavList = new List<SObject>(Database.query(kavQuery));
+            for (SObject so : kavList) {
+                FAQ__kav kav = (FAQ__kav) so;
+                kavIds.add(kav.KnowledgeArticleId);
+            }
+
+            // Retrieve the top five articles based on view count
+            for (FAQ__ViewStat kavs : [
+                SELECT Id, ParentId
+                FROM FAQ__ViewStat
+                WHERE ParentId IN :kavIds AND Channel = 'PKB'
+                ORDER BY ViewCount DESC
+                LIMIT 5
+            ]) {
+                articleIds.add(kavs.ParentId);
+            }
+
+            // Handle case where no articles have been viewed (e.g., in testing)
+            if (articleIds.size() == 0) {
+                for (Integer x = 0; x < Math.min(kavIds.size(), 5); x++) {
+                    articleIds.add(kavIds.get(x));
+                }
+            }
+
+            // Populate article information and add to articles list
+            for (FAQ__kav kav : [
+                SELECT Id, Title, UrlName, KnowledgeArticleId, PublishStatus, Language
+                FROM FAQ__kav
+                WHERE PublishStatus = 'Online' AND Language = 'en_US' AND KnowledgeArticleId IN :articleIds
+            ]) {
+                articleRank++;
+                ArticleInfo ai = new ArticleInfo();
+                ai.rank = articleRank;
+                ai.title = kav.Title;
+                ai.url = getArticleUrl(kav);
+                ai.id = kav.KnowledgeArticleId;
+                articles.add(ai);
+            }
+
+            // Set response object
+            RestContext.response.headers.put('Content-Type', 'application/json;charset=UTF-8');
+            RestContext.response.responseBody = Blob.valueOf(JSON.serialize(articles));
+            RestContext.response.statusCode = 200;
+        } catch (Exception ex) {
+            List<String> vars = new List<String>();
+            vars.add(ErrorLogger.convertStringToJSON('listName', listName));
+            ErrorLogger.log(ex, vars, false);
+
+            // Construct error response that matches format that Salesforce sends by default
+            List<Map<String, String>> errorList = new List<Map<String, String>>();
+            Map<String, String> errorObj = new Map<String, String>();
+            errorObj.put('errorCode', 'APEX_ERROR');
+            errorObj.put('message', ex.getMessage());
+            errorList.add(errorObj);
+
+            RestContext.response.headers.put('Content-Type', 'application/json;charset=UTF-8');
+            RestContext.response.responseBody = Blob.valueOf(JSON.serialize(errorList));
+            RestContext.response.statusCode = 500;
         }
-        return articles;
     }
 
     /**

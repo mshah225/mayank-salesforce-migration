@@ -97,6 +97,97 @@ private class UndergradNewProspectControllerTest {
     }
 
     @isTest
+    private static void testOpportunityWithEventSource() {
+        Campaign eventCampaign = [SELECT Id FROM Campaign WHERE Name = 'ASU Test Event' LIMIT 1];
+
+        String expectedCampaign = eventCampaign.Id;
+
+        Test.startTest();
+        setUpController();
+
+        // Create contact
+        ug.contact.FirstName = 'Test';
+        ug.contact.LastName = 'Contact';
+        ug.contact.Lead_Email__c = 'test@email.com';
+        ug.contact.MailingPostalCode = '45656';
+
+        // Select term and type
+        ug.opportunity.Type = 'First Time Freshman';
+        ug.pickSelection = '--Select--';
+
+        // Select an event
+        ug.originSelection = '--Select--';
+        ug.elId = eventCampaign.Id;
+
+        // Submit page
+        PageReference referenceToCheck = ug.savePage();
+
+        Test.stopTest();
+
+        Opportunity actualOpp = [
+            SELECT Prospect_Campaign__c
+            FROM Opportunity
+            WHERE Id = :ug.opportunity.Id
+            LIMIT 1
+        ];
+
+        Assert.areEqual(eventCampaign.Id, actualOpp.Prospect_Campaign__c);
+    }
+
+    @isTest
+    private static void testOpportunityWithCaseSource() {
+        Campaign testDefaultCampaign = new Campaign(
+            Name = 'Default case prospect campaign',
+            IsActive = true,
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Campaign', 'Other_Source')
+        );
+        insert testDefaultCampaign;
+
+        UndergradNewProspectController.TEST_DEFAULT_CASE_PROSPECT_CAMPAIGN = new New_Prospect_Default__mdt(
+            Value__c = testDefaultCampaign.Id
+        );
+        String expectedCampaign = testDefaultCampaign.Id;
+
+        Test.startTest();
+        setUpController();
+
+        // Create contact
+        ug.contact.FirstName = 'Test';
+        ug.contact.LastName = 'Contact';
+        ug.contact.Lead_Email__c = 'test@email.com';
+        ug.contact.MailingPostalCode = '45656';
+
+        // Select term and type
+        ug.opportunity.Type = 'First Time Freshman';
+        ug.pickSelection = '--Select--';
+
+        // Fill in case form
+        ug.originSelection = 'Email';
+        ug.c.Subject = 'Test';
+        ug.c.CC_Functional_Group__c = [
+            SELECT ID
+            FROM Case_Classification__c
+            WHERE RecordType.Name = 'Functional Group' AND Active__c = TRUE
+            LIMIT 1
+        ]
+        .ID;
+
+        // Submit page
+        PageReference referenceToCheck = ug.savePage();
+
+        Test.stopTest();
+
+        Opportunity actualOpp = [
+            SELECT Prospect_Campaign__c
+            FROM Opportunity
+            WHERE Id = :ug.opportunity.Id
+            LIMIT 1
+        ];
+
+        Assert.areEqual(expectedCampaign, actualOpp.Prospect_Campaign__c);
+    }
+
+    @isTest
     static void testOptionalInterest() {
         Campaign interestTestCam = [SELECT Id, Name FROM Campaign WHERE Name = 'ASU Test Interest'];
         Id testSchool = [SELECT Id FROM Account WHERE Name = 'Test School'].Id;

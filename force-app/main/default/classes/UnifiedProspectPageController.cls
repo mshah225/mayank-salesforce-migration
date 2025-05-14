@@ -356,16 +356,19 @@ public class UnifiedProspectPageController {
             'In Person' => 'Walk-in',
             'Incoming Call' => 'Phone Call'
         };
-        if (caseSourceToLeadSourceMp.containsKey(originSelection))
+        if (caseSourceToLeadSourceMp.containsKey(originSelection)) {
             opportunity.LeadSource = caseSourceToLeadSourceMp.get(originSelection);
-        else
+            opportunity.Lead_Source_Subtype__c = 'Manual Entry';
+        } else {
             opportunity.LeadSource = null;
+        }
     }
     /**
      * When the event tab is selected, update the Opportunity's LeadSource
      */
     public void updateLeadSourceAsEvent() {
         opportunity.LeadSource = 'Event';
+        opportunity.Lead_Source_Subtype__c = 'Manual Entry';
     }
 
     public Boolean save() {

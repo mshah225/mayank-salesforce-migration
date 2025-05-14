@@ -1,11 +1,6 @@
-<apex:page
-    docType="html-5.0"
-    showHeader="false"
-    standardStylesheets="false"
-    sidebar="false"
-    controller="ViewCaseController"
-    cache="true"
->
+<apex:page docType="html-5.0" showHeader="false" standardStylesheets="false" sidebar="false" controller="ViewCaseController"
+    cache="true">
+
     <head>
         <title>My ASU | Help | {!caseDetails.Subject}</title>
         <meta charset="utf-8" />
@@ -17,10 +12,9 @@
         <link rel="shortcut icon" href="{!URLFOR($Resource.bootstrap_4_asu, '/dist/img/favicon/favicon.ico')}" />
         <apex:stylesheet value="{! URLFOR($Resource.bootstrap_4_asu, '/dist/css/bootstrap-asu.min.css')}" />
         <apex:includeScript value="{!URLFOR($Resource.jQuery_1_11_1_Min)}" />
-        <script>
-            $ = jQuery.noConflict();
-        </script>
+        <script>$ = jQuery.noConflict();</script>
         <apex:includeScript value="{!URLFOR($Resource.bootstrap_4_asu, '/dist/js/bootstrap.min.js')}" />
+
 
         <script>
             // Depends on having customAlerts component on page - since that provides the visualforceAddCustomAlert and visualforceClearCustomAlerts functions
@@ -77,12 +71,7 @@
             }
         </script>
 
-        <c:MyASUHelpBomgarService
-            asurite="{!asurite}"
-            firstName="{!firstName}"
-            lastName="{!lastName}"
-            emplId="{!emplId}"
-            viewingAs="{!viewingAs}"
+        <c:MyASUHelpBomgarService asurite="{!asurite}" firstName="{!firstName}" lastName="{!lastName}" emplId="{!emplId}" viewingAs="{!viewingAs}"
         />
 
         <script>
@@ -90,7 +79,8 @@
                 var showChar = 250;
                 var ellipsestext = '...';
                 var moretext = 'Show More&nbsp;<i class="fa fa-caret-down" aria-hidden="true"></i>';
-                var lesstext = 'Show Less&nbsp;<i class="fa fa-caret-up" aria-hidden="true"></i>';
+                var lesstext =
+                    'Show Less&nbsp;<i class="fa fa-caret-up" aria-hidden="true"></i>';
 
                 $j('[id$=emailMore]').each(function () {
                     var content = $j(this).clone().html();
@@ -148,6 +138,7 @@
                 </div>
             </div>
 
+
             <nav aria-label="breadcrumbs">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">Home</li>
@@ -171,42 +162,26 @@
                                             <apex:outputField value="{!caseDetails.Status}" />
                                             <apex:outputField value="{!caseDetails.Subject}" />
                                             <apex:outputField value="{!caseDetails.Description}" />
-                                            <apex:outputField
-                                                value="{!caseDetails.CC_Functional_Group__r.Name}"
-                                                label="Department"
-                                                rendered="{!IF(caseDetails.CC_Functional_Group__c != null,true,false)}"
+                                            <apex:outputField value="{!caseDetails.CC_Functional_Group__r.Name}" label="Department" rendered="{!IF(caseDetails.CC_Functional_Group__c != null,true,false)}"
                                             />
                                             <apex:outputText value="{0}" label="Date Opened">
                                                 <apex:param value="{!formattedCreatedDate}" />
                                             </apex:outputText>
-                                            <apex:outputText
-                                                value="{0}"
-                                                label="Date Closed"
-                                                rendered="{!IF(CONTAINS(caseDetails.Status,'Closed'),true,false)}"
-                                            >
+                                            <apex:outputText value="{0}" label="Date Closed" rendered="{!IF(CONTAINS(caseDetails.Status,'Closed'),true,false)}">
                                                 <apex:param value="{!formattedClosedDate}" />
                                             </apex:outputText>
-                                            <apex:outputText
-                                                rendered="{!IF((caseDetails.Status == 'Closed: Resolved')
-                                                && (caseDetails.Feedback_Link__c != ''),true,false)}"
-                                                value="{!caseDetails.Feedback_Link__c}"
-                                                escape="false"
-                                                label="Feedback"
-                                            />
+                                            <apex:outputText rendered="{!IF((caseDetails.Status == 'Closed: Resolved')
+                                                && (caseDetails.Feedback_Link__c != ''),true,false)}" value="{!caseDetails.Feedback_Link__c}"
+                                                escape="false" label="Feedback" />
                                         </apex:pageBlockSection>
                                     </apex:pageBlock>
                                 </div>
 
+
                                 <div class="accordion" id="accordion-case-details">
                                     <div class="panel panel-default position-relative border-top">
-                                        <a
-                                            data-toggle="collapse"
-                                            data-target="#myasu-help-case-view-responses"
-                                            href="#myasu-help-case-view-responses"
-                                            aria-expanded="false"
-                                            aria-controls="myasu-help-case-view-responses"
-                                            class="position-relative no-underline"
-                                        >
+                                        <a data-toggle="collapse" data-target="#myasu-help-case-view-responses" href="#myasu-help-case-view-responses" aria-expanded="false"
+                                            aria-controls="myasu-help-case-view-responses" class="position-relative no-underline">
                                             <div class="panel-heading" id="headingResponses">
                                                 <h3 class="m-0 h6 p-2">
                                                     <i class="fa fa-comments c-text-maroon" aria-hidden="true" />
@@ -215,20 +190,14 @@
                                             </div>
                                         </a>
 
-                                        <div
-                                            id="myasu-help-case-view-responses"
-                                            class="collapse pr-2 pl-2 pb-2 pt-1 border-top"
-                                            aria-labelledby="headingResponses"
-                                            data-parent="#accordion-case-details"
-                                        >
+                                        <div id="myasu-help-case-view-responses" class="collapse pr-2 pl-2 pb-2 pt-1 border-top" aria-labelledby="headingResponses"
+                                            data-parent="#accordion-case-details">
                                             <div class="panel-body">
                                                 <apex:outputPanel rendered="{!!EmailMessages.empty}">
                                                     <apex:repeat value="{!EmailMessagesWithFormattedDateTime}" var="EM">
                                                         <div class="panel panel-default pb-2 pt-2 border-bottom">
                                                             <div class="panel-body">
-                                                                <apex:outputPanel
-                                                                    rendered="{!IF(EM.FromAddress != null,true,false)}"
-                                                                >
+                                                                <apex:outputPanel rendered="{!IF(EM.FromAddress != null,true,false)}">
                                                                     <apex:outputLabel for="fromAddress" value="From:" />
                                                                     <apex:outputText id="fromAddress">
                                                                         {!EM.FromName} &#60;{!EM.FromAddress}&#62;
@@ -240,57 +209,40 @@
                                                                     <apex:param value="{!EM.MessageDate}" />
                                                                 </apex:outputText>
                                                                 <br />
-                                                                <apex:outputPanel
-                                                                    rendered="{!IF(EM.ToAddress != null,true,false)}"
-                                                                >
-                                                                    <apex:outputLabel for="toAddress" value="To:" />
-                                                                    &nbsp;
-                                                                    <apex:outputText
-                                                                        id="toAddress"
-                                                                        value="{!EM.ToAddress}"
-                                                                    />
+                                                                <apex:outputPanel rendered="{!IF(EM.ToAddress != null,true,false)}">
+                                                                    <apex:outputLabel for="toAddress" value="To:" /> &nbsp;
+                                                                    <apex:outputText id="toAddress" value="{!EM.ToAddress}" />
                                                                     <br />
                                                                 </apex:outputPanel>
-                                                                <apex:outputPanel
-                                                                    rendered="{!IF(EM.CCAddress != null,true,false)}"
-                                                                >
-                                                                    <apex:outputLabel for="ccAddress" value="Cc:" />
-                                                                    &nbsp;
-                                                                    <apex:outputText
-                                                                        id="ccAddress"
-                                                                        value="{!EM.CCAddress}"
-                                                                    />
+                                                                <apex:outputPanel rendered="{!IF(EM.CCAddress != null,true,false)}">
+                                                                    <apex:outputLabel for="ccAddress" value="Cc:" /> &nbsp;
+                                                                    <apex:outputText id="ccAddress" value="{!EM.CCAddress}" />
                                                                     <br />
                                                                 </apex:outputPanel>
                                                                 <br />
-                                                                <apex:outputText
-                                                                    id="emailMore"
-                                                                    value="{!EM.TextBody}"
-                                                                    style="
+                                                                <apex:outputText id="emailMore" value="{!EM.TextBody}" style="
                                                                         word-wrap: break-word !important;
                                                                         white-space: pre-line !important;
-                                                                    "
-                                                                />
+                                                                    " />
                                                             </div>
                                                         </div>
                                                     </apex:repeat>
                                                 </apex:outputPanel>
                                                 <apex:outputPanel rendered="{!EmailMessages.empty}">
-                                                    <p>You do not currently have any responses for this request.</p>
+                                                    <p>
+                                                        You do not currently have any responses for this request.
+                                                    </p>
                                                 </apex:outputPanel>
                                             </div>
+
+
                                         </div>
                                     </div>
 
+
                                     <div class="panel panel-default position-relative border-top">
-                                        <a
-                                            data-toggle="collapse"
-                                            data-target="#myasu-help-case-reply"
-                                            href="#myasu-help-case-reply"
-                                            aria-expanded="false"
-                                            aria-controls="myasu-help-case-reply"
-                                            class="position-relative no-underline"
-                                        >
+                                        <a data-toggle="collapse" data-target="#myasu-help-case-reply" href="#myasu-help-case-reply" aria-expanded="false" aria-controls="myasu-help-case-reply"
+                                            class="position-relative no-underline">
                                             <div class="panel-heading" id="headingReply">
                                                 <h3 class="m-0 h6 p-2">
                                                     <i class="fa fa-reply c-text-maroon" aria-hidden="true" />
@@ -298,52 +250,46 @@
                                                 </h3>
                                             </div>
                                         </a>
-
-                                        <div
-                                            id="myasu-help-case-reply"
-                                            class="collapse pr-2 pl-2 pb-2 pt-1 border-top"
-                                            aria-labelledby="headingReply"
-                                            data-parent="#accordion-case-details"
-                                        >
+                                        <!--SFE-61363 Start-->
+                                        <div id="myasu-help-case-reply" class="collapse pr-2 pl-2 pb-2 pt-1 border-top" aria-labelledby="headingReply" data-parent="#accordion-case-details">
                                             <div class="panel-body">
-                                                <apex:inputTextarea
-                                                    value="{!caseReply}"
-                                                    id="replyText"
-                                                    required="true"
-                                                    rows="5"
-                                                    cols="98"
-                                                    style="max-width: 100%; max-height: 100%"
-                                                />
+                                                <apex:inputTextarea value="{!caseReply}" id="replyText" required="true" rows="5" cols="98" style="max-width: 100%; max-height: 100%"/>
                                                 <span> Upload New Attachments (max size 25MB) </span>
-                                                <apex:inputFile
-                                                    fileName="{!replyCaseAttachment.name}"
-                                                    styleClass="d-block"
-                                                    id="replyFile"
-                                                    value="{!replyCaseAttachment.Body}"
-                                                />
+                                                
+                                                <!-- File input for the new attachment -->
+                                                <apex:inputFile value="{!replyCaseFile.VersionData}" fileName="{!replyCaseFile.Title}" id="replyFile" styleClass="d-block"/>
+                                                
                                                 <div class="mt-2">
-                                                    <apex:commandButton
-                                                        onclick="return validateReply();"
-                                                        action="{!submitReply}"
-                                                        value="Submit"
-                                                        styleClass="btn btn-maroon btn-md"
-                                                    />
+                                                    <!-- Button to submit the form and upload the file -->
+                                                    <apex:commandButton onclick="return validateReply();"  action="{!submitReply}" value="Submit" styleClass="btn btn-maroon btn-md"/>
                                                 </div>
+                                                
                                                 <br />
-                                                <div class="errorMsg" id="errorDiv" />
+                                                <div class="errorMsg" id="errorDiv"/>
                                             </div>
                                         </div>
+                                        <!--
+<div id="myasu-help-case-reply" class="collapse pr-2 pl-2 pb-2 pt-1 border-top" aria-labelledby="headingReply" data-parent="#accordion-case-details">
+<div class="panel-body">
+<apex:inputTextarea value="{!caseReply}" id="replyText" required="true" rows="5" cols="98" style="max-width: 100%; max-height: 100%"
+/>
+<span> Upload New Attachments (max size 25MB) </span>
+<apex:inputFile fileName="{!replyCaseAttachment.name}" styleClass="d-block" id="replyFile" value="{!replyCaseAttachment.Body}"
+/>
+<div class="mt-2">
+<apex:commandButton onclick="return validateReply();" action="{!submitReply}" value="Submit" styleClass="btn btn-maroon btn-md"
+/>
+</div>
+<br />
+<div class="errorMsg" id="errorDiv" />
+</div>
+</div> 
+-->
                                     </div>
-
+                                    <!--SFE-61363 End-->
                                     <div class="panel panel-default position-relative border-top">
-                                        <a
-                                            data-toggle="collapse"
-                                            data-target="#myasu-help-case-view-attachments"
-                                            href="#myasu-help-case-view-attachments"
-                                            aria-expanded="false"
-                                            aria-controls="myasu-help-case-view-attachments"
-                                            class="position-relative no-underline"
-                                        >
+                                        <a data-toggle="collapse" data-target="#myasu-help-case-view-attachments" href="#myasu-help-case-view-attachments" aria-expanded="false"
+                                            aria-controls="myasu-help-case-view-attachments" class="position-relative no-underline">
                                             <div class="panel-heading" id="headingAttachments">
                                                 <h3 class="m-0 h6 p-2">
                                                     <i class="fa fa-paperclip c-text-maroon" aria-hidden="true" />
@@ -352,38 +298,16 @@
                                             </div>
                                         </a>
 
-                                        <div
-                                            id="myasu-help-case-view-attachments"
-                                            class="collapse pr-2 pl-2 pb-2 pt-1 border-top"
-                                            aria-labelledby="headingAttachments"
-                                            data-parent="#accordion-case-details"
-                                        >
+                                        <div id="myasu-help-case-view-attachments" class="collapse pr-2 pl-2 pb-2 pt-1 border-top" aria-labelledby="headingAttachments"
+                                            data-parent="#accordion-case-details">
                                             <div class="panel-body">
                                                 <apex:outputPanel rendered="{!showCaseAttachments}">
                                                     <apex:pageBlock id="alius-format1191">
-                                                        <apex:pageBlockTable
-                                                            styleClass="border w-100"
-                                                            value="{!allCaseAttachmentsFormattedTime}"
-                                                            var="eachAttachment"
-                                                            columns="2"
-                                                        >
-                                                            <apex:column
-                                                                headerValue="Name"
-                                                                headerClass="bg-f5f5f5 border-bottom p-1"
-                                                                styleClass="p-1"
-                                                            >
-                                                                <apex:outputLink
-                                                                    value="{!URLFOR($Action.Attachment.Download, eachAttachment.id)}"
-                                                                    style="color: #990033"
-                                                                    target="_blank"
-                                                                    >{!eachAttachment.Name}</apex:outputLink
-                                                                >
+                                                        <apex:pageBlockTable styleClass="border w-100" value="{!allCaseAttachmentsFormattedTime}" var="eachAttachment" columns="2">
+                                                            <apex:column headerValue="Name" headerClass="bg-f5f5f5 border-bottom p-1" styleClass="p-1">
+                                                                <apex:outputLink value="{!URLFOR($Action.Attachment.Download, eachAttachment.id)}" style="color: #990033" target="_blank">{!eachAttachment.Name}</apex:outputLink>
                                                             </apex:column>
-                                                            <apex:column
-                                                                headerValue="Created Date"
-                                                                headerClass="bg-f5f5f5 border-bottom p-1"
-                                                                styleClass="p-1"
-                                                            >
+                                                            <apex:column headerValue="Created Date" headerClass="bg-f5f5f5 border-bottom p-1" styleClass="p-1">
                                                                 <apex:outputText value="{0}" label="Date Opened">
                                                                     <apex:param value="{!eachAttachment.CreatedDate}" />
                                                                 </apex:outputText>
@@ -392,26 +316,21 @@
                                                     </apex:pageBlock>
                                                 </apex:outputPanel>
                                                 <apex:outputPanel rendered="{!!showCaseAttachments}">
-                                                    <p
-                                                        class="myasu-help-region-request-details-view-attachments-no-attachments"
-                                                    >
-                                                        You do not currently have any uploaded attachments. Click the
-                                                        Reply section to submit an attachment for this request.
+                                                    <p class="myasu-help-region-request-details-view-attachments-no-attachments">
+                                                        You do not currently have any uploaded attachments. Click the Reply section to submit an attachment for this request.
                                                     </p>
                                                 </apex:outputPanel>
+
                                             </div>
                                         </div>
                                     </div>
 
+
+
+
                                     <div class="panel panel-default position-relative border-top">
-                                        <a
-                                            data-toggle="collapse"
-                                            data-target="#myasu-help-case-view-history"
-                                            href="#myasu-help-case-view-history"
-                                            aria-expanded="false"
-                                            aria-controls="myasu-help-case-view-history"
-                                            class="position-relative no-underline"
-                                        >
+                                        <a data-toggle="collapse" data-target="#myasu-help-case-view-history" href="#myasu-help-case-view-history" aria-expanded="false"
+                                            aria-controls="myasu-help-case-view-history" class="position-relative no-underline">
                                             <div class="panel-heading" id="headingHistory">
                                                 <h3 class="m-0 h6 p-2">
                                                     <i class="fa fa-history c-text-maroon" aria-hidden="true" />
@@ -420,55 +339,39 @@
                                             </div>
                                         </a>
 
-                                        <div
-                                            id="myasu-help-case-view-history"
-                                            class="collapse pr-2 pl-2 pb-2 pt-1 border-top"
-                                            aria-labelledby="headingHistory"
-                                            data-parent="#accordion-case-details"
-                                        >
+                                        <div id="myasu-help-case-view-history" class="collapse pr-2 pl-2 pb-2 pt-1 border-top" aria-labelledby="headingHistory" data-parent="#accordion-case-details">
                                             <div class="panel-body">
                                                 <apex:outputPanel rendered="{!!chatMessages.empty}">
                                                     <apex:repeat value="{!chatMessages}" var="message">
                                                         <div class="panel panel-default">
                                                             <div class="panel-body">
                                                                 <div class="chatUserInfo">
-                                                                    <apex:outputText
-                                                                        id="chatUserInfo"
-                                                                        value="{!message.performedBy}"
-                                                                    />
+                                                                    <apex:outputText id="chatUserInfo" value="{!message.performedBy}" />
                                                                 </div>
-                                                                <apex:outputText
-                                                                    styleClass="chat-history"
-                                                                    value="{!message.text}"
-                                                                    escape="false"
-                                                                />
+                                                                <apex:outputText styleClass="chat-history" value="{!message.text}" escape="false" />
                                                             </div>
                                                         </div>
                                                     </apex:repeat>
                                                 </apex:outputPanel>
                                                 <apex:outputPanel rendered="{!chatMessages.empty}">
-                                                    <p
-                                                        class="myasu-help-region-request-details-view-chat-history-no-history"
-                                                    >
-                                                        You do not currently have any chat sessions to view. Click Live
-                                                        Chat under Contact Us to start a new chat session.
+                                                    <p class="myasu-help-region-request-details-view-chat-history-no-history">
+                                                        You do not currently have any chat sessions to view. Click Live Chat under Contact Us to start a new chat session.
                                                     </p>
                                                 </apex:outputPanel>
+
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
+
                             </apex:form>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-5">
-                    <c:MyASUHelpContactUs
-                        HelpBox="{!HelpBox}"
-                        NormalPhone="{!NormalPhone}"
-                        RoverPhone="{!RoverPhone}"
-                    />
-                    <div class="mt-4">
+                    <c:MyASUHelpContactUs HelpBox="{!HelpBox}" NormalPhone="{!NormalPhone}" RoverPhone="{!RoverPhone}" />
+                    <div class='mt-4'>
                         <c:MyASUHelpMyRequests />
                     </div>
                 </div>
@@ -486,8 +389,7 @@
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        let navTreeStr =
-            '{"navbarLinks" : [{"text": "Home", "type": "icon-home", "class": "data-class", "href": "https://webapp4.asu.edu/myasu/student" }, {"text": "Finances", "href": "https://webapp4.asu.edu/myasu/student/finances" }, {"text": "Campus Services", "href": "https://webapp4.asu.edu/myasu/student/campusservices" }, {"text": "Profile", "href": "https://webapp4.asu.edu/myasu/student/profile" }, {"text": "Help", "href": "https://webapp4.asu.edu/myasu/student/servicecenter", "selected": true }]}';
+        let navTreeStr = '{"navbarLinks" : [{"text": "Home", "type": "icon-home", "class": "data-class", "href": "https://webapp4.asu.edu/myasu/student" }, {"text": "Finances", "href": "https://webapp4.asu.edu/myasu/student/finances" }, {"text": "Campus Services", "href": "https://webapp4.asu.edu/myasu/student/campusservices" }, {"text": "Profile", "href": "https://webapp4.asu.edu/myasu/student/profile" }, {"text": "Help", "href": "https://webapp4.asu.edu/myasu/student/servicecenter", "selected": true }]}';
         let title = 'My ASU';
         let baseUrl = 'https://webapp4.asu.edu/myasu/student';
         if (urlParams.get('navTree') != null || urlParams.get('navbar') != null) {
@@ -500,33 +402,39 @@
             baseUrl = undefined;
         }
 
-        $Lightning.use('c:ASUBrandApp', function () {
-            $Lightning.createComponent(
-                'c:asuBrandHeader',
-                {
-                    title,
-                    baseUrl,
-                    navTreeStr,
-                    stationary: true,
-                    viewingAs: '{!viewingAs}',
-                    viewAsFirstName: '{!firstName}',
-                    viewAsLastName: '{!lastName}',
-                    viewAsEmplId: '{!emplId}',
-                    viewAsStopViewAsUrl: '{!stopViewAsUrl}',
-                    viewAsViewAsUrl: '{!viewAsUrl}',
-                },
-                'ASUBrandHeaderWrapper'
-            );
-            $Lightning.createComponent('c:asuBrandFooter', {}, 'ASUBrandFooterWrapper');
-            // Hide errors that appear randomly from LWC
-            const observer = new MutationObserver(function (mutations) {
-                const errorDiv = document.querySelector('#auraErrorMessage');
-                if (errorDiv != null && errorDiv.innerHTML.length > 0) {
-                    console.error(errorDiv.innerText);
-                    errorDiv.innerHTML = '';
-                }
-            });
-            observer.observe(document, {attributes: false, childList: true, characterData: false, subtree: true});
-        });
+        $Lightning.use(
+            "c:ASUBrandApp",
+            function () {
+                $Lightning.createComponent(
+                    "c:asuBrandHeader",
+                    {
+                        title, baseUrl, navTreeStr,
+                        stationary: true,
+                        viewingAs: '{!viewingAs}',
+                        viewAsFirstName: '{!firstName}',
+                        viewAsLastName: '{!lastName}',
+                        viewAsEmplId: '{!emplId}',
+                        viewAsStopViewAsUrl: '{!stopViewAsUrl}',
+                        viewAsViewAsUrl: '{!viewAsUrl}'
+                    },
+                    "ASUBrandHeaderWrapper"
+                );
+                $Lightning.createComponent(
+                    "c:asuBrandFooter",
+                    {},
+                    "ASUBrandFooterWrapper"
+                );
+                // Hide errors that appear randomly from LWC
+                const observer = new MutationObserver(function (mutations) {
+                    const errorDiv = document.querySelector('#auraErrorMessage');
+                    if (errorDiv != null && errorDiv.innerHTML.length > 0) {
+                        console.error(errorDiv.innerText);
+                        errorDiv.innerHTML = '';
+                    }
+                });
+                observer.observe(document, { attributes: false, childList: true, characterData: false, subtree: true });
+
+            }
+        );
     </script>
 </apex:page>

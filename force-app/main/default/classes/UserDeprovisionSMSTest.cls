@@ -220,7 +220,7 @@ public class UserDeprovisionSMSTest {
         );
 
         // Check for error logger case
-        List<Case> errorLoggerCase = [
+        List<Case> errorLoggerCases = [
             SELECT Id, Subject, Description
             FROM Case
             WHERE
@@ -284,7 +284,7 @@ public class UserDeprovisionSMSTest {
         );
 
         // Check for error logger case
-        List<Case> errorLoggerCase = [
+        List<Case> errorLoggerCases = [
             SELECT Id, Subject, Description
             FROM Case
             WHERE

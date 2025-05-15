@@ -14,7 +14,7 @@
  */
 public without sharing class UserDeprovisionerQueueNonSetupRecords implements Queueable, Nextable {
     private List<UserDeprovisioner> userDeprovisioners;
-    Set<User> updatedUsers = new Set<User>();
+    Map<Id, User> updatedUsers = new Map<Id, User>();
 
     public UserDeprovisionerQueueNonSetupRecords(List<UserDeprovisioner> userDeprovisioners) {
         this.userDeprovisioners = userDeprovisioners;
@@ -182,7 +182,7 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
 
             // Launch next stage of user deprovisioning
             if (!updatedUsers.isEmpty())
-                enqueueNext(new UpdateUsersQueueable(new List<User>(updatedUsers)));
+                enqueueNext(new UpdateUsersQueueable(new List<User>(updatedUsers.values())));
             enqueueNext(new UserDeprovisionerQueueSetupRecords(userDeprovisioners));
         } catch (Exception ex) {
             List<String> vars = new List<String>();
@@ -262,7 +262,7 @@ public without sharing class UserDeprovisionerQueueNonSetupRecords implements Qu
         // Add processing notes to user
         for (Id userId : resultWrapper.userIdToProcessingNotes.keySet()) {
             userDeprovisionersMp.get(userId).addToProcessingNotes(resultWrapper.userIdToProcessingNotes.get(userId));
-            updatedUsers.add(userDeprovisionersMp.get(userId).getUser());
+            updatedUsers.put(userId, userDeprovisionersMp.get(userId).getUser());
         }
     }
 

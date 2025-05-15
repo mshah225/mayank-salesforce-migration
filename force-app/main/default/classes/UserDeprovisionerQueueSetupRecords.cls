@@ -11,7 +11,7 @@
  */
 public without sharing class UserDeprovisionerQueueSetupRecords implements Queueable, Nextable {
     private List<UserDeprovisioner> userDeprovisioners;
-    Set<User> updatedUsers = new Set<User>();
+    Map<Id, User> updatedUsers = new Map<Id, User>();
 
     public UserDeprovisionerQueueSetupRecords(List<UserDeprovisioner> userDeprovisioners) {
         this.userDeprovisioners = userDeprovisioners;
@@ -83,7 +83,7 @@ public without sharing class UserDeprovisionerQueueSetupRecords implements Queue
 
             // Lastly update users
             if (!updatedUsers.isEmpty()) {
-                update new List<User>(updatedUsers);
+                update new List<User>(updatedUsers.values());
             }
 
             enqueueNext(new UserDeprovisionCaseTransferBatch(userDeprovisioners));
@@ -154,7 +154,7 @@ public without sharing class UserDeprovisionerQueueSetupRecords implements Queue
         // Add processing notes to user
         for (Id userId : resultWrapper.userIdToProcessingNotes.keySet()) {
             userDeprovisionersMp.get(userId).addToProcessingNotes(resultWrapper.userIdToProcessingNotes.get(userId));
-            updatedUsers.add(userDeprovisionersMp.get(userId).getUser());
+            updatedUsers.put(userId, userDeprovisionersMp.get(userId).getUser());
         }
     }
 

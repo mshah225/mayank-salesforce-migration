@@ -223,13 +223,24 @@ public class UserDeprovisionSMSTest {
         List<Case> errorLoggerCase = [
             SELECT Id, Subject, Description
             FROM Case
-            WHERE Subject LIKE 'Apex Exception:%' AND CreatedDate = TODAY
+            WHERE
+                Subject LIKE 'Apex Exception: UserDeprovisionOrganizer.DatabaseErrorException:%'
+                AND CreatedDate = TODAY
             ORDER BY CreatedDate DESC
         ];
-        Assert.isFalse(errorLoggerCase.isEmpty(), 'Should have created error logger case, but did not');
+
+        // Need to search since with ViewAllData there are other ErrorLogger cases we need to ignore
+        Boolean createdErrorCase = false;
+        for (Case errorLoggerCase : errorLoggerCases) {
+            if (errorLoggerCase.Description.contains('smagicinteract__SenderId_Profile_Map__c')) {
+                createdErrorCase = true;
+                break;
+            }
+        }
+
         Assert.isTrue(
-            errorLoggerCase[0].Description.contains('smagicinteract__SenderId_Profile_Map__c'),
-            'Error logger description should indicate object type, but instead said ' + errorLoggerCase[0].Description
+            createdErrorCase,
+            'Should have created error logger case with object type in description, but it did not'
         );
     }
 
@@ -276,13 +287,24 @@ public class UserDeprovisionSMSTest {
         List<Case> errorLoggerCase = [
             SELECT Id, Subject, Description
             FROM Case
-            WHERE Subject LIKE 'Apex Exception:%' AND CreatedDate = TODAY
+            WHERE
+                Subject LIKE 'Apex Exception: UserDeprovisionOrganizer.DatabaseErrorException%'
+                AND CreatedDate = TODAY
             ORDER BY CreatedDate DESC
         ];
-        Assert.isFalse(errorLoggerCase.isEmpty(), 'Should have created error logger case, but did not');
+
+        // Need to search since with ViewAllData there are other ErrorLogger cases we need to ignore
+        Boolean createdErrorCase = false;
+        for (Case errorLoggerCase : errorLoggerCases) {
+            if (errorLoggerCase.Description.contains('smagicinteract__Sender_Visibility__c')) {
+                createdErrorCase = true;
+                break;
+            }
+        }
+
         Assert.isTrue(
-            errorLoggerCase[0].Description.contains('smagicinteract__Sender_Visibility__c'),
-            'Error logger description should indicate object type, but instead said ' + errorLoggerCase[0].Description
+            createdErrorCase,
+            'Should have created error logger case with object type in description, but it did not'
         );
     }
 
@@ -326,16 +348,27 @@ public class UserDeprovisionSMSTest {
         );
 
         // Check for error logger case
-        List<Case> errorLoggerCase = [
+        List<Case> errorLoggerCases = [
             SELECT Id, Subject, Description
             FROM Case
-            WHERE Subject LIKE 'Apex Exception:%' AND CreatedDate = TODAY
+            WHERE
+                Subject LIKE 'Apex Exception: UserDeprovisionOrganizer.DatabaseErrorException%'
+                AND CreatedDate = TODAY
             ORDER BY CreatedDate DESC
         ];
-        Assert.isFalse(errorLoggerCase.isEmpty(), 'Should have created error logger case, but did not');
+
+        // Need to search since with ViewAllData there are other ErrorLogger cases we need to ignore
+        Boolean createdErrorCase = false;
+        for (Case errorLoggerCase : errorLoggerCases) {
+            if (errorLoggerCase.Description.contains('smagicinteract__License__c')) {
+                createdErrorCase = true;
+                break;
+            }
+        }
+
         Assert.isTrue(
-            errorLoggerCase[0].Description.contains('smagicinteract__License__c'),
-            'Error logger description should indicate object type, but instead said ' + errorLoggerCase[0].Description
+            createdErrorCase,
+            'Should have created error logger case with object type in description, but it did not'
         );
     }
 }

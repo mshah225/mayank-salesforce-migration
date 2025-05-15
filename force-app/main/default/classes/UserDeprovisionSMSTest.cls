@@ -224,7 +224,7 @@ public class UserDeprovisionSMSTest {
             SELECT Id, Subject, Description
             FROM Case
             WHERE
-                Subject LIKE 'Apex Exception: UserDeprovisionOrganizer.DatabaseErrorException:%'
+                Subject LIKE 'Apex Exception: UserDeprovisionOrganizer.DatabaseErrorException%'
                 AND CreatedDate = TODAY
             ORDER BY CreatedDate DESC
         ];

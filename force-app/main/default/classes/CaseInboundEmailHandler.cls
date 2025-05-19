@@ -59,19 +59,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 return result;
             }
 
-            String caseId = extractIdRefNew(email.plainTextBody);
-
-            if (caseId == null) {
-                caseId = extractIdRefNew(email.htmlBody);
-            }
-
-            if (caseId == null) {
-                caseId = extractIdRefNew(email.subject);
-            }
-
-            if (caseId == null && email.Headers != null) {
-                caseId = Cases.getCaseIdFromEmailHeaders(email.Headers);
-            }
+            String caseId = findRelatedCaseId(email);
 
             if (caseId != null) {
                 Case caseSearch = (Case) ObjectService.queryAllFields('Case', caseId);
@@ -947,6 +935,42 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         return lostEmail;
     }
 
+    /**
+     * Extract the case id for this email
+     * Checks the email body for a ref:*:ref id
+     * If none is found, then checks the subject for a ref:*:ref id
+     * If none is found check for case id from email headers
+     *
+     * Returns null when no related case is found
+     *
+     * @param email The email to examine
+     * @return Case id if this email is related to an existing case, null otherwise
+     */
+    private String findRelatedCaseId(Messaging.InboundEmail email) {
+        String caseId = extractIdRefNew(email.plainTextBody);
+
+        if (caseId == null) {
+            caseId = extractIdRefNew(email.htmlBody);
+        }
+
+        if (caseId == null) {
+            caseId = extractIdRefNew(email.subject);
+        }
+
+        if (caseId == null && email.Headers != null) {
+            caseId = Cases.getCaseIdFromEmailHeaders(email.Headers);
+        }
+
+        return caseId;
+    }
+
+    /**
+     * Extract the ref:*:ref id if there is one
+     * Creates an error logger case if the thread id does not have a corresponding case id
+     *
+     * @param searchText the text to search
+     * @return Corresponding case id, or null if none is found
+     */
     private String extractIdRefNew(String searchText) {
         if (searchtext == null) {
             return null;

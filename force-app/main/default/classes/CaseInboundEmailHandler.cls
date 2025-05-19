@@ -104,29 +104,23 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                             String groupName = this.theCase.Most_Recent_Queue__c;
                             Group groupToReopen;
 
-                            // Case will reopen to the currently associated user if no group can be found
-                            try {
-                                this.theCase.OwnerId = GroupService.getGroupDetails(groupName).Id;
-                            } catch (Exception e) {
-                                List<String> vars = new List<String>();
-                                vars.add(ErrorLogger.convertSObjectToJSON('case', theCase));
-
-                                if (groupName != null) {
+                            // If the case was in a queue, reassign the owner
+                            // if there no quue, leave it with currently associated user
+                            if (groupName != null) {
+                                try {
+                                    this.theCase.OwnerId = GroupService.getGroupDetails(groupName).Id;
+                                } catch (Exception e) {
+                                    List<String> vars = new List<String>();
+                                    vars.add(ErrorLogger.convertSObjectToJSON('case', theCase));
                                     vars.add(
                                         ErrorLogger.convertStringToJSON(
                                             'error',
                                             'Could not assign group as case owner: ' + groupName
                                         )
                                     );
-                                } else {
-                                    vars.add(
-                                        ErrorLogger.convertStringToJSON(
-                                            'error',
-                                            'Could not assign null group as case owner'
-                                        )
-                                    );
+
+                                    ErrorLogger.log(e, vars, false);
                                 }
-                                ErrorLogger.log(e, vars, false);
                             }
 
                             if (this.theCase.CC_Most_Recent_Functional_Group__c == null) {

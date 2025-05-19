@@ -31,6 +31,7 @@ public class GovernorLimitPreemptException extends Exception {
         if (Limits.getDMLStatements() + n > Limits.getLimitDMLStatements())
             throw new GovernorLimitPreemptException(msg);
     }
+
     /**
      * Throws an exception if using over P% of heap usage governor limit
      */
@@ -53,5 +54,38 @@ public class GovernorLimitPreemptException extends Exception {
 
         if (Limits.getHeapSize() > Limits.getLimitHeapSize() * p * x)
             throw new GovernorLimitPreemptException(msg);
+    }
+
+    /**
+     * Throws an exception if using over P% of heap usage governor limit
+     */
+    public static void assertCanEnqueueJobs(Integer n, String msg) {
+        if (msg == null)
+            msg = 'Already at queueable limits, cannot enqueue ' + n + ' jobs.';
+
+        if (Limits.getQueueableJobs() + n > Limits.getLimitQueueableJobs())
+            throw new GovernorLimitPreemptException(msg);
+    }
+
+    /**
+     * Throws an exception if using over P% of heap usage governor limit
+     */
+    public static void assertCanEnqueueJobsDepth(Integer n, String msg) {
+        if (msg == null)
+            msg = 'Already at stack depth limits cannot enqueue ' + n + ' jobs deep.';
+
+        // When not in queueable context we cannot check this
+        if (!System.isQueueable())
+            return;
+
+        if (AsyncInfo.hasMaxStackDepth()) {
+            Integer stackLimit = AsyncInfo.getMaximumQueueableStackDepth();
+            // When not explicitly set in tests, this limit is 1
+            if (stackLimit == null && Test.isRunningTest())
+                stackLimit = 1;
+            // Compare against limit and raise error
+            if (AsyncInfo.getCurrentQueueableStackDepth() + n > stackLimit)
+                throw new GovernorLimitPreemptException(msg);
+        }
     }
 }

@@ -347,6 +347,30 @@ public class UnifiedProspectPageController {
         return asuCollegesIntList;
     }
 
+    /**
+     * When the case origin is updated or case tab is selected, update the Opportunity's LeadSource
+     */
+    public void updateLeadSourceFromCaseSource() {
+        Map<String, String> caseSourceToLeadSourceMp = new Map<String, String>{
+            'Email' => 'Email',
+            'In Person' => 'Walk-in',
+            'Incoming Call' => 'Phone Call'
+        };
+        if (caseSourceToLeadSourceMp.containsKey(originSelection)) {
+            opportunity.LeadSource = caseSourceToLeadSourceMp.get(originSelection);
+            opportunity.Lead_Source_Subtype__c = 'Manual Entry';
+        } else {
+            opportunity.LeadSource = null;
+        }
+    }
+    /**
+     * When the event tab is selected, update the Opportunity's LeadSource
+     */
+    public void updateLeadSourceAsEvent() {
+        opportunity.LeadSource = 'Event';
+        opportunity.Lead_Source_Subtype__c = 'Manual Entry';
+    }
+
     public Boolean save() {
         getCaseC();
         ccPicklist.addCaseClassificationToCase(caseC);
@@ -510,6 +534,20 @@ public class UnifiedProspectPageController {
                 opportunity.Academic_Plan__c = planSelected;
             }
 
+            // Set Prospective Campaign for Opportunity
+            if (elId != null && originSelection == '--Select--') {
+                // Selected an event
+                opportunity.Prospect_Campaign__c = elId;
+            } else if (originSelection != '--Select--' && elId == null) {
+                // Creating a case
+                New_Prospect_Default__mdt defaultCasePospectCampaign = New_Prospect_Default__mdt.getInstance(
+                    'Case_Prospect_Campaign'
+                );
+                if (Test.isRunningTest())
+                    defaultCasePospectCampaign = TEST_DEFAULT_CASE_PROSPECT_CAMPAIGN;
+                opportunity.Prospect_Campaign__c = defaultCasePospectCampaign?.Value__c;
+            }
+
             insert opportunity;
 
             newOppId = opportunity.Id;
@@ -638,7 +676,8 @@ public class UnifiedProspectPageController {
             // unexpected error occurs in insertion of any of three sObjects
             Database.rollback(spException);
             ApexPages.addMessages(e);
-            return false;
+            // return false;
+            throw e;
         }
     }
 
@@ -669,4 +708,7 @@ public class UnifiedProspectPageController {
             return null;
         }
     }
+
+    @TestVisible
+    private static New_Prospect_Default__mdt TEST_DEFAULT_CASE_PROSPECT_CAMPAIGN = null;
 }

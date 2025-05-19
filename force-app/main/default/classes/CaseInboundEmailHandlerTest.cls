@@ -178,15 +178,13 @@ public with sharing class CaseInboundEmailHandlerTest {
 
         EmailTemplate e2;
         System.runAs(new User(Id = Userinfo.getUserId())) {
-            String htmlBody = 'Body in HTML: {!Contact.Preferred_First_Name__c}, {!Contact.LastName}, {!Case.Thread_Id}, {!failedAttachmentsList}';
-            String textBody = 'Body in text: {!Contact.Preferred_First_Name__c}, {!Contact.LastName}, {!Case.Thread_Id}, {!failedAttachmentsList}';
+            String htmlBody = 'Body in HTML: {{{Recipient.Preferred_First_Name__c}}}, {{{Recipient.LastName}}}, {{{Case.Thread_Id}}}, {{{failedAttachmentsList}}}';
             e2 = new EmailTemplate(
                 developerName = 'test2',
                 TemplateType = 'Text',
                 Name = 'test2',
                 Subject = 'Rejected Attachment Case-{}',
                 HtmlValue = htmlBody,
-                Body = textBody,
                 FolderId = f.Id,
                 IsActive = true
             );

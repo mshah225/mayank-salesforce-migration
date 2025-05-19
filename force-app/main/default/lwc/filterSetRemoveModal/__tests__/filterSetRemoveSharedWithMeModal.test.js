@@ -28,7 +28,7 @@ describe('c-filter-set-remove-modal', () => {
         await flushPromises();
 
         expect(element.shadowRoot.querySelector('lightning-modal-body').textContent).toContain(
-            `You are removing ${filterSetSharedWithMeWithMe.Name} from your list`
+            'Removing this shared filter will hide it from your list, but the owner and other users the owner has shared with will still be able to see it. Are you sure you want to remove this shared filter?'
         );
     });
 

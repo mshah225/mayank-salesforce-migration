@@ -1,3 +1,11 @@
+/**
+ * TODO: This needs to be refactored to only run whenever it actually will make changes
+ * So probably do some comparisons of newUser vs oldUser to see if profile changed.
+ * If this can also change in response to a user being added to a permission set, then we need
+ * to add to the PermissionSetAssignment trigger.
+ *
+ * Running this on every change to user is a performance hit (and is consuming our Queueable limit)
+ */
 public without sharing class UserChatterGroupHandler implements Queueable {
     List<User> alteredUsers;
     Map<String, List<ChatterGroupDesc>> peopleSoftRoleToChatterGroups;
@@ -235,6 +243,14 @@ public without sharing class UserChatterGroupHandler implements Queueable {
         }
     }
 
+    /**
+     * TODO: This needs to be refactored to only run whenever it actually will make changes
+     * So probably do some comparisons of newUser vs oldUser to see if profile changed.
+     * If this can also change in response to a user being added to a permission set, then we need
+     * to add to the PermissionSetAssignment trigger.
+     *
+     * Running this on every change to user is a performance hit (and is consuming our Queueable limit)
+     */
     public static void handleChatterGroups(List<User> alteredUsers) {
         System.enqueueJob(new UserChatterGroupHandler(alteredUsers));
     }

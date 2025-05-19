@@ -273,6 +273,32 @@ public without sharing class ErrorLogger {
         return el.log();
     }
 
+    @future
+    public static void logFuture(
+        String errorTypeName,
+        String errorMessage,
+        String errorStackTrace,
+        List<String> variables
+    ) {
+        ErrorLogger el = new ErrorLogger();
+
+        Map<String, Object> details = new Map<String, Object>();
+
+        Map<String, String> errorDetails = new Map<String, String>();
+        errorDetails.put('typeName', errorTypeName);
+        errorDetails.put('message', errorMessage);
+        errorDetails.put('stackTrace', errorStackTrace);
+
+        details.put('error', errorDetails);
+        details.put('variables', variables);
+
+        el.setDetails(JSON.serialize(details));
+        el.setContactId(null);
+        el.setAllowRepeats(false);
+
+        el.log();
+    }
+
     /**
      * Convert Supplied List of SObjects to a JSON string
      *
@@ -483,7 +509,7 @@ public without sharing class ErrorLogger {
         return '{' + varName + ':{' + String.valueOf(value) + '}}';
     }
 
-    public without sharing class ErrorLoggerQueue implements Queueable {
+    public without sharing class ErrorLoggerQueue implements Queueable, Nextable {
         Exception error;
         List<String> variables;
         Boolean debug;
@@ -520,6 +546,18 @@ public without sharing class ErrorLogger {
 
         public void execute(QueueableContext context) {
             ErrorLogger.log(error, variables, debug, allowRepeats);
+            launchNext();
+        }
+
+        /**
+         * Nextable implementation
+         */
+        private NextableDefaultImplementation nextImpl = new NextableDefaultImplementation();
+        public void launchNext() {
+            nextImpl.launchNext();
+        }
+        public void enqueueNext(Nextable next) {
+            nextImpl.enqueueNext(next);
         }
     }
 }

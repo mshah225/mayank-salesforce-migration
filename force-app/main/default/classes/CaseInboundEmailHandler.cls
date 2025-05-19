@@ -824,7 +824,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
     ) {
         emailCase = [SELECT CaseNumber, Id, Thread_Id__c FROM Case WHERE Id = :emailCase.Id];
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-        EmailTemplate et = [SELECT Id, Subject, HtmlValue, Body FROM EmailTemplate WHERE id = :emailTemplateId LIMIT 1];
+        EmailTemplate et = [SELECT Id, Subject, HtmlValue FROM EmailTemplate WHERE id = :emailTemplateId LIMIT 1];
         String failedAttachments = '';
         for (Messaging.Inboundemail.BinaryAttachment bAttachment : attachmentDetails.badBinaryAttachments) {
             failedAttachments += 'File Name: ' + bAttachment.fileName + '\n';
@@ -834,25 +834,23 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         }
         String htmlAttachments = failedAttachments.replace('\n', '<br />');
         String subject = et.Subject;
-        subject = subject.substring(0, subject.indexOf('{'));
-        subject += emailCase.CaseNumber;
+        subject = subject.replace('{!Case.CaseNumber}', emailCase.CaseNumber)
+            .replace('{{{Case.CaseNumber}}}', emailCase.CaseNumber);
 
         String htmlBody = et.HtmlValue;
-        htmlBody = htmlBody.replace('{!Contact.Preferred_First_Name__c}', emailContact.Preferred_First_Name__c);
-        htmlBody = htmlBody.replace('{!Contact.LastName}', emailContact.LastName);
-        htmlBody = htmlBody.replace('{!Case.Thread_Id}', emailCase.Thread_Id__c);
-        htmlBody = htmlBody.replace('{!failedAttachmentsList}', htmlAttachments);
-
-        String plainBody = et.Body;
-        plainBody = plainBody.replace('{!Contact.Preferred_First_Name__c}', emailContact.Preferred_First_Name__c);
-        plainBody = plainBody.replace('{!Contact.LastName}', emailContact.LastName);
-        plainBody = plainBody.replace('{!Case.Thread_Id}', emailCase.Thread_Id__c);
-        plainBody = plainBody.replace('{!failedAttachmentsList}', failedAttachments);
+        htmlBody = htmlBody.replace('{!Contact.Preferred_First_Name__c}', emailContact.Preferred_First_Name__c)
+            .replace('{{{Recipient.Preferred_First_Name__c}}}', emailContact.Preferred_First_Name__c);
+        htmlBody = htmlBody.replace('{!Contact.LastName}', emailContact.LastName)
+            .replace('{{{Recipient.LastName}}}', emailContact.LastName);
+        htmlBody = htmlBody.replace('{!Case.Thread_Id}', emailCase.Thread_Id__c)
+            .replace('{{{Case.Thread_Id}}}', emailCase.Thread_Id__c);
+        htmlBody = htmlBody.replace('{!failedAttachmentsList}', htmlAttachments)
+            .replace('{{{failedAttachmentsList}}}', htmlAttachments);
 
         mail.setTargetObjectId(emailContact.Id);
         mail.setSubject(subject);
         mail.setHtmlBody(htmlBody);
-        mail.setPlainTextBody(plainBody);
+        // Salesforce will automatically generate a plaintext version using our HTML email, so we don't need to define one
 
         if (emailCase != null) {
             mail.setWhatId(emailCase.Id);

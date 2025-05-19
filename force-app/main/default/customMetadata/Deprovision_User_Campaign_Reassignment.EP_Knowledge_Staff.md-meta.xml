@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>EP Knowledge Staff</label>
+    <protected>false</protected>
+    <values>
+        <field>New_Default_Owner_Id__c</field>
+        <value xsi:type="xsd:string">005d0000006IIlWAAW</value>
+    </values>
+    <values>
+        <field>New_Default_Owner_Name__c</field>
+        <value xsi:type="xsd:string">Brenna Hawk</value>
+    </values>
+    <values>
+        <field>Target_Role_Id__c</field>
+        <value xsi:type="xsd:string">00E0W000001detFUAQ</value>
+    </values>
+    <values>
+        <field>Target_Role_Name__c</field>
+        <value xsi:type="xsd:string">EP Knowledge Staff</value>
+    </values>
+</CustomMetadata>

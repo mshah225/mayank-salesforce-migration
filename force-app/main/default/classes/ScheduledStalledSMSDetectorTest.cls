@@ -11,11 +11,11 @@ public with sharing class ScheduledStalledSMSDetectorTest {
             SenderIdUnit__c = 'Universal Learner Courses',
             smagicinteract__senderId__c = 'ID-GFM-1'
         );
-        smagicinteract__SMS_SenderId__c fysSender = new smagicinteract__SMS_SenderId__c(
-            SenderIdUnit__c = 'FYS',
-            smagicinteract__senderId__c = 'ID-FYS-1'
+        smagicinteract__SMS_SenderId__c aisssSender = new smagicinteract__SMS_SenderId__c(
+            SenderIdUnit__c = 'AISSS',
+            smagicinteract__senderId__c = 'ID-AISSS-1'
         );
-        insert new List<smagicinteract__SMS_SenderId__c>{ edPlusSender, globalFreshmanSender, fysSender };
+        insert new List<smagicinteract__SMS_SenderId__c>{ edPlusSender, globalFreshmanSender, aisssSender };
 
         // Insert necessary conversations
         smagicinteract__Conversation__c edPlusConvo = new smagicinteract__Conversation__c(
@@ -24,10 +24,10 @@ public with sharing class ScheduledStalledSMSDetectorTest {
         smagicinteract__Conversation__c globalFreshmanConvo = new smagicinteract__Conversation__c(
             smagicinteract__Sender__c = globalFreshmanSender.Id
         );
-        smagicinteract__Conversation__c fysConvo = new smagicinteract__Conversation__c(
-            smagicinteract__Sender__c = fysSender.Id
+        smagicinteract__Conversation__c aisssConvo = new smagicinteract__Conversation__c(
+            smagicinteract__Sender__c = aisssSender.Id
         );
-        insert new List<smagicinteract__Conversation__c>{ edPlusConvo, globalFreshmanConvo, fysConvo };
+        insert new List<smagicinteract__Conversation__c>{ edPlusConvo, globalFreshmanConvo, aisssConvo };
 
         // Insert SMS
         List<smagicinteract__smsMagic__c> allSMS = new List<smagicinteract__smsMagic__c>();
@@ -59,11 +59,11 @@ public with sharing class ScheduledStalledSMSDetectorTest {
         allSMS[2].smagicinteract__Status__c = 'SUBMITTED';
         Test.setCreatedDate(allSMS[2].Id, System.now().addDays(-8));
 
-        allSMS[3].smagicinteract__Conversation__c = fysConvo.Id;
+        allSMS[3].smagicinteract__Conversation__c = aisssConvo.Id;
         allSMS[3].smagicinteract__Status__c = 'SUBMITTED';
         Test.setCreatedDate(allSMS[3].Id, System.now().addDays(-6));
 
-        allSMS[4].smagicinteract__Conversation__c = fysConvo.Id;
+        allSMS[4].smagicinteract__Conversation__c = aisssConvo.Id;
         allSMS[4].smagicinteract__Status__c = 'SUBMITTED';
         Test.setCreatedDate(allSMS[4].Id, System.now().addDays(-6));
 

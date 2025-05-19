@@ -7,17 +7,18 @@ global class ObjectTaggingNightlyJob implements Schedulable  {
 
         String objectQueryFilter = '';
         for (Object_Tag_Mapping__mdt objectTagMap : relatedObjectMap.values()) {
-            if (objectQueryFilter != '') {
-                objectQueryFilter += 'AND ';
+            if (!objectTagMap.Use_Related_Object__c) {
+                if (objectQueryFilter != '') {
+                    objectQueryFilter += 'AND ';
+                }
+                objectQueryFilter += objectTagMap.Related_Field_Name__c + '= null ';
             }
-            objectQueryFilter += objectTagMap.Related_Field_Name__c + '= null ';
+            
         }
 
         objectTagQuery += objectQueryFilter;
 
         List<Object_Tag__c> objectTagsToDelete = Database.query(objectTagQuery);
-
-        System.debug(objectTagsToDelete);
     
         if (objectTagsToDelete.size() > 0) {
             delete objectTagsToDelete;

@@ -136,53 +136,6 @@ private class ConversationTriggerTest {
     }
 
     @isTest
-    private static void testExecute() {
-        smagicinteract__SMS_SenderId__c smsSender = new smagicinteract__SMS_SenderId__c();
-        smsSender.SenderIdUnit__c = 'FYS';
-        smsSender.smagicinteract__senderId__c = '12345';
-        smsSender.smagicinteract__Used_For__c = 'Both';
-        Database.insert(smsSender);
-
-        RecordType recordTypeForContact = [
-            SELECT Id, Name
-            FROM RecordType
-            WHERE sobjecttype = 'Contact' AND Name = 'External Mastered'
-            LIMIT 1
-        ];
-        Contact c = new Contact();
-        c.RecordTypeId = recordTypeForContact.Id;
-        c.EMPLID__c = '12345';
-        c.LastName = 'Test SMS';
-        Database.insert(c);
-
-        Student_Group__c studentGrp = new Student_Group__c();
-        studentGrp.SG_Contact__c = c.Id;
-        studentGrp.SG_Status__c = true;
-        studentGrp.SG_PeopleSoft_Code__c = 'R100';
-        Database.insert(studentGrp);
-
-        Success_Coach_Mapping__c mapping = new Success_Coach_Mapping__c();
-        mapping.Success_Coach__c = UserInfo.getUserId();
-        mapping.PeopleSoft_Student_Group_Code__c = 'R100';
-        mapping.Supervisor__c = UserInfo.getUserId();
-        Database.insert(mapping);
-
-        smagicinteract__Conversation__c conv = new smagicinteract__Conversation__c();
-        conv.Name = 'Conv 1';
-        conv.smagicinteract__Contact__c = c.Id;
-        conv.smagicinteract__Sender__c = smsSender.Id;
-        Database.insert(conv);
-
-        smagicinteract__Conversation__C updatedConv = [
-            SELECT Id, Success_Coach__c, Supervisor__c
-            FROM smagicinteract__Conversation__C
-            WHERE Id = :conv.Id
-        ];
-        System.assertEquals(false, updatedConv.Success_Coach__c == null);
-        System.assertEquals(false, updatedConv.Supervisor__c == null);
-    }
-
-    @isTest
     private static void testErrorLogging() {
         Database.SaveResult[] lsr = Database.insert(
             new List<smagicinteract__Conversation__c>{

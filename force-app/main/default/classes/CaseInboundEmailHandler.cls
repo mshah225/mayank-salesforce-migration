@@ -1267,8 +1267,6 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 ? matchedCar.Reply_To_Email_Address__c
                 : matchedCar.Email_Address__c;
         }
-
-        return response;
     }
 
     private OrgWideEmailAddress getDefaultOrgWideEmailAddress() {

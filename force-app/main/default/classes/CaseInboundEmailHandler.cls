@@ -883,24 +883,42 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         LostEmail__c lostEmail = new LostEmail__c();
         try {
             insert lostEmail; // need to insert early since needs to be assigned an id for handleAttachments function
-            lostEmail.Sender__c = limitLength(email.fromAddress, 255);
-            lostEmail.Subject__c = limitLength(email.subject, 255);
-            lostEmail.PlainTextBody__c = limitLength(email.plainTextBody, 31500);
-            lostEmail.HtmlTextBody__c = limitLength(email.htmlBody, 31500);
-            lostEmail.Cause__c = limitLength(error, 255);
+            lostEmail.Sender__c = limitLength(
+                email.fromAddress,
+                Schema.SObjectType.LostEmail__c.fields.Sender__c.getLength()
+            );
+            lostEmail.Subject__c = limitLength(
+                email.subject,
+                Schema.SObjectType.LostEmail__c.fields.Subject__c.getLength()
+            );
+            lostEmail.PlainTextBody__c = limitLength(
+                email.plainTextBody,
+                Schema.SObjectType.LostEmail__c.fields.PlainTextBody__c.getLength()
+            );
+            lostEmail.HtmlTextBody__c = limitLength(
+                email.htmlBody,
+                Schema.SObjectType.LostEmail__c.fields.HtmlTextBody__c.getLength()
+            );
+            lostEmail.Cause__c = limitLength(error, Schema.SObjectType.LostEmail__c.fields.Cause__c.getLength());
 
             // Convert the List into a concatenated string
             String recipientsString = '';
             if (email.toAddresses != null) {
                 recipientsString = String.join(email.toAddresses, ', ');
             }
-            lostEmail.Recipient__c = recipientsString;
+            lostEmail.Recipient__c = limitLength(
+                recipientsString,
+                Schema.SObjectType.LostEmail__c.fields.Recipient__c.getLength()
+            );
 
             String carbonCopiesString = '';
             if (email.ccAddresses != null) {
                 carbonCopiesString = String.join(email.CCAddresses, ', ');
             }
-            lostEmail.CarbonCopies__c = carbonCopiesString;
+            lostEmail.CarbonCopies__c = limitLength(
+                carbonCopiesString,
+                Schema.SObjectType.LostEmail__c.fields.CarbonCopies__c.getLength()
+            );
 
             Boolean attachSuccess = handleAttachments(lostEmail, email).success;
             lostEmail.RejectedAttachments__c = !attachSuccess;
@@ -929,12 +947,26 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                             ' kB\n';
                     }
                 }
-                lostEmail.PlainTextBody__c += attachmentInfo;
+
+                // Add attachment details at end of body, truncating as needed to make it fit
+                if (
+                    lostEmail.PlainTextBody__c.length() + attachmentInfo.length() >
+                    Schema.SObjectType.LostEmail__c.fields.PlainTextBody__c.getLength()
+                ) {
+                    lostEmail.PlainTextBody__c =
+                        lostEmail.PlainTextBody__c.left(
+                            Schema.SObjectType.LostEmail__c.fields.PlainTextBody__c.getLength() -
+                            attachmentInfo.length()
+                        ) + attachmentInfo;
+                }
             }
 
             if (loggingSettings.Header_Logging__c) {
                 if (email.headers != null) {
-                    lostEmail.Headers__c = parseHeaders(email);
+                    lostEmail.Headers__c = limitLength(
+                        parseHeaders(email),
+                        Schema.SObjectType.LostEmail__c.fields.Headers__c.getLength()
+                    );
                 }
             }
 

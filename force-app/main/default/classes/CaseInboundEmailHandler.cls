@@ -741,14 +741,21 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             mail.setWhatId(emailCase.Id);
         }
 
-        OrgWideEmailAddress oweaToUse = new OrgWideEmailAddress();
         OrgWideEmailAddress defaultOwea = getDefaultOrgWideEmailAddress();
-        Boolean noOweaFound = false;
 
         // Find the appropriate OrgWideEmailAddress for this reply
         try {
-            oweaToUse = [SELECT Id FROM OrgWideEmailAddress WHERE Address = :replyToAddress];
-            mail.setOrgWideEmailAddressId(oweaToUse.Id);
+            List<OrgWideEmailAddress> orgWideEmailAddresses = [
+                SELECT Id
+                FROM OrgWideEmailAddress
+                WHERE Address = :replyToAddress
+            ];
+
+            if (orgWideEmailAddresses.isEmpty()) {
+                emailCase.Description = 'No org wide email found for ' + replyToAddress + ' ' + emailCase.Description;
+            } else {
+                mail.setOrgWideEmailAddressId(orgWideEmailAddresses[0].Id);
+            }
         } catch (Exception e) {
             if (defaultOwea != null) {
                 mail.setOrgWideEmailAddressId(defaultOwea.Id);
@@ -822,14 +829,21 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             mail.setWhatId(emailCase.Id);
         }
 
-        OrgWideEmailAddress oweaToUse = new OrgWideEmailAddress();
         OrgWideEmailAddress defaultOwea = getDefaultOrgWideEmailAddress();
-        Boolean noOweaFound = false;
 
         // Find the appropriate OrgWideEmailAddress for this reply
         try {
-            oweaToUse = [SELECT Id FROM OrgWideEmailAddress WHERE Address = :replyToAddress];
-            mail.setOrgWideEmailAddressId(oweaToUse.Id);
+            List<OrgWideEmailAddress> orgWideEmailAddresses = [
+                SELECT Id
+                FROM OrgWideEmailAddress
+                WHERE Address = :replyToAddress
+            ];
+
+            if (orgWideEmailAddresses.isEmpty()) {
+                emailCase.Description = 'No org wide email found for ' + replyToAddress + ' ' + emailCase.Description;
+            } else {
+                mail.setOrgWideEmailAddressId(orgWideEmailAddresses[0].Id);
+            }
         } catch (Exception e) {
             if (defaultOwea != null) {
                 mail.setOrgWideEmailAddressId(defaultOwea.Id);

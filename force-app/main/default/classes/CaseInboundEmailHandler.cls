@@ -26,13 +26,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             String fName = '';
             String lName = '';
 
-            if (email.fromname != null && email.fromname != '') {
-                if (email.fromname.indexof(' ') == -1) {
-                    fName = '';
-                    lName = email.fromname;
+            String emFromName = email.fromname.trim();
+            if (String.isNotBlank(emFromName)) {
+                if (emFromName.contains(' ')) {
+                    fName = emFromName.substringBefore(' ');
+                    lName = emFromName.substringAfter(' ');
                 } else {
-                    fName = email.fromname.substring(0, email.fromname.indexOf(' '));
-                    lName = email.fromname.substring(email.fromname.indexOf(' '));
+                    fName = '';
+                    lName = emFromName;
                 }
             } else {
                 fname = email.fromAddress;

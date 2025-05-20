@@ -8,11 +8,11 @@
             "value": "Dark Dragon was defeated and cast into another dimension."
         },
         "RecordType": {
-            "displayValue": "(Admin Only) ASU Advisor Outreach",
+            "displayValue": "ASU Service",
             "value": {
                 "apiName": "RecordType",
                 "childRelationships": {},
-                "fields": {"DeveloperName": {"displayValue": null, "value": "ASU_Advisor_Outreach"}},
+                "fields": {"DeveloperName": {"displayValue": null, "value": "ASU_Service"}},
                 "id": "012d00000021xGKAAY",
                 "lastModifiedById": "005d0000003SdOZAA0",
                 "lastModifiedDate": "2023-03-17T19:20:29.000Z",
@@ -31,7 +31,7 @@
         "available": true,
         "defaultRecordTypeMapping": false,
         "master": false,
-        "name": "(Admin Only) ASU Advisor Outreach",
+        "name": "ASU Service",
         "recordTypeId": "012d00000021xGKAAY"
     },
     "systemModstamp": "2024-04-29T17:46:44.000Z"

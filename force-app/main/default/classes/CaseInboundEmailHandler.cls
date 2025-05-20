@@ -26,7 +26,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
             String fName = '';
             String lName = '';
 
-            String emFromName = email.fromname.trim();
+            String emFromName = email.fromname?.trim();
             if (String.isNotBlank(emFromName)) {
                 if (emFromName.contains(' ')) {
                     fName = emFromName.substringBefore(' ');

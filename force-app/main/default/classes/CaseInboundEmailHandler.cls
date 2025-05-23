@@ -208,13 +208,14 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                 }
 
                 // Set the owner using queue id from case assignment rule
-                // if it is inactive try the fallback queue
-                // lastly use the current user as a fallback to prevent null owner, which would prevent the insert
-                if (String.isNotBlank(matchedCar.Queue_ID__c) && isUserActive(matchedCar.Queue_ID__c)) {
-                    theCase.OwnerId = matchedCar.Queue_ID__c;
-                } else if (
-                    String.isNotBlank(matchedCar.Fallback_Queue_ID__c) && isUserActive(matchedCar.Fallback_Queue_ID__c)
+                // We can only use the queue id or fallback queue id if they are not empty
+                // If there IS a fallback queue, and the queue id is NOT an active user, then use the fallback queue
+                if (
+                    String.isNotBlank(matchedCar.Queue_ID__c) &&
+                    !(String.isNotBlank(matchedCar.Fallback_Queue_ID__c) && !isUserActive(matchedCar.Queue_ID__c))
                 ) {
+                    theCase.OwnerId = matchedCar.Queue_ID__c;
+                } else if (String.isNotBlank(matchedCar.Fallback_Queue_ID__c)) {
                     theCase.OwnerId = matchedCar.Fallback_Queue_ID__c;
                 } else {
                     theCase.OwnerId = UserInfo.getUserId();

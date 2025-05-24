@@ -17,7 +17,22 @@ public with sharing class CoachPortalMainPageController {
             }
             return ownerId;
         }
-        set;
+        set {
+            ownerId = value;
+            myResource = null; // ensure resource is re-queried now that ownerId has change
+        }
+    }
+    public Id ownerRecordTypeId {
+        get {
+            if (ownerRecordTypeId == null) {
+                ownerRecordTypeId = RecordIdHelper.getRecordTypeId('Success_Resource__c', 'Coach');
+            }
+            return ownerRecordTypeId;
+        }
+        set {
+            ownerRecordTypeId = value;
+            myResource = null; // ensure resource is re-queried now that record type has change
+        }
     }
 
     /*
@@ -27,9 +42,9 @@ public with sharing class CoachPortalMainPageController {
         get {
             if (myResource == null) {
                 myResource = [
-                    SELECT Id, Role__c, Success_Pod__c, RecordTypeId
+                    SELECT Id, Role__c, Success_Pod__c, RecordTypeId, RecordType.Name
                     FROM Success_Resource__c
-                    WHERE Resource__c = :ownerId
+                    WHERE Resource__c = :ownerId AND RecordTypeId = :ownerRecordTypeId
                     LIMIT 1
                 ];
             }
@@ -60,32 +75,6 @@ public with sharing class CoachPortalMainPageController {
                 mySuccessPod = myResource.Success_Pod__c;
             }
             return mySuccessPod;
-        }
-        set;
-    }
-
-    private Id mySuccessRTID {
-        get {
-            if (mySuccessRTID == null) {
-                mySuccessRTID = myResource.RecordTypeId;
-            }
-            return mySuccessRTID;
-        }
-        set;
-    }
-
-    private String mySuccessRT {
-        get {
-            if (mySuccessRT == null) {
-                mySuccessRT = [
-                    SELECT Id, DeveloperName
-                    FROM RecordType
-                    WHERE Id = :mySuccessRTID
-                    LIMIT 1
-                ]
-                .DeveloperName;
-            }
-            return mySuccessRT;
         }
         set;
     }
@@ -305,8 +294,8 @@ public with sharing class CoachPortalMainPageController {
 
     public Id myStudentsRTID {
         get {
-            if (myStudentsRTID == null) {
-                switch on mySuccessRT {
+            if (myResource != null) {
+                switch on myResource.RecordType.Name {
                     when 'Financial_Intake' {
                         myStudentsRTID = financialIntakeStudentRTID;
                     }

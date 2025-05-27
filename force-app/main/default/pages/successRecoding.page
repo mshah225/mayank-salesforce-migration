@@ -64,16 +64,16 @@
                     </apex:outputPanel>
 
                     <apex:outputPanel rendered="{!selectedStudents.size == 1}">
-                        <p>Search for a coach to transfer {!selectedStudents[0].student.Student_Name__c} to:</p>
+                        <p>Search for a coach to transfer {!selectedStudents[0].student.Student_Name__c} ({!selectedRecordTypeOptName}) to:</p>
                     </apex:outputPanel>
 
                     <apex:outputPanel rendered="{!selectedStudents.size > 1}">
-                        <p>Search for a coach to transfer these {!selectedStudents.size} students to:</p>
+                        <p>Search for a coach to transfer these {!selectedStudents.size} {!selectedRecordTypeOptName} students to:</p>
                     </apex:outputPanel>
                 </apex:outputPanel>
 
                 <apex:outputPanel rendered="{!NOT(coachPath)}">
-                    <p>Search for a coach to transfer {!selectedStudentName} to:</p>
+                    <p>Search for a coach to transfer {!selectedStudentName} ({!selectedRecordTypeOptName}) to:</p>
                 </apex:outputPanel>
 
                 <div class="input-group">
@@ -147,8 +147,8 @@
                 <apex:outputPanel rendered="{!coachPath}">
                     <p>
                         There&nbsp;
-                        <apex:outputText rendered="{!studentsResults.size == 1}">is currently {!studentsResults.size} student</apex:outputText>
-                        <apex:outputText rendered="{!studentsResults.size > 1 || studentsResults.size == 0}">are currently {!studentsResults.size} students</apex:outputText>
+                        <apex:outputText rendered="{!studentsResults.size == 1}">is currently {!studentsResults.size} {!selectedRecordTypeOptName} student</apex:outputText>
+                        <apex:outputText rendered="{!studentsResults.size > 1 || studentsResults.size == 0}">are currently {!studentsResults.size} {!selectedRecordTypeOptName} students</apex:outputText>
                         assigned to {!selectedCoachName}.&nbsp;
                         <apex:outputText rendered="{!studentsResults.size > 0}">Please select the students you would like transfer to the new coach:</apex:outputText>
                     </p>
@@ -182,15 +182,15 @@
                         <br />
                         <br />
 
-                        <apex:commandButton styleClass="btn btn-default" value="Back" action="{!page2}" rerender="mainForm" status="statusGif" />
+                        <apex:commandButton styleClass="btn btn-default" value="Back" action="{!page7}" rerender="mainForm" status="statusGif" />
                     </apex:outputPanel>
 
                     <apex:outputPanel rendered="{!studentsResults.size > 0}">
                         <br />
                         <br />
 
-                        <apex:commandButton styleClass="btn btn-default" value="Back" action="{!setPath}" rerender="mainForm" status="statusGif"
-                        />&nbsp;&nbsp;&nbsp;
+                        <apex:commandButton styleClass="btn btn-default" value="Back" action="{!page7}" rerender="mainForm" status="statusGif" />
+                        &nbsp;&nbsp;&nbsp;
                         <apex:commandButton styleClass="btn btn-primary" value="Transfer Selected" action="{!selectStudentsForTransfer}" rerender="mainForm"
                             status="statusGif" />
                     </apex:outputPanel>
@@ -317,6 +317,25 @@
                 <br />
 
                 <apex:commandButton styleClass="btn btn-default" value="Back" action="{!page1}" rerender="mainForm" status="statusGif" />
+            </apex:outputPanel>
+
+            <apex:outputPanel id="recordTypeSelectionPage" rendered="{!page == 7}">
+                <p>
+                    Select Success Student Record Type:&nbsp;&nbsp;
+                    <apex:selectList value="{!selectedRecordTypeOpt}" size="1" >
+                        <apex:selectOptions value="{!recordTypeOptions}" />
+                        <apex:actionSupport event="onchange" action="{!selectRecordType}" rerender="mainForm" status="statusGif" />
+                    </apex:selectList>
+                </p>
+
+
+                <apex:outputPanel rendered="{!coachPath}">
+                    <apex:commandButton styleClass="btn btn-default" value="Back" action="{!page2}" rerender="mainForm" status="statusGif" />
+                </apex:outputPanel>
+
+                <apex:outputPanel rendered="{!NOT(coachPath)}">
+                    <apex:commandButton styleClass="btn btn-default" value="Back" action="{!page6}" rerender="mainForm" status="statusGif" />
+                </apex:outputPanel>
             </apex:outputPanel>
         </apex:form>
     </div>

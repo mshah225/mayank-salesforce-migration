@@ -166,7 +166,7 @@ public with sharing class CoachPortalMainPageController {
                     SELECT Id, Name, Resource__r.Name, Resource_Name__c
                     FROM Success_Resource__c
                     WHERE
-                        RecordTypeId = :mySuccessRTID
+                        RecordTypeId = :myResource.RecordTypeId
                         AND Success_POD__c = :mySuccessPod
                         AND Resource__c != :ownerId
                         AND isActive__c = TRUE

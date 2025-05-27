@@ -26,7 +26,7 @@
     </style>
 
 <apex:outputPanel id="dropdownLists">
-    <apex:form rendered="{!hasViewAs}" styleClass="rich-tabpanel viewAsForm buffer">
+    <apex:form rendered="{!hasViewAs || hasMultipleRecordTypes}" styleClass="rich-tabpanel viewAsForm buffer">
         <div>
             <apex:selectList size="1" value="{!viewAsId}">
                 <apex:selectOptions value="{!selectOptions}" />

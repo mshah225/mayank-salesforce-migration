@@ -40,6 +40,7 @@ public with sharing class ViewAsController {
 
     public String viewAsRecordTypeId { get; set; }
     public List<SelectOption> viewAsRecordTypeIdOptions { get; set; }
+    public Boolean hasMultipleRecordTypes { get; set; }
 
     /*
      * Initialize component with current user's Id
@@ -58,6 +59,8 @@ public with sharing class ViewAsController {
         // Apply view as id and load record type options
         viewAsRecordTypeIdOptions = new List<SelectOption>();
         changeViewAsId();
+
+        hasMultipleRecordTypes = viewAsRecordTypeIdOptions.size() > 1;
     }
 
     public void changeViewAsId() {
@@ -99,5 +102,7 @@ public with sharing class ViewAsController {
             viewAsRecordTypeId = recordTypeMp.get('Coach').Id;
         else
             viewAsRecordTypeId = null;
+
+        hasMultipleRecordTypes = viewAsRecordTypeIdOptions.size() > 1;
     }
 }

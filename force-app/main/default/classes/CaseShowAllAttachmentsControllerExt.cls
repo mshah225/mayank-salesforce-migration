@@ -40,12 +40,24 @@ public with sharing class CaseShowAllAttachmentsControllerExt {
     }
 
     public List<Attachment> getAllAttachmentsOnCaseAndCaseParent() {
-        Set<Id> emaiLMessageIdsOnCaseAndCaseParent = retrieveEmailMessageIdsOnCaseAndCaseParent();
+        Set<Id> attachmentParentIds = new Set<Id>();
+
+        if (caseId != null) attachmentParentIds.add(caseId);
+        if (caseParentId != null) attachmentParentIds.add(caseParentId);
+
+        Set<Id> emailMessageIdsOnCaseAndCaseParent = retrieveEmailMessageIdsOnCaseAndCaseParent();
+        if (!emailMessageIdsOnCaseAndCaseParent.isEmpty()) {
+            attachmentParentIds.addAll(emailMessageIdsOnCaseAndCaseParent);
+        }
+
+        if (attachmentParentIds.isEmpty()) {
+            return new List<Attachment>();
+        }
 
         return allAttachmentsOnCaseOrEmailMessageOrCaseParent = [
             SELECT Id, Name, LastModifiedDate, CreatedBy.Name, BodyLength
             FROM Attachment
-            WHERE ParentId = :caseId OR ParentId IN :emailMessageIdsOnCaseAndCaseParent OR ParentId = :caseParentId
+            WHERE ParentId IN :attachmentParentIds
             ORDER BY LastModifiedDate
         ];
     }

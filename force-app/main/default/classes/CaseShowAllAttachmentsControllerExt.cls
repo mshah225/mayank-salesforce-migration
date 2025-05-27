@@ -22,14 +22,19 @@ public with sharing class CaseShowAllAttachmentsControllerExt {
     }
 
     private Set<Id> retrieveEmailMessageIdsOnCaseAndCaseParent() {
-        Set<Id> emailMessageIdsOnCaseAndCaseParent = new Set<Id>();
+        Set<Id> emailMessageParentIds = new Set<Id>();
+        if (caseId != null) emailMessageParentIds.add(caseId);
+        if (caseParentId != null) emailMessageParentIds.add(caseParentId);
 
-        for (EmailMessage eachEmailMessage : [
-            SELECT Id
-            FROM EmailMessage
-            WHERE ParentId = :caseId OR ParentId = :caseParentId
-        ]) {
-            emailMessageIdsOnCaseAndCaseParent.add(eachEmailMessage.Id);
+        Set<Id> emailMessageIdsOnCaseAndCaseParent = new Set<Id>();
+        if (!emailMessageParentIds.isEmpty()) {
+            for (EmailMessage eachEmailMessage : [
+                SELECT Id
+                FROM EmailMessage
+                WHERE ParentId IN :emailMessageParentIds
+            ]) {
+                emailMessageIdsOnCaseAndCaseParent.add(eachEmailMessage.Id);
+            }
         }
         return emailMessageIdsOnCaseAndCaseParent;
     }

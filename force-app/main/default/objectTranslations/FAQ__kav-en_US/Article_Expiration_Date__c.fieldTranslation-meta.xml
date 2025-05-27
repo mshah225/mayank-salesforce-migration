@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
-        <label><!-- Article Expiration Date --></label>
-        <name>Article_Expiration_Date__c</name>
-    </CustomFieldTranslation>

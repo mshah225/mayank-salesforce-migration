@@ -2,7 +2,7 @@ public with sharing class ViewCaseController {
     private static final Date EMAIL_VISIBILITY_DATE = Date.newInstance(2015, 4, 6);
     private static final Integer REPLY_ACCEPTANCE_THRESHOLD = 14;
     private Date today;
-    private Term__c termAc;
+    private Term__c termAc; 
     private Term__c termB;
     private Map<String, String> viewAsMap;
     private MyASUHelpViewAsService viewAsService;
@@ -59,12 +59,14 @@ public with sharing class ViewCaseController {
         if (String.isEmpty(caseId)) {
             return false;
         }
-        if (caseDetailsCache.ClosedDate == null) {
-            return false;
-        }
-        Date caseClosedDate = caseDetailsCache.ClosedDate.date();
-        if (caseClosedDate.daysBetween(System.Today()) > REPLY_ACCEPTANCE_THRESHOLD) {
-            return true;
+        if(caseDetailsCache !=null){
+            if (caseDetailsCache.ClosedDate == null) {
+                return false;
+            }
+            Date caseClosedDate = caseDetailsCache.ClosedDate.date();
+            if (caseClosedDate.daysBetween(System.Today()) > REPLY_ACCEPTANCE_THRESHOLD) {
+                return true;
+            }
         }
         return false;
     }
@@ -140,7 +142,7 @@ allCaseAttachmentsFormattedTime.add(awfdt);
 }
 }
 */
-    //SFE-61363 END
+    //SFE-61363 END 
     
     public void checkForViewAs() {
         if (ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != null) {
@@ -365,7 +367,7 @@ allCaseAttachmentsFormattedTime.add(awfdt);
             return true;
         }
     }
-    
+    @Testvisible
     private PageReference redirectWithParams(String param, String value) {
         PageReference redirect = ApexPages.currentPage();
         redirect.getParameters().put(param, value);
@@ -400,7 +402,9 @@ replyCaseAttachment = new Attachment();
         return null;
     }
     
+    @Testvisible
     private void submitCaseReply() {
+        system.debug('caseReply :: '+ caseReply);
         if (!String.isBlank(caseReply)) {
             RestCallResponse restStatusAndInfo = createAndSendEmailMessage();
             if (restStatusAndInfo.isSuccessfull()) {
@@ -418,6 +422,7 @@ replyCaseAttachment = new Attachment();
     }
     
     //SFE-61363 Start
+    @TestVisible
     private void submitAttachmentReply() {
         
         if (replyCaseFile.Title != null && replyCaseFile.VersionData != null && caseId != null) {
@@ -503,7 +508,7 @@ replyCaseAttachment = new Attachment();
         String jsonEmailMessageInput = JSON.serialize(emailMessageObjectBody);
         return jsonEmailMessageInput;
     }
-    
+    @TestVisible
     private HttpRequest createEmailMessageRequestWithJsonBody(String jsonEmailMessage) {
         HttpRequest emailMessageInsertRequest = new HttpRequest();
         
@@ -517,7 +522,7 @@ replyCaseAttachment = new Attachment();
         emailMessageInsertRequest.setBody(jsonEmailMessage);
         return emailMessageInsertRequest;
     }
-    
+    @TestVisible
     private RestCallResponse sendRequestAndParseResponse(HttpRequest emailMessageRequest) {
         Http objHttp = new Http();
         HttpResponse httpEmailResponse;
@@ -547,6 +552,7 @@ replyCaseAttachment = new Attachment();
     }
     
     //SFE-61363 Start
+    @TestVisible
     private String uploadAttachment() {
        // try {
             if (replyCaseFile == null || replyCaseFile.VersionData == null) {
@@ -595,7 +601,7 @@ return 'failure';
 }
 */
     //SFE-61363 Start End
-    
+    @TestVisible
     private class AttachmentWithFormattedDateTime {
         public String Id { get; set; }
         public String Name { get; set; }

@@ -130,7 +130,8 @@ public class OpportunityService {
             'Potential_WUE__c' => 'Potential_WUE__c',
             'Search_Segment__c' => 'Search_Segment__c',
             'Self_Reported_SES__c' => 'Self_Reported_SES__c',
-            'Military_Status__c' => 'Veteran_Status__c'
+            'Military_Status__c' => 'Veteran_Status__c',
+            'Suspect_Campaign__c' => 'Suspect_Campaign__c'
         };
 
         String leadQueryFields = '';

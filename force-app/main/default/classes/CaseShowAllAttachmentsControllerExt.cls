@@ -22,25 +22,42 @@ public with sharing class CaseShowAllAttachmentsControllerExt {
     }
 
     private Set<Id> retrieveEmailMessageIdsOnCaseAndCaseParent() {
-        Set<Id> emailMessageIdsOnCaseAndCaseParent = new Set<Id>();
+        Set<Id> emailMessageParentIds = new Set<Id>();
+        if (caseId != null) emailMessageParentIds.add(caseId);
+        if (caseParentId != null) emailMessageParentIds.add(caseParentId);
 
-        for (EmailMessage eachEmailMessage : [
-            SELECT Id
-            FROM EmailMessage
-            WHERE ParentId = :caseId OR ParentId = :caseParentId
-        ]) {
-            emailMessageIdsOnCaseAndCaseParent.add(eachEmailMessage.Id);
+        Set<Id> emailMessageIdsOnCaseAndCaseParent = new Set<Id>();
+        if (!emailMessageParentIds.isEmpty()) {
+            for (EmailMessage eachEmailMessage : [
+                SELECT Id
+                FROM EmailMessage
+                WHERE ParentId IN :emailMessageParentIds
+            ]) {
+                emailMessageIdsOnCaseAndCaseParent.add(eachEmailMessage.Id);
+            }
         }
         return emailMessageIdsOnCaseAndCaseParent;
     }
 
     public List<Attachment> getAllAttachmentsOnCaseAndCaseParent() {
-        Set<Id> emaiLMessageIdsOnCaseAndCaseParent = retrieveEmailMessageIdsOnCaseAndCaseParent();
+        Set<Id> attachmentParentIds = new Set<Id>();
+
+        if (caseId != null) attachmentParentIds.add(caseId);
+        if (caseParentId != null) attachmentParentIds.add(caseParentId);
+
+        Set<Id> emailMessageIdsOnCaseAndCaseParent = retrieveEmailMessageIdsOnCaseAndCaseParent();
+        if (!emailMessageIdsOnCaseAndCaseParent.isEmpty()) {
+            attachmentParentIds.addAll(emailMessageIdsOnCaseAndCaseParent);
+        }
+
+        if (attachmentParentIds.isEmpty()) {
+            return new List<Attachment>();
+        }
 
         return allAttachmentsOnCaseOrEmailMessageOrCaseParent = [
             SELECT Id, Name, LastModifiedDate, CreatedBy.Name, BodyLength
             FROM Attachment
-            WHERE ParentId = :caseId OR ParentId IN :emailMessageIdsOnCaseAndCaseParent OR ParentId = :caseParentId
+            WHERE ParentId IN :attachmentParentIds
             ORDER BY LastModifiedDate
         ];
     }

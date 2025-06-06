@@ -364,6 +364,6 @@ public class RecordIdHelper {
     }
 
     private static Boolean canDML() {
-        return Limits.getDMLStatements() + 1 > Limits.getLimitDMLStatements();
+        return Limits.getDMLStatements() + 1 <= Limits.getLimitDMLStatements();
     }
 }

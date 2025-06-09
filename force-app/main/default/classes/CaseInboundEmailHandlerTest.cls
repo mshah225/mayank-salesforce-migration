@@ -1793,27 +1793,12 @@ public with sharing class CaseInboundEmailHandlerTest {
         List<Case> RecentErrorLoggerCases = [
             SELECT Id, Subject, Description, CreatedDate
             FROM Case
+            WHERE Subject LIKE 'Apex Exception:%'
             ORDER BY CreatedDate DESC
             LIMIT 10 // Fetching the top 10 most recent Cases as an example
         ];
 
-        System.assertNotEquals(0, RecentErrorLoggerCases.size(), 'At least one case should have been logged.');
-
-        String expected_error_string = 'Could not assign null group as case owner';
-
-        Case errorLoggerCase = null;
-        for (Case errorCase : RecentErrorLoggerCases) {
-            if (
-                errorCase.Description != null &&
-                errorCase.Description.contains('Class.CaseInboundEmailHandler') &&
-                errorCase.Description.contains(expected_error_string)
-            ) {
-                errorLoggerCase = errorCase;
-                break;
-            }
-        }
-
-        System.assertNotEquals(null, errorLoggerCase, 'Error not logged for null groupname');
+        System.assertEquals(0, RecentErrorLoggerCases.size(), 'No error case should have been logged.');
     }
 
     @isTest

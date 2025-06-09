@@ -106,7 +106,9 @@ public class LeadService {
         String strLastName,
         String strPhone,
         String strMobPhone,
-        String strEmail
+        String strEmail,
+        String strLeadSource,
+        String strLeadSourceSubtype
     ) {
         Contact objContact = new Contact();
         if (strFirstName != null) {
@@ -120,6 +122,12 @@ public class LeadService {
         }
         if (strMobPhone != null) {
             objContact.MobilePhone = strMobPhone;
+        }
+        if (strLeadSource != null) {
+            objContact.LeadSource = strLeadSource;
+        }
+        if (strLeadSourceSubtype != null) {
+            objContact.Lead_Source_Subtype__c = strLeadSourceSubtype;
         }
         objContact.LastName = strLastName;
         return objContact;
@@ -137,7 +145,7 @@ public class LeadService {
     ) {
         Map<Id, Lead> leadMap = new Map<Id, Lead>(
             [
-                SELECT id, FirstName, LastName, Phone, Email, MobilePhone, Convert_Contact__c
+                SELECT id, FirstName, LastName, Phone, Email, MobilePhone, Convert_Contact__c, LeadSource, Lead_Source_Subtype__c
                 FROM Lead
                 WHERE Id IN :leadList
             ]
@@ -159,7 +167,9 @@ public class LeadService {
                         eachLead.LastName,
                         eachLead.Phone,
                         eachLead.MobilePhone,
-                        eachLead.Email
+                        eachLead.Email,
+                        eachLead.LeadSource,
+                        eachLead.Lead_Source_Subtype__c
                     )
                 );
             }

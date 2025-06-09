@@ -33,7 +33,7 @@ export default class CaseQuickClose extends LightningElement {
     isSubmitting = false;
     isFormReady = false;
     errorDetail = null;
-    allowedCloseCaseSpamRTs = ['ASU_Service', 'ASU_Admission_Services', 'ASU_Secure_Case', 'ASU_Advisor_Outreach'];
+    allowedCloseCaseSpamRTs = ['ASU_Service', 'ASU_Admission_Services', 'ASU_Secure_Case'];
 
     get recordIdList() {
         return [this.recordId];

@@ -1621,7 +1621,7 @@ export default class AdvisorPortalA extends LightningElement {
     toggleAdditionalFilters() {
         this.showAdditionalFilters = !this.showAdditionalFilters;
     }
-    showAdditionalFilters = false;
+    showAdditionalFilters = true;
     get toggleAdditionalFiltersLabel() {
         return this.showAdditionalFilters ? 'Hide additional filters' : 'Show additional filters';
     }

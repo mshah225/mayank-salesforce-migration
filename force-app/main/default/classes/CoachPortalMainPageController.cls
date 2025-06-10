@@ -42,7 +42,7 @@ public with sharing class CoachPortalMainPageController {
         get {
             if (myResource == null) {
                 myResource = [
-                    SELECT Id, Role__c, Success_Pod__c, RecordTypeId, RecordType.Name
+                    SELECT Id, Role__c, Success_Pod__c, RecordTypeId, RecordType.DeveloperName
                     FROM Success_Resource__c
                     WHERE Resource__c = :ownerId AND RecordTypeId = :ownerRecordTypeId
                     LIMIT 1
@@ -295,7 +295,7 @@ public with sharing class CoachPortalMainPageController {
     public Id myStudentsRTID {
         get {
             if (myResource != null) {
-                switch on myResource.RecordType.Name {
+                switch on myResource.RecordType.DeveloperName {
                     when 'Financial_Intake' {
                         myStudentsRTID = financialIntakeStudentRTID;
                     }

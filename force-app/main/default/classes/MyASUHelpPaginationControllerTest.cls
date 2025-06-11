@@ -68,7 +68,6 @@ private class MyASUHelpPaginationControllerTest {
 
         System.assertEquals('Test', vf.textToSearch);
         System.assertEquals(1, vf.currentPage);
-        System.assertEquals(30, vf.resultCount);
     }
 
     /**
@@ -84,10 +83,13 @@ private class MyASUHelpPaginationControllerTest {
         Test.startTest();
         MyASUHelpPaginationController vf = new MyASUHelpPaginationController();
         Integer pageNum1 = vf.currentPage;
+        vf.moreResults = true; // normally this is set via commandLink
         vf.next();
         Integer pageNum2 = vf.currentPage;
+        vf.moreResults = true; // normally this is set via commandLink
         vf.next();
         Integer pageNum3 = vf.currentPage;
+        vf.moreResults = false; // normally this is set via commandLink
         vf.next();
         Integer pageNum4 = vf.currentPage;
         vf.previous();
@@ -95,7 +97,6 @@ private class MyASUHelpPaginationControllerTest {
         Test.stopTest();
 
         System.assertEquals(10, vf.pageSize, 'These tests expect the page size to be 10');
-        System.assertEquals(3, vf.lastPage, '30 results / 10 per page means we should have 3 pages');
         System.assertEquals(1, pageNum1);
         System.assertEquals(2, pageNum2);
         System.assertEquals(3, pageNum3);
@@ -123,7 +124,6 @@ private class MyASUHelpPaginationControllerTest {
         Test.stopTest();
 
         System.assertEquals(true, vf.onFirstPage);
-        System.assertEquals(true, vf.onLastPage);
     }
 
     /**
@@ -142,7 +142,6 @@ private class MyASUHelpPaginationControllerTest {
 
         System.assertEquals('', vf.textToSearch);
         System.assertEquals(true, vf.onFirstPage);
-        System.assertEquals(true, vf.onLastPage);
     }
 
     /**
@@ -162,7 +161,6 @@ private class MyASUHelpPaginationControllerTest {
         Test.stopTest();
 
         System.assertEquals('Test', vf.textToSearch);
-        System.assertEquals(30, vf.resultCount);
     }
 
     /**
@@ -237,6 +235,5 @@ private class MyASUHelpPaginationControllerTest {
 
         System.assertEquals('Test', vf.textToSearch);
         System.assertEquals(1, vf.currentPage);
-        System.assertEquals(30, vf.resultCount);
     }
 }

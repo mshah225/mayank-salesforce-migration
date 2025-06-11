@@ -6,6 +6,7 @@ public with sharing class CampusVisitHomePageController {
             SELECT Name, Id, LeadOrContactID__c, Type, Contact.MailingState, Status, Number_of_Guests__c, Number_of_Attendees__c, Opportunity__r.Type
             FROM CampaignMember
             WHERE Status IN: searchStatus AND CampaignId =: recordId
+            ORDER BY FirstName ASC
             LIMIT 1000
         ];
 
@@ -19,6 +20,7 @@ public with sharing class CampusVisitHomePageController {
             SELECT Name, Id, LeadOrContactID__c, Type, Contact.MailingState, Status, Number_of_Guests__c, Number_of_Attendees__c, Opportunity__r.Type
             FROM CampaignMember
             WHERE CampaignId =: recordId
+            ORDER BY FirstName ASC
             LIMIT 1000
         ];
 
@@ -36,6 +38,7 @@ public with sharing class CampusVisitHomePageController {
             SELECT Name, Id, LeadOrContactID__c, Type, Contact.MailingState, Status, Number_of_Guests__c, Number_of_Attendees__c, Opportunity__r.Type
             FROM CampaignMember
             WHERE Name LIKE: searchString AND Status IN: searchStatus AND CampaignId =: recordId
+            ORDER BY FirstName ASC
             LIMIT 1000
         ];
 

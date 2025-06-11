@@ -446,7 +446,7 @@ public without sharing class pkb_Controller {
             if (viewingArticle)
                 return theKad.title;
             else
-                return 'Home';
+                return 'ASU Student FAQs';
         }
     }
 

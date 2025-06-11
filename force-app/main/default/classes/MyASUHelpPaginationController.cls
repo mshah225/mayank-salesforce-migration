@@ -13,6 +13,13 @@ public with sharing class MyASUHelpPaginationController {
         }
         set;
     }
+    // @deprecated - remove `onLastPage` after deploying to prod
+    public Boolean onLastPage {
+        get {
+            return currentPage == lastPage;
+        }
+        set;
+    }
     public Boolean moreResults { get; set; }
     public String mostRecentSearchText { get; set; }
     public String articleCategoryGroupName { get; set; }

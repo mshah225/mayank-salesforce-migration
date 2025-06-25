@@ -233,7 +233,9 @@ public class RecordIdHelper {
             RecordTypeIds.add(temp);
         }
 
-        insert RecordTypeIds; // Insert seems to be failing
+        if (canDML())
+            insert RecordTypeIds; // Insert seems to be failing
+
         return exists;
     }
 
@@ -269,7 +271,9 @@ public class RecordIdHelper {
             ProfileIds.add(temp);
         }
 
-        insert ProfileIds;
+        if (canDML())
+            insert ProfileIds;
+
         return exists;
     }
 
@@ -297,7 +301,9 @@ public class RecordIdHelper {
                 }
             }
             System.debug(prefixList);
-            upsert prefixList;
+
+            if (canDML())
+                upsert prefixList;
         } catch (Exception e) {
             System.debug(e);
         }
@@ -326,9 +332,9 @@ public class RecordIdHelper {
      */
     @testVisible
     private static void clearRecordTypeIdCache() {
-        if (RecordTypeIds.size() > 0) {
-            delete RecordTypeIds;
-        }
+        if (RecordTypeIds.size() > 0)
+            if (canDML())
+                delete RecordTypeIds;
 
         RecordTypeIds = null;
     }
@@ -338,9 +344,9 @@ public class RecordIdHelper {
      */
     @testVisible
     private static void clearProfileIdCache() {
-        if (ProfileIds.size() > 0) {
-            delete ProfileIds;
-        }
+        if (ProfileIds.size() > 0)
+            if (canDML())
+                delete ProfileIds;
 
         ProfileIds = null;
     }
@@ -355,5 +361,9 @@ public class RecordIdHelper {
         }
         objPrefixToNameMp = null;
         objNameToPrefixMp = null;
+    }
+
+    private static Boolean canDML() {
+        return Limits.getDMLStatements() + 1 <= Limits.getLimitDMLStatements();
     }
 }

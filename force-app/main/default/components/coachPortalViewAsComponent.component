@@ -4,6 +4,7 @@
 
     <apex:attribute name="hasViewAs" type="boolean" description="Does this user have the view as ability?" />
     <apex:attribute name="mimicId" type="string" description="" />
+    <apex:attribute name="mimicRecordTypeId" type="string" description="" />
     <apex:attribute name="selectOptions" type="selectOption[]" description="" />
 
     <!-- Not in static resource as this method calls an action function to rerender -->
@@ -18,21 +19,33 @@
                     }
                 });
             }
-
-            doIt();
         }
     </script>
+    <style>
+        .viewAsForm {display: flex;}
+    </style>
 
-    <apex:form rendered="{!hasViewAs}" styleClass="rich-tabpanel viewAsForm buffer">
-        <apex:actionFunction name="doIt" reRender="componentContent" status="ASUAjaxStatus" />
-        <apex:selectList size="1" onchange="closeAllConsoleTabs()" value="{!viewAsId}" styleClass="viewAsList">
-            <apex:selectOptions value="{!selectOptions}" />
-        </apex:selectList>
+<apex:outputPanel id="dropdownLists">
+    <apex:form rendered="{!hasViewAs || hasMultipleRecordTypes}" styleClass="rich-tabpanel viewAsForm buffer">
+        <div>
+            <apex:selectList size="1" value="{!viewAsId}">
+                <apex:selectOptions value="{!selectOptions}" />
+                <apex:actionSupport event="onchange" action="{!changeViewAsId}" oncomplete="closeAllConsoleTabs()" reRender="componentContent,dropdownLists" status="ASUAjaxStatus" />
+            </apex:selectList>
+        </div>
+        <div>
+            <apex:selectList size="1" value="{!viewAsRecordTypeId}">
+                <apex:selectOptions value="{!viewAsRecordTypeIdOptions}" />
+                <apex:actionSupport event="onchange" oncomplete="closeAllConsoleTabs()" reRender="componentContent" status="ASUAjaxStatus" />
+            </apex:selectList>
+        </div>
     </apex:form>
+</apex:outputPanel>
 
     <apex:outputPanel id="componentContent">
         <apex:componentBody id="alius-format922">
             <apex:variable var="mimicId" value="{!viewAsId}" />
+            <apex:variable var="mimicRecordTypeId" value="{!viewAsRecordTypeId}" />
         </apex:componentBody>
     </apex:outputPanel>
 </apex:component>

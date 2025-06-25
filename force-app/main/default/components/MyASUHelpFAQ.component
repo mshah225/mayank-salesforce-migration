@@ -56,16 +56,17 @@
                                     language="{!articleLanguage}"
                                     pageNumber="{!currentPage}"
                                     pageSize="{!IF(articleCategoryLabel != '', pageSize, 0)}"
+                                    hasMoreVar="moreResults"
                                 >
                                     <li>
-                                        <apex:outputLink styleClass="c-text-black underline d-inline-block mt-1 mb-1"
+                                        <apex:outputLink styleClass="c-text-black underline d-inline-block mt-1 mb-1 article-result"
                                             value="/authkb?id={!article.Id}"
                                         >
                                             {!article.Title}
                                         </apex:outputLink>
                                     </li>
                                 </knowledge:articleList>
-                                <div style="{!IF(resultCount > 0, 'display:none', '')}">
+                                <div class="show-if-no-results">
                                     No results found. Please try a different search term.
                                 </div>
                             </ul>
@@ -80,28 +81,36 @@
                                     oldBlockquote.replaceWith(newUl);
                                 }
                             </script>
-                            <div class="d-flex" style="{!IF(resultCount > 0, '', 'display:none !important')}">
-                                <apex:commandLink action="{!previous}"
-                                    styleClass="btn btn-light btn-sm d-inline-block rounded-0"
-                                    style="{!IF(onFirstPage == false,'color:#484848','color:#BFBFBF')}"
-                                    reRender="myasu-help-region-faq-search-results-block"
-                                >
-                                    <i class="fa fa-step-backward" aria-hidden="true" />
-                                </apex:commandLink>
-                                <div
-                                    class="d-inline-block c-bg-gray c-border-gray text-white page-number"
-                                    style="font-weight: bold"
-                                >
-                                    {!currentPage} of {!lastPage}
+
+                            <div class="show-if-yes-results">
+                                <div class="d-flex">
+                                    <apex:commandLink action="{!previous}"
+                                        styleClass="btn btn-light btn-sm d-inline-block rounded-0"
+                                        style="{!IF(onFirstPage == false,'color:#484848','color:#BFBFBF')}"
+                                        reRender="myasu-help-region-faq-search-results-block"
+                                    >
+                                        <i class="fa fa-step-backward" aria-hidden="true" />
+                                    </apex:commandLink>
+
+                                    <div
+                                        class="d-inline-block c-bg-gray c-border-gray text-white page-number"
+                                        style="font-weight: bold"
+                                    >
+                                        Page {!currentPage}
+                                    </div>
+
+                                    <!-- We need to pass apex:param to set moreResults since otherwise it will be null -->
+                                    <apex:commandLink action="{!next}"
+                                        styleClass="btn btn-light btn-sm d-inline-block rounded-0"
+                                        style="{!IF(moreResults == true,'color:#484848','color:#BFBFBF')}"
+                                        reRender="myasu-help-region-faq-search-results-block"
+                                    >
+                                        <apex:param value="{!moreResults}" assignTo="{!moreResults}" name="moreResults" />
+                                        <i class="fa fa-step-forward" aria-hidden="true" />
+                                    </apex:commandLink>
                                 </div>
-                                <apex:commandLink action="{!next}"
-                                    styleClass="btn btn-light btn-sm d-inline-block rounded-0"
-                                    style="{!IF(onLastPage == false,'color:#484848','color:#BFBFBF')}"
-                                    reRender="myasu-help-region-faq-search-results-block"
-                                >
-                                    <i class="fa fa-step-forward" aria-hidden="true" />
-                                </apex:commandLink>
                             </div>
+
                             <hr style="margin-top: 1.5em; margin-bottom: 0" />
                             <a
                                 class="c-text-maroon underline d-inline-block mt-1 mb-1"
@@ -123,16 +132,17 @@
                                     keyword="{!textToSearch}"
                                     pageNumber="{!currentPage}"
                                     pageSize="{!IF(textToSearch != '', pageSize, 0)}"
+                                    hasMoreVar="moreResults"
                                 >
                                     <li>
-                                        <apex:outputLink styleClass="c-text-black underline d-inline-block mt-1 mb-1"
+                                        <apex:outputLink styleClass="c-text-black underline d-inline-block mt-1 mb-1 article-result"
                                             value="/authkb?id={!article.Id}"
                                         >
                                             {!article.Title}
                                         </apex:outputLink>
                                     </li>
                                 </knowledge:articleList>
-                                <div style="{!IF(resultCount > 0, 'display:none', '')}">
+                                <div class="show-if-no-results">
                                     No results found. Please try a different search term.
                                 </div>
                             </ul>
@@ -147,28 +157,36 @@
                                     oldBlockquote.replaceWith(newUl);
                                 }
                             </script>
-                            <div class="d-flex" style="{!IF(resultCount > 0, '', 'display:none !important')}">
-                                <apex:commandLink action="{!previous}"
-                                    styleClass="btn btn-light btn-sm d-inline-block rounded-0"
-                                    style="{!IF(onFirstPage == false,'color:#484848','color:#BFBFBF')}"
-                                    reRender="myasu-help-region-faq-search-results-block"
-                                >
-                                    <i class="fa fa-step-backward" aria-hidden="true" />
-                                </apex:commandLink>
-                                <div
-                                    class="d-inline-block c-bg-gray c-border-gray text-white page-number"
-                                    style="font-weight: bold"
-                                >
-                                    {!currentPage} of {!lastPage}
+                            
+                            <div class="show-if-yes-results">
+                                <div class="d-flex">
+                                    <apex:commandLink action="{!previous}"
+                                        styleClass="btn btn-light btn-sm d-inline-block rounded-0"
+                                        style="{!IF(onFirstPage == false,'color:#484848','color:#BFBFBF')}"
+                                        reRender="myasu-help-region-faq-search-results-block"
+                                    >
+                                        <i class="fa fa-step-backward" aria-hidden="true" />
+                                    </apex:commandLink>
+
+                                    <div
+                                        class="d-inline-block c-bg-gray c-border-gray text-white page-number"
+                                        style="font-weight: bold"
+                                    >
+                                        Page {!currentPage}
+                                    </div>
+
+                                    <!-- We need to pass apex:param to set moreResults since otherwise it will be null -->
+                                    <apex:commandLink action="{!next}"
+                                        styleClass="btn btn-light btn-sm d-inline-block rounded-0"
+                                        style="{!IF(moreResults == true,'color:#484848','color:#BFBFBF')}"
+                                        reRender="myasu-help-region-faq-search-results-block"
+                                    >
+                                        <apex:param value="{!moreResults}" assignTo="{!moreResults}" name="moreResults" />
+                                        <i class="fa fa-step-forward" aria-hidden="true" />
+                                    </apex:commandLink>
                                 </div>
-                                <apex:commandLink action="{!next}"
-                                    styleClass="btn btn-light btn-sm d-inline-block rounded-0"
-                                    style="{!IF(onLastPage == false,'color:#484848','color:#BFBFBF')}"
-                                    reRender="myasu-help-region-faq-search-results-block"
-                                >
-                                    <i class="fa fa-step-forward" aria-hidden="true" />
-                                </apex:commandLink>
                             </div>
+
                             <hr style="margin-top: 1.5em; margin-bottom: 0" />
                             <a
                                 class="c-text-maroon underline d-inline-block mt-1 mb-1"
@@ -348,6 +366,30 @@
                             </apex:outputPanel>
                         </apex:outputPanel>
                         <!-- END studentSC.page + user chosen functional group articles -->
+
+                        <script>
+                            // Because of how knowledge:artileList works, we do not know if there are any results rendered or not
+                            // so the best we can do if JS after the page loads to check for any results and then hiding/showing
+                            // sections of the page in response
+
+                            // Detect if there are any results
+                            const resultList = document.querySelectorAll('.article-result');
+                            if (resultList.length === 0) {
+                                document.querySelectorAll('.show-if-no-results').forEach((elem) => {
+                                    elem.style.display = 'block'
+                                })
+                                document.querySelectorAll('.show-if-yes-results').forEach((elem) => {
+                                    elem.style.display = 'none'
+                                })
+                            } else {
+                                document.querySelectorAll('.show-if-no-results').forEach((elem) => {
+                                    elem.style.display = 'none'
+                                })
+                                document.querySelectorAll('.show-if-yes-results').forEach((elem) => {
+                                    elem.style.display = 'block'
+                                })
+                            }
+                        </script>
                     </apex:pageBlock>
                 </apex:actionRegion>
             </apex:form>

@@ -41,6 +41,7 @@
                 }
             </script>
 
+
             <title>{!pageTitle}</title>
             <meta name="apple-mobile-web-app-capable" content="yes" />
             <meta http-equiv="content-type" content="text/html;charset=utf-8" />
@@ -259,6 +260,15 @@
                 });
 
                 jQuery.noConflict();
+            </script>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function(){
+                    var t = document.title;
+                    if (t.indexOf('Knowledge: ') === 0) {
+                    document.title = t.substring(11); 
+                    }
+                });
             </script>
 
         </body>

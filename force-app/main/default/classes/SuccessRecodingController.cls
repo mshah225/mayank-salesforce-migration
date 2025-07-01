@@ -24,6 +24,21 @@ public class SuccessRecodingController {
     public List<Contact> contactResults { get; set; }
     public List<String> coachProfiles = System.Label.Success_Coach_Recode_Profile.split(',');
 
+    public String selectedRecordTypeOpt { get; set; }
+    public String selectedRecordTypeOptName {
+        get {
+            String val = null;
+
+            for (SelectOption selOpt : recordTypeOptions)
+                if (selOpt.getValue().equals(selectedRecordTypeOpt))
+                    val = selOpt.getLabel();
+
+            return val;
+        }
+        set;
+    }
+    public List<SelectOption> recordTypeOptions { get; set; }
+
     public SuccessRecodingController() {
         page = 1;
         coachPath = false;
@@ -31,6 +46,8 @@ public class SuccessRecodingController {
         studentsResults = new List<StudentWrapper>();
         selectedStudents = new List<StudentWrapper>();
         contactResults = new List<Contact>();
+        selectedRecordTypeOpt = '';
+        recordTypeOptions = new List<SelectOption>();
     }
 
     public List<SelectOption> getInitOptions() {
@@ -125,46 +142,108 @@ public class SuccessRecodingController {
     }
 
     public void selectContactAndFindSuccessStudent() {
-        studentsResults = new List<StudentWrapper>();
-
+        // Generate list of record types for this contact
         List<Success_Student__c> tempStudents = new List<Success_Student__c>(
             [
-                SELECT Student_Name__c, ASURiteID__c, EMPLID__c, Student__c, Plan_Code__r.Name
+                SELECT RecordTypeId, RecordType.Name
                 FROM Success_Student__c
                 WHERE Student__r.Id = :selectedContactId AND Is_Active__c = TRUE AND Coaching_Student__c = TRUE
                 LIMIT 1000
             ]
         );
 
-        studentsResults.add(new StudentWrapper(tempStudents[0]));
-
-        // Override the contructor and select the students.
-        for (StudentWrapper sw : studentsResults) {
-            sw.selected = true;
+        Map<String, String> recordTypes = new Map<String, String>();
+        for (Success_Student__c sucStudent : tempStudents) {
+            recordTypes.put(sucStudent.RecordType.Name, sucStudent.RecordTypeId);
         }
 
-        selectStudentsForTransfer();
+        recordTypeOptions.clear(); // clear option list
+        recordTypeOptions.add(new SelectOption('', '--Select--'));
+        for (String recordTypeName : recordTypes.keySet()) {
+            recordTypeOptions.add(new SelectOption(recordTypes.get(recordTypeName), recordTypeName));
+        }
+
+        page7(); // And send us to page 7
     }
 
     public void findCoachStudents() {
-        allStudentsChecked = false;
-        studentsResults = new List<StudentWrapper>();
+        // Generate list of record types for this contact
+        List<Success_Student__c> tempStudents = new List<Success_Student__c>(
+            [
+                SELECT RecordTypeId, RecordType.Name
+                FROM Success_Student__c
+                WHERE
+                    Success_Resource__r.Resource__r.Id = :selectedCoachId
+                    AND Is_Active__c = TRUE
+                    AND Coaching_Student__c = TRUE
+                LIMIT 1000
+            ]
+        );
 
-        List<Success_Student__c> tempStudents = ([
-            SELECT Student_Name__c, ASURiteID__c, EMPLID__c, Student__c, Plan_Code__r.Name
-            FROM Success_Student__c
-            WHERE
-                Success_Resource__r.Resource__r.Id = :selectedCoachId
-                AND Is_Active__c = TRUE
-                AND Coaching_Student__c = TRUE
-            LIMIT 1000
-        ]);
-
-        for (Success_Student__c ss : tempStudents) {
-            studentsResults.add(new StudentWrapper(ss));
+        Map<String, String> recordTypes = new Map<String, String>();
+        for (Success_Student__c sucStudent : tempStudents) {
+            recordTypes.put(sucStudent.RecordType.Name, sucStudent.RecordTypeId);
         }
 
-        page3();
+        recordTypeOptions.clear(); // clear option list
+        recordTypeOptions.add(new SelectOption('', '--Select--'));
+        for (String recordTypeName : recordTypes.keySet()) {
+            recordTypeOptions.add(new SelectOption(recordTypes.get(recordTypeName), recordTypeName));
+        }
+
+        page7(); // And send us to page 7
+    }
+
+    /**
+     * Select orioer success students for contactId after user has selected record type option
+     */
+    public void selectRecordType() {
+        if (String.isBlank(selectedRecordTypeOpt))
+            return;
+
+        studentsResults = new List<StudentWrapper>();
+
+        if (coachPath) {
+            List<Success_Student__c> tempStudents = ([
+                SELECT Student_Name__c, ASURiteID__c, EMPLID__c, Student__c, Plan_Code__r.Name
+                FROM Success_Student__c
+                WHERE
+                    Success_Resource__r.Resource__r.Id = :selectedCoachId
+                    AND Is_Active__c = TRUE
+                    AND Coaching_Student__c = TRUE
+                    AND RecordTypeId = :selectedRecordTypeOpt
+                LIMIT 1000
+            ]);
+
+            for (Success_Student__c ss : tempStudents) {
+                studentsResults.add(new StudentWrapper(ss));
+            }
+
+            allStudentsChecked = false;
+            page3();
+        } else {
+            List<Success_Student__c> tempStudents = new List<Success_Student__c>(
+                [
+                    SELECT Student_Name__c, ASURiteID__c, EMPLID__c, Student__c, Plan_Code__r.Name
+                    FROM Success_Student__c
+                    WHERE
+                        Student__r.Id = :selectedContactId
+                        AND Is_Active__c = TRUE
+                        AND Coaching_Student__c = TRUE
+                        AND RecordTypeId = :selectedRecordTypeOpt
+                    LIMIT 1000
+                ]
+            );
+
+            for (Success_Student__c student : tempStudents) {
+                StudentWrapper studentWrap = new StudentWrapper(student);
+                studentWrap.selected = true;
+                studentsResults.add(studentWrap);
+            }
+
+            selectStudentsForTransfer();
+            page2();
+        }
     }
 
     public void selectStudentsForTransfer() {
@@ -253,8 +332,8 @@ public class SuccessRecodingController {
                 new ApexPages.Message(
                     ApexPages.Severity.ERROR,
                     'ERROR: Cannot find Success Resource for: ' +
-                    transferToCoachId +
-                    ' please try again or select another Coach.'
+                        transferToCoachId +
+                        ' please try again or select another Coach.'
                 )
             );
             return;
@@ -265,7 +344,7 @@ public class SuccessRecodingController {
         selectedStudents = new List<StudentWrapper>();
 
         if (!coachPath) {
-            page6();
+            page7();
         } else {
             page3();
         }
@@ -292,6 +371,8 @@ public class SuccessRecodingController {
         studentsResults = new List<StudentWrapper>();
         selectedStudents = new List<StudentWrapper>();
         contactResults = new List<Contact>();
+        recordTypeOptions.clear();
+        selectedRecordTypeOpt = null;
 
         selectedInitOpt = '--Select--';
         coachPath = false;
@@ -328,6 +409,12 @@ public class SuccessRecodingController {
     // Student search page
     public void page6() {
         page = 6;
+    }
+
+    // Success Student Record Type selection page
+    public void page7() {
+        selectedRecordTypeOpt = null; // clear selection
+        page = 7;
     }
 
     public class StudentWrapper {

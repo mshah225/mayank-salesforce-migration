@@ -47,15 +47,8 @@ private class SuccessRecodingControllerTest {
         testCases[1].OwnerId = testUser2.Id;
         insert testCases;
 
-        Id coachRTId = [
-            SELECT Id, Name, sObjectType
-            FROM RecordType
-            WHERE Name = 'Coach' AND SObjectType = 'Success_Student__c'
-        ]
-        .Id;
-
         Success_Student__c testStudent1 = new Success_Student__c(
-            RecordTypeId = coachRTId,
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Coach'),
             Student__c = testContacts[0].Id,
             Success_Resource__c = testResource1.Id,
             Is_Active__c = true,
@@ -64,7 +57,7 @@ private class SuccessRecodingControllerTest {
         insert testStudent1;
 
         Success_Student__c testStudent2 = new Success_Student__c(
-            RecordTypeId = coachRTId,
+            RecordTypeId = RecordIdHelper.getRecordTypeId('Success_Student__c', 'Coach'),
             Student__c = testContacts[1].Id,
             Success_Resource__c = testResource2.Id,
             Is_Active__c = true,

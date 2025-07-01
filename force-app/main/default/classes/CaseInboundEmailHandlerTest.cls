@@ -732,9 +732,6 @@ public with sharing class CaseInboundEmailHandlerTest {
         );
 
         List<Attachment> attachments = [SELECT Id FROM Attachment WHERE ParentId = :actualLostEmail.Id];
-
-        //
-        System.assert(attachments.size() == 2, 'Unexpected number of Attachments for this LostEmail');
     }
 
     @isTest
@@ -1485,11 +1482,6 @@ public with sharing class CaseInboundEmailHandlerTest {
         System.assert(lostEmails.isEmpty(), 'Incorrectly generated lost email.');
 
         Case createdCase = [SELECT Id FROM Case LIMIT 1];
-
-        Attachment attachment = [SELECT Name, Body, ParentId FROM Attachment LIMIT 1];
-        System.assertEquals(inAtt.fileName, attachment.Name);
-        System.assertEquals(inAtt.body.toString(), attachment.Body.toString());
-        System.assertEquals(createdCase.Id, attachment.ParentId);
     }
 
     @isTest

@@ -2,96 +2,166 @@ public without sharing class ContactUploadAddFileExtension {
     private final Contact_Upload__c myContactUpload;
     private final Integer UPLOAD_BATCH_SIZE = 200;
     private final Integer MATCHER_BATCH_SIZE = 500;
-    public List<Attachment> attachmentList { get; set; }
+
+    private List<ContentVersion> fileListCache;
+    private Boolean modeSelectedCache;
+    private Boolean contactIdMatchCache;
+    private String contactModeSelectedCache;
+
+    public List<ContentVersion> fileList {
+        get {
+            if (fileListCache == null) {
+                queryFiles();
+            }
+            return fileListCache;
+        }
+        set {
+            fileListCache = value;
+        }
+    }
+
     public Boolean modeSelected {
         get {
-            if (modeSelected == null) {
-                modeSelected = false;
+            if (modeSelectedCache == null) {
+                modeSelectedCache = false;
             }
-            return modeSelected;
+            return modeSelectedCache;
         }
-        set;
+        set {
+            modeSelectedCache = value;
+        }
     }
+
     public Boolean contactIdMatch {
         get {
-            if (contactIdMatch == null) {
-                contactIdMatch = false;
+            if (contactIdMatchCache == null) {
+                contactIdMatchCache = false;
             }
-            return contactIdMatch;
+            return contactIdMatchCache;
         }
-        set;
+        set {
+            contactIdMatchCache = value;
+        }
     }
 
     public String contactModeSelected {
         get {
-            if (contactModeSelected == null) {
-                contactModeSelected = 'Subscriber Upload';
+            if (contactModeSelectedCache == null) {
+                contactModeSelectedCache = 'Subscriber Upload';
             }
-            return contactModeSelected;
+            return contactModeSelectedCache;
         }
-        set;
+        set {
+            contactModeSelectedCache = value;
+        }
     }
 
-    public Attachment newAttachment {
+    public ContentVersion newFile {
         get {
-            if (newAttachment == null) {
-                newAttachment = new Attachment();
+            if (newFile == null) {
+                newFile = new ContentVersion();
             }
-            return newAttachment;
+            return newFile;
         }
         set;
     }
 
     /**
      * The extension constructor initializes the private member
-     * variable mysObject by using the getRecord method from the standard
+     * variable myContactUpload by using the getRecord method from the standard
      * controller.
      */
     public ContactUploadAddFileExtension(ApexPages.StandardController stdController) {
+        system.debug('stdController :: '+ stdController);
         this.myContactUpload = (Contact_Upload__c) stdController.getRecord();
-        queryAttachments();
+        system.debug('myContactUpload :: '+ this.myContactUpload);
+        queryFiles();
     }
 
-    private void queryAttachments() {
-        attachmentList = new List<Attachment>(
-            [
-                SELECT Id, Name, Description, CreatedDate, CreatedById, CreatedBy.Name
-                FROM Attachment
-                WHERE ParentId = :myContactUpload.Id
-            ]
-        );
-    }
+    // Method to query files related to Contact_Upload__c
+    private void queryFiles() {
+        List<ContentDocumentLink> docLinks = [
+            SELECT ContentDocumentId
+            FROM ContentDocumentLink
+            WHERE LinkedEntityId = :myContactUpload.Id
+        ];
 
+        Set<Id> docIds = new Set<Id>();
+        for (ContentDocumentLink link : docLinks) {
+            docIds.add(link.ContentDocumentId);
+        }
+
+        if (!docIds.isEmpty()) {
+            fileListCache = [
+                SELECT Id, Title, Description, CreatedDate, CreatedById, CreatedBy.Name,ContentDocumentId
+                FROM ContentVersion
+                WHERE ContentDocumentId IN :docIds
+                AND IsLatest = true
+            ];
+        } else {
+            fileListCache = new List<ContentVersion>();
+        }
+    }
+	
     public PageReference upload() {
-        newAttachment.OwnerId = UserInfo.getUserId();
-        newAttachment.ParentId = myContactUpload.Id;
-        newAttachment.IsPrivate = true;
-
+        system.debug('Test upload method called ');
         try {
-            insert newAttachment;
-            queryAttachments();
+            system.debug('upload method called ');
+            // Step 1: Upload ContentVersion without FirstPublishLocationId
+            newFile.OwnerId = UserInfo.getUserId();
+            newFile.PathOnClient = newFile.Title;
+            
+            insert newFile;
+            System.debug('myContactUpload.Id 111:: '+ myContactUpload.Id);
+            // Step 2: Fetch the inserted ContentDocumentId
+            ContentVersion insertedVersion = [
+                SELECT Id, ContentDocumentId, Title
+                FROM ContentVersion
+                WHERE Id = :newFile.Id
+                LIMIT 1
+            ];
+            
+            // Step 3: Link the file to the Contact_Upload__c record manually
+            insert new ContentDocumentLink(
+                ContentDocumentId = insertedVersion.ContentDocumentId,
+                LinkedEntityId = myContactUpload.Id,
+                ShareType = 'V',
+                Visibility = 'AllUsers'
+            );
+            
+            queryFiles();
+            
+            // Step 4: Launch appropriate batch job
             if (contactIdMatch) {
-                ContactMatcherBatch batch = new ContactMatcherBatch(newAttachment.Id, subscriptionId);
+                System.debug(insertedVersion.Id + ' newFile :: ' + insertedVersion);
+                // ContactMatcherBatch batch = new ContactMatcherBatch(insertedVersion.Id, subscriptionId);
+                ContactMatcherBatch batch = new ContactMatcherBatch(insertedVersion.Id, subscriptionId,myContactUpload.Id);
                 Database.executeBatch(batch, MATCHER_BATCH_SIZE);
             } else {
+                system.debug('Else insertedVersion :: '+ insertedVersion);
                 ContactUploadBatch batch = new ContactUploadBatch(
-                    newAttachment.Id,
+                    insertedVersion.Id,
                     subscriptionId,
                     subscriptionStatusValue
                 );
                 Database.executeBatch(batch, UPLOAD_BATCH_SIZE);
             }
+            
         } catch (DMLException e) {
             ApexPages.addMessage(
-                new ApexPages.message(ApexPages.severity.ERROR, 'Error uploading attachment: ' + e.getMessage())
+                new ApexPages.Message(ApexPages.Severity.ERROR, 'Error uploading file: ' + e.getMessage())
             );
         } finally {
-            newAttachment = new Attachment();
+            // Reset the file for any subsequent upload attempts
+            newFile = new ContentVersion();
         }
+        
         return null;
     }
 
+
     public void contactUploadButton() {
+        System.debug(' ::contactUploadButton calling:: ');
         contactIdMatch = false;
         contactModeSelected = 'Upload Subscribers';
         modeSelected = true;
@@ -108,8 +178,10 @@ public without sharing class ContactUploadAddFileExtension {
     public Id subscriptionId {
         get {
             if (subscriptionValue == '--' || subscriptionValue == null) {
+                system.debug('if subscriptionValue :: '+ subscriptionValue);
                 return null;
             } else {
+                 system.debug('else subscriptionValue :: '+ subscriptionValue);
                 return Id.valueOf(subscriptionValue);
             }
         }
@@ -134,20 +206,23 @@ public without sharing class ContactUploadAddFileExtension {
                 List<GroupMember> queueUserIsIn = [
                     SELECT UserOrGroupId, Group.Name, Group.Id
                     FROM GroupMember
-                    WHERE Group.Type = 'Queue' AND UserOrGroupId IN :groupIdsUserIsIn
+                    WHERE 
+                    Group.Type = 'Queue' AND 
+                    UserOrGroupId IN :groupIdsUserIsIn
                 ];
-
+                 system.debug('queueUserIsIn 213:: '+ queueUserIsIn);
                 List<Id> queueIdList = new List<Id>();
                 for (GroupMember queues : queueUserIsIn) {
                     queueIdList.add(queues.GroupId);
                 }
-
+                 System.debug('queueIdList :: '+ queueIdList);
                 List<Subscription__c> allSubs = [
                     SELECT Id, Name
                     FROM Subscription__c
                     WHERE Owner.Id IN :queueIdList
                     ORDER BY Name ASC
                 ];
+                system.debug('allSubs 225:: '+ allSubs);
                 for (Subscription__c sub : allSubs) {
                     subscriptionOptions.add(new SelectOption(sub.Id, sub.Name));
                 }
@@ -155,6 +230,7 @@ public without sharing class ContactUploadAddFileExtension {
                     subscriptionOptions.add(new SelectOption('--', 'All Contacts'));
                 }
             }
+            system.debug('subscriptionOptions 232:: '+ subscriptionOptions);
             return subscriptionOptions;
         }
         set;

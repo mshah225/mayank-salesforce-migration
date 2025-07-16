@@ -1,10 +1,11 @@
 @isTest
 private class CaseUtilitiesTest {
+    
     @isTest
     private static void forwardToUnitReturnsServiceNow() {
         String unitApiName = 'ServiceNow';
         String unitLabel = '';
-
+        
         for (Schema.PicklistEntry entry : Case.Forward_To_Unit__c.getDescribe().getPicklistValues()) {
             if (entry.getValue() == unitApiName) {
                 unitLabel = entry.getLabel();
@@ -12,18 +13,16 @@ private class CaseUtilitiesTest {
         }
         System.assertEquals(unitLabel, CaseUtilities.getForwardToUnit(unitApiName));
     }
-
+    
     @isTest
     private static void forwardToUnitNoOption() {
         System.assertEquals('', CaseUtilities.getForwardToUnit('Not Valid Api Name'));
     }
-
+    
     static void createCustomSettings() {
         Folder f = [SELECT Id FROM Folder WHERE Type = 'Email' AND AccessType = 'Public' LIMIT 1];
-
+        
         EmailTemplate e;
-        QueueSobject testQueue;
-        Group testGroup;
         System.runAs(new User(Id = Userinfo.getUserId())) {
             e = new EmailTemplate(
                 developerName = 'test',
@@ -34,7 +33,7 @@ private class CaseUtilitiesTest {
             );
             insert e;
         }
-
+        
         Contact c = new Contact(
             FirstName = 'First',
             LastName = 'Last',
@@ -42,15 +41,14 @@ private class CaseUtilitiesTest {
             Personal_Email__c = 'user2@acme.com.test'
         );
         insert c;
-
+        
         List<Case_Forwarding_Settings__c> cfsList = new List<Case_Forwarding_Settings__c>();
-
         cfsList.add(new Case_Forwarding_Settings__c(Name = 'Email Template ID', Value__c = String.valueOf(e.Id)));
         cfsList.add(new Case_Forwarding_Settings__c(Name = 'Dummy Contact ID', Value__c = String.valueOf(c.Id)));
-
+        
         insert cfsList;
     }
-
+    
     static Case createCase() {
         Contact co = new Contact(
             FirstName = 'FirstCase',
@@ -59,7 +57,7 @@ private class CaseUtilitiesTest {
             Personal_Email__c = 'user2@acme.com.test'
         );
         insert co;
-
+        
         Case ca = new Case(
             Subject = 'Test Subject',
             Description = 'Test Desc',
@@ -67,25 +65,38 @@ private class CaseUtilitiesTest {
             ContactId = co.Id
         );
         insert ca;
-
-        Attachment a = new Attachment();
-        a.Name = 'TestAttach1';
-        a.Body = Blob.valueOf('HELLO');
-        a.ParentId = ca.Id;
-        insert a;
-
+        
+        ContentVersion cv = new ContentVersion(
+            Title = 'TestFile1',
+            PathOnClient = 'TestFile1.txt',
+            VersionData = Blob.valueOf('Hello File'),
+            IsMajorVersion = true
+        );
+        insert cv;
+        
+        ContentDocument cd = [SELECT Id FROM ContentDocument WHERE LatestPublishedVersionId = :cv.Id LIMIT 1];
+        
+        ContentDocumentLink cdl = new ContentDocumentLink(
+            ContentDocumentId = cd.Id,
+            LinkedEntityId = ca.Id,
+            ShareType = 'V',
+            Visibility = 'AllUsers'
+        );
+        insert cdl;
+        
         return ca;
     }
-
+    
     static testMethod void forwardCase() {
         createCustomSettings();
         Case c = createCase();
-
+        
         c.Status = 'Closed: Forwarded';
         c.Forward_To_Email__c = 'forward@test.com.test';
-
+        
         Test.startTest();
         update c;
         Test.stopTest();
+        
     }
 }

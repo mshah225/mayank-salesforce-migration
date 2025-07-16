@@ -1,15 +1,19 @@
-public without sharing class ContactUploadBatch implements Database.batchable<String>, Database.AllowsCallouts, Database.Stateful {
+public without sharing class ContactUploadBatch implements Database.Batchable<String>, Database.AllowsCallouts, Database.Stateful {
     private Id attachmentId;
     private Id subscriptionId;
     private String subscriberStatus;
     private String contactUploadId;
     private Map<Integer, String> columnMap;
     private Boolean headerRow;
-
+    
     public ContactUploadBatch(Id attachmentId, Id subscriptionId, String subscriberStatus) {
+         System.debug(' :ContactUploadBatch: ');
         this.attachmentId = attachmentId;
         this.subscriptionId = subscriptionId;
         this.subscriberStatus = subscriberStatus;
+        System.debug('attachmentId :: '+ this.attachmentId);
+        System.debug('subscriptionId :: '+ this.subscriptionId);
+        System.debug('subscriberStatus :: '+ this.subscriberStatus);
     }
 
     public Iterable<String> start(Database.BatchableContext batchableContext) {
@@ -17,8 +21,32 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
             return null;
         }
         headerRow = true;
+
         ContactUploadFileReader uploadReader = new ContactUploadFileReader(attachmentId);
-        contactUploadId = uploadReader.contactCSV.ParentId;
+        System.debug('uploadReader :: '+ uploadReader);
+        ContentVersion contentVersion = uploadReader.fileRecord;
+        System.debug('contentVersion :: '+ contentVersion);
+        if (contentVersion != null) {
+            List<ContentDocumentLink> links = [
+                SELECT LinkedEntityId
+                FROM ContentDocumentLink
+                WHERE ContentDocumentId = :contentVersion.ContentDocumentId
+            ];
+            system.debug('links :: '+ links);
+            Set<Id> linkedIds = new Set<Id>();
+            for (ContentDocumentLink link : links) {
+                linkedIds.add(link.LinkedEntityId);
+            }
+
+            Map<Id, Contact_Upload__c> uploads = new Map<Id, Contact_Upload__c>(
+                [SELECT Id FROM Contact_Upload__c WHERE Id IN :linkedIds]
+            );
+
+            if (!uploads.isEmpty()) {
+                contactUploadId = uploads.keySet().iterator().next();
+            }
+        }
+
         updateUploadStatus('Processing');
         return uploadReader.fileIterator;
     }
@@ -39,13 +67,14 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
                 detailsInError.add(detailFromLine);
             }
         }
+
         ContactUploadSearcher searcher = new ContactUploadSearcher(detailsToProcess);
         searcher.searchAndCreateContacts();
         detailCreator.createSubscriberStatusMap(detailsToProcess);
         List<Subscriber__c> subscriberList = new List<Subscriber__c>();
         for (Contact_Upload_Detail__c uploadDetail : detailsToProcess) {
             Subscriber__c subToAdd = detailCreator.createSubscriberForUploadDetail(uploadDetail);
-            if (subtoAdd != null) {
+            if (subToAdd != null) {
                 subscriberList.add(subToAdd);
             } else {
                 uploadDetail.Status__c = 'Error';
@@ -53,7 +82,7 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
             }
         }
 
-        if (subscriberList.size() > 0) {
+        if (!subscriberList.isEmpty()) {
             Database.upsert(subscriberList, Subscriber__c.Unique_Key__c, false);
         }
 
@@ -73,19 +102,18 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
                     uploadDetail.Status__c = 'Error';
                     uploadDetail.Processing_Notes__c += ' Failed to create subscriber record. ';
                 } else {
-                    uploadDetail.Subscriber__c = uniqueKeyToSubscriberId.get(uniqueKey);
+                    uploadDetail.Subscriber__c = subscriberId;
                 }
             }
         }
 
         detailsToProcess.addAll(detailsInError);
-        if (detailsToProcess.size() > 0) {
+        if (!detailsToProcess.isEmpty()) {
             Database.insert(detailsToProcess, false);
         }
     }
 
     private List<List<String>> recreateRowsFromIteration(List<String> csvContacts) {
-        String csvFile = '';
         List<List<String>> csvColumnData = new List<List<String>>();
         for (String row : csvContacts) {
             if (headerRow) {
@@ -125,7 +153,6 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
             WHERE Contact_Upload__c = :contactUploadId AND Status__c = 'Success'
             LIMIT 1
         ];
-
         return !successfulDetails.isEmpty();
     }
 
@@ -137,12 +164,13 @@ public without sharing class ContactUploadBatch implements Database.batchable<St
             WHERE Contact_Upload__c = :contactUploadId AND Status__c = 'Error'
             LIMIT 1
         ];
-
         return erroredDetails.isEmpty();
     }
 
     private void updateUploadStatus(String status) {
-        Contact_Upload__c cu = new Contact_Upload__c(Id = contactUploadId, Status__c = status);
-        update cu;
+        if (contactUploadId != null) {
+            Contact_Upload__c cu = new Contact_Upload__c(Id = contactUploadId, Status__c = status);
+            update cu;
+        }
     }
 }

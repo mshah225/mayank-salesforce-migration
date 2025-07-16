@@ -25,7 +25,7 @@
                 <input class="btn" type="button" value="Attach File" onClick="openTab('p/attach/NoteAttach?pid={!Case.Id}&parentname={!Case.CaseNumber}&retURL=%2F{!Case.Id}','Attach a File to Case {!Case.CaseNumber}')"
                 />
                 <input value="Download Attachments" class="btn" name="download_attachment" title="Download Attachments" type="button" onclick="openIntegration('{!baseUrlForAttachmentIntegration}/apex/CaseAttachmentList?scontrolCaching=1&id={!Case.Id}', 'height=600,location=no,resizable=yes,toolbar=no,status=no,menubar=no,scrollbars=1', 1)"
-                />
+                /> 
             </apex:form>
         </apex:pageBlockButtons>
         <apex:form id="alius-format124">

@@ -1,17 +1,18 @@
 public without sharing class ContactUploadFileReader {
-    public Attachment contactCSV;
-    public CsvIterator fileIterator { get; set; }
+    public ContentVersion fileRecord { get; private set; }
+    public CsvIterator fileIterator { get; private set; }
 
     public ContactUploadFileReader(Id fileId) {
-        List<Attachment> attachmentListForContactUpload = [
-            SELECT Body, ParentId
-            FROM Attachment
+        List<ContentVersion> versions = [
+            SELECT Id, ContentDocumentId, VersionData, Title
+            FROM ContentVersion
             WHERE Id = :fileId
             LIMIT 1
         ];
-        if (!attachmentListForContactUpload.isEmpty()) {
-            contactCSV = attachmentListForContactUpload[0];
-            fileIterator = new CsvIterator(contactCSV.Body.toString(), '\r');
+        if (!versions.isEmpty()) {
+            system.debug('versions :: '+ versions[0]);
+            fileRecord = versions[0];
+            fileIterator = new CsvIterator(fileRecord.VersionData.toString(), '\r');
         }
     }
 }

@@ -1,55 +1,79 @@
-public without sharing class ContactMatcherBatch implements Database.batchable<String>, Database.AllowsCallouts, Database.Stateful {
-    private Id attachmentId;
+public without sharing class ContactMatcherBatch implements Database.Batchable<String>, Database.AllowsCallouts, Database.Stateful {
+    private Id fileVersionId;
     private Id subscriptionId;
-    private String contactUploadId;
+    private Id myContactUploadId;
+    private Id contactUploadId;
     private Map<Integer, String> columnMap;
     private Boolean headerRow;
     private String updatedCSVBody = '';
+    private ContactUploadFileReader uploadReader;
 
-    public ContactMatcherBatch(Id attachmentId, Id subscriptionId) {
-        this.attachmentId = attachmentId;
+    public ContactMatcherBatch(Id fileVersionId, Id subscriptionId,Id myContactUploadId) {
+        this.fileVersionId = fileVersionId;
         this.subscriptionId = subscriptionId;
+        this.myContactUploadId =  myContactUploadId;
+        system.debug('this.fileVersionId :: '+ this.fileVersionId);
+        system.debug('this.subscriptionId :: '+ this.subscriptionId);
     }
 
     public Iterable<String> start(Database.BatchableContext batchableContext) {
-        if (attachmentId == null) {
-            return null;
-        }
+        if (fileVersionId == null) return null;
+
         headerRow = true;
-        ContactUploadFileReader uploadReader = new ContactUploadFileReader(attachmentId);
-        contactUploadId = uploadReader.contactCSV.ParentId;
+
+        // Use ContactUploadFileReader to read the ContentVersion file
+        uploadReader = new ContactUploadFileReader(fileVersionId);
+        System.debug('uploadReader :: '+ uploadReader);
+        // Find the parent Contact_Upload__c via ContentDocumentLink
+        ContentDocumentLink link = [
+            SELECT LinkedEntityId
+            FROM ContentDocumentLink
+            WHERE ContentDocumentId = :uploadReader.fileRecord.ContentDocumentId
+            LIMIT 1
+        ];
+        System.debug('link :: '+ link);
+        contactUploadId = myContactUploadId;//link.LinkedEntityId;
+        System.debug('contactUploadId :: '+ contactUploadId);
         updateUploadStatus('Processing');
+        System.debug('uploadReader.fileIterator :: '+ uploadReader.fileIterator);
         return uploadReader.fileIterator;
     }
 
     public void execute(Database.BatchableContext batchableContext, List<String> scope) {
         List<List<String>> csvLines = recreateRowsFromIteration(scope);
-
+        System.debug('scope :: '+ scope);
         List<Contact_Upload_Detail__c> detailsToProcess = new List<Contact_Upload_Detail__c>();
         List<Contact_Upload_Detail__c> detailsInError = new List<Contact_Upload_Detail__c>();
         List<Contact_Upload_Detail__c> allDetailsFromLines = new List<Contact_Upload_Detail__c>();
+
         ContactUploadDetailService detailCreator = new ContactUploadDetailService(contactUploadId, columnMap);
+        System.debug('detailCreator :: '+ detailCreator);
         detailCreator.setSubscriptionId(subscriptionId);
+        
         for (List<String> lineValues : csvLines) {
-            Contact_Upload_Detail__c detailFromLine = detailCreator.createAndValidateRowForMatcher(lineValues);
-            if (detailFromLine.Status__c != 'Error') {
-                detailsToProcess.add(detailFromLine);
+            system.debug('lineValues :: '+ lineValues);
+            Contact_Upload_Detail__c detail = detailCreator.createAndValidateRowForMatcher(lineValues);
+            System.debug('detail 55:: '+ detail);
+            if (detail.Status__c != 'Error') {
+                detailsToProcess.add(detail);
             } else {
-                detailsInError.add(detailFromLine);
+                detailsInError.add(detail);
             }
-            allDetailsFromLines.add(detailFromLine);
+            allDetailsFromLines.add(detail);
         }
+
         ContactUploadSearcher searcher = new ContactUploadSearcher(detailsToProcess);
         searcher.searchContactsToMatch();
+        System.debug('allDetailsFromLines 64:: '+ allDetailsFromLines);
         addContactIdToCSV(scope, allDetailsFromLines);
+
         detailsToProcess.addAll(detailsInError);
-        if (detailsToProcess.size() > 0) {
+        if (!detailsToProcess.isEmpty()) {
             Database.insert(detailsToProcess, false);
         }
     }
 
     private List<List<String>> recreateRowsFromIteration(List<String> csvContacts) {
-        String csvFile = '';
         List<List<String>> csvColumnData = new List<List<String>>();
         for (String row : csvContacts) {
             if (headerRow) {
@@ -68,14 +92,14 @@ public without sharing class ContactMatcherBatch implements Database.batchable<S
         if (!csvLines.isEmpty()) {
             Integer columnIndex = 0;
             for (String s : csvLines[0]) {
-                columnMap.put(columnIndex, s);
-                columnIndex++;
+                columnMap.put(columnIndex++, s);
             }
         }
     }
 
     public void finish(Database.BatchableContext batchableContext) {
-        createNewAttachment();
+        createUpdatedFile();
+
         if (hasSuccessfulRecords() && noErroredRecords()) {
             updateUploadStatus('Complete with no errors');
         } else {
@@ -84,71 +108,79 @@ public without sharing class ContactMatcherBatch implements Database.batchable<S
     }
 
     private Boolean hasSuccessfulRecords() {
-        List<Contact_Upload_Detail__c> successfulDetails = [
+        return ![
             SELECT Id
             FROM Contact_Upload_Detail__c
             WHERE Contact_Upload__c = :contactUploadId AND Status__c = 'Success'
             LIMIT 1
-        ];
-
-        return !successfulDetails.isEmpty();
+        ].isEmpty();
     }
 
     private Boolean noErroredRecords() {
-        List<Contact_Upload_Detail__c> erroredDetails = [
+        return [
             SELECT Id
             FROM Contact_Upload_Detail__c
             WHERE Contact_Upload__c = :contactUploadId AND Status__c = 'Error'
             LIMIT 1
-        ];
-
-        return erroredDetails.isEmpty();
+        ].isEmpty();
     }
 
     private void updateUploadStatus(String status) {
-        Contact_Upload__c cu = new Contact_Upload__c(Id = contactUploadId, Status__c = status);
-        update cu;
+        if (String.isNotEmpty(contactUploadId)) {
+            update new Contact_Upload__c(Id = contactUploadId, Status__c = status);
+        }
     }
 
-    private void addContactIdToCSV(List<String> tableOfContacts, List<Contact_Upload_Detail__c> contactDetails) {
-        Integer contactDetailRow = 0;
+    private void addContactIdToCSV(List<String> csvRows, List<Contact_Upload_Detail__c> contactDetails) {
+        Integer detailIndex = 0;
         if (String.isEmpty(updatedCSVBody)) {
             createHeaderForContactMatcher();
-            tableOfContacts.remove(0);
+            csvRows.remove(0);  // remove header
         }
-        for (String row : tableOfContacts) {
-            if (contactDetails[contactDetailRow].Contact__c == null) {
-                updatedCSVBody += row + ', \r';
-            } else {
-                updatedCSVBody += row + ',' + contactDetails[contactDetailRow].Contact__c + '\r';
+       System.debug('csvRows Size :: '+ csvRows.size());
+        for (String row : csvRows) {
+            system.debug('detailIndex :: '+ detailIndex);
+            System.debug('row :: '+ row);
+            Contact_Upload_Detail__c detail = contactDetails[detailIndex++];
+            system.debug('detail :: '+ detail);
+            system.debug('detail.Contact__c :: '+ detail.Contact__c);
+            String contactId = '';
+            if (detail.Contact__c != null) {
+                contactId = detail.Contact__c;
             }
-            contactDetailRow++;
+
+            updatedCSVBody += row + ',' + contactId + '\r';
         }
     }
 
     private void createHeaderForContactMatcher() {
-        for (String headerColumnName : columnMap.values()) {
-            updatedCSVBody += headerColumnName + ',';
+        for (String column : columnMap.values()) {
+            updatedCSVBody += column + ',';
         }
         updatedCSVBody += 'Contact Id\r';
     }
 
-    private void createNewAttachment() {
-        Attachment updatedAttachment = [
-            SELECT Name, ParentId, Body, Description
-            FROM Attachment
-            WHERE Id = :attachmentId
+    private void createUpdatedFile() {
+        system.debug('updatedCSVBody :: '+ updatedCSVBody);
+        ContentVersion newVersion = new ContentVersion();
+        newVersion.Title = uploadReader.fileRecord.Title + ' (With Ids)';
+        newVersion.PathOnClient = uploadReader.fileRecord.Title + '(WithIds).csv';
+        newVersion.VersionData = Blob.valueOf(updatedCSVBody);
+        system.debug('newVersion :: '+ newVersion);
+        insert newVersion;
+
+        ContentVersion insertedVersion = [
+            SELECT Id, ContentDocumentId
+            FROM ContentVersion
+            WHERE Id = :newVersion.Id
             LIMIT 1
         ];
-        updatedAttachment.Body = Blob.valueOf(updatedCSVBody);
-        updatedAttachment.Id = null;
-        updatedAttachment.Name = updateFileName(updatedAttachment.Name);
-        insert updatedAttachment;
-    }
 
-    private String updateFileName(String oldFileName) {
-        String fileName = oldFileName;
-        fileName = fileName.substring(0, fileName.indexOf('.'));
-        return fileName + '(With Ids).csv';
+        insert new ContentDocumentLink(
+            ContentDocumentId = insertedVersion.ContentDocumentId,
+            LinkedEntityId = contactUploadId,
+            ShareType = 'V',
+            Visibility = 'AllUsers'
+        );
     }
 }

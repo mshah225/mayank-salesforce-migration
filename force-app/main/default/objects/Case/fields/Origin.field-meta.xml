@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Origin</fullName>
-    <inlineHelpText>Field Not Used. ASU utilizes custom Origin field dependent on functional group.</inlineHelpText>
-    <trackFeedHistory>false</trackFeedHistory>
-    <trackHistory>false</trackHistory>
-    <trackTrending>false</trackTrending>
-    <type>Picklist</type>
-</CustomField>

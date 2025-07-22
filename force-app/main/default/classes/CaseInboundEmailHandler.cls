@@ -112,6 +112,25 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
                                     ErrorLogger.log(e, vars, false);
                                 }
                             }
+
+                            if (this.theCase.CC_Most_Recent_Functional_Group__c == null) {
+                                // Handle NPE on Most_Recent_Functional_Group__c
+                                this.theCase.CC_Most_Recent_Functional_Group__c = this.theCase.CC_Functional_Group__c;
+                            } else if (
+                                this.theCase.CC_Functional_Group__c ==
+                                [
+                                    SELECT Id
+                                    FROM Case_Classification__c
+                                    WHERE
+                                        RecordType.Name = 'Functional Group'
+                                        AND Active__c = TRUE
+                                        AND Name = 'External Unit'
+                                    LIMIT 1
+                                ]
+                                .Id
+                            ) {
+                                this.theCase.CC_Functional_Group__c = this.theCase.CC_Most_Recent_Functional_Group__c;
+                            }
                         }
 
                         // Get a list of closed cases that we want to re-open

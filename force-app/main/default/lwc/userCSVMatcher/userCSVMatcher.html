@@ -1,0 +1,90 @@
+<template>
+    <h1 class="slds-text-heading_medium">User Audit Matcher</h1>
+    <c-lightning-error-or-retry message={errorMessage} has-error={hasError} retry-enabled="false">
+        <c-lightning-await-load-block loading={metaLoading} has-content="true" icon-size="large">
+            <div class="slds-grid slds-var-m-bottom_small slds-gutters_direct-small">
+                <div class="slds-col">
+                    <div class="slds-grid slds-gutters_direct-small slds-var-m-bottom_small">
+                        <div class="slds-col slds-grow-none">
+                            <lightning-input
+                                label={fileUploadLabel}
+                                type="file"
+                                accept=".csv"
+                                onchange={changeFile}
+                            ></lightning-input>
+                        </div>
+                        <div class="slds-col slds-grow-none">
+                            <lightning-combobox
+                                label="Audit Role"
+                                onchange={setAuditRole}
+                                options={userSearchRolesList}
+                            ></lightning-combobox>
+                        </div>
+                    </div>
+
+                    <lightning-button
+                        variant="brand"
+                        label="Submit"
+                        title="Submit"
+                        onclick={submitFile}
+                        disabled={submitButtonDisabled}
+                    ></lightning-button>
+                </div>
+                <div class="slds-col slds-grow-none align-end">
+                    <template lwc:if={showSummaryFields}>
+                        <div class="slds-var-m-bottom_small slds-text-align_right">
+                            <div>Skipped: {skippedCount}</div>
+                            <div>Matched: {matchedCount}</div>
+                        </div>
+                    </template>
+
+                    <template lwc:if={auditLogId}>
+                        <template lwc:if={downloadLink}>
+                            <a
+                                class="slds-button slds-button_icon slds-button_icon-border slds-var-m-right_xx-small"
+                                href={downloadLink}
+                            >
+                                <lightning-icon
+                                    icon-name="utility:download"
+                                    alternative-text="Download CSV"
+                                    title="Download CSV"
+                                    size="x-small"
+                                ></lightning-icon>
+                            </a>
+                        </template>
+
+                        <lightning-button-icon
+                            icon-name="utility:new_window"
+                            alternative-text="Go to Audit Log"
+                            title="Go to Audit Log"
+                            onclick={goToAuditLog}
+                        >
+                            <label></label>
+                        </lightning-button-icon>
+                    </template>
+                </div>
+            </div>
+
+            <div class="slds-var-m-top_medium">
+                <c-lightning-csv-datatable contents={csvTable}></c-lightning-csv-datatable>
+                <template lwc:if={loadingReason}>
+                    <div class="slds-text-align_center">
+                        <div class="slds-is-relative slds-var-p-vertical_large">
+                            <lightning-spinner
+                                variant="brand"
+                                size="medium"
+                                class="loadingIcon"
+                                alternative-text={loadingReason}
+                            >
+                            </lightning-spinner>
+                        </div>
+                        <div>{loadingReason}...</div>
+                        <template lwc:if={isRunning}>
+                            <div>{donePercent}%</div>
+                        </template>
+                    </div>
+                </template>
+            </div>
+        </c-lightning-await-load-block>
+    </c-lightning-error-or-retry>
+</template>

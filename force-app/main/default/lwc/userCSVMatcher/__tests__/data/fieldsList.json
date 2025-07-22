@@ -1,0 +1,14 @@
+[
+    {
+        "label": "ASURITE",
+        "value": "ASURITE_for_External_ID__c"
+    },
+    {
+        "label": "First Name",
+        "value": "FirstName"
+    },
+    {
+        "label": "Email",
+        "value": "Email"
+    }
+]

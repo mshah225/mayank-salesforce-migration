@@ -37,6 +37,7 @@ public class OpportunityDispatcher implements TriggerDispatcherInterface {
     public void beforeDelete() {
     }
     public void afterInsert() {
+        OpportunityService.createOCRRecords(newMap.keyset());
     }
     public void afterUpdate() {
     }

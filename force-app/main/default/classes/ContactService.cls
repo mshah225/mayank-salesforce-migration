@@ -431,7 +431,12 @@ public class ContactService {
 
     @future
     private static void setHashIdsFuture(List<Id> contactIds) {
-        setHashIdsNow(contactIds);
+        // contacts might no longer exist - so check before continuing
+        List<Id> stillExistingContactIds = new List<Id>();
+        List<Contact> existingContacts = [SELECT Id FROM Contact WHERE Id IN :contactIds];
+        for (Contact c : existingContacts)
+            stillExistingContactIds.add(c.Id);
+        setHashIdsNow(stillExistingContactIds);
     }
 
     private static void setHashIdsNow(List<Id> contactIds) {
@@ -441,7 +446,8 @@ public class ContactService {
             Contact con = new Contact(Id = contactId, HashContactID__c = hashId);
             contactsWithNewHashes.add(con);
         }
-        update contactsWithNewHashes;
+        if (!contactsWithNewHashes.isEmpty())
+            update contactsWithNewHashes;
     }
 
     /**
@@ -508,6 +514,29 @@ public class ContactService {
             }
             TerritoryAssignmentHelper.updateOpportunityList(oppList);
             assignTerritoryDone = true;
+        }
+    }
+
+    /**
+     * If any of these deletes are the result of record merges, update the winning record to indicate a merge has occurred
+     */
+    public static void recordMerges(List<Contact> oldList) {
+        List<Contact> loserRecords = new List<Contact>();
+
+        for (Contact deletedContact : oldList) {
+            // Record lost a merge
+            if (deletedContact.MasterRecordId != null) {
+                loserRecords.add(deletedContact);
+            }
+        }
+
+        if (!loserRecords.isEmpty()) {
+            GovernorLimitPreemptException.assertCanEnqueueJobs(
+                1,
+                'Cannot enqueue job for logging record merges due to already being at governor limit'
+            );
+            // This has to be done asynchronously because you cannot update a record currently engaged in a merge (which the winner record IS when this runs)
+            System.enqueueJob(new ContactMergeUpdaterQueueable(loserRecords));
         }
     }
 }

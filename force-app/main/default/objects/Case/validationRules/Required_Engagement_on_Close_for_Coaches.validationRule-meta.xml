@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Required_Engagement_on_Close_for_Coaches</fullName>
+    <active>true</active>
+    <description>Require Engagement when Coach Outreach is Record Type is closed with certain closed statuses.</description>
+    <errorConditionFormula>AND(
+      OR(
+          ISPICKVAL( Status , "Closed: Resolved - SMS"),
+          ISPICKVAL( Status , "Closed: Resolved - Phone"),
+          ISPICKVAL( Status , "Closed: Resolved - Email"),
+          ISPICKVAL( Status , "Closed: Resolved - Slack"),
+          ISPICKVAL( Status , "Closed: Resolved - Zoom")
+          ), 
+       RecordTypeId = "012d00000021xGL",
+       ISBLANK( TEXT( Engagement__c ))
+)</errorConditionFormula>
+    <errorMessage>ASU COACH OUTREACH - The following fields are required to close this case: Engagement</errorMessage>
+</ValidationRule>

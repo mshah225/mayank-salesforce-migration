@@ -38,6 +38,7 @@ public without sharing class ContactDispatcher implements TriggerDispatcherInter
         ContactService.assignTerritory(newList, oldMap);
     }
     public void afterDelete() {
+        ContactService.recordMerges(oldList);
     }
     public void afterUndelete() {
     }

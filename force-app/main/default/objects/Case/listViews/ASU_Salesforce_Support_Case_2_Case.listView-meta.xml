@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ASU_Salesforce_Support_Case_2_Case</fullName>
+    <columns>CASES.CASE_NUMBER</columns>
+    <columns>NAME</columns>
+    <columns>CASES.SUBJECT</columns>
+    <columns>CASES.STATUS</columns>
+    <columns>CASES.PRIORITY</columns>
+    <columns>CASES.CREATED_DATE_DATE_ONLY</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <filterScope>Queue</filterScope>
+    <label>ASU Salesforce Support (Case) 2</label>
+    <queue>ASU_Salesforce_Support_Case_2</queue>
+    <sharedTo>
+        <allInternalUsers />
+        <group>UTO_Administration</group>
+    </sharedTo>
+</ListView>

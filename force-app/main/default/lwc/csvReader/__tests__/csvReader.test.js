@@ -10,9 +10,20 @@ describe('c-csv-reader', () => {
         expect(reader.getHeader()).toMatchObject(['Id', 'Name', 'EMPLID', 'Enrolled']);
     });
 
-    test('Read rows', () => {
+    test('Read rows standard', () => {
         const str =
             'Id,Name,EMPLID,Enrolled\n1,Bob,2024031301,true\n2,Johnny Thunder,2022063001,false\n3,Hess LaCoil,2013060401,false\n';
+        const reader = new CSVReader(str, {});
+
+        expect(reader.getRowCount()).toEqual(3);
+        expect(reader.getRow(0)).toMatchObject(['1', 'Bob', '2024031301', 'true']);
+        expect(reader.getRow(1)).toMatchObject(['2', 'Johnny Thunder', '2022063001', 'false']);
+        expect(reader.getRow(2)).toMatchObject(['3', 'Hess LaCoil', '2013060401', 'false']);
+    });
+
+    test('Read rows windows standard', () => {
+        const str =
+            'Id,Name,EMPLID,Enrolled\r\n1,Bob,2024031301,true\r\n2,Johnny Thunder,2022063001,false\r\n3,Hess LaCoil,2013060401,false\r\n';
         const reader = new CSVReader(str, {});
 
         expect(reader.getRowCount()).toEqual(3);
@@ -38,6 +49,20 @@ describe('c-csv-reader', () => {
         const reader = new CSVReader(str, {
             delim: '|',
             rowDelim: '\r\t',
+        });
+
+        expect(reader.getRowCount()).toEqual(3);
+        expect(reader.getRow(0)).toMatchObject(['1', 'Bob', '2024031301', 'true']);
+        expect(reader.getRow(1)).toMatchObject(['2', 'Johnny Thunder', '2022063001', 'false']);
+        expect(reader.getRow(2)).toMatchObject(['3', 'Hess LaCoil', '2013060401', 'false']);
+    });
+
+    test('Read rows, regex delims', () => {
+        const str =
+            'Id|Name|EMPLID|Enrolled\r1|Bob|2024031301|true\n2|Johnny Thunder|2022063001|false\r\n3|Hess LaCoil|2013060401|false';
+        const reader = new CSVReader(str, {
+            delim: /\|/,
+            rowDelim: /[\r\n]+/,
         });
 
         expect(reader.getRowCount()).toEqual(3);

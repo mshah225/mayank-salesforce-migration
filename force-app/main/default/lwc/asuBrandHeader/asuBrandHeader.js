@@ -1,22 +1,119 @@
-import {LightningElement, api} from 'lwc';
+/* eslint-disable no-undef */
+import {LightningElement, api, wire} from 'lwc';
 import {loadScript, loadStyle} from 'lightning/platformResourceLoader';
-import bootstrap_4_asu from '@salesforce/resourceUrl/bootstrap_4_asu';
-import jQuery from '@salesforce/resourceUrl/jQuery_3_1_1';
 import getFirstName from '@salesforce/apex/ASUBrandUtilities.getFirstName';
-import ASU_Brand_Header_Vendor_URL from '@salesforce/label/c.ASU_Brand_Header_Vendor_URL';
-import ASU_Brand_Header_Components_Library_URL from '@salesforce/label/c.ASU_Brand_Header_Components_Library_URL';
+import BOOTSTRAP4ASU from '@salesforce/resourceUrl/bootstrap_4_asu';
+import REACT from '@salesforce/resourceUrl/react18';
+import HEADER_FOOTER from '@salesforce/resourceUrl/asuHeaderFooterJS';
 
 export default class AsuBrandHeader extends LightningElement {
-    @api title;
-    @api baseUrl;
-    @api navTreeStr;
-    @api buttons = [];
-    @api noAutoSpacer = false;
-    @api stationary = false;
-    @api dontLoadStyles = false;
-    oldStyle = false;
-    oldStyleSelectedTab = null;
+    /**
+     * Properties for configuring header
+     * Default preference is:
+     *  1. @api defined
+     *  2. URL defined
+     *  3. Default value
+     */
+    @api set title(v) {
+        this._title = v;
+    }
+    get title() {
+        return this._title || this.getUrlParam('title') || 'Arizona State University';
+    }
 
+    _baseUrl;
+    @api set baseUrl(v) {
+        this._baseUrl = v;
+    }
+    get baseUrl() {
+        return this._baseUrl || this.getUrlParam('baseUrl') || 'https://www.asu.edu/';
+    }
+
+    _navTreeStr;
+    @api set navTreeStr(v) {
+        this._navTreeStr = v;
+    }
+    get navTreeStr() {
+        return this._navTreeStr || this.getUrlParam('navbar') || '{ "navbarLinks" : [ { } ] }';
+    }
+    /**
+     * Get navTree object from navTreeStr - while navTreeStr can be either the new navTree-style or the old navbar-style,
+     * this object is always the new style, ready to be used by the ASU Header component
+     */
+    get navTree() {
+        let navTree = [];
+        const navObj = JSON.parse(this.navTreeStr);
+
+        // Carefully unwrap object
+        if (
+            navObj != null &&
+            typeof navObj === 'object' &&
+            navObj.navbarLinks != null &&
+            Array.isArray(navObj.navbarLinks)
+        ) {
+            /* Two formats are possbile
+             *  1. navbar-style
+             *  2. navTree-style
+             *
+             * navbar-style objects have the shape
+             *  { "Tab Name": "Tab URL" }
+             * navTree-style objects have the shape (see ASU header docs for other optional params)
+             *  { "text": "Tab Name", "href": "Tab URL" }
+             */
+
+            for (const navbarLink of navObj.navbarLinks) {
+                const objKeys = Object.keys(navbarLink);
+
+                if (objKeys.length === 0) {
+                    // no value (misconfiguration)
+                } else if (objKeys.length > 1 || objKeys.includes('text') || objKeys.includes('href')) {
+                    // navTree-style (no changes)
+                    navTree.push(navbarLink);
+                } else {
+                    // navbar-style (create navTree element)
+
+                    const name = objKeys[0].replace('+', ' ');
+                    const url = navbarLink[name];
+
+                    let navTreeElem = {text: name, href: url};
+
+                    // Special rule for student home - convert text to home-icon
+                    if (name === 'Student Home') {
+                        navTreeElem.type = 'icon';
+                        navTreeElem.class = 'home';
+                    }
+
+                    // Special rule for showing which tab is selected
+                    if (this.getUrlParam('salesforceTabName') === name) navTreeElem.selected = true;
+
+                    navTree.push(navTreeElem);
+                }
+            }
+        } else {
+            navTree = [];
+        }
+
+        return navTree;
+    }
+
+    _buttons = [];
+    @api set buttons(v) {
+        this._buttons = v;
+    }
+    get buttons() {
+        return this._buttons;
+    }
+
+    /**
+     * Configurations to change behavior of header
+     */
+    @api stationary = false; // Use relative positioning rather than fixed positioning
+    @api dontLoadStyles = false; // Don't load ASU brand style
+    @api noAutoSpacer = false; // Don't automatically update top-of-page spacing
+
+    /**
+     * Enable the view as
+     */
     @api viewingAs = false;
     @api viewAsFirstName;
     @api viewAsLastName;
@@ -24,176 +121,157 @@ export default class AsuBrandHeader extends LightningElement {
     @api viewAsViewAsUrl;
     @api viewAsStopViewAsUrl;
 
+    /**
+     * Get the user's name (if they are logged in)
+     */
+    @wire(getFirstName, {})
+    gotFirstName({data, error}) {
+        if (data !== undefined) {
+            // logged in, update name
+            this.userName = data;
+            this.renderHeader();
+        } else if (error !== undefined) {
+            // not logged in - no error
+        }
+    }
+    userName;
+
+    /**
+     * Load all dependencies
+     */
     connectedCallback() {
-        if (!this.dontLoadStyles) loadStyle(this, bootstrap_4_asu + '/dist/css/bootstrap-asu.min.css');
+        if (!this.dontLoadStyles) loadStyle(this, BOOTSTRAP4ASU + '/dist/css/bootstrap-asu.min.css');
 
-        const params = new URLSearchParams(window.location.search);
-
-        // Precedence: @api defined > URL param > default value
-
-        // Title
-        if (this.title === undefined) {
-            this.title = params.get('title');
-
-            if (this.title === null) {
-                this.title = 'Arizona State University';
-            }
-        }
-
-        // Base URL
-        if (this.baseUrl === undefined) {
-            this.baseUrl = params.get('baseUrl');
-
-            if (this.baseUrl === null) {
-                this.baseUrl = 'https://www.asu.edu/';
-            }
-        }
-
-        // Nav Tree
-        if (this.navTreeStr === undefined) {
-            this.navTreeStr = params.get('navTree');
-
-            if (this.navTreeStr === null) {
-                this.navTreeStr = params.get('navbar');
-                if (this.navTreeStr != null) {
-                    this.oldStyle = true;
-                    this.oldStyleSelectedTab = params.get('salesforceTabName');
-                }
-            }
-
-            if (this.navTreeStr === null) {
-                this.navTreeStr = '{ "navbarLinks" : [ { } ] }';
-            }
-        }
-    }
-
-    renderedCallback() {
-        if (this.stationary) {
-            this.template.querySelector('.top-level-wrapper').classList.add('force-relative-header');
-        }
-        if (this.viewingAs) {
-            this.template.querySelector('.top-level-wrapper').classList.add('view-as-enabled');
-        }
-
-        loadScript(this, jQuery).then(() => {
-            $.getScript(ASU_Brand_Header_Vendor_URL, () => {
-                $.getScript(ASU_Brand_Header_Components_Library_URL, () => {
-                    this.generateHeader();
-                });
+        // Load React (dependency for header)
+        loadScript(this, REACT + '/react.production.min.js')
+            .then(() => {
+                // Load ReactDOM (dependency for header)
+                return loadScript(this, REACT + '/react-dom.production.min.js');
+            })
+            .then(() => {
+                // Load header module
+                return loadScript(this, HEADER_FOOTER);
+            })
+            .then(() => {
+                this.renderHeader();
+            })
+            .catch((e) => {
+                console.error('Error Loading Header Dependencies', e);
             });
-        });
     }
 
-    generateHeader() {
-        const idSelector = this.template.querySelector('.header-container').id;
-        const navTree = this.convertStrToNavTreeObj(this.navTreeStr);
+    /**
+     * Wrapper classes that override some styles
+     */
+    get wrapperClasses() {
+        let classLs = [];
 
-        // Additional header params to investigate:
-        // buttons
-        // logoutLink (need to set custom for SF here)
-        // loginLink (need to set custom for sites that don't have users already logged in)
+        if (this.stationary) classLs.push('force-relative-header');
+        if (this.viewingAs) classLs.push('view-as-enabled');
 
-        // Always have these props
-        let props = {
-            navTree: navTree,
+        return classLs.join(' ');
+    }
+
+    /**
+     * Rendered the component
+     */
+    renderedCallback() {
+        this.renderHeader();
+    }
+
+    /**
+     * Render the header
+     */
+    renderHeader() {
+        if (this.refs?.attachRoot == null) return; // not rendered yet
+        if (typeof AsuHeaderFooter !== 'object') return; // dependencies still loading
+
+        const props = {
             title: this.title,
             baseUrl: this.baseUrl,
+            navTree: this.navTree,
         };
 
-        // Add section for view as
+        // Add section for view as (CSS is used to only shown this when in dropdown mode)
         if (this.viewingAs) {
-            props.navTree.push({
-                text: 'View As Student',
-                href: this.viewAsViewAsUrl,
-            });
-            props.navTree.push({
-                text: 'Stop Viewing As: ' + this.viewAsFirstName,
-                href: this.viewAsStopViewAsUrl,
-            });
+            props.buttons = [
+                {
+                    text: 'View As Student',
+                    href: this.viewAsViewAsUrl,
+                    color: 'light',
+                    classes: 'view-as-button',
+                },
+                {
+                    text: 'Stop Viewing As: ' + this.viewAsFirstName,
+                    href: this.viewAsStopViewAsUrl,
+                    color: 'light',
+                    classes: 'view-as-button',
+                },
+            ];
         }
 
-        getFirstName()
-            .then((name) => {
-                props.loggedIn = true;
-                props.userName = name;
-            })
-            .catch(() => {})
-            .finally(() => {
-                componentsLibrary.initHeader(props, idSelector, false, this.template);
-                this.setupSpacerResizing();
-            });
-    }
-    convertStrToNavTreeObj(navTreeStr) {
-        const json = JSON.parse(navTreeStr);
-        const entries = json['navbarLinks'];
-        let listOfLinks = [];
-
-        if (entries) {
-            if (!this.oldStyle) {
-                listOfLinks = entries;
-            } else {
-                // Backward compatibility with existing URL structure
-                for (let i = 0; i < entries.length; i++) {
-                    let entry = entries[i];
-                    for (let j in entry) {
-                        let name = j;
-                        let url = entry[j];
-
-                        name = name.replace('+', ' ');
-                        if (name === 'Student Home') {
-                            listOfLinks.push({href: url, text: name, type: 'icon', class: 'home'});
-                        } else {
-                            listOfLinks.push({href: url, text: name});
-                        }
-
-                        // Mark whichever tab is selected
-                        if (name === this.oldStyleSelectedTab) {
-                            listOfLinks[listOfLinks.length - 1]['selected'] = true;
-                        }
-                    }
-                }
-            }
+        if (this.userName != null) {
+            props.loggedIn = true;
+            props.userName = this.userName;
         }
-        return listOfLinks;
+
+        try {
+            // Flush sync forces rendering to complete before continuing - which is needed to allow setupSpacerResizing to work properly
+            ReactDOM.flushSync(() => {
+                this.reactRoot.render(React.createElement(AsuHeaderFooter.ASUHeader, props));
+            });
+            this.setupSpacerResizing();
+        } catch (e) {
+            console.error('Error rendering header ', e);
+        }
     }
+
+    /**
+     * React DOM root component
+     */
+    get reactRoot() {
+        // Try to use existing react root - but if it has been removed from page (because
+        // of weird stuff with Lightning Runtime), then create a new one
+        if (this._reactRoot == null || this._reactRoot?._internalRoot?.containerInfo?.isConnected === false) {
+            this._reactRoot = ReactDOM.createRoot(this.refs?.attachRoot);
+        }
+
+        return this._reactRoot;
+    }
+    _reactRoot;
 
     resizeIt() {
-        this.template.querySelector('.header-spacer').style.height =
-            this.template.querySelector('header').clientHeight + 10 + 'px';
+        this.template.firstChild.style.setProperty(
+            '--header-height',
+            this.template.querySelector('header').clientHeight + 'px'
+        );
     }
     setupSpacerResizing() {
-        // Don't do this if auto resizing is off
-        if (this.noAutoSpacer) {
-            return;
-        }
-        this.resizeIt();
-
-        // Bind to element resize via ResizeObserver
         try {
-            new ResizeObserver(() => {
-                this.resizeIt();
-            }).observe(this.template.querySelector('header'));
-        } catch (e) {
-            // Bind to window resize and scroll
-            window.addEventListener('resize', () => {
-                window.setTimeout(() => {
+            // Resize to header height
+            this.resizeIt();
+
+            // Bind to element resize via ResizeObserver if ResizeObserver is defined
+            if (typeof ResizeObserver === 'function') {
+                new ResizeObserver(() => {
                     this.resizeIt();
-                }, 100);
-            });
-            window.addEventListener('scroll', () => {
-                if (window.scrollY < 30) {
-                    // only run near the top of the page
-                    window.setTimeout(() => {
-                        this.resizeIt();
-                    }, 100);
-                }
-            });
-            this.template.querySelector('.header-container').addEventListener('click', () => {
-                // only run near the top of the page
-                window.setTimeout(() => {
-                    this.resizeIt();
-                }, 100);
-            });
+                }).observe(this.template.querySelector('header'));
+            }
+        } catch (ex) {
+            // failure is not an issue - it just messes a little with the styling
+            console.error('Unable to calculate header height: ', ex.message);
+            console.error(ex);
         }
+    }
+
+    /**
+     * Get the value of a URL parameter
+     * @param {String} key URL parameter name
+     * @returns {String} Value of URL parameter
+     */
+    getUrlParam(key) {
+        // eslint-disable-next-line compat/compat
+        const params = new URLSearchParams(window.location.search);
+        return params.get(key);
     }
 }

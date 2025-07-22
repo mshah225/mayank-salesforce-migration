@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Jira_Ticket_Number__c</fullName>
+    <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>This field holds the Jira ticket number for the case it's associated with.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>This field is the Jira ticket number related to this case and contact.</inlineHelpText>
+    <label>Jira Ticket Number</label>
+    <length>20</length>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -26,8 +26,20 @@ public with sharing class CampaignDispatcher implements TriggerDispatcherInterfa
     }
 
     public void beforeInsert() {
+        if (FeatureFlagService.isEnabled('Campaign Trigger', 'Autoset Start Time'))
+            CampaignService.setPrintableStartTime(newList, oldMap);
+        if (FeatureFlagService.isEnabled('Campaign Trigger', 'Autoset End Time'))
+            CampaignService.setPrintableEndTime(newList, oldMap);
+        if (FeatureFlagService.isEnabled('Campaign Trigger', 'Autoset Registration Time'))
+            CampaignService.setPrintableRegistrationTime(newList, oldMap);
     }
     public void beforeUpdate() {
+        if (FeatureFlagService.isEnabled('Campaign Trigger', 'Autoset Start Time'))
+            CampaignService.setPrintableStartTime(newList, oldMap);
+        if (FeatureFlagService.isEnabled('Campaign Trigger', 'Autoset End Time'))
+            CampaignService.setPrintableEndTime(newList, oldMap);
+        if (FeatureFlagService.isEnabled('Campaign Trigger', 'Autoset Registration Time'))
+            CampaignService.setPrintableRegistrationTime(newList, oldMap);
     }
     public void beforeDelete() {
     }

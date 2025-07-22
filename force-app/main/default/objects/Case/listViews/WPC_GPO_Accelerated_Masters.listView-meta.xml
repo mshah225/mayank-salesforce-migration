@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>WPC_GPO_Accelerated_Masters</fullName>
+    <columns>OWNER_NAME</columns>
+    <columns>CASES.CASE_NUMBER</columns>
+    <columns>Preferred_Full_Name__c</columns>
+    <columns>CASES.SUBJECT</columns>
+    <columns>CASES.STATUS</columns>
+    <columns>CASES.PRIORITY</columns>
+    <columns>CASES.CREATED_DATE</columns>
+    <columns>CASES.LAST_UPDATE_DATE_ONLY</columns>
+    <columns>UPDATEDBY_USER.ALIAS</columns>
+    <columns>Age_Days_Excluding_Weekends__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CASES.CLOSED</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>CC_Category__c</field>
+        <operation>equals</operation>
+        <value>WPC GPO - Recruitment</value>
+    </filters>
+    <filters>
+        <field>CC_Sub_Category__c</field>
+        <operation>equals</operation>
+        <value>Accelerated Masters</value>
+    </filters>
+    <label>WPC GPO - Accelerated Masters</label>
+    <sharedTo>
+        <group>Business_Case</group>
+        <group>UTO_Administration</group>
+        <role>S_Service</role>
+    </sharedTo>
+</ListView>

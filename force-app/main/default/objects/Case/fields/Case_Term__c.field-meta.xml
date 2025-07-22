@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Case_Term__c</fullName>
+    <businessOwnerGroup>Data_Owner_SSI</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>Term related to the student inquiry
+[DW: sfe_case]</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Enter the term related to the student inquiry</inlineHelpText>
+    <label>Case Term</label>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>2022 Fall</fullName>
+                <default>false</default>
+                <label>2022 Fall</label>
+            </value>
+            <value>
+                <fullName>2023 Spring</fullName>
+                <default>false</default>
+                <label>2023 Spring</label>
+            </value>
+            <value>
+                <fullName>2023 Summer</fullName>
+                <default>false</default>
+                <label>2023 Summer</label>
+            </value>
+            <value>
+                <fullName>2023 Fall</fullName>
+                <default>false</default>
+                <label>2023 Fall</label>
+            </value>
+            <value>
+                <fullName>2024 Spring</fullName>
+                <default>false</default>
+                <label>2024 Spring</label>
+            </value>
+            <value>
+                <fullName>2024 Summer</fullName>
+                <default>false</default>
+                <label>2024 Summer</label>
+            </value>
+            <value>
+                <fullName>2024 Fall</fullName>
+                <default>false</default>
+                <label>2024 Fall</label>
+            </value>
+            <value>
+                <fullName>2025 Spring</fullName>
+                <default>false</default>
+                <label>2025 Spring</label>
+            </value>
+            <value>
+                <fullName>2025 Summer</fullName>
+                <default>false</default>
+                <label>2025 Summer</label>
+            </value>
+            <value>
+                <fullName>2025 Fall</fullName>
+                <default>false</default>
+                <label>2025 Fall</label>
+            </value>
+            <value>
+                <fullName>2026 Spring</fullName>
+                <default>false</default>
+                <label>2026 Spring</label>
+            </value>
+            <value>
+                <fullName>2026 Summer</fullName>
+                <default>false</default>
+                <label>2026 Summer</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

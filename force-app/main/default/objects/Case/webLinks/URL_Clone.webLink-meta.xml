@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>URL_Clone</fullName>
+    <availability>online</availability>
+    <displayType>button</displayType>
+    <encodingKey>UTF-8</encodingKey>
+    <linkType>url</linkType>
+    <masterLabel>Clone</masterLabel>
+    <openType>replace</openType>
+    <protected>false</protected>
+    <url>/{!Case.Id}/e?clone=1&amp;retURL={!Case.Id}&amp;cas28={!Case.CaseNumber}&amp;cas28_lkid={!Case.Id}&amp;cas14=Cloned: {!Case.Subject}&amp;00Nd0000009RQNb=0&amp;cas7=New&amp;00Nd0000007tI9a=Clone&amp;00Nd0000007segs=&amp;00Nd0000007tpIj=&amp;00Nd0000007uduE=0</url>
+</WebLink>

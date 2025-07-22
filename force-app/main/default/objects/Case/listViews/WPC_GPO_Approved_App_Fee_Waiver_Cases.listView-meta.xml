@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>WPC_GPO_Approved_App_Fee_Waiver_Cases</fullName>
+    <columns>Age_Days_Excluding_Weekends__c</columns>
+    <columns>CASES.PRIORITY</columns>
+    <columns>OWNER_NAME</columns>
+    <columns>CASES.CASE_NUMBER</columns>
+    <columns>Processing_Status__c</columns>
+    <columns>Preferred_Full_Name__c</columns>
+    <columns>CASES.SUBJECT</columns>
+    <columns>CASES.STATUS</columns>
+    <columns>Opportunity_Owner_s_Full_Name__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CASES.CLOSED</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>CC_Functional_Group__c</field>
+        <operation>equals</operation>
+        <value>Business</value>
+    </filters>
+    <filters>
+        <field>Processing_Status__c</field>
+        <operation>equals</operation>
+        <value>All Approved</value>
+    </filters>
+    <label>WPC GPO - Approved App Fee Waiver Cases</label>
+    <sharedTo>
+        <group>Business_Case</group>
+        <group>UTO_Administration</group>
+        <role>S_Service</role>
+    </sharedTo>
+</ListView>

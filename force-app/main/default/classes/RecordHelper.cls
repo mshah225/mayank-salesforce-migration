@@ -106,7 +106,7 @@ public class RecordHelper {
             );
 
         Object value = pathIter.get(finalStep);
-        
+
         // Cache value
         if (config.cache && sObj?.Id != null) {
             if (!getValueCache.containsKey(sObj.Id))

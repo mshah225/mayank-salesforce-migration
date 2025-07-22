@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Poly_Campus_Registrar</fullName>
+    <booleanFilter>(1 or 2) AND 3</booleanFilter>
+    <columns>CASES.CASE_NUMBER</columns>
+    <columns>Preferred_Full_Name__c</columns>
+    <columns>CASES.SUBJECT</columns>
+    <columns>Sub_Category__c</columns>
+    <columns>Campus__c</columns>
+    <columns>CASES.STATUS</columns>
+    <columns>CASES.PRIORITY</columns>
+    <columns>CASES.CREATED_DATE</columns>
+    <columns>CASES.LAST_UPDATE</columns>
+    <columns>Total_Attachments__c</columns>
+    <filterScope>Queue</filterScope>
+    <filters>
+        <field>Category__c</field>
+        <operation>equals</operation>
+        <value>Poly Campus</value>
+    </filters>
+    <filters>
+        <field>Campus__c</field>
+        <operation>equals</operation>
+        <value>Polytechnic</value>
+    </filters>
+    <filters>
+        <field>CASES.CLOSED</field>
+        <operation>notEqual</operation>
+        <value>1</value>
+    </filters>
+    <label>REG Poly Campus</label>
+    <queue>University_Registrar_Services_Case</queue>
+    <sharedTo>
+        <group>Additional_Registrar_Access</group>
+        <group>Registrar_Case</group>
+    </sharedTo>
+</ListView>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Private_Note_Help_Desk__c</fullName>
+    <description>[??] - Private notes are visible only to Help Desk team members and any other user who has been given explicit permission to view.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Private notes are visible only to Help Desk team members and any other user who has been given explicit permission to view.</inlineHelpText>
+    <label>Private Note - Help Desk</label>
+    <length>1000</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>List of roles for the user audit functionality.  These are the options in the dropdown on the User Audit page.</description>
+    <label>User Search Roles Setting</label>
+    <pluralLabel>User Search Roles Settings</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

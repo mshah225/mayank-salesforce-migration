@@ -49,4 +49,99 @@ public with sharing class CampaignService {
         }
         update CampaignList;
     }
+
+    /**
+     * On each record, whenever Normalized_Event_Start_Time__c changes, update the Event_Start_Time__c to the corresponding
+     * time following the ASU Communication Guidelines format.
+     */
+    public static void setPrintableStartTime(List<Campaign> newList, Map<Id, Campaign> oldMap) {
+        for (Campaign newCampaign : newList) {
+            Campaign oldCampaign = oldMap == null ? null : oldMap.get(newCampaign.Id);
+            if (oldCampaign?.Normalized_Event_Start_Time__c != newCampaign?.Normalized_Event_Start_Time__c) {
+                newCampaign.Event_Start_Time__c = convertTimeToASUCommunciationGuidelines(
+                    newCampaign.Normalized_Event_Start_Time__c
+                );
+            }
+        }
+    }
+
+    /**
+     * On each record, whenever Normalized_Event_End_Time__c changes, update the Event_End_Time__c to the corresponding
+     * time following the ASU Communication Guidelines format.
+     */
+    public static void setPrintableEndTime(List<Campaign> newList, Map<Id, Campaign> oldMap) {
+        for (Campaign newCampaign : newList) {
+            Campaign oldCampaign = oldMap == null ? null : oldMap.get(newCampaign.Id);
+            if (oldCampaign?.Normalized_Event_End_Time__c != newCampaign?.Normalized_Event_End_Time__c) {
+                newCampaign.Event_End_Time__c = convertTimeToASUCommunciationGuidelines(
+                    newCampaign.Normalized_Event_End_Time__c
+                );
+            }
+        }
+    }
+
+    /**
+     * On each record, whenever Normalized_Registration_Time__c changes, update the Registration_Time__c to the corresponding
+     * time following the ASU Communication Guidelines format.
+     */
+    public static void setPrintableRegistrationTime(List<Campaign> newList, Map<Id, Campaign> oldMap) {
+        for (Campaign newCampaign : newList) {
+            Campaign oldCampaign = oldMap == null ? null : oldMap.get(newCampaign.Id);
+            if (oldCampaign?.Normalized_Registration_Time__c != newCampaign?.Normalized_Registration_Time__c) {
+                newCampaign.Registration_Time__c = convertTimeToASUCommunciationGuidelines(
+                    newCampaign.Normalized_Registration_Time__c
+                );
+            }
+        }
+    }
+
+    /**
+     * Converts a Time object to a string following the ASU communication guidelines
+     * https://brandguide.asu.edu/brand-elements/writing-content/time-days-months-years
+     *
+     * This means:
+     *      "noon"            if the time is at noon
+     *      "%h a.m./p.m."    for times that are on the hour
+     *      "%h:%m a.m./p.m." for times that include a minute
+     *
+     * Notes:
+     *      Returns empty string if time is null
+     *
+     * @param tm Time object to convert
+     *
+     * @return A string representing the time
+     */
+    public static String convertTimeToASUCommunciationGuidelines(Time tm) {
+        if (tm == null) {
+            // if time is changed to null, clear the printable timestring
+            return '';
+        } else if (tm.hour() == 12 && tm.minute() == 0) {
+            // Special case "noon"
+            return 'noon';
+        } else {
+            Integer hour = tm.hour();
+            Integer minute = tm.minute();
+            String ampm = 'a.m.';
+
+            // Edge cases for converting from 24-hour time to 12-hour times
+            if (hour == 0) {
+                hour = 12;
+                ampm = 'a.m.';
+            } else if (hour == 12) {
+                hour = 12;
+                ampm = 'p.m.';
+            } else if (hour > 12) {
+                hour -= 12;
+                ampm = 'p.m.';
+            }
+
+            if (minute == 0) {
+                // On the hour - don't include minute
+                return hour + ' ' + ampm;
+            } else {
+                // Has a minute component - include it
+                return hour + ':' + minute + ' ' + ampm;
+            }
+        }
+    }
 }

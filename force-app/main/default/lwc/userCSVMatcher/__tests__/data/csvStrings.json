@@ -1,0 +1,4 @@
+{
+    "asuriteList": "jthunders\njnolan\rrhell\nwlure\n",
+    "expectedCSV": "ASURITE,First Name,Email\njthunders,Johnny Thunders,johnny.thunders@test.test\njnolan,Jerry Nolan,jerry.nolan@test.test\rrhell,Richard Hell,richard.hell@test.test\nwlure,Walter Lure,walter.lure@test.test\n"
+}

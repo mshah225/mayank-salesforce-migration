@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Single one-off configuration settings</description>
+    <label>User Search Config Setting</label>
+    <pluralLabel>User Search Config Settings</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

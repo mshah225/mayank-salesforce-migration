@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Transfer_Case</fullName>
+    <availability>online</availability>
+    <description>This button opens the case transfer visualforce page to transfer the case.</description>
+    <displayType>button</displayType>
+    <height>600</height>
+    <linkType>page</linkType>
+    <masterLabel>Transfer Case</masterLabel>
+    <openType>sidebar</openType>
+    <page>CaseTransfer</page>
+    <protected>false</protected>
+</WebLink>

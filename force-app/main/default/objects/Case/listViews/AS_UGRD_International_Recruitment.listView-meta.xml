@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AS_UGRD_International_Recruitment</fullName>
+    <booleanFilter>1 AND 2 AND 3</booleanFilter>
+    <columns>CASES.CASE_NUMBER</columns>
+    <columns>Category__c</columns>
+    <columns>Sub_Category__c</columns>
+    <columns>Preferred_Full_Name__c</columns>
+    <columns>CASES.SUBJECT</columns>
+    <columns>CASES.STATUS</columns>
+    <columns>CASES.PRIORITY</columns>
+    <columns>CASES.CREATED_DATE</columns>
+    <columns>CASES.LAST_UPDATE_DATE_ONLY</columns>
+    <columns>UPDATEDBY_USER.ALIAS</columns>
+    <columns>Total_Attachments__c</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <columns>Contact_Country__c</columns>
+    <columns>Contact_State__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CASES.CLOSED</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>CC_Category__c</field>
+        <operation>equals</operation>
+        <value>International Recruitment</value>
+    </filters>
+    <filters>
+        <field>CORE.USERS.ALIAS</field>
+        <operation>equals</operation>
+        <value>Admission Services (case),sfadmin,gradrfi,dbamp,asudrupl,MCTrack,mulesoft</value>
+    </filters>
+    <label>AS International Recruitment</label>
+    <sharedTo>
+        <group>Additional_AS_OPS_Case_Access</group>
+        <group>Admission_Services_OPS_Case</group>
+        <group>ES_Information_Systems_Development_Team</group>
+        <group>International_Recruiter_Case</group>
+        <group>UTO_Administration</group>
+    </sharedTo>
+</ListView>

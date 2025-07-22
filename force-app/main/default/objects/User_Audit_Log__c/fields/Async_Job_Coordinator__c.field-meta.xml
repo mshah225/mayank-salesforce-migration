@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Async_Job_Coordinator__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <description>Job coordinator - used to track long running batchable job.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Job coordinator - used to track long running batchable job.</inlineHelpText>
+    <label>Async Job Coordinator</label>
+    <referenceTo>Async_Job_Coordinator__c</referenceTo>
+    <relationshipLabel>User Audit Logs</relationshipLabel>
+    <relationshipName>User_Audit_Logs</relationshipName>
+    <required>true</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

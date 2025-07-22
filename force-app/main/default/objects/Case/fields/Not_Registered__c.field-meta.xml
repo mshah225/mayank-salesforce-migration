@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Not_Registered__c</fullName>
+    <businessOwnerGroup>Data_Owner_Ed_Plus</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>Field used by Ed Plus Success Coaches to select a reason why the student is not registering next session/semester.
+[DW: sfe_case]</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Select the reason why the student is not registering.</inlineHelpText>
+    <label>Not Registered</label>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Admissions Hold</fullName>
+                <default>false</default>
+                <label>Admissions Hold</label>
+            </value>
+            <value>
+                <fullName>Advising Hold</fullName>
+                <default>false</default>
+                <label>Advising Hold</label>
+            </value>
+            <value>
+                <fullName>Already attending another Institution</fullName>
+                <default>false</default>
+                <label>Already attending another Institution</label>
+            </value>
+            <value>
+                <fullName>Applied to Graduate</fullName>
+                <default>false</default>
+                <label>Applied to Graduate</label>
+            </value>
+            <value>
+                <fullName>Corporate Partner Taxation Limit</fullName>
+                <default>false</default>
+                <label>Corporate Partner Taxation Limit</label>
+            </value>
+            <value>
+                <fullName>Enrolled for next term</fullName>
+                <default>false</default>
+                <label>Enrolled for next term</label>
+            </value>
+            <value>
+                <fullName>Financial Hold</fullName>
+                <default>false</default>
+                <label>Financial Hold</label>
+            </value>
+            <value>
+                <fullName>Leaving ASU</fullName>
+                <default>false</default>
+                <label>Leaving ASU</label>
+            </value>
+            <value>
+                <fullName>Military Benefits Unavailable</fullName>
+                <default>false</default>
+                <label>Military Benefits Unavailable</label>
+            </value>
+            <value>
+                <fullName>Military Reasons</fullName>
+                <default>false</default>
+                <label>Military Reasons</label>
+            </value>
+            <value>
+                <fullName>Need Course Recommendations</fullName>
+                <default>false</default>
+                <label>Need Course Recommendations</label>
+            </value>
+            <value>
+                <fullName>No additional funding available</fullName>
+                <default>false</default>
+                <label>No additional funding available</label>
+            </value>
+            <value>
+                <fullName>Not Eligible for CP benefits</fullName>
+                <default>false</default>
+                <label>Not Eligible for CP benefits</label>
+            </value>
+            <value>
+                <fullName>Personal and/or Health (Both Sessions A&amp;B)</fullName>
+                <default>false</default>
+                <label>Personal and/or Health (Both Sessions A&amp;B)</label>
+            </value>
+            <value>
+                <fullName>Personal and/or Health (Session A)</fullName>
+                <default>false</default>
+                <label>Personal and/or Health (Session A)</label>
+            </value>
+            <value>
+                <fullName>Personal and/or Health (Session B)</fullName>
+                <default>false</default>
+                <label>Personal and/or Health (Session B)</label>
+            </value>
+            <value>
+                <fullName>Plans to register</fullName>
+                <default>false</default>
+                <label>Plans to register</label>
+            </value>
+            <value>
+                <fullName>Required courses not offered</fullName>
+                <default>false</default>
+                <label>Required courses not offered</label>
+            </value>
+            <value>
+                <fullName>Student did not disclose reason for stop out (Both Sessions A&amp;B)</fullName>
+                <default>false</default>
+                <label>Student did not disclose reason for stop out (Both Sessions A&amp;B)</label>
+            </value>
+            <value>
+                <fullName>Student did not disclose reason for stop out (Session A)</fullName>
+                <default>false</default>
+                <label>Student did not disclose reason for stop out (Session A)</label>
+            </value>
+            <value>
+                <fullName>Student did not disclose reason for stop out (Session B)</fullName>
+                <default>false</default>
+                <label>Student did not disclose reason for stop out (Session B)</label>
+            </value>
+            <value>
+                <fullName>Taking a break for a Term (A/B session) - personal and/or health</fullName>
+                <default>false</default>
+                <label>Taking a break for a Term (A/B session) - personal and/or health</label>
+            </value>
+            <value>
+                <fullName>Taking a break for a Term (A/B session) - work related</fullName>
+                <default>false</default>
+                <label>Taking a break for a Term (A/B session) - work related</label>
+            </value>
+            <value>
+                <fullName>Taking a break for term A + B (Semester)</fullName>
+                <default>false</default>
+                <label>Taking a break for term A + B (Semester)</label>
+            </value>
+            <value>
+                <fullName>Taking Session A off</fullName>
+                <default>false</default>
+                <label>Taking Session A off</label>
+            </value>
+            <value>
+                <fullName>Taking Session B off</fullName>
+                <default>false</default>
+                <label>Taking Session B off</label>
+            </value>
+            <value>
+                <fullName>Taking Summer off</fullName>
+                <default>false</default>
+                <label>Taking Summer off</label>
+            </value>
+            <value>
+                <fullName>Unable to reach Advising</fullName>
+                <default>false</default>
+                <label>Unable to reach Advising</label>
+            </value>
+            <value>
+                <fullName>Unknown - Student unresponsive</fullName>
+                <default>false</default>
+                <label>Unknown - Student unresponsive</label>
+            </value>
+            <value>
+                <fullName>Work Schedule Issues (Both Sessions A&amp;B)</fullName>
+                <default>false</default>
+                <label>Work Schedule Issues (Both Sessions A&amp;B)</label>
+            </value>
+            <value>
+                <fullName>Work Schedule Issues (Session A)</fullName>
+                <default>false</default>
+                <label>Work Schedule Issues (Session A)</label>
+            </value>
+            <value>
+                <fullName>Work Schedule Issues (Session B)</fullName>
+                <default>false</default>
+                <label>Work Schedule Issues (Session B)</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

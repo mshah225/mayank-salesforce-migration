@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Value__c</fullName>
+    <description>What was the value of this field at the time of the audit.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>What was the value of this field at the time of the audit.</inlineHelpText>
+    <label>Value</label>
+    <length>32768</length>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

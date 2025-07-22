@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AS_Amazon_Career_Choice</fullName>
+    <columns>CASES.CASE_NUMBER</columns>
+    <columns>NAME</columns>
+    <columns>CASES.SUBJECT</columns>
+    <columns>CASES.STATUS</columns>
+    <columns>CASES.PRIORITY</columns>
+    <columns>CASES.CREATED_DATE</columns>
+    <columns>CORE.USERS.ALIAS</columns>
+    <filterScope>Queue</filterScope>
+    <filters>
+        <field>CASES.CLOSED</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
+    <filters>
+        <field>CC_Category__c</field>
+        <operation>equals</operation>
+        <value>Transfer Recruitment</value>
+    </filters>
+    <filters>
+        <field>CC_Sub_Category__c</field>
+        <operation>equals</operation>
+        <value>Amazon Career Choice Program</value>
+    </filters>
+    <label>AS Amazon Career Choice</label>
+    <queue>Admission_Services_Undergrad_Case</queue>
+    <sharedTo>
+        <group>Additional_Undergraduate_Admissions_Case</group>
+        <group>Admission_Services_Case</group>
+        <group>UTO_Administration</group>
+    </sharedTo>
+</ListView>

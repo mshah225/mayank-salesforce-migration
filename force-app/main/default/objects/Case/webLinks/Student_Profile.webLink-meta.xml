@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Student_Profile</fullName>
+    <availability>online</availability>
+    <description>Opens the student profile</description>
+    <displayType>button</displayType>
+    <linkType>javascript</linkType>
+    <masterLabel>Student Profile</masterLabel>
+    <openType>onClickJavaScript</openType>
+    <protected>false</protected>
+    <url>var empl = '{!Contact.EMPLID__c}';
+if(empl.length &lt;= 0 ) {
+    alert('EMPLID does not exist for this Contact so Student Profile will not render.');
+} else {
+    if(typeof(srcUp)=='function') {
+        srcUp('/apex/StudentProfile?contactId={!Contact.EMPLID__c}');
+    } else {
+        window.open('/apex/StudentProfile?contactId={!Contact.EMPLID__c}', '_blank');
+    }
+}</url>
+</WebLink>

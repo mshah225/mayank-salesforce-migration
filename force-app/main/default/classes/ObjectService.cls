@@ -15,6 +15,51 @@ public class ObjectService {
     }
 
     /**
+     * Set a field on an sobject, this function automatically casts from String to the needed object type
+     *
+     * @param objectName What type of object is it?
+     * @param obj The object to modify
+     * @param fieldName The field to set
+     * @param value The new value as a string
+     */
+    public static void setFromStringEqualivalent(String objectName, SObject obj, String fieldName, String value) {
+        Schema.SoapType soapType = getObjectFieldMap(objectName).get(fieldName).getDescribe().getSoapType();
+        String type = String.valueOf(soapType).toLowerCase();
+
+        if (value == null || value == '')
+            return;
+
+        switch on type {
+            when 'boolean' {
+                obj.put(fieldName, Boolean.valueOf(value));
+            }
+            when 'date' {
+                obj.put(fieldName, Date.valueOf(value));
+            }
+            when 'datetime' {
+                obj.put(fieldName, Datetime.valueOf(value));
+            }
+            when 'double' {
+                obj.put(fieldName, Double.valueOf(value));
+            }
+            when 'id' {
+                obj.put(fieldName, Id.valueOf(value));
+            }
+            when 'integer' {
+                obj.put(fieldName, Integer.valueOf(value));
+            }
+            when 'string' {
+                obj.put(fieldName, String.valueOf(value));
+            }
+            when else {
+                throw new ObjectServiceException(
+                    'Unsupported object type - doesn\'t know how to convert this string to the respective object'
+                );
+            }
+        }
+    }
+
+    /**
      * Returns all the fields on an object in a string delimited by ','
      * @param A map containing the fields of an object
      * @return A string of the field names
@@ -152,6 +197,98 @@ public class ObjectService {
         }
     }
 
+    public static final String WHITESPACE_REGEX = '[\\s|\\u00A0|\\u0085|\\u2007|\\u202F|\\u180E|\\u200B|\\u200C|\\u200D|\\u2060|\\uFEFF]';
+    public static String trimWhitespace(String str) {
+        return trimRegex(str, WHITESPACE_REGEX);
+    }
+
+    /**
+     * Trim a specific regex from the beginning and end of a string
+     *
+     * @param str The string to trim
+     * @param regex The regex to remove
+     *
+     * @return The trimmed string
+     */
+    public static String trimRegex(String str, String regex) {
+        Integer firstNonMatchingRegexIndx = -1, lastNonMatchingRegexIndx = -1;
+        Boolean thereIsTrimmableRegex = false;
+
+        Boolean prevMatchedRegex = true;
+        for (Integer i = 0; i < str.length(); i++) {
+            String substr = str.substring(i, i + 1);
+            // Check if the current character is a type of whitespace
+            // we use replaceAll since it allows us to replace using regex (most other String
+            // functions don't seem to). Since we are replaceing one character at a time, there
+            // are no concerns about the input string containing the string "MATCHES_REGEX" and
+            // potential false positives
+            if (substr.replaceAll(regex, 'MATCHES_REGEX').contains('MATCHES_REGEX')) {
+                // if it is - but the previous character was not, then we might be looking at
+                // trailing matches, and we should record the previous index as the last
+                // non match
+                if (!prevMatchedRegex) {
+                    lastNonMatchingRegexIndx = i - 1;
+                }
+                prevMatchedRegex = true;
+            } else {
+                // if this isn't matching - then we might have just finished passing through
+                // the leading matches, if we haven't found this first non-matching
+                // character yet, record this.
+                if (firstNonMatchingRegexIndx == -1) {
+                    firstNonMatchingRegexIndx = i;
+                }
+                prevMatchedRegex = false;
+                lastNonMatchingRegexIndx = -1; // we also know that if this is non-match, then previous matches were not trailing
+            }
+        }
+
+        // There was no regex match at all...
+        if (str.replaceAll(regex, '') == str)
+            return str;
+
+        // All characters were matching regex...
+        if (String.isBlank(str.replaceAll(regex, '')))
+            return '';
+
+        // there was leading, but no trailing regex match
+        if (lastNonMatchingRegexIndx == -1)
+            return str.substring(firstNonMatchingRegexIndx);
+
+        // Get everything between regex matches at either end
+        return str.substring(firstNonMatchingRegexIndx, lastNonMatchingRegexIndx + 1);
+    }
+
+    /**
+     * Get the value of a field from an sobject
+     * Automatically handle cases where there are intermediary SObjects (e.g. Contact__r.Name)
+     *
+     * @param sObj The SObject
+     * @param path the field name/path (e.g. "Subject" or "Contact__r.Name")
+     *
+     * @return A string of the value of the field
+     */
+    public static String getFieldValueFromSObj(SObject sObj, String path) {
+        String fieldName = path;
+        String fieldValue = null;
+
+        if (fieldName.contains('.')) {
+            // some lookups involved
+            List<String> lookups = fieldName.split('\\.'); // split lookups
+            fieldName = lookups[lookups.size() - 1]; // final one is the field name
+            SObject tempSObj = sObj;
+            for (Integer i = 0; i < lookups.size() - 1; i++) {
+                String lookupName = lookups[i];
+                tempSObj = tempSObj.getSObject(lookupName);
+            }
+            fieldValue = String.valueOf(tempSObj.get(fieldName));
+        } else {
+            // simple field on object
+            fieldValue = String.valueOf(sObj.get(fieldName));
+        }
+
+        return fieldValue;
+    }
+
     /**
      * Use this method to update the version of an SObject in a map
      * If the SObject is not in the map (Key is ID), then insert it
@@ -273,6 +410,19 @@ public class ObjectService {
             optionsToReturn.add(new SelectOption(labelToValue.get(label), label));
         }
         return optionsToReturn;
+    }
+
+    /**
+     * Check if a field value has changed on an object
+     */
+    public static Boolean hasChanged(SObject newObj, SObject oldObj, String fieldName) {
+        if (oldObj == null)
+            return true;
+
+        Object oldValue = oldObj.get(fieldName);
+        Object newValue = newObj.get(fieldName);
+
+        return oldValue != newValue;
     }
 
     public class ObjectServiceException extends Exception {

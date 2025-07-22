@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Initial_Request_Sent_To_Addresses__c</fullName>
+    <description>[Inbound Email Header / Email to Case code] If this case was created by an incoming email, then this field is set to the “To” and “CC” addresses seen in the incoming email header. The email addresses here are what CARs use for inbound emails. This field is also used to re-create cases from the My ASU Help tab when the student is replying to a case that’s been closed for more than 14 days.
+[DW: sfe_case]</description>
+    <externalId>false</externalId>
+    <inlineHelpText>[Inbound Email Header / Email to Case code] If this case was created by an incoming email, then this field is set to the “To” and “CC” addresses seen in the incoming email header. The email addresses here are what CARs use for inbound emails. This field is also used to re-create cases from the My ASU Help tab when the student is replying to a case that’s been closed for more than 14 days.</inlineHelpText>
+    <label>Initial Request Sent To Addresses</label>
+    <length>1000</length>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

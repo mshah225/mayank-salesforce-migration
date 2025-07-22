@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Reason_for_Escalation__c</fullName>
+    <businessOwnerGroup>Help_Desk_Case</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>This field is used by Help Desk when transferring cases to Financial Aid and Student Business Services functional group. This field retains it's value when transferring via the case transfer page
+[DW: sfe_case]</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Help Desk: select a value from this list when transferring to Financial Aid or Student Business Services</inlineHelpText>
+    <label>Reason for Escalation</label>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Priority</controllingField>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Approaching Deadline</fullName>
+                <default>false</default>
+                <label>Approaching Deadline</label>
+            </value>
+            <value>
+                <fullName>Confirmation of Participation</fullName>
+                <default>false</default>
+                <label>Confirmation of Participation</label>
+            </value>
+            <value>
+                <fullName>Corp Partner Eligibility</fullName>
+                <default>false</default>
+                <label>Corp Partner Eligibility</label>
+            </value>
+            <value>
+                <fullName>Disbursement Hold and File Complete</fullName>
+                <default>false</default>
+                <label>Disbursement Hold and File Complete</label>
+            </value>
+            <value>
+                <fullName>From President's Office</fullName>
+                <default>false</default>
+                <label>From President's Office</label>
+            </value>
+            <value>
+                <fullName>Navy Student Eligibility/Awarding/Concerns</fullName>
+                <default>false</default>
+                <label>Navy Student Eligibility/Awarding/Concerns</label>
+            </value>
+            <value>
+                <fullName>Not Packaged but File is Complete</fullName>
+                <default>false</default>
+                <label>Not Packaged but File is Complete</label>
+            </value>
+            <value>
+                <fullName>Overawards</fullName>
+                <default>false</default>
+                <label>Overawards</label>
+            </value>
+            <value>
+                <fullName>Over Processing Timeframe</fullName>
+                <default>false</default>
+                <label>Over Processing Timeframe</label>
+            </value>
+            <value>
+                <fullName>SBUX/Other Corporate Partner Awarding</fullName>
+                <default>false</default>
+                <label>SBUX/Other Corporate Partner Awarding</label>
+            </value>
+            <value>
+                <fullName>SBUX Session Start Issue</fullName>
+                <default>false</default>
+                <label>SBUX Session Start Issue</label>
+            </value>
+            <value>
+                <fullName>System Error</fullName>
+                <default>false</default>
+                <label>System Error</label>
+            </value>
+            <value>
+                <fullName>Upset Caller</fullName>
+                <default>false</default>
+                <label>Upset Caller</label>
+            </value>
+            <value>
+                <fullName>Withdrawals/Drops</fullName>
+                <default>false</default>
+                <label>Withdrawals/Drops</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>High</controllingFieldValue>
+            <valueName>Disbursement Hold and File Complete</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>High</controllingFieldValue>
+            <valueName>Not Packaged but File is Complete</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>High</controllingFieldValue>
+            <valueName>Overawards</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>High</controllingFieldValue>
+            <valueName>Over Processing Timeframe</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>High</controllingFieldValue>
+            <valueName>SBUX/Other Corporate Partner Awarding</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Urgent</controllingFieldValue>
+            <valueName>Approaching Deadline</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Urgent</controllingFieldValue>
+            <valueName>Confirmation of Participation</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Urgent</controllingFieldValue>
+            <valueName>Corp Partner Eligibility</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Urgent</controllingFieldValue>
+            <valueName>From President's Office</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Urgent</controllingFieldValue>
+            <valueName>Navy Student Eligibility/Awarding/Concerns</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Urgent</controllingFieldValue>
+            <valueName>SBUX Session Start Issue</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Urgent</controllingFieldValue>
+            <valueName>System Error</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Urgent</controllingFieldValue>
+            <valueName>Upset Caller</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Urgent</controllingFieldValue>
+            <valueName>Withdrawals/Drops</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

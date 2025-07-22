@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>UTM_Source__c</fullName>
+    <businessOwnerGroup>Data_Owner_WPC_Graduate_Programs_Office</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <description>[Mulesoft/ RFI] - Displays the text found in the UTM Parameter for Source. This could be a name/ ID/ etc.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>[Mulesoft/ RFI] - Displays the text found in the UTM Parameter for Source. This could be a name/ ID/ etc.</inlineHelpText>
+    <label>UTM Source</label>
+    <length>100</length>
+    <required>false</required>
+    <securityClassification>Internal</securityClassification>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

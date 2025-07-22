@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Required_Fields_on_Close_for_Coaches_V4</fullName>
+    <active>true</active>
+    <description>ASU Coach Outreach The field Drop Reasons or Not Registered is required to close this case on Case Sub Type Not Registered, The Final Countdown, Dropped/Withdrawn Course</description>
+    <errorConditionFormula>AND(
+RecordTypeId = "012d00000021xGL",
+$User.ProfileId &lt;&gt; "00ed00000017Iob" ,
+LEFT( TEXT( Status ),6) = "Closed",
+TEXT( Status ) &lt;&gt; "Closed: Admin",
+TEXT( Status ) &lt;&gt; "Closed: Automated - No Activity",
+TEXT( Status ) &lt;&gt; "Closed: No Contact Necessary",
+ISBLANK( TEXT( Drop_Reasons__c  )),
+ ISBLANK( TEXT(  Not_Registered__c )),
+OR( 
+ TEXT( Sub_Type__c ) = "Not Registered",
+  TEXT( Sub_Type__c ) = "The Final Countdown",
+TEXT( Sub_Type__c ) = "Dropped/Withdrawn Courses - First Session",
+TEXT( Sub_Type__c ) = "Dropped/Withdrawn - All Courses",
+TEXT( Sub_Type__c ) = "Dropped/Withdrawn Course")
+ )</errorConditionFormula>
+    <errorMessage>Drop Reasons or Not Registered is required for this Sub Type</errorMessage>
+</ValidationRule>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Contact_Preference__c</fullName>
+    <businessOwnerGroup>Data_Owner_Ed_Plus</businessOwnerGroup>
+    <businessStatus>Active</businessStatus>
+    <complianceGroup>PII</complianceGroup>
+    <description>[Formula field looks to Contact fields to determine what to display] Examples include: Home Phone, Local Phone, Mobile Phone, Email and will show that value. Used by Success Coach users.</description>
+    <externalId>false</externalId>
+    <formula>CASE(Contact.Contact_Preference__c,
+    "Home Phone", Contact.HomePhone,
+    "Local Phone", Contact.OtherPhone,
+    "Mobile Phone", Contact.MobilePhone,
+    "Email", Contact.MobilePhone, 
+    "No Preference"  
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>The preferred form of communication based on data on the Contact record in the "Contact Preference" field.</inlineHelpText>
+    <label>Contact Preference</label>
+    <required>false</required>
+    <securityClassification>Sensitive</securityClassification>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

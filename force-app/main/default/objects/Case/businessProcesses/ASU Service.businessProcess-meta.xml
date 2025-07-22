@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BusinessProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ASU Service</fullName>
+    <isActive>true</isActive>
+    <values>
+        <fullName>Closed%3A Cancellation</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Closed%3A Customer Self-Resolved</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Closed%3A Customer Unresponsive</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Closed%3A Duplicate</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Closed%3A Forwarded</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Closed%3A No Show</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Closed%3A Resolved</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Closed%3A SPAM</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Customer Actively Waiting</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>In Progress</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>New</fullName>
+        <default>true</default>
+    </values>
+    <values>
+        <fullName>Waiting on Customer</fullName>
+        <default>false</default>
+    </values>
+    <values>
+        <fullName>Waiting on Vendor</fullName>
+        <default>false</default>
+    </values>
+</BusinessProcess>

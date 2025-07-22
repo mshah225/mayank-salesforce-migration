@@ -600,7 +600,19 @@ public inherited sharing class DynamicSoqlBuilder {
         // Not already at governor limit
         GovernorLimitPreemptException.assertCanQueryN(1, 'Cannot run query `' + toString() + '`');
         // Run query
-        return Database.queryWithBinds(toString(), bindMap, accessLevel);
+        try {
+            return Database.queryWithBinds(toString(), bindMap, accessLevel);
+        } catch (System.QueryException ex) {
+            List<String> messageSegments = new List<String>();
+
+            messageSegments.add('Failed to run dynamically constructed query');
+            messageSegments.add('Dynamic query was: ' + toString());
+            if (ex != null && ex.getMessage() != null) {
+                messageSegments.add(ex.getMessage());
+            }
+
+            throw new DynamicSoqlBuilderQueryException(String.join(messageSegments, '\n'));
+        }
     }
 
     /**
@@ -643,5 +655,7 @@ public inherited sharing class DynamicSoqlBuilder {
     }
 
     class DynamicSoqlBuilderException extends Exception {
+    }
+    class DynamicSoqlBuilderQueryException extends Exception {
     }
 }

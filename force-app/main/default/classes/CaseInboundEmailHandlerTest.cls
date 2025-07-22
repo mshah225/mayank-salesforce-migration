@@ -747,7 +747,6 @@ public with sharing class CaseInboundEmailHandlerTest {
         Id CFG = TestDataFactory.createFunctionalGroup('CaseFuncGroup').Id;
         Id EU = TestDataFactory.createFunctionalGroup('External Unit').Id;
         createdCase.Most_Recent_Queue__c = 'CaseQueue';
-        createdCase.CC_Most_Recent_Functional_Group__c = CFG;
         createdCase.CC_Functional_Group__c = EU;
 
         insert createdCase;
@@ -1763,7 +1762,6 @@ public with sharing class CaseInboundEmailHandlerTest {
         Id CFG = TestDataFactory.createFunctionalGroup('CaseFuncGroup').Id;
         Id EU = TestDataFactory.createFunctionalGroup('External Unit').Id;
         createdCase.Most_Recent_Queue__c = null;
-        createdCase.CC_Most_Recent_Functional_Group__c = CFG;
         createdCase.CC_Functional_Group__c = EU;
 
         insert createdCase;
@@ -1813,7 +1811,6 @@ public with sharing class CaseInboundEmailHandlerTest {
         Id CFG = TestDataFactory.createFunctionalGroup('CaseFuncGroup').Id;
         Id EU = TestDataFactory.createFunctionalGroup('External Unit').Id;
         createdCase.Most_Recent_Queue__c = 'INVALID_QUEUE_NAME';
-        createdCase.CC_Most_Recent_Functional_Group__c = CFG;
         createdCase.CC_Functional_Group__c = EU;
 
         insert createdCase;

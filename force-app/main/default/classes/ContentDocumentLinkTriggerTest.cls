@@ -83,7 +83,6 @@ public class ContentDocumentLinkTriggerTest {
         
         ContentDocument docToDelete = [SELECT Id FROM ContentDocument WHERE Id = :contentDocId];
         delete docToDelete;
-        
     }
     
     @isTest
@@ -118,6 +117,5 @@ public class ContentDocumentLinkTriggerTest {
         insert cdl;
         
         delete [SELECT Id FROM ContentDocument WHERE Id = :contentDocId];
-        
     }
 }

@@ -610,98 +610,7 @@ global class CaseInboundEmailHandler implements Messaging.InboundEmailHandler {
         
         return attachmentResponse;
     }
-    //SFE-61359 Start
-    /*
-// Save attachments, if any
-private AttachmentResult handleAttachments(SObject parentObject, Messaging.InboundEmail email) {
-Map<String, Attachment> cidToAttachmentMap = new Map<String, Attachment>();
-List<Attachment> allEmailAttachments = new List<Attachment>();
-AttachmentResult response = new AttachmentResult();
-response.success = true;
-List<String> validFileExtensionList = getConfigurationSetting('Valid Attachment Types').split(',');
-Integer attachmentLimit = Integer.valueOf(getConfigurationSetting('Attachment Limit'));
-Set<String> validFileExtensionSet = new Set<String>(validFileExtensionList);
-
-Integer attachmentsOnCase = [SELECT COUNT() FROM Attachment WHERE ParentId = :parentObject.Id];
-
-if (loggingSettings.Attachment_Limit_Logging__c && attachmentsOnCase >= attachmentLimit) {
-response.success = false;
-response.attachmentSizeLimitReached = true;
-generateLostEmail(email, theCase, 'This case currently has too many attachments.');
-return response;
-}
-
-if (email.textAttachments != null && email.textAttachments.size() > 0) {
-for (Messaging.Inboundemail.TextAttachment tAttachment : email.textAttachments) {
-String fileName = tAttachment.fileName.trim(); //trim whitespace
-if (
-validFileExtensionSet.isEmpty() ||
-validFileExtensionSet.contains(fileName.substringAfterLast('.').toLowerCase())
-) {
-Attachment attachment = new Attachment();
-attachment.Name = fileName;
-attachment.Body = Blob.valueOf(tAttachment.body);
-attachment.ParentId = parentObject.Id;
-if (!fileName.toLowerCase().contains('.p7s')) {
-response.neutralEmail = false;
-allEmailAttachments.add(attachment);
-}
-} else {
-response.success = false;
-response.badTextAttachments.add(tAttachment);
-}
-}
-}
-
-if (email.binaryAttachments != null && email.binaryAttachments.size() > 0) {
-for (Messaging.Inboundemail.BinaryAttachment bAttachment : email.binaryAttachments) {
-String fileName = bAttachment.fileName.trim(); //trim whitespace
-if (
-validFileExtensionSet.isEmpty() ||
-validFileExtensionSet.contains(fileName.substringAfterLast('.').toLowerCase())
-) {
-Attachment attachment = new Attachment();
-attachment.Name = fileName;
-attachment.Body = bAttachment.body;
-attachment.ContentType = bAttachment.mimeTypeSubType;
-attachment.ParentId = parentObject.Id;
-if (!fileName.toLowerCase().contains('.p7s')) {
-response.neutralEmail = false;
-allEmailAttachments.add(attachment);
-}
-
-if (bAttachment.headers != null && email.htmlBody != null) {
-for (Integer i = 0; i < bAttachment.headers.size(); i++) {
-String headerValue = bAttachment.headers[i].value;
-String headerName = bAttachment.headers[i].name;
-if (
-headerValue.startsWith('ii') ||
-headerValue.startsWith('< image') ||
-headerName.equals('Content-ID')
-) {
-headerValue = headerValue.replaceAll('<', '').replaceAll('>', '');
-cidToAttachmentMap.put(headerValue, attachment);
-}
-}
-}
-} else {
-response.success = false;
-response.badBinaryAttachments.add(bAttachment);
-}
-}
-}
-
-insert allEmailAttachments;
-
-// change any cid links to new url
-for (String headerValue : cidToAttachmentMap.keySet()) {
-String refLink = '/servlet/../servlet/servlet.FileDownload?file=' + cidToAttachmentMap.get(headerValue).Id;
-email.htmlBody = email.htmlBody.replaceAll('cid:' + headerValue, refLink);
-}
-
-return response;
-}
-*/
+    
     private AttachmentResult handleAttachments(SObject parentObject, Messaging.InboundEmail email) {
         Map<String, ContentVersion> cidToAttachmentMap = new Map<String, ContentVersion>();
         List<ContentVersion> allEmailAttachments = new List<ContentVersion>();
@@ -775,7 +684,6 @@ return response;
         
         return response;
     }
-    //SFE-61359 End
     @TestVisible
     private void createEmailMessage(Case theCase, Messaging.InboundEmail email) {
         String value;

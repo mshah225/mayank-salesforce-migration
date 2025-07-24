@@ -7,7 +7,6 @@ public with sharing class ViewCaseController {
     private Map<String, String> viewAsMap;
     private MyASUHelpViewAsService viewAsService;
     public AlertHandler alertHandler { get; set; } // Use the custom alerting component
-    
     public Case caseDetailsCache { get; set; }
     public Id caseId { get; set; }
     public String firstName { get; set; }
@@ -23,11 +22,9 @@ public with sharing class ViewCaseController {
     public String caseFunctionalGroup { get; set; }
     public List<Opportunity> oppList;
     public String caseReply { get; set; }
-    public ContentVersion replyCaseFile { get; set; }//SFE-61363
-   //public Attachment replyCaseAttachment { get; set; }//SFE-61363
+    public ContentVersion replyCaseFile { get; set; }
     public List<String> varsForErrorLogging { get; set; }
-    public List<ContentDocumentLink> allCaseFileLinks { get; set; } //SFE-61363
-    //public List<Attachment> allCaseAttachments { get; set; } //SFE-61363
+    public List<ContentDocumentLink> allCaseFileLinks { get; set; }
     public Boolean showCaseAttachments { get; set; }
     public Boolean showOpenNewCaseAlert { get; set; }
     public String siteTitleName { get; set; }
@@ -42,8 +39,7 @@ public with sharing class ViewCaseController {
         siteTitleName = 'My ASU';
         siteTitleUrl = System.Label.MyASU_Help_Base_URL + '/myasu/student';
         viewingAs = false;
-        replyCaseFile = new ContentVersion();//SFE-61363
-        //replyCaseAttachment = new Attachment();//SFE-61363
+        replyCaseFile = new ContentVersion();
         alertHandler = new AlertHandler();
         alertHandler.loadStandardAlertsFromMap(ApexPages.currentPage().getParameters());
         checkForViewAs();
@@ -53,8 +49,7 @@ public with sharing class ViewCaseController {
         retrieveAttachmentList();
         retrieveCaseDetails(); // Must occur after retrieveAttachmentList or tests will fail for some reason
         showOpenNewCaseAlert = displayOpenNewCaseAlert();
-    }
-    
+    }  
     public Boolean displayOpenNewCaseAlert() {
         if (String.isEmpty(caseId)) {
             return false;
@@ -70,30 +65,21 @@ public with sharing class ViewCaseController {
         }
         return false;
     }
-    
-    //SFE-61363 Start
-    
     public void retrieveAttachmentList() {
-        // Step 1: Get all ContentDocumentLinks related to the case
         allCaseFileLinks = [
             SELECT ContentDocumentId
             FROM ContentDocumentLink
             WHERE LinkedEntityId = :caseId
         ];
-        
         if (allCaseFileLinks == null || allCaseFileLinks.isEmpty()) {
             showCaseAttachments = false;
         } else {
             showCaseAttachments = true;
         }
-        
-        // Step 2: Extract ContentDocumentIds
         Set<Id> contentDocIds = new Set<Id>();
         for (ContentDocumentLink cdl : allCaseFileLinks) {
             contentDocIds.add(cdl.ContentDocumentId);
         }
-        
-        // Step 3: Query latest ContentVersion for each ContentDocument
         Map<Id, ContentVersion> latestVersions = new Map<Id, ContentVersion>();
         for (ContentVersion cv : [
             SELECT Id, Title, CreatedDate, ContentDocumentId
@@ -103,9 +89,7 @@ public with sharing class ViewCaseController {
             ORDER BY CreatedDate DESC
         ]) {
             latestVersions.put(cv.ContentDocumentId, cv);
-        }
-        
-        // Step 4: Format for display
+        }        
         allCaseAttachmentsFormattedTime = new List<AttachmentWithFormattedDateTime>();
         for (Id docId : contentDocIds) {
             if (latestVersions.containsKey(docId)) {
@@ -118,63 +102,30 @@ public with sharing class ViewCaseController {
             }
         }
     }
-    
-    /* public void retrieveAttachmentList() {
-allCaseAttachments = [
-SELECT Id, Name, CreatedDate
-FROM Attachment
-WHERE ParentId = :caseId
-ORDER BY CreatedDate DESC
-];
-if (allCaseAttachments == null || allCaseAttachments.isEmpty()) {
-showCaseAttachments = false;
-} else {
-showCaseAttachments = true;
-}
-
-allCaseAttachmentsFormattedTime = new List<AttachmentWithFormattedDateTime>();
-for (Attachment a : allCaseAttachments) {
-AttachmentWithFormattedDateTime awfdt = new AttachmentWithFormattedDateTime();
-awfdt.Id = a.Id;
-awfdt.Name = a.Name;
-awfdt.CreatedDate = (a.CreatedDate == null ? null : a.CreatedDate.format('MMMM d,  yyyy, hh:mm a z'));
-allCaseAttachmentsFormattedTime.add(awfdt);
-}
-}
-*/
-    //SFE-61363 END 
-    
     public void checkForViewAs() {
         if (ApexPages.currentPage().getParameters().get('masqScopeIdCookie') != null) {
             masqScopeIdCookie = ApexPages.currentPage().getParameters().get('masqScopeIdCookie');
-            
             userAsurite = [SELECT ASURite_Id__c FROM User WHERE Id = :UserInfo.getUserId()].ASURite_Id__C;
-            
             viewAsService = new MyASUHelpViewAsService(masqScopeIdCookie, userAsurite);
         } else {
             viewingAs = false;
         }
     }
-    
     public void popTerms() {
         today = date.today();
-        
         termAc = [
             SELECT Session_A_C_Start_Date__c
             FROM Term__c
             WHERE session_A_C_Start_Date__c > :System.today()
             LIMIT 1
         ];
-        
         termB = [SELECT Session_B_Start_Date__c FROM Term__c WHERE session_B_Start_Date__c > :System.today() LIMIT 1];
-        
         oppList = [
             SELECT Career__c, Term__c, StageName, Admitted_Session__c
             FROM Opportunity
             WHERE Contact__c = :userContact.Id
         ];
     }
-    
     public void popUserContact() {
         if (viewAsService != null && viewAsService.hasViewAsRights) {
             userContact = viewAsService.getContact(viewAsService.getResponseValueFromMap('effectiveAsurite'));
@@ -184,17 +135,14 @@ allCaseAttachmentsFormattedTime.add(awfdt);
         } else {
             userContact = ContactService.getLoggedInContact();
         }
-        
         firstName = userContact.FirstName;
         lastName = userContact.LastName;
         emplId = userContact.EMPLID__c;
         asurite = userContact.ASURite_ID__c;
     }
-    
     public Case getCaseDetails() {
         return caseDetailsCache;
     }
-    
     @TestVisible
     private void retrieveCaseDetails() {
         if (viewAsService != null && viewAsService.hasViewAsRights) {
@@ -219,7 +167,6 @@ allCaseAttachmentsFormattedTime.add(awfdt);
                 WHERE Id = :caseId
                 LIMIT 1
             ];
-            
             if (!caseDetailsOptions.isEmpty()) {
                 caseDetailsCache = caseDetailsOptions[0];
                 
@@ -232,7 +179,6 @@ allCaseAttachmentsFormattedTime.add(awfdt);
             }
         }
     }
-    
     public String getSource() {
         String source = ApexPages.currentPage().getParameters().get('source');
         
@@ -241,10 +187,8 @@ allCaseAttachmentsFormattedTime.add(awfdt);
         } else if (source.equals('viewAllCases')) {
             source = 'viewAllCases?source=studentSC';
         }
-        
         return source;
     }
-    
     public EmailMessage[] getEmailMessages() {
         Date launchDate = EMAIL_VISIBILITY_DATE;
         List<String> emailAddresses = new List<String>();
@@ -285,14 +229,12 @@ allCaseAttachmentsFormattedTime.add(awfdt);
         }
         return EMSWithDatesFormatted;
     }
-    
     public List<ChatMessage> getChatMessages() {
         List<ChatMessage> allChatMessages = new List<ChatMessage>();
         allChatMessages.addAll(getBomgarChatMessages());
         allChatMessages.addAll(getLiveChatMessages());
         return allChatMessages;
     }
-    
     private List<ChatMessage> getBomgarChatMessages() {
         List<bomgar__Event__c> bomgarMessages = [
             SELECT
@@ -313,14 +255,12 @@ allCaseAttachmentsFormattedTime.add(awfdt);
             AND bomgar__DestinationValue__c = 'everyone'
             ORDER BY bomgar__EventDateTime__c ASC
         ];
-        
         List<ChatMessage> bomgarChatMessages = new List<ChatMessage>();
         for (bomgar__Event__c bomgarMessage : bomgarMessages) {
             bomgarChatMessages.add(new ChatMessage(bomgarMessage));
         }
         return bomgarChatMessages;
     }
-    
     private List<ChatMessage> getLiveChatMessages() {
         List<Chat_Message__c> chatMessages = [SELECT Body__c FROM Chat_Message__c WHERE Case__c = :caseId];
         List<ChatMessage> liveChatMessages = new List<ChatMessage>();
@@ -329,15 +269,12 @@ allCaseAttachmentsFormattedTime.add(awfdt);
         }
         return liveChatMessages;
     }
-    
     public Boolean getNormalPhone() {
         return (userContact.CAP__c == null) ? true : false;
     }
-    
     public Boolean getRoverPhone() {
         return (userContact.CAP__c != null) ? true : false;
     }
-    
     public Boolean getHelpBox() {
         if ((oppList == null && userContact != null) || (oppList.size() == 0 && userContact != null)) {
             return true;
@@ -379,32 +316,22 @@ allCaseAttachmentsFormattedTime.add(awfdt);
         caseReply = '';
     }
     
-    //SFE-61363 Start
-    /* private void clearReplyAttachment() {
-replyCaseAttachment = new Attachment();
-}
-*/
     private void clearReplyAttachment() {
         replyCaseFile = new ContentVersion();
-    }
-    //SFE-61363 End
-    
+    }    
     public PageReference clearContentsAndCloseBox() {
         clearReplyContents();
         clearReplyAttachment();
         return null;
     }
-    
     public PageReference submitReply() {
         alertHandler.clear();
         submitCaseReply();
         submitAttachmentReply();
         return null;
     }
-    
     @Testvisible
     private void submitCaseReply() {
-        system.debug('caseReply :: '+ caseReply);
         if (!String.isBlank(caseReply)) {
             RestCallResponse restStatusAndInfo = createAndSendEmailMessage();
             if (restStatusAndInfo.isSuccessfull()) {
@@ -420,8 +347,6 @@ replyCaseAttachment = new Attachment();
         }
         clearReplyContents();
     }
-    
-    //SFE-61363 Start
     @TestVisible
     private void submitAttachmentReply() {
         
@@ -441,31 +366,12 @@ replyCaseAttachment = new Attachment();
             alertHandler.newAlert(customAlert.FATAL, 'Please provide a valid file to upload.');
         }
     }
-
-   /*
-     private void submitAttachmentReply() {
-        if (replyCaseAttachment.Name != null && replyCaseAttachment.Body != null && caseId != null) {
-            String attachmentUploadResponse = uploadAttachment();
-            if (attachmentUploadResponse.contains('success')) {
-                alertHandler.newAlert(customAlert.CONFIRM, 'Your attachment upload was successful.');
-                retrieveAttachmentList();
-            } else {
-                alertHandler.newAlert(
-                    customAlert.FATAL,
-                    'Your attachment upload was not successful. Please try again, or contact us at 1-855-ASU-5080 (1-855-278-5080).'
-                );
-            }
-        }
-    }
-    */
-    //SFE-61363 End
     private RestCallResponse createAndSendEmailMessage() {
         String jsonEmailBody = createJsonEmail();
         HttpRequest emailMessageRequest = createEmailMessageRequestWithJsonBody(jsonEmailBody);
         RestCallResponse restStatusAndInfo = sendRequestAndParseResponse(emailMessageRequest);
         return restStatusAndInfo;
     }
-    
     @TestVisible
     private String createJsonEmail() {
         User currentUser = [
@@ -515,7 +421,6 @@ replyCaseAttachment = new Attachment();
         String baseURL = System.URL.getOrgDomainUrl().toExternalForm();
         baseURL = baseUrl.replace(LOGIN_DOMAIN, COMMUNITY_PAGE_DOMAIN);
         
-        
         emailMessageInsertRequest.setHeader('Content-Type', 'application/json');
         emailMessageInsertRequest.setEndpoint(baseURL + '/services/apexrest/InsertEmailMessage');
         emailMessageInsertRequest.setMethod('POST');
@@ -551,56 +456,29 @@ replyCaseAttachment = new Attachment();
         }
     }
     
-    //SFE-61363 Start
     @TestVisible
     private String uploadAttachment() {
-       // try {
-            if (replyCaseFile == null || replyCaseFile.VersionData == null) {
-                return 'No file selected';
-            }            
-            insert replyCaseFile;
-            
-            Id contentDocumentId = [
-                SELECT ContentDocumentId
-                FROM ContentVersion
-                WHERE Id = :replyCaseFile.Id
-            ].ContentDocumentId;
-            
-            ContentDocumentLink cdl = new ContentDocumentLink();
-            cdl.ContentDocumentId = contentDocumentId;
-            cdl.LinkedEntityId = caseId; 
-            cdl.ShareType = 'V';
-            cdl.Visibility = 'AllUsers';
-            insert cdl;
-            
-            clearReplyAttachment();
-            return 'success file Id: ' + replyCaseFile.Id;
-            
-       /* } catch (Exception e) {
-            varsForErrorLogging = new List<String>();
-            varsForErrorLogging.add(ErrorLogger.convertStringToJSON('title', replyCaseFile.Title));
-            ErrorLogger.log(e, varsForErrorLogging, false);
-            clearReplyAttachment();
-            return 'failure';
-        }*/
-    }
-    
-    /* private String uploadAttachment() {
-replyCaseAttachment.ParentId = caseId;
-try {
-insert replyCaseAttachment;
-clearReplyAttachment();
-return 'success attachment Id: ' + replyCaseAttachment.Id;
-} catch (Exception e) {
-varsForErrorLogging = new List<String>();
-varsForErrorLogging.add(ErrorLogger.convertStringToJSON('name', replyCaseAttachment.name));
-ErrorLogger.log(e, varsForErrorLogging, false);
-clearReplyAttachment();
-return 'failure';
-}
-}
-*/
-    //SFE-61363 Start End
+        if (replyCaseFile == null || replyCaseFile.VersionData == null) {
+            return 'No file selected';
+        }            
+        insert replyCaseFile;
+        
+        Id contentDocumentId = [
+            SELECT ContentDocumentId
+            FROM ContentVersion
+            WHERE Id = :replyCaseFile.Id
+        ].ContentDocumentId;
+        
+        ContentDocumentLink cdl = new ContentDocumentLink();
+        cdl.ContentDocumentId = contentDocumentId;
+        cdl.LinkedEntityId = caseId; 
+        cdl.ShareType = 'V';
+        cdl.Visibility = 'AllUsers';
+        insert cdl;
+        
+        clearReplyAttachment();
+        return 'success file Id: ' + replyCaseFile.Id;
+    }    
     @TestVisible
     private class AttachmentWithFormattedDateTime {
         public String Id { get; set; }

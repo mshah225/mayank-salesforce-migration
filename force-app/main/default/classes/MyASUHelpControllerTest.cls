@@ -166,7 +166,7 @@ private class MyASUHelpControllerTest {
                                     ));
                                 }
         insert testCases;
-                    
+        
         for (Case c : testCases) {
             c.Status = 'Closed: Resolved'; // This is now AFTER CreatedDate
         }
@@ -174,7 +174,7 @@ private class MyASUHelpControllerTest {
         
         // Email Messages
         insert new EmailMessage(
-            FromAddress = testContacts[0].Email,//'test0@test.com',
+            FromAddress = testContacts[0].Email,
             Incoming = false,
             ToAddress = testContacts[0].Email,
             Subject = 'Test email',
@@ -283,9 +283,7 @@ private class MyASUHelpControllerTest {
             );
             insert cdl;
         }
-        
     }
-    
     
     @isTest
     private static void testStudentSCPageAC() {
@@ -363,7 +361,7 @@ private class MyASUHelpControllerTest {
     
     @isTest
     private static void testStudentSCPageB() {
-          
+        
         CustomMetadataHelper.setFakeRecords(
             'ASU_Alert_Messages__mdt$$ASUHelpTab$$Active',
             new List<ASU_Alert_Messages__mdt>{
@@ -383,7 +381,6 @@ private class MyASUHelpControllerTest {
         contact con = new Contact(); 
         con.ASURite_Id__C = 'hmacSHA256';
         con.Id = testUser.ContactId;
-        //update con;
         List<Opportunity> oppListForTestUser = [
             SELECT Career__c, Term__c, StageName, Admitted_Session__c
             FROM Opportunity
@@ -398,14 +395,12 @@ private class MyASUHelpControllerTest {
         ViewCaseController vcc;
         MyASUHelpController helpTab;
         List<Case> testCases = [Select id,ClosedDate from case Limit 1];
-		View_As_Url__c url = new View_As_Url__c();
-		url.Name = 'URL';
-		url.MyAsuUrl__c = 'https://webapp4.asu.edu/myasu'; 
-        //insert url;
+        View_As_Url__c url = new View_As_Url__c();
+        url.Name = 'URL';
+        url.MyAsuUrl__c = 'https://webapp4.asu.edu/myasu'; 
         Test.startTest();
         System.runAs(testUser) {
             Test.setCurrentPageReference(new PageReference('/apex/ViewCase'));
-            //ApexPages.currentPage().getParameters().put('masqScopeIdCookie', 'Test');
             ApexPages.currentPage().getParameters().put('id', testCases[0].Id);
             vacc = new ViewAllCasesController();
             vcc = new ViewCaseController();
@@ -436,15 +431,15 @@ private class MyASUHelpControllerTest {
             
         }
         Test.setMock(HttpCalloutMock.class, new FailingMockHttpResponse());
-
+        
         HttpRequest req = new HttpRequest();
         req.setEndpoint('https://example.com/fail');
         req.setMethod('POST');
-		RestCallResponse result = vcc.sendRequestAndParseResponse(req);
-		String testJson = '{"subject":"Test","body":"Test Body"}';
-
+        RestCallResponse result = vcc.sendRequestAndParseResponse(req);
+        String testJson = '{"subject":"Test","body":"Test Body"}';
+        
         HttpRequest req1 = vcc.createEmailMessageRequestWithJsonBody(testJson);
-       
+        
         Test.stopTest();
         System.assertEquals(false, helpTab.getHelpBox());
         System.assertEquals(false, vcc.getHelpBox());
@@ -501,9 +496,8 @@ private class MyASUHelpControllerTest {
             vcc.masqScopeIdCookie = 'test';
             vcc.caseFunctionalGroup = 'test';
             PageReference results = vcc.redirectWithParams('testParam', 'testValue');
-           // vcc.submitCaseReply();
             Test.setMock(HttpCalloutMock.class, new MockHttpResponseGenerator());
-
+            
             // Construct the request
             HttpRequest req = new HttpRequest();
             req.setEndpoint('https://example.com/api/send');
@@ -836,14 +830,12 @@ private class MyASUHelpControllerTest {
         
         Test.stopTest();
         
-        //System.assert(String.isEmpty(vcc.caseReply));
         Boolean successMessageFound = false;
         for (CustomAlert alert : vcc.alertHandler.alerts) {
             if (alert.message.contains('Your response was submitted successfully')) {
                 successMessageFound = true;
             }
         }
-        //System.assert(successMessageFound);
     }
     
     @isTest
@@ -871,18 +863,15 @@ private class MyASUHelpControllerTest {
             vcc.replyCaseFile.VersionData = Blob.valueOf('Test Attachment Body');
             vcc.caseReply = 'Test Message';
             
-            // vcc.submitReply();
         }
         Test.stopTest();
         
-        //System.assert(String.isEmpty(vcc.caseReply));
         Boolean failureMessageFound = false;
         for (CustomAlert alert : vcc.alertHandler.alerts) {
             if (alert.message.contains('Your response was not submitted successfully')) {
                 failureMessageFound = true;
             }
         }
-        //System.assert(failureMessageFound);
     }
     
     @isTest
@@ -986,16 +975,6 @@ private class MyASUHelpControllerTest {
             helpTab = new MyASUHelpController();
         }
         Test.stopTest();
-        
-        //System.assertEquals(6, helptab.getAllFinancialArticles().size());
-        //System.assertEquals(3, helptab.getTopThreeFinancialArticles().size());
-        // System.assertEquals(6, helptab.getAllTechnicalArticles().size());
-        // System.assertEquals(3, helptab.getTopThreeTechnicalArticles().size());
-        // System.assertEquals(6, helptab.getAllHousingArticles().size());
-        // System.assertEquals(3, helptab.getTopThreeHousingArticles().size());
-        // System.assertNotEquals(null, helptab.getViewAllFinancialArticlesLink());
-        // System.assertNotEquals(null, helptab.getViewAllTechnicalArticlesLink());
-        // System.assertNotEquals(null, helptab.getViewAllHousingArticlesLink());
     }
     
     @isTest
@@ -1217,7 +1196,7 @@ Create test alerts to check the 8 primary time-relationships.
         emailMsg.ToAddress = 'jane.doe@example.com';
         emailMsg.CcAddress = 'manager@example.com';
         emailMsg.MessageDate = '2025-05-26 12:00:00';
-		
+        
         ViewCaseController.AttachmentWithFormattedDateTime attach = new ViewCaseController.AttachmentWithFormattedDateTime();
         attach.Id = 'test';
         attach.CreatedDate = '2025-05-26 12:10:00';
@@ -1240,6 +1219,6 @@ Create test alerts to check the 8 primary time-relationships.
             // Simulate HTTP failure by throwing an exception
             throw new CalloutException('Simulated callout failure');
         }
-}
+    }
     
 }

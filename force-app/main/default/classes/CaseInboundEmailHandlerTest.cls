@@ -903,7 +903,6 @@ public with sharing class CaseInboundEmailHandlerTest {
             FROM Case_Classification__c
             WHERE RecordType.Name = 'Functional Group' AND Active__c = TRUE AND Name = 'Test RMM Group 2'
         ];
-
         System.assertEquals('test', createdCase.Subject);
         System.assertEquals('New', createdCase.Status);
         System.assertEquals(fg.Id, createdCase.CC_Functional_Group__c);
@@ -950,7 +949,6 @@ public with sharing class CaseInboundEmailHandlerTest {
             WHERE ContactId = :c.Id
             LIMIT 1
         ];
-
         System.assert(createdCase.Description == 'This is a plaintext body');
 
         Test.stopTest();
@@ -1347,7 +1345,6 @@ public with sharing class CaseInboundEmailHandlerTest {
         System.assertNotEquals(email.toAddresses[0], contactAfterTest.Email);
         System.assertNotEquals(email.toAddresses[0], contactAfterTest.Last_Case_Email_Used__c);
         System.assertEquals(testContact[0].Email, contactAfterTest.Email);
-        // System.assertNotEquals(testContact[0].Last_Case_Email_Used__c, contactAfterTest.Last_Case_Email_Used__c);
         System.assertNotEquals(email.fromAddress, contactAfterTest.Last_Case_Email_Used__c);
         System.assertEquals(testContact[0].Email, contactAfterTest.Last_Case_Email_Used__c);
     }
@@ -1916,7 +1913,6 @@ public with sharing class CaseInboundEmailHandlerTest {
                 break;
             }
         }
-
         System.assertNotEquals(null, errorLoggerCase, 'Error not logged for invalid case reference id.');
     }
 }

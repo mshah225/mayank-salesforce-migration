@@ -402,7 +402,6 @@ public with sharing class ScheduledStalledSMSDetectorTest {
                     break;
                 }
             }
-
             Assert.areNotEqual(null, matchedRow);
             Assert.areEqual(expectedSms.Id, matchedRow[0]);
             Assert.areEqual(expectedSms.smagicinteract__PhoneNumber__c, matchedRow[1]);

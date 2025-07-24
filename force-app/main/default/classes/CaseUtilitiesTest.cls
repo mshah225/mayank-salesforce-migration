@@ -86,7 +86,6 @@ private class CaseUtilitiesTest {
         
         return ca;
     }
-    
     static testMethod void forwardCase() {
         createCustomSettings();
         Case c = createCase();

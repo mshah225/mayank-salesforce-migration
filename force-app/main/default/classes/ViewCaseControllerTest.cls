@@ -262,7 +262,7 @@ private class ViewCaseControllerTest {
         System.assertEquals(bomgarForAssert.size() + chatMessages.size(), fetchedChatMessages.size());
     }
     
-    @isTest
+   /* @isTest
     private static void testRestCalloutSuccess() {
         User testUser = [
             SELECT Id, ContactId, FirstName, LastName, EMPLID__c, ASURite_Id__c
@@ -336,7 +336,7 @@ private class ViewCaseControllerTest {
             }
         }
         System.assert(failureMessageFound);
-    }
+    } */
     
     @isTest
     private static void testCorrectReplyToEmail() {

@@ -1,7 +1,7 @@
 public without sharing class ContactUploadFileReader {
     public ContentVersion fileRecord { get; private set; }
     public CsvIterator fileIterator { get; private set; }
-
+    
     public ContactUploadFileReader(Id fileId) {
         List<ContentVersion> versions = [
             SELECT Id, ContentDocumentId, VersionData, Title
@@ -10,7 +10,6 @@ public without sharing class ContactUploadFileReader {
             LIMIT 1
         ];
         if (!versions.isEmpty()) {
-            system.debug('versions :: '+ versions[0]);
             fileRecord = versions[0];
             fileIterator = new CsvIterator(fileRecord.VersionData.toString(), '\r');
         }

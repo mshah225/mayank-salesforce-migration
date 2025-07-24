@@ -25,7 +25,6 @@ public class ContentDocumentLinkDispatcher implements TriggerDispatcherInterface
     public void beforeDelete() {}
     
     public void afterInsert() {
-        system.debug('ContentDocumentLinkDispatcher afterInsert :: '+ newList);
         FileService.updateCasesFromFiles(newList);
     }
     
@@ -34,7 +33,6 @@ public class ContentDocumentLinkDispatcher implements TriggerDispatcherInterface
     }
     
     public void afterDelete() {
-        system.debug('ContentDocumentLinkDispatcher afterDelete :: '+ oldList);
         FileService.updateCasesFromFiles(oldList);
     }
     

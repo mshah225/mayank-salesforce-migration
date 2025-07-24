@@ -17,7 +17,6 @@ trigger ContentDocumentLinkTrigger on ContentDocumentLink (
         Trigger.old,
         Trigger.oldMap
     );
-    system.debug('ContentDocumentLinkTrigger');
     if (Trigger.isBefore) {
         if (Trigger.isInsert) {
             dispatcher.beforeInsert();
@@ -32,14 +31,12 @@ trigger ContentDocumentLinkTrigger on ContentDocumentLink (
     
     if (Trigger.isAfter) {
         if (Trigger.isInsert) {
-            system.debug('Trigger.isInsert :: '+ Trigger.isInsert);
             dispatcher.afterInsert();
         }
         if (Trigger.isUpdate) {
             dispatcher.afterUpdate();
         }
         if (Trigger.isDelete) {
-            system.debug('Trigger.isDelete :: '+ Trigger.isDelete);
             dispatcher.afterDelete();
         }
         if (Trigger.isUndelete) {

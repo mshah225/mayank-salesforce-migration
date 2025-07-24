@@ -7,53 +7,40 @@ public without sharing class ContactUploadBatch implements Database.Batchable<St
     private Boolean headerRow;
     
     public ContactUploadBatch(Id attachmentId, Id subscriptionId, String subscriberStatus) {
-         System.debug(' :ContactUploadBatch: ');
         this.attachmentId = attachmentId;
         this.subscriptionId = subscriptionId;
         this.subscriberStatus = subscriberStatus;
-        System.debug('attachmentId :: '+ this.attachmentId);
-        System.debug('subscriptionId :: '+ this.subscriptionId);
-        System.debug('subscriberStatus :: '+ this.subscriberStatus);
     }
-
     public Iterable<String> start(Database.BatchableContext batchableContext) {
         if (attachmentId == null) {
             return null;
         }
         headerRow = true;
-
         ContactUploadFileReader uploadReader = new ContactUploadFileReader(attachmentId);
-        System.debug('uploadReader :: '+ uploadReader);
         ContentVersion contentVersion = uploadReader.fileRecord;
-        System.debug('contentVersion :: '+ contentVersion);
         if (contentVersion != null) {
             List<ContentDocumentLink> links = [
                 SELECT LinkedEntityId
                 FROM ContentDocumentLink
                 WHERE ContentDocumentId = :contentVersion.ContentDocumentId
             ];
-            system.debug('links :: '+ links);
             Set<Id> linkedIds = new Set<Id>();
             for (ContentDocumentLink link : links) {
                 linkedIds.add(link.LinkedEntityId);
             }
-
             Map<Id, Contact_Upload__c> uploads = new Map<Id, Contact_Upload__c>(
                 [SELECT Id FROM Contact_Upload__c WHERE Id IN :linkedIds]
             );
-
             if (!uploads.isEmpty()) {
                 contactUploadId = uploads.keySet().iterator().next();
             }
         }
-
         updateUploadStatus('Processing');
         return uploadReader.fileIterator;
     }
-
     public void execute(Database.BatchableContext batchableContext, List<String> scope) {
         List<List<String>> csvLines = recreateRowsFromIteration(scope);
-
+        
         List<Contact_Upload_Detail__c> detailsToProcess = new List<Contact_Upload_Detail__c>();
         List<Contact_Upload_Detail__c> detailsInError = new List<Contact_Upload_Detail__c>();
         ContactUploadDetailService detailCreator = new ContactUploadDetailService(contactUploadId, columnMap);
@@ -67,7 +54,6 @@ public without sharing class ContactUploadBatch implements Database.Batchable<St
                 detailsInError.add(detailFromLine);
             }
         }
-
         ContactUploadSearcher searcher = new ContactUploadSearcher(detailsToProcess);
         searcher.searchAndCreateContacts();
         detailCreator.createSubscriberStatusMap(detailsToProcess);
@@ -81,16 +67,13 @@ public without sharing class ContactUploadBatch implements Database.Batchable<St
                 uploadDetail.Processing_Notes__c += 'Failed to create subscriber record. ';
             }
         }
-
         if (!subscriberList.isEmpty()) {
             Database.upsert(subscriberList, Subscriber__c.Unique_Key__c, false);
         }
-
         Map<String, Id> uniqueKeyToSubscriberId = new Map<String, Id>();
         for (Subscriber__c upsertedSubscriber : subscriberList) {
             uniqueKeyToSubscriberId.put(upsertedSubscriber.Unique_Key__c, upsertedSubscriber.Id);
         }
-
         for (Contact_Upload_Detail__c uploadDetail : detailsToProcess) {
             if (uploadDetail.Status__c != 'Error') {
                 String uniqueKey =
@@ -106,13 +89,11 @@ public without sharing class ContactUploadBatch implements Database.Batchable<St
                 }
             }
         }
-
         detailsToProcess.addAll(detailsInError);
         if (!detailsToProcess.isEmpty()) {
             Database.insert(detailsToProcess, false);
         }
     }
-
     private List<List<String>> recreateRowsFromIteration(List<String> csvContacts) {
         List<List<String>> csvColumnData = new List<List<String>>();
         for (String row : csvContacts) {
@@ -125,7 +106,6 @@ public without sharing class ContactUploadBatch implements Database.Batchable<St
         }
         return csvColumnData;
     }
-
     private void createHeaderMappings(String row) {
         List<List<String>> csvLines = CsvReader.readCsvFile(row);
         columnMap = new Map<Integer, String>();
@@ -137,7 +117,6 @@ public without sharing class ContactUploadBatch implements Database.Batchable<St
             }
         }
     }
-
     public void finish(Database.BatchableContext batchableContext) {
         if (hasSuccessfulRecords() && noErroredRecords()) {
             updateUploadStatus('Complete with no errors');
@@ -145,7 +124,6 @@ public without sharing class ContactUploadBatch implements Database.Batchable<St
             updateUploadStatus('Complete with errors');
         }
     }
-
     private Boolean hasSuccessfulRecords() {
         List<Contact_Upload_Detail__c> successfulDetails = [
             SELECT Id
@@ -155,7 +133,6 @@ public without sharing class ContactUploadBatch implements Database.Batchable<St
         ];
         return !successfulDetails.isEmpty();
     }
-
     @TestVisible
     private Boolean noErroredRecords() {
         List<Contact_Upload_Detail__c> erroredDetails = [
@@ -166,7 +143,6 @@ public without sharing class ContactUploadBatch implements Database.Batchable<St
         ];
         return erroredDetails.isEmpty();
     }
-
     private void updateUploadStatus(String status) {
         if (contactUploadId != null) {
             Contact_Upload__c cu = new Contact_Upload__c(Id = contactUploadId, Status__c = status);

@@ -125,6 +125,29 @@ public class ObjectServiceTest {
     }
 
     @isTest
+    private static void testTrimWhitespace() {
+        String whitespace = '\uFEFF';
+        String cleanStr = 'Lorem Ipsum';
+
+        String whitespaceBothSides = whitespace + whitespace + cleanStr + whitespace + whitespace;
+        String whitespaceAfter = cleanStr + whitespace + whitespace;
+        String whitespaceBefore = whitespace + whitespace + cleanStr;
+        String noWhitespace = cleanStr;
+        String allWhitespace = whitespace + whitespace;
+
+        String trimBothSide = ObjectService.trimWhitespace(whitespaceBothSides);
+        String trimAfter = ObjectService.trimWhitespace(whitespaceAfter);
+        String trimBefore = ObjectService.trimWhitespace(whitespaceBefore);
+        String noTrimNeeded = ObjectService.trimWhitespace(noWhitespace);
+        String allGone = ObjectService.trimWhitespace(allWhitespace);
+
+        System.assertEquals(cleanStr, trimBothSide, 'Should have removed nonstandard whitespace characters');
+        System.assertEquals(cleanStr, trimAfter, 'Should have removed nonstandard whitespace characters');
+        System.assertEquals(cleanStr, trimBefore, 'Should have removed nonstandard whitespace characters');
+        System.assertEquals(cleanStr, noTrimNeeded, 'Should have removed nonstandard whitespace characters');
+        System.assertEquals('', allGone, 'Should have removed nonstandard whitespace characters');
+    }
+
     private static void testUpdateSObjectInMapInsertNew() {
         Map<Id, Contact> conIdToCon = new Map<Id, Contact>();
         // Make a new contact

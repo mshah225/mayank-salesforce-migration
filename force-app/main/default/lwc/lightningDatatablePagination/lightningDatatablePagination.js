@@ -41,8 +41,22 @@ export default class LightningDatatablePagination extends LightningElement {
     // Current page of results on display
     currentPage = 1;
 
-    // Current maximum pages in sourceData set
-    maxPages = 1;
+    // How many pages of results?
+    get maxPages() {
+        // There will always be 1 page, at least
+        var result = 1;
+
+        // If the source data is an array and is not empty then we can calculate the number of pages
+        if ((this._sourceData && Array.isArray(this._sourceData), this._sourceData.length > 0)) {
+            // Float value of number of pages in data table
+            let divideValue = this._sourceData.length / this.displayAmount;
+
+            // Round up to the next Integer value for the actual number of pages
+            result = Math.ceil(divideValue);
+        }
+
+        return result;
+    }
 
     // Indicators to disable the paging buttons
     disabledPreviousButton = false;
@@ -66,9 +80,8 @@ export default class LightningDatatablePagination extends LightningElement {
     // On next click
     handleButtonNext() {
         var nextPage = this.currentPage + 1;
-        var maxPages = this.getMaxPages();
 
-        if (nextPage > 0 && nextPage <= maxPages) {
+        if (nextPage > 0 && nextPage <= this.maxPages) {
             this.gotoPage(nextPage);
         }
     }
@@ -76,38 +89,10 @@ export default class LightningDatatablePagination extends LightningElement {
     // On previous click
     handleButtonPrevious() {
         var nextPage = this.currentPage - 1;
-        var maxPages = this.getMaxPages();
 
-        if (nextPage > 0 && nextPage <= maxPages) {
+        if (nextPage > 0 && nextPage <= this.maxPages) {
             this.gotoPage(nextPage);
         }
-    }
-
-    // How many pages of results?
-    getMaxPages() {
-        // There will always be 1 page, at least
-        var result = 1;
-
-        // Number of elements on sourceData
-        var arrayLength;
-
-        // Number of elements on sourceData divided by number of rows to display in table (can be a float value)
-        var divideValue;
-
-        // Ensure sourceData has a value
-        if (this._sourceData) {
-            arrayLength = this._sourceData.length;
-
-            // Float value of number of pages in data table
-            divideValue = arrayLength / this.displayAmount;
-
-            // Round up to the next Integer value for the actual number of pages
-            result = Math.ceil(divideValue);
-        }
-
-        this.maxPages = result;
-
-        return result;
     }
 
     // Change page
@@ -118,8 +103,6 @@ export default class LightningDatatablePagination extends LightningElement {
         var maximumPages = this.maxPages;
 
         this.loading = true;
-
-        maximumPages = this.getMaxPages();
 
         // Validate that desired page number is available
         if (pageNumber > maximumPages || pageNumber < 0) {

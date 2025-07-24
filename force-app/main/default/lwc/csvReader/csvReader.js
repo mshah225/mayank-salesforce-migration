@@ -12,6 +12,7 @@
  *              "rowDelim": "\n",      // row delimiter
  *              "hasHeader": true,     // treat first row as a header row
  *          }
+ * You can also pass RegExp for delim and rowDelim
  *
  * The CSVReader class is designed to make it easy to jump around in the file and read arbitrary rows
  * getHeader() = returns a String[], each item in the array corresponds to each header in the original CSV file
@@ -37,9 +38,35 @@ export class CSVReader {
     indx = 0;
 
     constructor(csvStr, opts) {
-        this.fullBody = csvStr;
-        this.rowDelim = opts?.rowDelim ?? '\n';
-        this.delim = opts?.delim ?? ',';
+        // Get full body of CSV
+        if (typeof csvStr !== 'string') {
+            throw new Error('CSV parser expected body as a string but it was not');
+        } else {
+            this.fullBody = csvStr;
+        }
+
+        // Get row delimiter
+        if (opts?.rowDelim == null) {
+            this.rowDelim = /[\r\n]+/;
+        } else if (opts.rowDelim instanceof RegExp) {
+            this.rowDelim = opts.rowDelim;
+        } else if (typeof opts.rowDelim === 'string') {
+            this.rowDelim = new RegExp(escapeRegex(opts.rowDelim));
+        } else {
+            throw new Error('CSV parser expected rowDelim as a string or RegExp but it was neither');
+        }
+
+        // Get column delimiter
+        if (opts?.delim == null) {
+            this.delim = /,/;
+        } else if (opts.delim instanceof RegExp) {
+            this.delim = opts.delim;
+        } else if (typeof opts.delim === 'string') {
+            this.delim = new RegExp(escapeRegex(opts.delim));
+        } else {
+            throw new Error('CSV parser expected delim as a string or RegExp but it was neither');
+        }
+
         this.hasHeader = opts?.hasHeader ?? true;
 
         this._init();
@@ -49,8 +76,6 @@ export class CSVReader {
      * Initialization function expects fullBody, rowDelim, and delim to all be set
      */
     _init() {
-        if (!this.fullBody.endsWith(this.rowDelim)) this.fullBody = this.fullBody + this.rowDelim;
-
         let fileString = this.fullBody;
         let allRows = [];
 
@@ -63,12 +88,12 @@ export class CSVReader {
             rowValues.push(csvVal.value);
 
             // once we reach end of row, push into allRows list
-            if (csvVal.delimiter === this.rowDelim) {
+            if (csvVal.endOfRow) {
                 // as long as the row has data and isn't just a empty value add it to the list
                 if (rowValues.length > 1 || (rowValues.length === 1 && rowValues[0] !== '')) {
                     allRows.push(rowValues);
 
-                    if (allRows.length > 0 && allRows[0].length !== rowValues.length)
+                    if (allRows.length > 0 && allRows[0].length !== rowValues.length) {
                         throw new Error(
                             'Every subsequent row should have same number of columns. Expected ' +
                                 allRows[0].length +
@@ -78,11 +103,13 @@ export class CSVReader {
                                 rowValues.length +
                                 ' columns'
                         );
+                    }
                 }
                 rowValues = [];
             }
 
-            if (this.indx === fileString.length) endOfData = true;
+            if (this.indx === fileString.length) endOfData = true; // At end of file
+            if (endOfData && !csvVal.endOfRow) allRows.push(rowValues); // This handles if there is no newline at end of file
         }
 
         if (this.hasHeader) {
@@ -98,11 +125,9 @@ export class CSVReader {
         let data = this.fullBody.substring(this.indx);
 
         // eslint-disable-next-line no-use-before-define
-        const csvVal = new CsvValue(null, null, null, this.DQUOTE);
+        const csvVal = new CsvValue(null, null, null);
 
         if (data.startsWith(this.DQUOTE)) {
-            csvVal.enclosed = true;
-
             let startingSearchIndex = 1;
             let dquoteIndex = -1;
             let doubleDquoteIndex = -1;
@@ -128,40 +153,50 @@ export class CSVReader {
             // Get value and unescape dquotes
             csvVal.value = data.substring(this.DQUOTE.length, dquoteIndex).replaceAll(this.DOUBLE_DQUOTE, this.DQUOTE);
 
-            let commaIndex = data.indexOf(this.delim, dquoteIndex + 1);
-            let crlfIndex = data.indexOf(this.rowDelim, dquoteIndex + 1);
+            let indexOfEndOfEnclosedValue = dquoteIndex + this.DQUOTE.length;
+            let afterValue = data.substring(indexOfEndOfEnclosedValue);
+            let commaIndex = afterValue.search(this.delim);
+            let crlfIndex = afterValue.search(this.rowDelim);
 
-            if (commaIndex !== -1 && commaIndex < crlfIndex) {
+            // Check if the next thing is a delim, rowDelim, or end of file
+            if (afterValue === '') {
+                // next is a end of file - treat as end of line
+                csvVal.endOfRow = true;
+                this.indx += indexOfEndOfEnclosedValue;
+            } else if (commaIndex !== -1 && (commaIndex < crlfIndex || crlfIndex === -1)) {
                 // next is a comma
-                csvVal.delimiter = this.delim;
-                // move to after comma
-                this.indx += commaIndex + this.delim.length;
-            } else {
+                csvVal.endOfRow = false;
+                this.indx += indexOfEndOfEnclosedValue + commaIndex + this.delim.exec(afterValue)[0].length;
+            } else if (crlfIndex !== -1) {
                 // next is a newline
-                csvVal.delimiter = this.rowDelim;
-                // move to after newline
-                this.indx += crlfIndex + this.rowDelim.length;
+                csvVal.endOfRow = true;
+                this.indx += indexOfEndOfEnclosedValue + crlfIndex + this.rowDelim.exec(afterValue)[0].length;
+            } else {
+                throw new Error(`Failed to parse cell starting at index=${this.indx}`);
             }
         } else {
-            csvVal.enclosed = false;
+            let commaIndex = data.search(this.delim);
+            let crlfIndex = data.search(this.rowDelim);
 
-            let commaIndex = data.indexOf(this.delim);
-            let crlfIndex = data.indexOf(this.rowDelim);
-
-            if (commaIndex !== -1 && commaIndex < crlfIndex) {
+            if (commaIndex !== -1 && (commaIndex < crlfIndex || crlfIndex === -1)) {
                 // next is a comma
-                csvVal.delimiter = this.delim;
+                csvVal.endOfRow = false;
                 // read value
                 csvVal.value = data.substring(0, commaIndex);
                 // move to after comma
-                this.indx += commaIndex + this.delim.length;
-            } else {
+                this.indx += commaIndex + this.delim.exec(data)[0].length;
+            } else if (crlfIndex !== -1) {
                 // next is a newline
-                csvVal.delimiter = this.rowDelim;
+                csvVal.endOfRow = true;
                 // read value
                 csvVal.value = data.substring(0, crlfIndex);
                 // move to after newline
-                this.indx += crlfIndex + this.rowDelim.length;
+                this.indx += crlfIndex + this.rowDelim.exec(data)[0].length;
+            } else {
+                // Goes until end of file
+                csvVal.value = data;
+                csvVal.endOfRow = true;
+                this.indx += data.length;
             }
         }
 
@@ -271,29 +306,12 @@ export class CSVScanner {
     }
 }
 
+function escapeRegex(string) {
+    return string.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+
 export class CsvValue {
     type = 'CsvValue';
     value = null;
-    enclosed = null;
-    delimiter = null;
-    dquote = null;
-    double_dquote = null;
-
-    constructor(value, enclosed, delimiter, dquote) {
-        this.value = value;
-        this.enclosed = enclosed;
-        this.delimiter = delimiter;
-        this.dquote = dquote;
-        this.double_dquote = dquote + dquote;
-    }
-
-    biteSize() {
-        let biteSize = this.value.replaceAll(this.dquote, this.double_dquote).length + this.delimiter.length;
-
-        if (this.enclosed) {
-            biteSize += this.dquote.length * 2;
-        }
-
-        return biteSize;
-    }
+    endOfRow = null;
 }

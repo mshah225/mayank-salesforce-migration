@@ -571,4 +571,58 @@ public with sharing class ContactTriggerTest {
             'Contact Geomarket Code did not match by Last Attended College Geomarket Code'
         );
     }
+
+    @isTest
+    private static void testMergingContacts() {
+        Contact masterAccount = new Contact(
+            FirstName = 'Zylo',
+            LastName = 'Werewolf',
+            Email = 'zylo.werewolf@test.test'
+        );
+        Contact duplicateAccount = new Contact(
+            FirstName = 'Zylo',
+            LastName = 'Wolf Baron',
+            Email = 'zylo.wolfbaron@test.test'
+        );
+
+        insert new List<Contact>{ masterAccount, duplicateAccount };
+
+        Test.startTest();
+        merge masterAccount duplicateAccount;
+        Test.stopTest();
+
+        masterAccount = [SELECT Id, Merged_Contact__c, Last_Merge_Date__c FROM Contact WHERE Id = :masterAccount.Id];
+
+        // Shows this contact has been merged
+        Assert.areEqual(true, masterAccount.Merged_Contact__c);
+        // And records the date
+        Assert.areEqual(System.today(), masterAccount.Last_Merge_Date__c);
+    }
+
+    @isTest
+    private static void testDeletingContactsWhenNotMerging() {
+        Contact masterAccount = new Contact(
+            FirstName = 'Zylo',
+            LastName = 'Werewolf',
+            Email = 'zylo.werewolf@test.test'
+        );
+        Contact duplicateAccount = new Contact(
+            FirstName = 'Zylo',
+            LastName = 'Wolf Baron',
+            Email = 'zylo.wolfbaron@test.test'
+        );
+
+        insert new List<Contact>{ masterAccount, duplicateAccount };
+
+        Test.startTest();
+        delete duplicateAccount;
+        Test.stopTest();
+
+        masterAccount = [SELECT Id, Merged_Contact__c, Last_Merge_Date__c FROM Contact WHERE Id = :masterAccount.Id];
+
+        // Shows this contact has NOT been merged
+        Assert.areEqual(false, masterAccount.Merged_Contact__c);
+        // And does not set the merge date
+        Assert.areNotEqual(System.today(), masterAccount.Last_Merge_Date__c);
+    }
 }

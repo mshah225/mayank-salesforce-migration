@@ -948,4 +948,42 @@ public class OpportunityService {
             }
         }
     }
+
+    @future
+    public static void createOCRRecords(Set<Id> opportunityIds) {
+        if (opportunityIds == null || opportunityIds.isEmpty()) {
+            return;
+        }
+
+        Map<Id, Opportunity> oppMap = new Map<Id, Opportunity>([
+            SELECT Id, Contact__c
+            FROM Opportunity
+            WHERE Id IN :opportunityIds
+        ]);
+
+        Map<Id, OpportunityContactRole> existingOCRMap = new Map<Id, OpportunityContactRole>();
+        for (OpportunityContactRole ocr : [
+            SELECT Id, OpportunityId
+            FROM OpportunityContactRole
+            WHERE OpportunityId IN :opportunityIds
+        ]) {
+            existingOCRMap.put(ocr.OpportunityId, ocr);
+        }
+
+        List<OpportunityContactRole> ocrsToInsert = new List<OpportunityContactRole>();
+        for (Opportunity opp : oppMap.values()) {
+            if (!existingOCRMap.containsKey(opp.Id) && opp.Contact__c != null) {
+                ocrsToInsert.add(new OpportunityContactRole(
+                    OpportunityId = opp.Id,
+                    ContactId     = opp.Contact__c,
+                    Role          = 'Student',
+                    IsPrimary     = true
+                ));
+            }
+        }
+
+        if (!ocrsToInsert.isEmpty()) {
+            Database.insert(ocrsToInsert, false);
+        }
+    }
 }

@@ -291,6 +291,23 @@ public without sharing class ErrorLogger {
     }
 
     /**
+     * Convert Supplied List of Object to a JSON string
+     *
+     * @param String Name of the list being passed to lable the object
+     * @param List<Object> List of objects to be converted to JSON string
+     * @return String JSON string from converted list
+     */
+    public static string convertListToJSON(String varName, List<Object> objectList) {
+        if (objectList != null && objectList.size() > 0) {
+            return '{' + varName + ':[' + String.valueOf(objectList) + ']}';
+        } else if (objectList == null) {
+            return '{' + varName + ':null}';
+        } else {
+            return '{' + varName + ':{size:0, objects[]}}';
+        }
+    }
+
+    /**
      * Convert Supplied List of Ids to a JSON string
      *
      * @param String Name of the list being passed to lable the object

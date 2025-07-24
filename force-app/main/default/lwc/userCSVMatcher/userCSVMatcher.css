@@ -1,0 +1,10 @@
+:host {
+    display: block;
+    background-color: var(--slds-g-color-surface-1, #FFFFFF);
+    padding: var(--slds-g-spacing-4, 1rem);
+    border-radius: var(--slds-g-radius-border-2, 0.5rem);
+}
+
+:host .align-end {
+    align-content: end;
+}

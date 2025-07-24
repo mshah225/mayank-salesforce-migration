@@ -1,0 +1,13 @@
+<template>
+    <c-lightning-datatable-pagination
+        key-field="rowNumber"
+        source-data={tableRows}
+        columns={tableColumns}
+        display-amount={displayAmount}
+        default-sort-direction="asc"
+        sort-direction={sortDirection}
+        sorted-by={sortedBy}
+        handle-sort={handleSort}
+    >
+    </c-lightning-datatable-pagination>
+</template>

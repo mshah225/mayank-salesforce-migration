@@ -6,13 +6,16 @@
 
 export const ShowToastEventName = 'lightning__showtoast';
 
+export const ShowToastEventConstructorMock = jest.fn();
+
 export class ShowToastEvent extends CustomEvent {
     constructor(toast) {
+        ShowToastEventConstructorMock(toast);
         super(ShowToastEventName, {
             composed: true,
             cancelable: true,
             bubbles: true,
-            detail: toast
+            detail: toast,
         });
     }
 }

@@ -1,3 +1,4 @@
+// Next time this is worked on, update it to use the AsyncJobCoordinatorManager class
 public with sharing class RecordDeleterController {
     @AuraEnabled(cacheable=true)
     public static Boolean hasAccess() {
